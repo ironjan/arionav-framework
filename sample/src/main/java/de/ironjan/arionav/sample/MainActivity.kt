@@ -35,6 +35,7 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private var isFollowGps: Boolean = false
     private val cameraRequestCode: Int = 1
     private val locationRequestCode: Int = 2
 
@@ -56,7 +57,12 @@ class MainActivity :
 
         unzipGhzToStorage()
         loadMap()
+
+        buttonToggleLocation.setOnClickListener {
+            // TODO
+        }
     }
+
 
     private fun unzipGhzToStorage() {
         GhzExtractor.unzipGhzToStorage(this, R.raw.saw, mapFolder)
@@ -77,11 +83,15 @@ class MainActivity :
         mapView!!.map().layers().add(itemizedLayer)
 
         // Map position
-        val mapCenter = getCenterFromOsm(osmFilePath)//tileSource.getMapInfo().boundingBox.getCenterPoint();
-        mapView!!.map().setMapPosition(mapCenter.latitude, mapCenter.longitude, (1 shl 15).toDouble())
+        centerMap()
 
 
         loadGraphStorage()
+    }
+
+    private fun centerMap() {
+        val mapCenter = getCenterFromOsm(osmFilePath)//tileSource.getMapInfo().boundingBox.getCenterPoint();
+        mapView!!.map().setMapPosition(mapCenter.latitude, mapCenter.longitude, (1 shl 18).toDouble())
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
@@ -205,8 +215,16 @@ class MainActivity :
                 val p = mMap.viewport().fromScreenPoint(e.x, e.y)
                 return onLongPress(p)
             }
+
+            Log.d(TAG, "Gesture: $g, MotionEvent: ${e.action}, ${e.x}, ${e.y}, count: ${e.pointerCount}, time: ${e.time}")
             return false
         }
+
+        override fun onDetach() {
+            super.onDetach()
+            Log.d(TAG, "ondetach")
+        }
+
     }
 
     private fun onLongPress(p: GeoPoint?): Boolean {
