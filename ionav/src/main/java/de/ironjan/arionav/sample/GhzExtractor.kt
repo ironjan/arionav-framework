@@ -80,7 +80,7 @@ object GhzExtractor {
 
         if (timestampInGhz == timestampInExtracted) {
             Log.d(TAG, "Timestamps do match and are both at $timestampInGhz. Skipping unzip.")
-//            return
+            return
         }
 
         Log.d(TAG, "Timestamps do not match: $timestampInExtracted in extracted, $timestampInGhz in ghz file. Extracting zip.")
