@@ -7,75 +7,30 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
 object GhzExtractor {
+    private const val TAG = "GhzExtractor"
+    private const val timestampFileName = "_timestamp"
+
     fun unzipGhzToStorage(context: Context, resId: Int, folderName: String) {
         val targetFolderPath = "${context.filesDir.absolutePath}/$folderName/"
         val targetFolder = File(targetFolderPath)
         targetFolder.mkdirs()
 
         // check if unzipped ghz exists
-        val timestampFileName = "_timestamp"
-
         val timestampFile = File(targetFolderPath + timestampFileName)
-        val doesUnzipGhzExist = timestampFile.exists()
+        val doesExtractedTimestampFileExist = timestampFile.exists()
 
         // get the timestamp of the existing unzipped ghz file
-        var timestampInExtracted: String? = null
-        if (doesUnzipGhzExist) {
+        var timestampInExtracted: String? = ""
+        if (doesExtractedTimestampFileExist) {
             Log.d(TAG, "Target folder for ghz file exists. Reading the existing timestamp...")
-            FileInputStream(timestampFile).use { fileInputStream ->
-                InputStreamReader(fileInputStream).use { inputStreamReader ->
-                    BufferedReader(inputStreamReader).use { bufferedReader ->
-                        timestampInExtracted = bufferedReader.readLine()
-                        Log.d(TAG, "Read timestamp from extracted file: $timestampInExtracted")
-                    }
-                }
-            }
+            timestampInExtracted = readContentOf(timestampFile)
         }
 
         // there is an unzipped ghz file. verify that it is the one contained in this sample.
         var timestampInGhz: String? = ""
         if (timestampInExtracted != null) {
             Log.d(TAG, "Extracting timestamp from zip file.")
-            // compare with timestamp in zip
-            context.resources.openRawResource(resId).use { inputStream ->
-                ZipInputStream(inputStream).use { zipInputStream ->
-                    var zipEntry: ZipEntry? = zipInputStream.nextEntry
-                    while (zipEntry != null) {
-                        Log.d(TAG, "Processing ${zipEntry.name}...")
-                        if (timestampFileName == zipEntry.name) {
-                            // extract timestamp from zip and compare
-                            Log.d(TAG, "Extract timestamp for comparison.")
-                            val buffer = ByteArray(1024)
-                            val targetFile = "${targetFolder.absolutePath}/_timestamp_tmp"
-                            FileOutputStream(targetFile).use { fileOutputStream ->
-                                var count = zipInputStream.read(buffer)
-                                while (count != -1) {
-                                    Log.d(TAG, "Count: $count")
-                                    fileOutputStream.write(buffer, 0, count)
-                                    count = zipInputStream.read(buffer)
-                                }
-                            }
-                            Log.d(TAG, "Extracted timestamp entry to $targetFile")
-                            FileInputStream(targetFile).use { fileInputStream ->
-                                InputStreamReader(fileInputStream).use { inputStreamReader ->
-                                    BufferedReader(inputStreamReader).use { bufferedReader ->
-                                        timestampInGhz = bufferedReader.readLine()
-                                        Log.d(TAG, "Extracted timestamp: $timestampInGhz")
-                                    }
-                                }
-                            }
-                            File(targetFile).deleteOnExit()
-                            Log.d(TAG, "Deleting $targetFile")
-                            zipEntry = null
-                        } else {
-                            Log.d(TAG, "Skipping entry")
-                            zipInputStream.closeEntry()
-                            zipEntry = zipInputStream.nextEntry
-                        }
-
-                    }
-                }
-            }
+            timestampInGhz = extractTimestampFromGhz(context, resId, targetFolder)
         }
 
         if (timestampInGhz == timestampInExtracted) {
@@ -85,8 +40,8 @@ object GhzExtractor {
 
         Log.d(TAG, "Timestamps do not match: $timestampInExtracted in extracted, $timestampInGhz in ghz file. Extracting zip.")
         context.resources.openRawResource(resId).use { inputStream ->
-            ZipInputStream(inputStream).use { zis ->
-                var zipEntry: ZipEntry? = zis.nextEntry
+            ZipInputStream(inputStream).use { zipInputStream ->
+                var zipEntry: ZipEntry? = zipInputStream.nextEntry
                 while (zipEntry != null) {
                     // ghz files are flat
                     val fileName = zipEntry?.name
@@ -94,22 +49,73 @@ object GhzExtractor {
                     val targetFile = "$targetFolderPath$fileName"
 
                     Log.d(TAG, "Unzipping ghz resource $folderName. Unzipping file $fileName  to $targetFile.")
-                    val buffer = ByteArray(1024)
-                    FileOutputStream(targetFile).use { fileOutputStream ->
-                        var count = zis.read(buffer)
-                        while (count != -1) {
-                            fileOutputStream.write(buffer, 0, count)
-                            count = zis.read(buffer)
-                        }
-                    }
+                    extractZipEntry(zipInputStream, targetFile)
 
-                    zis.closeEntry()
-                    zipEntry = zis.nextEntry
+                    zipInputStream.closeEntry()
+                    zipEntry = zipInputStream.nextEntry
                 }
                 Log.d(TAG, "Completed unzip.")
             }
         }
     }
-    
-    const val TAG = "GhzExtractor"
+
+    private fun extractTimestampFromGhz(context: Context, resId: Int, targetFolder: File): String? {
+        var timestamp: String? = null
+        context.resources.openRawResource(resId).use { inputStream ->
+            ZipInputStream(inputStream).use { zipInputStream ->
+                var zipEntry: ZipEntry? = zipInputStream.nextEntry
+                while (zipEntry != null) {
+                    Log.d(TAG, "Processing ${zipEntry.name}...")
+                    if (timestampFileName == zipEntry.name) {
+                        // extract timestamp from zip and compare
+                        Log.d(TAG, "Extract timestamp for comparison.")
+
+                        val targetFile = "${targetFolder.absolutePath}/_timestamp_tmp"
+                        extractZipEntry(zipInputStream, targetFile)
+
+                        Log.d(TAG, "Extracted timestamp entry to $targetFile")
+                        timestamp = readContentOf(File(targetFile))
+                        Log.d(TAG, "Extracted timestamp: $timestamp")
+
+                        File(targetFile).deleteOnExit()
+                        Log.d(TAG, "Deleting $targetFile")
+
+                        // Exiting loop
+                        zipEntry = null
+                    } else {
+                        Log.d(TAG, "Skipping non-timestamp entry")
+                        zipInputStream.closeEntry()
+                        zipEntry = zipInputStream.nextEntry
+                    }
+                }
+            }
+        }
+        return timestamp
+    }
+
+    private fun extractZipEntry(zipInputStream: ZipInputStream, targetFile: String) {
+        val buffer = ByteArray(1024)
+        FileOutputStream(targetFile).use { fileOutputStream ->
+            var count = zipInputStream.read(buffer)
+            while (count != -1) {
+                Log.d(TAG, "Count: $count")
+                fileOutputStream.write(buffer, 0, count)
+                count = zipInputStream.read(buffer)
+            }
+        }
+    }
+
+    private fun readContentOf(file: File): String? {
+        var content: String? = null
+        FileInputStream(file).use { fileInputStream ->
+            InputStreamReader(fileInputStream).use { inputStreamReader ->
+                BufferedReader(inputStreamReader).use { bufferedReader ->
+                    content = bufferedReader.readLine()
+                    Log.d(TAG, "Read timestamp from extracted file: $content")
+                }
+            }
+        }
+        return content
+    }
+
 }
