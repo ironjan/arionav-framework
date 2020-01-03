@@ -198,21 +198,6 @@ class MainActivity :
         }
     }
 
-    object PermissionHelper {
-
-        fun verifyPermissions(activity: Activity) {
-            /*
-            Your activity has to implement ActivityCompat.OnRequestPermissionsResultCallback and the results of permission requests will be delivered to its ActivityCompat.OnRequestPermissionsResultCallback.onRequestPermissionsResult(int, String[], int[]) method.
-    Note that requesting a permission does not guarantee it will be granted and your app should be able to run without having this permission.
-    This method may start an activity allowing the user to choose which permissions to grant and which to reject. Hence, you should be prepared that your activity may be paused and resumed. Further, granting some permissions may require a restart of you application. In such a case, the system will recreate the activity stack before delivering the result to your ActivityCompat.OnRequestPermissionsResultCallback.onRequestPermissionsResult(int, String[], int[]).
-    When checking whether you have a permission you should use checkSelfPermission(Context, String).
-    Calling this API for permissions already granted to your app would show UI to the user to decided whether the app can still hold these permissions. This can be useful if the way your app uses the data guarded by the permissions changes significantly.
-    You cannot request a permission if your activity sets noHistory to true in the manifest because in this case the activity would not receive result callbacks including ActivityCompat.OnRequestPermissionsResultCallback.onRequestPermissionsResult(int, String[], int[]).
-    The RuntimePermissions  sample app demonstrates how to use this method to re
-             */
-        }
-    }
-
     internal inner class MapEventsReceiver(map: org.oscim.map.Map) : Layer(map), GestureListener {
 
         override fun onGesture(g: Gesture, e: MotionEvent): Boolean {
