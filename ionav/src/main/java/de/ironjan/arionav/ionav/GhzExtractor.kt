@@ -1,4 +1,4 @@
-package de.ironjan.arionav.sample
+package de.ironjan.arionav.ionav
 
 import android.content.Context
 import android.util.Log

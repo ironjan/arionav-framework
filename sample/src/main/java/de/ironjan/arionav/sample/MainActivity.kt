@@ -7,11 +7,11 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.util.Xml
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.google.android.material.snackbar.Snackbar
+import de.ironjan.arionav.ionav.GhzExtractor
 import de.ironjan.arionav.ionav.OsmBoundsExtractor
 import kotlinx.android.synthetic.main.activity_main.*
 import org.oscim.core.GeoPoint
