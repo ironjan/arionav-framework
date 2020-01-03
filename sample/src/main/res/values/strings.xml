@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ARIONAV Sample</string>
+    <string name="permission_camera_rationale">This app is used to demonstrate the AR Indoor/Outdoor Navigation Framework. The camera permission is required for AR support and AR will not work without camera access.</string>
+    <string name="ok">OK</string>
 </resources>
