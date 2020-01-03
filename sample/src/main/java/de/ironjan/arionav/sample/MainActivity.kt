@@ -12,7 +12,6 @@ import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
