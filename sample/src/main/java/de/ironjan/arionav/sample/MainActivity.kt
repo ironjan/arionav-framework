@@ -3,6 +3,8 @@ package de.ironjan.arionav.sample
 import android.Manifest.permission.*
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_DENIED
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -78,8 +80,7 @@ class MainActivity :
             .show()
     }
 
-    private fun isPermissionGranted(permission: String) =
-        PackageManager.PERMISSION_GRANTED == checkSelfPermission(permission)
+    private fun isPermissionGranted(permission: String) = checkSelfPermission(permission) == PERMISSION_GRANTED
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (permissions.isEmpty()) return
@@ -87,12 +88,12 @@ class MainActivity :
 
         when (requestCode) {
             cameraRequestCode -> {
-                if (grantResults.any { it == PackageManager.PERMISSION_DENIED }) {
+                if (grantResults.any { it == PERMISSION_DENIED }) {
                     showCameraRationale()
                 }
             }
             locationRequestCode -> {
-                if (grantResults.any { it == PackageManager.PERMISSION_DENIED }) {
+                if (grantResults.any { it == PERMISSION_DENIED }) {
                     showFineLocationRationale()
                 }
             }
