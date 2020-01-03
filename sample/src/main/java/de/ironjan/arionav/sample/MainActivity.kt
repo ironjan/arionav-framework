@@ -7,11 +7,26 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.Xml
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.google.android.material.snackbar.Snackbar
+import de.ironjan.arionav.ionav.OsmBoundsExtractor
 import kotlinx.android.synthetic.main.activity_main.*
+import org.oscim.core.GeoPoint
+import org.oscim.event.Gesture
+import org.oscim.event.GestureListener
+import org.oscim.event.MotionEvent
+import org.oscim.layers.Layer
+import org.oscim.layers.marker.ItemizedLayer
+import org.oscim.layers.marker.MarkerItem
+import org.oscim.layers.marker.MarkerSymbol
+import org.oscim.layers.tile.buildings.BuildingLayer
+import org.oscim.layers.tile.vector.labeling.LabelLayer
+import org.oscim.theme.VtmThemes
+import org.oscim.tiling.source.mapfile.MapFileTileSource
+import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
@@ -23,17 +38,69 @@ class MainActivity :
     private val cameraRequestCode: Int = 1
     private val locationRequestCode: Int = 2
 
+    private val mapName = "saw"
+    private val mapFolder
+        get() = File(filesDir, mapName).absolutePath
+    private val mapFilePath
+        get() = File(mapFolder, "$mapName.map").absolutePath
+    private val osmFilePath
+        get() = File(mapFolder, "$mapName.osm").absolutePath
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         requestPermissions(this)
 
+        // todo move to Application class?
+
         unzipGhzToStorage()
+        loadMap()
     }
 
     private fun unzipGhzToStorage() {
-        GhzExtractor.unzipGhzToStorage(this, R.raw.saw, "saw-gh")
+        GhzExtractor.unzipGhzToStorage(this, R.raw.saw, mapFolder)
+    }
+
+    private fun loadMap() {
+        mapView!!.map().layers().add(MapEventsReceiver(mapView!!.map()))
+
+        // Map file source
+        val tileSource = MapFileTileSource()
+        tileSource.setMapFile(mapFilePath)
+        val l = mapView!!.map().setBaseMap(tileSource)
+        mapView!!.map().setTheme(VtmThemes.DEFAULT)
+        mapView!!.map().layers().add(BuildingLayer(mapView!!.map(), l))
+        mapView!!.map().layers().add(LabelLayer(mapView!!.map(), l))
+
+        var itemizedLayer: ItemizedLayer<MarkerItem>? = ItemizedLayer(mapView!!.map(), null as MarkerSymbol?)
+        mapView!!.map().layers().add(itemizedLayer)
+
+        // Map position
+        val mapCenter = getCenterFromOsm(osmFilePath)//tileSource.getMapInfo().boundingBox.getCenterPoint();
+        mapView!!.map().setMapPosition(mapCenter.latitude, mapCenter.longitude, (1 shl 15).toDouble())
+
+
+        loadGraphStorage()
+    }
+
+    private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
+        var readBoundsFromOsm: OsmBoundsExtractor.Bounds? = OsmBoundsExtractor.extractBoundsFromOsm(osmFilePath)
+
+        if (readBoundsFromOsm != null) {
+
+            val centerLat = (readBoundsFromOsm.minLat + readBoundsFromOsm.maxLat) / 2
+            val centerLon = (readBoundsFromOsm.minLon + readBoundsFromOsm.maxLon) / 2
+
+            return GeoPoint(centerLat, centerLon)
+        }
+
+        return GeoPoint(0, 0)
+    }
+
+    private fun loadGraphStorage() {
+        // TODO
+        Log.d(TAG, "loading graphstorage..")
     }
 
     private fun doActualUnzip(resId: Int, targetFolder: String, folderName: String) {
@@ -145,4 +212,21 @@ class MainActivity :
              */
         }
     }
+
+    internal inner class MapEventsReceiver(map: org.oscim.map.Map) : Layer(map), GestureListener {
+
+        override fun onGesture(g: Gesture, e: MotionEvent): Boolean {
+            if (g is Gesture.LongPress) {
+                val p = mMap.viewport().fromScreenPoint(e.x, e.y)
+                return onLongPress(p)
+            }
+            return false
+        }
+    }
+
+    private fun onLongPress(p: GeoPoint?): Boolean {
+        Log.d(TAG, "longpress at $p")
+        return true
+    }
+
 }
