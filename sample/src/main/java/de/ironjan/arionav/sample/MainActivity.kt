@@ -1,13 +1,14 @@
 package de.ironjan.arionav.sample
 
-import android.Manifest
-import android.Manifest.permission.CAMERA
+import android.Manifest.permission.*
 import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -16,6 +17,7 @@ class MainActivity :
     ActivityCompat.OnRequestPermissionsResultCallback {
 
     private val cameraRequestCode: Int = 1
+    private val locationRequestCode: Int = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,45 +31,72 @@ class MainActivity :
     }
 
     private fun requestPermissions(activity: Activity) {
-        requestCameraPermission(activity)
+//        requestCameraPermission(activity)
+        requestLocationPermission(activity)
     }
 
-    private fun requestCameraPermission(activity: Activity) {
-        if (isPermissionGranted(CAMERA)) {
-            Log.d(TAG, "Camera permission was already granted.")
+    private fun requestLocationPermission(activity: Activity) {
+        if (isPermissionGranted(ACCESS_FINE_LOCATION)) {
+            Log.d(TAG, "Location permissions are already granted.")
         } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, CAMERA)) {
-                Log.i(TAG, "Displaying camera permission rationale to provide additional context.")
-                Snackbar.make(
-                    mainLayout, R.string.permission_camera_rationale,
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.ok) {
-                        requestPermission(this, CAMERA, cameraRequestCode)
-                    }
-                    .show()
+            if (shouldShowRequestPermissionRationale(activity, ACCESS_FINE_LOCATION)
+            ) {
+                Log.i(TAG, "Displaying fine location permission rationale to provide additional context.")
+                showFineLocationRationale()
             } else {
-                requestPermission(activity, CAMERA, cameraRequestCode)
+                requestPermissions(activity, arrayOf(ACCESS_FINE_LOCATION), locationRequestCode)
             }
         }
     }
 
-    private fun requestPermission(activity: Activity, permission: String, requestCode: Int) {
-        ActivityCompat.requestPermissions(
-            activity,
-            arrayOf(permission),
-            requestCode
-        )
+    private fun showFineLocationRationale() = showPermissionRational(R.string.permission_fine_location_rationale, ACCESS_FINE_LOCATION, locationRequestCode)
+
+    /**
+     * TODO move to library
+     */
+    private fun requestCameraPermission(activity: Activity) {
+        if (isPermissionGranted(CAMERA)) {
+            Log.d(TAG, "Camera permission is already granted.")
+        } else {
+            if (shouldShowRequestPermissionRationale(activity, CAMERA)) {
+                Log.i(TAG, "Displaying camera permission rationale to provide additional context.")
+                showCameraRationale()
+            } else {
+                Log.i(TAG, "Requesting camera permission.")
+                requestPermissions(activity, arrayOf(CAMERA), cameraRequestCode)
+            }
+        }
     }
 
-    private fun isPermissionGranted(camera: String) =
-        PackageManager.PERMISSION_GRANTED == checkSelfPermission(camera)
+    private fun showCameraRationale() = showPermissionRational(R.string.permission_camera_rationale, CAMERA, cameraRequestCode)
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    private fun showPermissionRational(rationaleResId: Int, permission: String, requestCode: Int) {
+        Snackbar.make(mainLayout, rationaleResId, Snackbar.LENGTH_INDEFINITE)
+            .setAction(R.string.ok) {
+                requestPermissions(this, arrayOf(permission), requestCode)
+            }
+            .show()
+    }
 
+    private fun isPermissionGranted(permission: String) =
+        PackageManager.PERMISSION_GRANTED == checkSelfPermission(permission)
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (permissions.isEmpty()) return
+
+
+        when (requestCode) {
+            cameraRequestCode -> {
+                if (grantResults.any { it == PackageManager.PERMISSION_DENIED }) {
+                    showCameraRationale()
+                }
+            }
+            locationRequestCode -> {
+                if (grantResults.any { it == PackageManager.PERMISSION_DENIED }) {
+                    showFineLocationRationale()
+                }
+            }
+        }
     }
 
     object PermissionHelper {
