@@ -10,8 +10,7 @@ object GhzExtractor {
     private const val TAG = "GhzExtractor"
     private const val timestampFileName = "_timestamp"
 
-    fun unzipGhzToStorage(context: Context, resId: Int, folderName: String) {
-        val targetFolderPath = "${context.filesDir.absolutePath}/$folderName/"
+    fun unzipGhzToStorage(context: Context, resId: Int, targetFolderPath: String) {
         val targetFolder = File(targetFolderPath)
         targetFolder.mkdirs()
 
@@ -48,7 +47,7 @@ object GhzExtractor {
 
                     val targetFile = "$targetFolderPath$fileName"
 
-                    Log.d(TAG, "Unzipping ghz resource $folderName. Unzipping file $fileName  to $targetFile.")
+                    Log.d(TAG, "Unzipping ghz resource $targetFolderPath. Unzipping file $fileName  to $targetFile.")
                     extractZipEntry(zipInputStream, targetFile)
 
                     zipInputStream.closeEntry()
