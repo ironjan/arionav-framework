@@ -34,7 +34,7 @@ class MainActivity :
 
     private fun requestPermissions(activity: Activity) {
 //        requestCameraPermission(activity)
-        requestLocationPermission(activity)
+//        requestLocationPermission(activity)
     }
 
     private fun requestLocationPermission(activity: Activity) {
