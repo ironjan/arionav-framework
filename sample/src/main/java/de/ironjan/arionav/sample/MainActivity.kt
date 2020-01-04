@@ -11,8 +11,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.google.android.material.snackbar.Snackbar
+import com.graphhopper.GraphHopper
+import com.graphhopper.PathWrapper
 import de.ironjan.arionav.ionav.GhzExtractor
+import de.ironjan.arionav.ionav.LoadGraphTask
 import de.ironjan.arionav.ionav.OsmBoundsExtractor
+import de.ironjan.graphhopper.geocoding.Coordinate
+import de.ironjan.graphhopper.levelextension.LowLevelRouting
 import kotlinx.android.synthetic.main.activity_main.*
 import org.oscim.core.GeoPoint
 import org.oscim.event.Gesture
@@ -27,6 +32,7 @@ import org.oscim.layers.tile.vector.labeling.LabelLayer
 import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import java.io.*
+import java.lang.Exception
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
@@ -35,11 +41,14 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private var endCoordinate: Coordinate? = null
+    private var startCoordinate: Coordinate? = null
+    private var hopper: GraphHopper? = null
     private var isFollowGps: Boolean = false
     private val cameraRequestCode: Int = 1
     private val locationRequestCode: Int = 2
 
-    private val mapName = "saw"
+    private val mapName = "uni_paderborn"
     private val mapFolder
         get() = File(filesDir, mapName).absolutePath
     private val mapFilePath
@@ -57,6 +66,7 @@ class MainActivity :
 
         unzipGhzToStorage()
         loadMap()
+        loadGraphStorage()
 
         buttonToggleLocation.setOnClickListener {
             // TODO
@@ -65,7 +75,7 @@ class MainActivity :
 
 
     private fun unzipGhzToStorage() {
-        GhzExtractor.unzipGhzToStorage(this, R.raw.saw, mapFolder)
+        GhzExtractor.unzipGhzToStorage(this, R.raw.uni_paderborn, mapFolder)
     }
 
     private fun loadMap() {
@@ -84,9 +94,6 @@ class MainActivity :
 
         // Map position
         centerMap()
-
-
-        loadGraphStorage()
     }
 
     private fun centerMap() {
@@ -109,8 +116,20 @@ class MainActivity :
     }
 
     private fun loadGraphStorage() {
-        // TODO
         Log.d(TAG, "loading graphstorage..")
+        val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
+            override fun onSuccess(graphHopper: GraphHopper) {
+                Log.d(TAG, "Completed loading graph.")
+                hopper = graphHopper
+            }
+
+            override fun onError(exception: Exception) {
+                Log.e(TAG, "Error when loading graph: $exception")
+                // FIXME show error
+            }
+
+        })
+        loadGraphTask.execute()
     }
 
     private fun doActualUnzip(resId: Int, targetFolder: String, folderName: String) {
@@ -227,9 +246,59 @@ class MainActivity :
 
     }
 
-    private fun onLongPress(p: GeoPoint?): Boolean {
+    private fun onLongPress(p: GeoPoint): Boolean {
         Log.d(TAG, "longpress at $p")
+        if (hopper == null) {
+            // FIXME show message
+            Log.i(TAG, "Graph not loaded yet. Ignoring long tap.")
+            return false
+        }
+
+        if (startCoordinate != null && endCoordinate != null) {
+            // clear start and end points
+            startCoordinate = null
+            endCoordinate = null
+        }
+
+        if (startCoordinate == null) {
+            startCoordinate = Coordinate(p.latitude, p.longitude, 0.toDouble())
+            Log.d(TAG, "Set start coordinate to $startCoordinate.")
+            return true
+        }
+
+        if (endCoordinate == null) {
+            endCoordinate = Coordinate(p.latitude, p.longitude, 0.toDouble())
+            Log.d(TAG, "Set end coordinate to $endCoordinate.")
+            computeAndShowRoute()
+            return true
+        }
+
         return true
+    }
+
+    private fun computeAndShowRoute() = showRoute(computeRoute())
+
+    private fun showRoute(route: PathWrapper?) {
+        if(route == null){
+            Log.i(TAG, "Show route was called with a null route.")
+            return
+        }
+
+        // FIXME show route
+    }
+
+    private fun computeRoute(): PathWrapper? {
+        val lStartCoordinate = startCoordinate
+        val lEndCoordinate = endCoordinate
+        if (lStartCoordinate == null || lEndCoordinate == null){
+            Log.i(TAG, "computeRoute was called with null for either start coordinate or end coordinate (start: $lStartCoordinate, end: $lEndCoordinate).")
+            return null
+        }
+
+        val route = LowLevelRouting(hopper).getRoute(lStartCoordinate.lat, lStartCoordinate.lon, lEndCoordinate.lat, lEndCoordinate.lon, lStartCoordinate.lvl, lEndCoordinate.lvl)
+
+        Log.d(TAG, "Computed route: $route")
+        return route
     }
 
 }
