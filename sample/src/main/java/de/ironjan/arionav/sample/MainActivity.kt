@@ -5,6 +5,7 @@ import android.Manifest.permission.CAMERA
 import android.app.Activity
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,8 @@ import org.oscim.layers.tile.buildings.BuildingLayer
 import org.oscim.layers.tile.vector.labeling.LabelLayer
 import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
+import org.slf4j.LoggerFactory
+import org.slf4j.impl.HandroidLoggerAdapter
 import java.io.File
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -41,6 +44,8 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback {
 
+    val logger = LoggerFactory.getLogger("MainActivity")
+    
     private var endCoordinate: Coordinate? = null
     private var startCoordinate: Coordinate? = null
     private var hopper: GraphHopper? = null
@@ -65,6 +70,7 @@ class MainActivity :
 
         // todo move to Application class?
 
+        setupLogging()
         unzipGhzToStorage()
         loadMap()
         loadGraphStorage()
@@ -74,30 +80,37 @@ class MainActivity :
         }
     }
 
+    private fun setupLogging() {
+        HandroidLoggerAdapter.DEBUG = BuildConfig.DEBUG;
+        HandroidLoggerAdapter.ANDROID_API_LEVEL = Build.VERSION.SDK_INT;
+        HandroidLoggerAdapter.APP_NAME = "MyApp";
+
+    }
+
 
     private fun unzipGhzToStorage() {
         GhzExtractor.unzipGhzToStorage(this, ghzResId, mapFolder)
     }
 
     private fun loadMap() {
-        Log.d(TAG, "Loading map for map view")
+        logger.debug("Loading map for map view")
         mapView!!.map().layers().add(MapEventsReceiver(mapView!!.map()))
 
         // Map file source
         val tileSource = MapFileTileSource()
         tileSource.setMapFile(mapFilePath)
-        Log.d(TAG, "Set tile source to $mapFilePath")
+        logger.debug("Set tile source to $mapFilePath")
         val l = mapView!!.map().setBaseMap(tileSource)
         mapView!!.map().setTheme(VtmThemes.DEFAULT)
         mapView!!.map().layers().add(BuildingLayer(mapView!!.map(), l))
-        Log.d(TAG, "Added building layer")
+        logger.debug("Added building layer")
 
         mapView!!.map().layers().add(LabelLayer(mapView!!.map(), l))
-        Log.d(TAG, "Added label layer")
+        logger.debug("Added label layer")
 
         var itemizedLayer: ItemizedLayer<MarkerItem>? = ItemizedLayer(mapView!!.map(), null as MarkerSymbol?)
         mapView!!.map().layers().add(itemizedLayer)
-        Log.d(TAG, "Added marker layer")
+        logger.debug("Added marker layer")
 
         // Map position
         centerMap()
@@ -106,7 +119,7 @@ class MainActivity :
     private fun centerMap() {
         val mapCenter = getCenterFromOsm(osmFilePath)
         mapView!!.map().setMapPosition(mapCenter.latitude, mapCenter.longitude, (1 shl 18).toDouble())
-        Log.d(TAG, "Set map center to ${mapCenter.latitude}, ${mapCenter.longitude}")
+        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude}")
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
@@ -124,15 +137,15 @@ class MainActivity :
     }
 
     private fun loadGraphStorage() {
-        Log.d(TAG, "loading graphstorage..")
+        logger.debug("loading graphstorage..")
         val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
-                Log.d(TAG, "Completed loading graph.")
+                logger.debug("Completed loading graph.")
                 hopper = graphHopper
             }
 
             override fun onError(exception: Exception) {
-                Log.e(TAG, "Error when loading graph: $exception")
+                logger.error("Error when loading graph: $exception")
                 // FIXME show error
             }
 
@@ -153,7 +166,7 @@ class MainActivity :
 
                     val targetFile = "$targetFolder$fileName"
 
-                    Log.d(TAG, "Unzipping ghz resource $folderName. Unzipping file $fileName  to $targetFile.")
+                    logger.debug("Unzipping ghz resource $folderName. Unzipping file $fileName  to $targetFile.")
                     // TODO write unzipped file
                     //                    FileOutputStream(targetFile)
 
@@ -163,10 +176,6 @@ class MainActivity :
         }
     }
 
-    companion object {
-        const val TAG = "MainActivity"
-    }
-
     private fun requestPermissions(activity: Activity) {
 //        requestCameraPermission(activity)
 //        requestLocationPermission(activity)
@@ -174,11 +183,11 @@ class MainActivity :
 
     private fun requestLocationPermission(activity: Activity) {
         if (isPermissionGranted(ACCESS_FINE_LOCATION)) {
-            Log.d(TAG, "Location permissions are already granted.")
+            logger.debug("Location permissions are already granted.")
         } else {
             if (shouldShowRequestPermissionRationale(activity, ACCESS_FINE_LOCATION)
             ) {
-                Log.i(TAG, "Displaying fine location permission rationale to provide additional context.")
+                logger.info("Displaying fine location permission rationale to provide additional context.")
                 showFineLocationRationale()
             } else {
                 requestPermissions(activity, arrayOf(ACCESS_FINE_LOCATION), locationRequestCode)
@@ -193,13 +202,13 @@ class MainActivity :
      */
     private fun requestCameraPermission(activity: Activity) {
         if (isPermissionGranted(CAMERA)) {
-            Log.d(TAG, "Camera permission is already granted.")
+            logger.debug("Camera permission is already granted.")
         } else {
             if (shouldShowRequestPermissionRationale(activity, CAMERA)) {
-                Log.i(TAG, "Displaying camera permission rationale to provide additional context.")
+                logger.info("Displaying camera permission rationale to provide additional context.")
                 showCameraRationale()
             } else {
-                Log.i(TAG, "Requesting camera permission.")
+                logger.info("Requesting camera permission.")
                 requestPermissions(activity, arrayOf(CAMERA), cameraRequestCode)
             }
         }
@@ -243,22 +252,22 @@ class MainActivity :
                 return onLongPress(p)
             }
 
-            Log.d(TAG, "Gesture: $g, MotionEvent: ${e.action}, ${e.x}, ${e.y}, count: ${e.pointerCount}, time: ${e.time}")
+            logger.debug("Gesture: $g, MotionEvent: ${e.action}, ${e.x}, ${e.y}, count: ${e.pointerCount}, time: ${e.time}")
             return false
         }
 
         override fun onDetach() {
             super.onDetach()
-            Log.d(TAG, "ondetach")
+            logger.debug("ondetach")
         }
 
     }
 
     private fun onLongPress(p: GeoPoint): Boolean {
-        Log.d(TAG, "longpress at $p")
+        logger.debug("longpress at $p")
         if (hopper == null) {
             // FIXME show message
-            Log.i(TAG, "Graph not loaded yet. Ignoring long tap.")
+            logger.info("Graph not loaded yet. Ignoring long tap.")
             return false
         }
 
@@ -270,13 +279,13 @@ class MainActivity :
 
         if (startCoordinate == null) {
             setStartCoordinate(p)
-            Log.d(TAG, "Set start coordinate to $startCoordinate.")
+            logger.debug("Set start coordinate to $startCoordinate.")
             return true
         }
 
         if (endCoordinate == null) {
             setEndCoordnate(p)
-            Log.d(TAG, "Set end coordinate to $endCoordinate.")
+            logger.debug("Set end coordinate to $endCoordinate.")
             computeAndShowRoute()
             return true
         }
@@ -304,7 +313,7 @@ class MainActivity :
 
     private fun showRoute(route: PathWrapper?) {
         if (route == null) {
-            Log.i(TAG, "Show route was called with a null route.")
+            logger.info("Show route was called with a null route.")
             return
         }
 
@@ -315,13 +324,13 @@ class MainActivity :
         val lStartCoordinate = startCoordinate
         val lEndCoordinate = endCoordinate
         if (lStartCoordinate == null || lEndCoordinate == null) {
-            Log.i(TAG, "computeRoute was called with null for either start coordinate or end coordinate (start: $lStartCoordinate, end: $lEndCoordinate).")
+            logger.info("computeRoute was called with null for either start coordinate or end coordinate (start: $lStartCoordinate, end: $lEndCoordinate).")
             return null
         }
 
         try {
             val route = Routing(hopper).route(lStartCoordinate!!, lEndCoordinate!!)
-            Log.d(TAG, "Computed route: $route")
+            logger.debug("Computed route: $route")
             return route
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
