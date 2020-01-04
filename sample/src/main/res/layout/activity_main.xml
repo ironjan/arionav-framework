@@ -16,6 +16,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,4 +43,5 @@
         android:text="AR"
         android:id="@+id/button_AR" />
 
+    <!-- todo add search boxes at top like in mocks-->
 </androidx.constraintlayout.widget.ConstraintLayout>

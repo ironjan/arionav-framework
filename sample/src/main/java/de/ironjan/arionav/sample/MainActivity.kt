@@ -36,7 +36,7 @@ import java.lang.Exception
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
-
+// todo initialize spinner with level data
 class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback {
