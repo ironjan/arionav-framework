@@ -7,14 +7,35 @@
     android:id="@+id/mainLayout"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/search_panel"
+        android:background="@android:color/darker_gray"
+        android:orientation="vertical">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edit_start_coordinates"
+            android:hint="Start Coordinates (lat,lon,lvl)" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edit_end_coordinates"
+            android:hint="End Coordinates (lat,lon,lvl)" />
+
+    </LinearLayout>
     <org.oscim.android.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/search_panel"/>
 
 
     <Spinner
@@ -42,6 +63,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="AR"
         android:id="@+id/button_AR" />
+
 
     <!-- todo add search boxes at top like in mocks-->
 </androidx.constraintlayout.widget.ConstraintLayout>
