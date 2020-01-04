@@ -1,12 +1,13 @@
 package de.ironjan.arionav.sample
 
-import android.Manifest.permission.*
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.CAMERA
 import android.app.Activity
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
@@ -16,8 +17,8 @@ import com.graphhopper.PathWrapper
 import de.ironjan.arionav.ionav.GhzExtractor
 import de.ironjan.arionav.ionav.LoadGraphTask
 import de.ironjan.arionav.ionav.OsmBoundsExtractor
-import de.ironjan.graphhopper.geocoding.Coordinate
-import de.ironjan.graphhopper.levelextension.LowLevelRouting
+import de.ironjan.graphhopper.extensions_core.Coordinate
+import de.ironjan.graphhopper.levelextension.Routing
 import kotlinx.android.synthetic.main.activity_main.*
 import org.oscim.core.GeoPoint
 import org.oscim.event.Gesture
@@ -31,8 +32,7 @@ import org.oscim.layers.tile.buildings.BuildingLayer
 import org.oscim.layers.tile.vector.labeling.LabelLayer
 import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
-import java.io.*
-import java.lang.Exception
+import java.io.File
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
@@ -295,7 +295,7 @@ class MainActivity :
             return null
         }
 
-        val route = LowLevelRouting(hopper).getRoute(lStartCoordinate.lat, lStartCoordinate.lon, lEndCoordinate.lat, lEndCoordinate.lon, lStartCoordinate.lvl, lEndCoordinate.lvl)
+        val route = Routing(hopper).route(lStartCoordinate!!, lEndCoordinate!!)
 
         Log.d(TAG, "Computed route: $route")
         return route
