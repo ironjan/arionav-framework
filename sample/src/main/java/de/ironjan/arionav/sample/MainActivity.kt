@@ -48,7 +48,8 @@ class MainActivity :
     private val cameraRequestCode: Int = 1
     private val locationRequestCode: Int = 2
 
-    private val mapName = "uni_paderborn"
+    private val ghzResId = R.raw.saw
+    private val mapName = "saw"
     private val mapFolder
         get() = File(filesDir, mapName).absolutePath
     private val mapFilePath
@@ -75,30 +76,37 @@ class MainActivity :
 
 
     private fun unzipGhzToStorage() {
-        GhzExtractor.unzipGhzToStorage(this, R.raw.uni_paderborn, mapFolder)
+        GhzExtractor.unzipGhzToStorage(this, ghzResId, mapFolder)
     }
 
     private fun loadMap() {
+        Log.d(TAG, "Loading map for map view")
         mapView!!.map().layers().add(MapEventsReceiver(mapView!!.map()))
 
         // Map file source
         val tileSource = MapFileTileSource()
         tileSource.setMapFile(mapFilePath)
+        Log.d(TAG, "Set tile source to $mapFilePath")
         val l = mapView!!.map().setBaseMap(tileSource)
         mapView!!.map().setTheme(VtmThemes.DEFAULT)
         mapView!!.map().layers().add(BuildingLayer(mapView!!.map(), l))
+        Log.d(TAG, "Added building layer")
+
         mapView!!.map().layers().add(LabelLayer(mapView!!.map(), l))
+        Log.d(TAG, "Added label layer")
 
         var itemizedLayer: ItemizedLayer<MarkerItem>? = ItemizedLayer(mapView!!.map(), null as MarkerSymbol?)
         mapView!!.map().layers().add(itemizedLayer)
+        Log.d(TAG, "Added marker layer")
 
         // Map position
         centerMap()
     }
 
     private fun centerMap() {
-        val mapCenter = getCenterFromOsm(osmFilePath)//tileSource.getMapInfo().boundingBox.getCenterPoint();
+        val mapCenter = getCenterFromOsm(osmFilePath)
         mapView!!.map().setMapPosition(mapCenter.latitude, mapCenter.longitude, (1 shl 18).toDouble())
+        Log.d(TAG, "Set map center to ${mapCenter.latitude}, ${mapCenter.longitude}")
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
@@ -256,18 +264,18 @@ class MainActivity :
 
         if (startCoordinate != null && endCoordinate != null) {
             // clear start and end points
-            startCoordinate = null
-            endCoordinate = null
+            setStartCoordinate(null)
+            setEndCoordnate(null)
         }
 
         if (startCoordinate == null) {
-            startCoordinate = Coordinate(p.latitude, p.longitude, 0.toDouble())
+            setStartCoordinate(p)
             Log.d(TAG, "Set start coordinate to $startCoordinate.")
             return true
         }
 
         if (endCoordinate == null) {
-            endCoordinate = Coordinate(p.latitude, p.longitude, 0.toDouble())
+            setEndCoordnate(p)
             Log.d(TAG, "Set end coordinate to $endCoordinate.")
             computeAndShowRoute()
             return true
@@ -276,10 +284,26 @@ class MainActivity :
         return true
     }
 
+    private fun setStartCoordinate(p: GeoPoint?) {
+        startCoordinate =
+            if (p == null) null
+            else Coordinate(p.latitude, p.longitude, 0.toDouble())
+
+        edit_start_coordinates.setText(startCoordinate?.toString() ?: "")
+    }
+
+    private fun setEndCoordnate(p: GeoPoint?) {
+        endCoordinate =
+            if (p == null) null
+            else Coordinate(p.latitude, p.longitude, 0.toDouble())
+
+        edit_end_coordinates.setText(endCoordinate?.toString() ?: "")
+    }
+
     private fun computeAndShowRoute() = showRoute(computeRoute())
 
     private fun showRoute(route: PathWrapper?) {
-        if(route == null){
+        if (route == null) {
             Log.i(TAG, "Show route was called with a null route.")
             return
         }
@@ -290,15 +314,21 @@ class MainActivity :
     private fun computeRoute(): PathWrapper? {
         val lStartCoordinate = startCoordinate
         val lEndCoordinate = endCoordinate
-        if (lStartCoordinate == null || lEndCoordinate == null){
+        if (lStartCoordinate == null || lEndCoordinate == null) {
             Log.i(TAG, "computeRoute was called with null for either start coordinate or end coordinate (start: $lStartCoordinate, end: $lEndCoordinate).")
             return null
         }
 
-        val route = Routing(hopper).route(lStartCoordinate!!, lEndCoordinate!!)
+        try {
+            val route = Routing(hopper).route(lStartCoordinate!!, lEndCoordinate!!)
+            Log.d(TAG, "Computed route: $route")
+            return route
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
 
-        Log.d(TAG, "Computed route: $route")
-        return route
+            return null
+        }
+
     }
 
 }
