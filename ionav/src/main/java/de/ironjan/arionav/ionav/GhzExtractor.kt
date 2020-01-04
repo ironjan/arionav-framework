@@ -15,7 +15,7 @@ object GhzExtractor {
         targetFolder.mkdirs()
 
         // check if unzipped ghz exists
-        val timestampFile = File(targetFolderPath + timestampFileName)
+        val timestampFile = File(targetFolderPath, timestampFileName)
         val doesExtractedTimestampFileExist = timestampFile.exists()
 
         // get the timestamp of the existing unzipped ghz file
@@ -45,7 +45,7 @@ object GhzExtractor {
                     // ghz files are flat
                     val fileName = zipEntry?.name
 
-                    val targetFile = "$targetFolderPath$fileName"
+                    val targetFile = File(targetFolder, fileName).absolutePath
 
                     Log.d(TAG, "Unzipping ghz resource $targetFolderPath. Unzipping file $fileName  to $targetFile.")
                     extractZipEntry(zipInputStream, targetFile)
@@ -69,7 +69,7 @@ object GhzExtractor {
                         // extract timestamp from zip and compare
                         Log.d(TAG, "Extract timestamp for comparison.")
 
-                        val targetFile = "${targetFolder.absolutePath}/_timestamp_tmp"
+                        val targetFile = File(targetFolder,"_timestamp_tmp").absolutePath
                         extractZipEntry(zipInputStream, targetFile)
 
                         Log.d(TAG, "Extracted timestamp entry to $targetFile")
@@ -97,7 +97,6 @@ object GhzExtractor {
         FileOutputStream(targetFile).use { fileOutputStream ->
             var count = zipInputStream.read(buffer)
             while (count != -1) {
-                Log.d(TAG, "Count: $count")
                 fileOutputStream.write(buffer, 0, count)
                 count = zipInputStream.read(buffer)
             }
