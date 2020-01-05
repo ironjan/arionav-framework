@@ -6,6 +6,9 @@ import android.app.Activity
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
@@ -41,6 +44,7 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private var selectedLevel: Double = 0.0
     val logger = LoggerFactory.getLogger("MainActivity")
 
     private var endCoordinate: Coordinate? = null
@@ -74,6 +78,24 @@ class MainActivity :
             // TODO
         }
 
+
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.select_state, android.R.layout.simple_spinner_item);
+        val levelList = listOf(-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0)
+        spinnerLevel.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, levelList)
+        spinnerLevel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                setSelectedLevel(levelList[4])
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                setSelectedLevel(levelList[p2])
+            }
+
+        }
+    }
+
+    private fun setSelectedLevel(lvl: Double) {
+        selectedLevel = lvl
     }
 
     private fun loadMap() {
@@ -235,6 +257,7 @@ class MainActivity :
         if (startCoordinate != null && endCoordinate != null) {
             // clear start and end points
             clearRoute()
+            startEndMarkerLayer?.removeAllItems()
             setStartCoordinate(null)
             setEndCoordnate(null)
         }
@@ -258,7 +281,7 @@ class MainActivity :
     private fun setStartCoordinate(p: GeoPoint?) {
         startCoordinate =
             if (p == null) null
-            else Coordinate(p.latitude, p.longitude, 0.toDouble())
+            else Coordinate(p.latitude, p.longitude, selectedLevel)
 
         edit_start_coordinates.setText(startCoordinate?.asString() ?: "")
 
@@ -272,7 +295,7 @@ class MainActivity :
     private fun setEndCoordnate(p: GeoPoint?) {
         endCoordinate =
             if (p == null) null
-            else Coordinate(p.latitude, p.longitude, 0.toDouble())
+            else Coordinate(p.latitude, p.longitude, selectedLevel)
 
         edit_end_coordinates.setText(endCoordinate?.asString() ?: "")
 
