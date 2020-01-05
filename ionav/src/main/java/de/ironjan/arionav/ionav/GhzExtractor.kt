@@ -6,14 +6,21 @@ import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
-class GhzExtractor {
+class GhzExtractor(private val context: Context, private val resId: Int,private val  mapName: String) {
+    private val ghzResId = resId
+    val mapFolder
+        get() = File(context.filesDir, mapName).absolutePath
+    val mapFilePath
+        get() = File(mapFolder, "$mapName.map").absolutePath
+    val osmFilePath
+        get() = File(mapFolder, "$mapName.osm").absolutePath
 
-    fun unzipGhzToStorage(context: Context, resId: Int, targetFolderPath: String) {
-        val targetFolder = File(targetFolderPath)
+    fun unzipGhzToStorage() {
+        val targetFolder = File(mapFolder)
         targetFolder.mkdirs()
 
         // check if unzipped ghz exists
-        val timestampFile = File(targetFolderPath, timestampFileName)
+        val timestampFile = File(mapFolder, timestampFileName)
         val doesExtractedTimestampFileExist = timestampFile.exists()
 
         // get the timestamp of the existing unzipped ghz file
@@ -45,7 +52,7 @@ class GhzExtractor {
 
                     val targetFile = File(targetFolder, fileName).absolutePath
 
-                    Log.d(TAG, "Unzipping ghz resource $targetFolderPath. Unzipping file $fileName  to $targetFile.")
+                    Log.d(TAG, "Unzipping ghz resource $mapFolder. Unzipping file $fileName  to $targetFile.")
                     extractZipEntry(zipInputStream, targetFile)
 
                     zipInputStream.closeEntry()

@@ -7,7 +7,6 @@ import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
@@ -35,7 +34,6 @@ import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 import org.slf4j.impl.HandroidLoggerAdapter
-import java.io.File
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
@@ -55,12 +53,7 @@ class MainActivity :
 
     private val ghzResId = R.raw.saw
     private val mapName = "saw"
-    private val mapFolder
-        get() = File(filesDir, mapName).absolutePath
-    private val mapFilePath
-        get() = File(mapFolder, "$mapName.map").absolutePath
-    private val osmFilePath
-        get() = File(mapFolder, "$mapName.osm").absolutePath
+    private lateinit var ghzExtractor: GhzExtractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +62,7 @@ class MainActivity :
         requestPermissions(this)
 
         // todo move to Application class?
+        ghzExtractor = GhzExtractor(this, ghzResId, mapName)
 
         setupLogging()
         unzipGhzToStorage()
@@ -80,6 +74,7 @@ class MainActivity :
         }
     }
 
+
     private fun setupLogging() {
         HandroidLoggerAdapter.DEBUG = BuildConfig.DEBUG;
         HandroidLoggerAdapter.ANDROID_API_LEVEL = Build.VERSION.SDK_INT;
@@ -87,9 +82,8 @@ class MainActivity :
 
     }
 
-
     private fun unzipGhzToStorage() {
-        GhzExtractor().unzipGhzToStorage(this, ghzResId, mapFolder)
+        ghzExtractor?.unzipGhzToStorage()
     }
 
     private fun loadMap() {
@@ -98,8 +92,8 @@ class MainActivity :
 
         // Map file source
         val tileSource = MapFileTileSource()
-        tileSource.setMapFile(mapFilePath)
-        logger.debug("Set tile source to $mapFilePath")
+        tileSource.setMapFile(ghzExtractor.mapFilePath)
+        logger.debug("Set tile source to ${ghzExtractor.mapFilePath}")
         val l = mapView!!.map().setBaseMap(tileSource)
         mapView!!.map().setTheme(VtmThemes.DEFAULT)
         mapView!!.map().layers().add(BuildingLayer(mapView!!.map(), l))
@@ -117,7 +111,7 @@ class MainActivity :
     }
 
     private fun centerMap() {
-        val mapCenter = getCenterFromOsm(osmFilePath)
+        val mapCenter = getCenterFromOsm(ghzExtractor.osmFilePath)
         mapView!!.map().setMapPosition(mapCenter.latitude, mapCenter.longitude, (1 shl 18).toDouble())
         logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude}")
     }
@@ -138,7 +132,7 @@ class MainActivity :
 
     private fun loadGraphStorage() {
         logger.debug("loading graphstorage..")
-        val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
+        val loadGraphTask = LoadGraphTask(ghzExtractor.mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
                 hopper = graphHopper
