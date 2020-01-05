@@ -25,15 +25,18 @@ import org.oscim.event.Gesture
 import org.oscim.event.GestureListener
 import org.oscim.event.MotionEvent
 import org.oscim.layers.Layer
+import org.oscim.layers.PathLayer
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
 import org.oscim.layers.tile.buildings.BuildingLayer
 import org.oscim.layers.tile.vector.labeling.LabelLayer
+import org.oscim.layers.vector.geometries.Style
 import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 import org.slf4j.impl.HandroidLoggerAdapter
+import java.util.ArrayList
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
@@ -251,6 +254,8 @@ class MainActivity :
     }
 
     private fun setStartCoordinate(p: GeoPoint?) {
+        removeRouteLayer()
+
         startCoordinate =
             if (p == null) null
             else Coordinate(p.latitude, p.longitude, 0.toDouble())
@@ -259,6 +264,8 @@ class MainActivity :
     }
 
     private fun setEndCoordnate(p: GeoPoint?) {
+        removeRouteLayer()
+
         endCoordinate =
             if (p == null) null
             else Coordinate(p.latitude, p.longitude, 0.toDouble())
@@ -268,13 +275,38 @@ class MainActivity :
 
     private fun computeAndShowRoute() = showRoute(computeRoute())
 
+    var routeLayer: org.oscim.layers.vector.PathLayer? = null
+
     private fun showRoute(route: PathWrapper?) {
         if (route == null) {
             logger.info("Show route was called with a null route.")
             return
         }
 
-        // FIXME show route
+        removeRouteLayer()
+        routeLayer = createRouteLayer(route)
+        mapView!!.map().layers().add(routeLayer)
+        mapView!!.map().updateMap(true)
+    }
+
+    private fun removeRouteLayer() {
+        mapView!!.map().layers().remove(routeLayer)
+    }
+
+    private fun createRouteLayer(route: PathWrapper): org.oscim.layers.vector.PathLayer {
+        val style = Style.builder()
+            .fixed(true)
+            .generalization(Style.GENERALIZATION_SMALL)
+            .strokeColor(-0x66ff33cd)
+            .strokeWidth(4 * resources.displayMetrics.density)
+            .build()
+        val pathLayer = org.oscim.layers.vector.PathLayer(mapView!!.map(), style)
+        val geoPoints = ArrayList<GeoPoint>()
+        val pointList = route.points
+        for (i in 0 until pointList.size)
+            geoPoints.add(GeoPoint(pointList.getLatitude(i), pointList.getLongitude(i)))
+        pathLayer.setPoints(geoPoints)
+        return pathLayer
     }
 
     private fun computeRoute(): PathWrapper? {
