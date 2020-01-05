@@ -133,29 +133,6 @@ class MainActivity :
         loadGraphTask.execute()
     }
 
-    private fun doActualUnzip(resId: Int, targetFolder: String, folderName: String) {
-        val inputStream = resources.openRawResource(resId)
-
-        inputStream.use {
-            val zipInputStream = ZipInputStream(inputStream)
-            zipInputStream.use {
-                var zipEntry: ZipEntry? = it.nextEntry
-                while (zipEntry != null) {
-                    // ghz files are flat
-                    val fileName = zipEntry.name
-
-                    val targetFile = "$targetFolder$fileName"
-
-                    logger.debug("Unzipping ghz resource $folderName. Unzipping file $fileName  to $targetFile.")
-                    // TODO write unzipped file
-                    //                    FileOutputStream(targetFile)
-
-                    zipEntry = it.nextEntry
-                }
-            }
-        }
-    }
-
     private fun requestPermissions(activity: Activity) {
 //        requestCameraPermission(activity)
 //        requestLocationPermission(activity)
