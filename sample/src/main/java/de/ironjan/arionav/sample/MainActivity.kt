@@ -5,7 +5,6 @@ import android.Manifest.permission.CAMERA
 import android.app.Activity
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -20,12 +19,12 @@ import de.ironjan.arionav.ionav.OsmBoundsExtractor
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import kotlinx.android.synthetic.main.activity_main.*
+import org.oscim.android.canvas.AndroidGraphics
 import org.oscim.core.GeoPoint
 import org.oscim.event.Gesture
 import org.oscim.event.GestureListener
 import org.oscim.event.MotionEvent
 import org.oscim.layers.Layer
-import org.oscim.layers.PathLayer
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
@@ -35,10 +34,7 @@ import org.oscim.layers.vector.geometries.Style
 import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
-import org.slf4j.impl.HandroidLoggerAdapter
 import java.util.ArrayList
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 
 // todo initialize spinner with level data
 class MainActivity :
@@ -46,16 +42,20 @@ class MainActivity :
     ActivityCompat.OnRequestPermissionsResultCallback {
 
     val logger = LoggerFactory.getLogger("MainActivity")
-    
+
     private var endCoordinate: Coordinate? = null
     private var startCoordinate: Coordinate? = null
+    private var routeLayer: org.oscim.layers.vector.PathLayer? = null
+    private var startEndMarkerLayer: ItemizedLayer<MarkerItem>? = null
+
     private var hopper: GraphHopper? = null
     private var isFollowGps: Boolean = false
     private val cameraRequestCode: Int = 1
-    private val locationRequestCode: Int = 2
 
+    private val locationRequestCode: Int = 2
     private val ghzResId = R.raw.saw
     private val mapName = "saw"
+
     private lateinit var ghzExtractor: GhzExtractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +73,7 @@ class MainActivity :
         buttonToggleLocation.setOnClickListener {
             // TODO
         }
+
     }
 
     private fun loadMap() {
@@ -91,8 +92,8 @@ class MainActivity :
         mapView!!.map().layers().add(LabelLayer(mapView!!.map(), l))
         logger.debug("Added label layer")
 
-        var itemizedLayer: ItemizedLayer<MarkerItem>? = ItemizedLayer(mapView!!.map(), null as MarkerSymbol?)
-        mapView!!.map().layers().add(itemizedLayer)
+        startEndMarkerLayer = ItemizedLayer(mapView!!.map(), null as MarkerSymbol?)
+        mapView!!.map().layers().add(startEndMarkerLayer)
         logger.debug("Added marker layer")
 
         // Map position
@@ -233,6 +234,7 @@ class MainActivity :
 
         if (startCoordinate != null && endCoordinate != null) {
             // clear start and end points
+            clearRoute()
             setStartCoordinate(null)
             setEndCoordnate(null)
         }
@@ -254,28 +256,42 @@ class MainActivity :
     }
 
     private fun setStartCoordinate(p: GeoPoint?) {
-        removeRouteLayer()
-
         startCoordinate =
             if (p == null) null
             else Coordinate(p.latitude, p.longitude, 0.toDouble())
 
-        edit_start_coordinates.setText(startCoordinate?.toString() ?: "")
+        edit_start_coordinates.setText(startCoordinate?.asString() ?: "")
+
+        if (p != null) {
+            startEndMarkerLayer?.addItem(createMarkerItem(p, R.drawable.marker_icon_green))
+            mapView!!.map().updateMap(true)
+        }
     }
 
-    private fun setEndCoordnate(p: GeoPoint?) {
-        removeRouteLayer()
 
+    private fun setEndCoordnate(p: GeoPoint?) {
         endCoordinate =
             if (p == null) null
             else Coordinate(p.latitude, p.longitude, 0.toDouble())
 
-        edit_end_coordinates.setText(endCoordinate?.toString() ?: "")
+        edit_end_coordinates.setText(endCoordinate?.asString() ?: "")
+
+        if (p != null) {
+            startEndMarkerLayer?.addItem(createMarkerItem(p, R.drawable.marker_icon_red))
+            mapView!!.map().updateMap(true)
+        }
+    }
+
+    private fun createMarkerItem(p: GeoPoint?, resource: Int): MarkerItem {
+        val drawable = resources.getDrawable(resource)
+        val bitmap = AndroidGraphics.drawableToBitmap(drawable)
+        val markerSymbol = MarkerSymbol(bitmap, 0.5f, 1f)
+        val markerItem = MarkerItem("", "", p)
+        markerItem.marker = markerSymbol
+        return markerItem
     }
 
     private fun computeAndShowRoute() = showRoute(computeRoute())
-
-    var routeLayer: org.oscim.layers.vector.PathLayer? = null
 
     private fun showRoute(route: PathWrapper?) {
         if (route == null) {
@@ -283,14 +299,15 @@ class MainActivity :
             return
         }
 
-        removeRouteLayer()
+        clearRoute()
         routeLayer = createRouteLayer(route)
         mapView!!.map().layers().add(routeLayer)
         mapView!!.map().updateMap(true)
     }
 
-    private fun removeRouteLayer() {
+    private fun clearRoute() {
         mapView!!.map().layers().remove(routeLayer)
+        mapView!!.map().updateMap(true)
     }
 
     private fun createRouteLayer(route: PathWrapper): org.oscim.layers.vector.PathLayer {
