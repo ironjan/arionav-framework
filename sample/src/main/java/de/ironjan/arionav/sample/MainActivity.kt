@@ -53,7 +53,6 @@ class MainActivity :
     private var startEndMarkerLayer: ItemizedLayer<MarkerItem>? = null
 
     private var hopper: GraphHopper? = null
-    private var isFollowGps: Boolean = false
     private val cameraRequestCode: Int = 1
 
     private val locationRequestCode: Int = 2
