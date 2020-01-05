@@ -89,7 +89,7 @@ class MainActivity :
 
 
     private fun unzipGhzToStorage() {
-        GhzExtractor.unzipGhzToStorage(this, ghzResId, mapFolder)
+        GhzExtractor().unzipGhzToStorage(this, ghzResId, mapFolder)
     }
 
     private fun loadMap() {

@@ -6,9 +6,7 @@ import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
-object GhzExtractor {
-    private const val TAG = "GhzExtractor"
-    private const val timestampFileName = "_timestamp"
+class GhzExtractor {
 
     fun unzipGhzToStorage(context: Context, resId: Int, targetFolderPath: String) {
         val targetFolder = File(targetFolderPath)
@@ -69,7 +67,7 @@ object GhzExtractor {
                         // extract timestamp from zip and compare
                         Log.d(TAG, "Extract timestamp for comparison.")
 
-                        val targetFile = File(targetFolder,"_timestamp_tmp").absolutePath
+                        val targetFile = File(targetFolder, "_timestamp_tmp").absolutePath
                         extractZipEntry(zipInputStream, targetFile)
 
                         Log.d(TAG, "Extracted timestamp entry to $targetFile")
@@ -116,4 +114,8 @@ object GhzExtractor {
         return content
     }
 
+    companion object {
+        private const val TAG = "GhzExtractor"
+        private const val timestampFileName = "_timestamp"
+    }
 }
