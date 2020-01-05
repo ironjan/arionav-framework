@@ -64,26 +64,12 @@ class MainActivity :
         // todo move to Application class?
         ghzExtractor = GhzExtractor(this, ghzResId, mapName)
 
-        setupLogging()
-        unzipGhzToStorage()
         loadMap()
         loadGraphStorage()
 
         buttonToggleLocation.setOnClickListener {
             // TODO
         }
-    }
-
-
-    private fun setupLogging() {
-        HandroidLoggerAdapter.DEBUG = BuildConfig.DEBUG;
-        HandroidLoggerAdapter.ANDROID_API_LEVEL = Build.VERSION.SDK_INT;
-        HandroidLoggerAdapter.APP_NAME = "MyApp";
-
-    }
-
-    private fun unzipGhzToStorage() {
-        ghzExtractor?.unzipGhzToStorage()
     }
 
     private fun loadMap() {
