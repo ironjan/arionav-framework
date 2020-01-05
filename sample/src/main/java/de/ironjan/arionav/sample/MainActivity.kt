@@ -81,7 +81,8 @@ class MainActivity :
 
 //        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.select_state, android.R.layout.simple_spinner_item);
         val levelList = listOf(-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0)
-        spinnerLevel.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, levelList)
+        spinnerLevel.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, levelList)
+        spinnerLevel.setSelection(4)
         spinnerLevel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 setSelectedLevel(levelList[4])

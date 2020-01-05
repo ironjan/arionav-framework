@@ -43,7 +43,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/spinnerLevel"
         android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_panel"
+        android:layout_marginTop="2dp"
         app:layout_constraintRight_toRightOf="parent"
         />
 
