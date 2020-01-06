@@ -2,6 +2,11 @@ package de.ironjan.arionav.ionav
 
 import android.os.AsyncTask
 import com.graphhopper.GraphHopper
+import com.graphhopper.reader.osm.GraphHopperOSM
+import com.graphhopper.routing.util.EncodingManager
+import com.graphhopper.routing.util.FlagEncoder
+import de.ironjan.graphhopper.levelextension.GraphLoader
+import de.ironjan.graphhopper.levelextension.graph.FootFlagLevelEncoder
 
 class LoadGraphTask(private val mapsFolder: String, private val callback: Callback) : AsyncTask<Void, Void, GraphHopper?>() {
     private var hopper: GraphHopper?  = null
@@ -9,12 +14,9 @@ class LoadGraphTask(private val mapsFolder: String, private val callback: Callba
 
     override fun doInBackground(vararg p0: Void?): GraphHopper? {
         try {
-            val tmpHopp = GraphHopper().forMobile()
-            tmpHopp.setElevation(true)
-            tmpHopp.load(mapsFolder)
-
-            hopper = tmpHopp
-            return tmpHopp
+            val tmpHopper = GraphLoader.loadExisting(mapsFolder)
+            hopper = tmpHopper
+            return hopper
         }
         catch (e: Exception) {
             exception = e
