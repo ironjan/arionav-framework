@@ -114,7 +114,7 @@ class GhzExtractor(private val context: Context, private val resId: Int,private 
             InputStreamReader(fileInputStream).use { inputStreamReader ->
                 BufferedReader(inputStreamReader).use { bufferedReader ->
                     content = bufferedReader.readLine()
-                    Log.d(TAG, "Read timestamp from extracted file: $content")
+                    Log.d(TAG, "Read content of file $file: $content")
                 }
             }
         }
