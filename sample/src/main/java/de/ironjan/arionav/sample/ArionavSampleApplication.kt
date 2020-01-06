@@ -5,8 +5,7 @@ import de.ironjan.arionav.ionav.GhzExtractor
 import org.slf4j.impl.HandroidLoggerAdapter
 
 class ArionavSampleApplication : Application() {
-    private val ghzResId = R.raw.saw
-    private val mapName = "saw"
+
 
     override fun onCreate() {
         super.onCreate()
@@ -16,9 +15,13 @@ class ArionavSampleApplication : Application() {
 
 
     private fun setupLogging() {
-        HandroidLoggerAdapter.DEBUG = BuildConfig.DEBUG;
-        HandroidLoggerAdapter.APP_NAME = resources.getString(R.string.app_name);
+        HandroidLoggerAdapter.DEBUG = BuildConfig.DEBUG
+        HandroidLoggerAdapter.APP_NAME = resources.getString(R.string.app_name)
 
     }
 
+    companion object{
+        const val ghzResId = R.raw.uni_paderborn
+        const val mapName = "uni_paderborn"
+    }
 }

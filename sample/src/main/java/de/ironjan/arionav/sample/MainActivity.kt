@@ -51,8 +51,8 @@ class MainActivity :
     private val cameraRequestCode: Int = 1
 
     private val locationRequestCode: Int = 2
-    private val ghzResId = R.raw.saw
-    private val mapName = "saw"
+    private val ghzResId = ArionavSampleApplication.ghzResId
+    private val mapName = ArionavSampleApplication.mapName
 
     private lateinit var ghzExtractor: GhzExtractor
 
