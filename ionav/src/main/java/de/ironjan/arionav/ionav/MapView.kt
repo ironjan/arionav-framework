@@ -262,7 +262,7 @@ class MapView: MapView {
         }
 
         try {
-            val route = Routing(hopper).route(lStartCoordinate!!, lEndCoordinate!!)
+            val route = Routing(hopper).route(lStartCoordinate, lEndCoordinate)
             logger.debug("Computed route: $route")
             return route
         } catch (e: java.lang.Exception) {
