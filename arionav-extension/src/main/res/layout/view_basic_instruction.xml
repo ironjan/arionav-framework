@@ -3,14 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:padding="8dp"
     android:layout_height="match_parent">
+
     <ImageView android:id="@+id/instructionImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:background="@android:color/white"
         android:visibility="gone"
         />
 
@@ -19,13 +21,14 @@
         app:layout_constraintLeft_toRightOf="@+id/instructionImage"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/instructionText"
         android:id="@+id/instructionDistanceInMeters"
+        android:minWidth="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
