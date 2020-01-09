@@ -15,7 +15,7 @@ class ArionavSampleApplication : Application() {
 
 
     private fun setupLogging() {
-        HandroidLoggerAdapter.DEBUG = BuildConfig.DEBUG
+//        HandroidLoggerAdapter.DEBUG = BuildConfig.DEBUG
         HandroidLoggerAdapter.APP_NAME = resources.getString(R.string.app_name)
 
     }
