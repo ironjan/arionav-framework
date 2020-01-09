@@ -39,12 +39,14 @@ import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
+import kotlin.math.log
 
 // todo initialize spinner with level data
 class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private var displayedRoute: PathWrapper? = null
     private var selectedLevel: Double = 0.0
     val logger = LoggerFactory.getLogger("MainActivity")
 
@@ -66,6 +68,16 @@ class MainActivity :
         ghzExtractor = GhzExtractor(this, ghzResId, mapName)
 
         val mapEventsCallback = object : MapView.MapEventsCallback {
+            override fun onRouteShown(pathWrapper: PathWrapper) {
+                displayedRoute = pathWrapper
+                button_AR.isEnabled = true
+            }
+
+            override fun onRouteCleared() {
+                displayedRoute = null
+                button_AR.isEnabled = false
+            }
+
             override fun startPointCleared() {
                 edit_start_coordinates.setText("")
             }
@@ -88,6 +100,7 @@ class MainActivity :
             // TODO
         }
 
+        button_AR.setOnClickListener(this::onArButtonClick)
 
         val levelList = listOf(-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0)
         spinnerLevel.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, levelList)
@@ -102,6 +115,23 @@ class MainActivity :
             }
 
         }
+    }
+
+    private fun onArButtonClick(it: View) {
+        if (!it.isEnabled) {
+            logger.warn("button_AR was clicked but is not enabled. Ignoring.")
+            return
+        }
+
+        val lDisplayedRoute = displayedRoute
+        if (lDisplayedRoute == null) {
+            logger.info("AR button was clicked with null route. Ignoring.")
+            // TODO show warning in ui
+            return
+        }
+
+        logger.info("Starting AR activity with route {}", displayedRoute)
+        // todo implement
     }
 
     private fun setSelectedLevel(lvl: Double) {

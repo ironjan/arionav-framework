@@ -123,6 +123,8 @@ class MapView: MapView {
         fun endPointChanged(coordinate: Coordinate)
         fun startPointCleared()
         fun endPointCleared()
+        fun onRouteShown(pathWrapper: PathWrapper)
+        fun onRouteCleared()
     }
 
     internal inner class MapEventsReceiver(map: org.oscim.map.Map) : Layer(map), GestureListener {
@@ -230,11 +232,13 @@ class MapView: MapView {
         routeLayer = createRouteLayer(route)
         map().layers().add(routeLayer)
         map().updateMap(true)
+        mapEventsCallback.onRouteShown(route)
     }
 
     private fun clearRoute() {
         map().layers().remove(routeLayer)
         map().updateMap(true)
+        mapEventsCallback.onRouteCleared()
     }
 
     private fun createRouteLayer(route: PathWrapper): org.oscim.layers.vector.PathLayer {
