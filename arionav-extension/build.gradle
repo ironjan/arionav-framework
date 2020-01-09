@@ -40,6 +40,8 @@ dependencies {
     api 'com.google.ar.sceneform.ux:sceneform-ux:1.13.0'
     api 'com.github.appoly:ARCore-Location:1.2'
 
+    implementation 'com.google.code.gson:gson:2.8.6'
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
