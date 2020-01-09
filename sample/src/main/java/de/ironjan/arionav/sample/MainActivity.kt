@@ -3,6 +3,7 @@ package de.ironjan.arionav.sample
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
@@ -16,6 +17,7 @@ import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
+import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.GhzExtractor
 import de.ironjan.arionav.ionav.LoadGraphTask
 import de.ironjan.arionav.ionav.MapView
@@ -132,6 +134,14 @@ class MainActivity :
 
         logger.info("Starting AR activity with route {}", displayedRoute)
         // todo implement
+
+        val i = Intent(this, ArViewActivity::class.java)
+
+        val toSimplifiedRouteJson = PathWrapperJsonConverter.toSimplifiedRouteJson(lDisplayedRoute)
+        i.putExtra("ROUTE", toSimplifiedRouteJson)
+        startActivity(i);
+
+
     }
 
     private fun setSelectedLevel(lvl: Double) {

@@ -2,7 +2,6 @@ package de.ironjan.arionav.sample
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
@@ -14,14 +13,13 @@ import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
-import kotlinx.android.synthetic.main.activity_ar_view.*
+import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
-import kotlin.math.log
 
 class ArViewActivity : AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback {
@@ -157,21 +155,40 @@ class ArViewActivity : AppCompatActivity(),
         }
     }
 
+    private val logger = LoggerFactory.getLogger(TAG)
+
     private fun setupLocationScene() {
         // If our locationScene object hasn't been setup yet, this is a good time to do it
         // We know that here, the AR components have been initiated.
         locationScene = LocationScene(this, arSceneView)
 
-        // Now lets create our location markers.
-        // First, a layout
-        addPoi(51.70948, 8.75226, "G74")
-        addPoi(51.70986, 8.75436, "G61")
-        addPoi(51.70951, 8.75273, "G81")
-        addPoi(51.719, 8.7559, "Dom")
-        addPoi(51.71536, 8.74495, "Herz-Jesu Kirche")
-        addPoi(51.70187, 8.76550, "tp25")
-        addPoi(51.70689, 8.77120, "fs")
-        addPoi(51.73181, 8.73459, "hni")
+        val json = intent?.extras?.getString("ROUTE", "")
+        if(!json.isNullOrEmpty()){
+            val route = PathWrapperJsonConverter.fromJson(json)
+            logger.info("Showing route {} in AR", route)
+
+            route.zipped.forEachIndexed { index, pair ->
+                val waypoint = pair.first
+                val instruction = pair.second
+
+                val name = "$index ${instruction.name}"
+                addPoi(waypoint.lat, waypoint.lon, name)
+            }
+        }
+        else {
+        logger.info("No route given..") // todo show ui notification
+        }
+//
+//        // Now lets create our location markers.
+//        // First, a layout
+//        addPoi(51.70948, 8.75226, "G74")
+//        addPoi(51.70986, 8.75436, "G61")
+//        addPoi(51.70951, 8.75273, "G81")
+//        addPoi(51.719, 8.7559, "Dom")
+//        addPoi(51.71536, 8.74495, "Herz-Jesu Kirche")
+//        addPoi(51.70187, 8.76550, "tp25")
+//        addPoi(51.70689, 8.77120, "fs")
+//        addPoi(51.73181, 8.73459, "hni")
 
 
 //        buildRoute()
