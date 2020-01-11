@@ -19,7 +19,7 @@ allprojects {
 
 Add the following dependency to your app:
 ```
-implementation 'com.gitlab.lippertsjan:arionav-framework:-SNAPSHOT'
+implementation 'com.gitlab.lippertsjan:arionav-framework:master-SNAPSHOT'
 ```
 
 
