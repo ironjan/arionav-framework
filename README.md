@@ -1,6 +1,27 @@
 # arionav-framework
 
-Implementation of the framework for android
+Implementation of an Augmented Reality Indoor/Outdoor Navigat Framework for Android. Part of my master thesis. 
+
+The framework is currently developed on my university's gitlab instance and automatically synchronized to URL.
+
+# Adding the libraries
+
+Add the jitpack repository to your root build.gradle at the end of repositories:
+
+```
+allprojects {
+    repositories {
+      ...
+      maven { url 'https://jitpack.io' }
+    }
+  }
+```
+
+Add the following dependency to your app:
+```
+implementation 'com.gitlab.lippertsjan:arionav-framework:-SNAPSHOT'
+```
+
 
 # Creating ghz files
 
