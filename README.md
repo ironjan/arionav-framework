@@ -17,9 +17,10 @@ allprojects {
   }
 ```
 
-Add the following dependency to your app:
+Then add the dependencies you need to your app:
 ```
-implementation 'com.gitlab.lippertsjan:arionav-framework:master-SNAPSHOT'
+implementation 'com.gitlab.lippertsjan.arionav-framework:ionav:master-SNAPSHOT'
+implementation 'com.gitlab.lippertsjan.arionav-framework:arionav-extension:master-SNAPSHOT'
 ```
 
 
