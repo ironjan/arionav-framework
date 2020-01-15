@@ -1,0 +1,46 @@
+digraph G {
+  "sample" -> "androidx.appcompat:appcompat"
+  "sample" -> "androidx.core:core-ktx"
+  "sample" -> "androidx.constraintlayout:constraintlayout"
+  "sample" -> "sk.baka.slf4j:slf4j-handroid"
+  "sample" -> "com.google.android.material:material"
+
+  "sample" -> "arionav-extension"
+  "arionav-extension" -> "ionav"
+  "arionav-extension" -> "com.google.ar.sceneform.ux:sceneform-ux"
+  "arionav-extension" -> "com.github.appoly:ARCore-Location"
+  "com.google.ar.sceneform.ux:sceneform-ux" -> "com.google.ar.sceneform:core"
+  "com.google.ar.sceneform" -> "com.google.ar.sceneform:rendering"
+  "com.google.ar.sceneform:rendering" -> "com.google.ar:core"
+  "com.google.ar.sceneform" -> "com.google.ar.sceneform:sceneform-base"
+  "com.google.ar.sceneform" -> "com.google.ar.sceneform:filament-android"
+  "com.google.ar.sceneform.ux:sceneform-ux" -> "androidx.fragment:fragment"
+
+  "ionav" -> "org.mapsforge:vtm-android"
+  "ionav" -> "org.mapsforge:vtm-jts"
+  "ionav" -> "org.mapsforge:vtm-themes"
+  "ionav" -> "com.github.ironjan.graphhopper:geocoding"
+
+  "com.github.ironjan.graphhopper:geocoding" -> "com.github.ironjan.graphhopper:graphhopper-extension-core"
+  "com.github.ironjan.graphhopper:geocoding" -> "com.github.ironjan.graphhopper:graphhopper-reader-osm"
+  "com.github.ironjan.graphhopper:geocoding" -> "com.github.ironjan.graphhopper:level-extension"
+
+
+
+  "com.github.ironjan.graphhopper:level-extension" -> "com.github.ironjan.graphhopper:graphhopper-extension-core"
+  "com.github.ironjan.graphhopper:level-extension" -> "com.github.ironjan.graphhopper:graphhopper-reader-osm"
+
+  "com.github.ironjan.graphhopper:graphhopper-reader-osm" -> "com.github.ironjan.graphhopper:graphhopper-core"
+  "com.github.ironjan.graphhopper:graphhopper-reader-osm" -> "org.openstreetmap.osmosis:osmosis-osm-binary"
+  "com.github.ironjan.graphhopper:graphhopper-reader-osm" -> "org.slf4j:slf4j-api"
+  "com.github.ironjan.graphhopper:graphhopper-core" -> "com.github.ironjan.graphhopper:graphhopper-api"
+
+
+  "sample" [style=filled]
+  "arionav-extension" [style=filled]
+  "ionav" [style=filled]
+  "com.github.ironjan.graphhopper:geocoding" [style=filled]
+  "com.github.ironjan.graphhopper:level-extension" [style=filled]
+  "com.github.ironjan.graphhopper:graphhopper-extension-core" [style=filled]
+  "com.github.ironjan.graphhopper:graphhopper-reader-osm" [style=filled]
+}
