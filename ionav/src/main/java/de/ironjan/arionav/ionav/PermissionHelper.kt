@@ -17,25 +17,24 @@ class PermissionHelper(private val activity: Activity ) {
         callback = activity
     }
 
-    fun isPermissionGranted(permission: String): Boolean = ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
 
-    fun shouldShowRequestPermissionRationale(permission: String): Boolean = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
-
-    fun requestPermission(permission: String, requestCode: Int) = ActivityCompat.requestPermissions(activity, arrayOf(permission), requestCode)
-
-    fun requestLocationPermission(requestCode: Int) {
-        if (isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+    fun requestPermission(permission: String, requestCode: Int) {
+        if (isPermissionGranted(permission)) {
             logger.debug("Location permissions are already granted.")
         } else {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+            if (shouldShowRequestPermissionRationale(permission)
             ) {
                 logger.info("Displaying fine location permission rationale to provide additional context.")
                 callback.showRationale(requestCode)
             } else {
-                requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, requestCode)
+                ActivityCompat.requestPermissions(activity, arrayOf(permission), requestCode)
             }
         }
     }
+
+    private fun isPermissionGranted(permission: String): Boolean = ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
+
+    private fun shouldShowRequestPermissionRationale(permission: String): Boolean = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
 
     companion object {
         const val TAG = "PermissionHelper"
