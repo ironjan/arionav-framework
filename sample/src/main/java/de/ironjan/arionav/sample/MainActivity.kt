@@ -98,17 +98,17 @@ class MainActivity :
 
         }
 
-        LocationListener(this, lifecycle) { location ->
-            mapView.setUserCoordinates(location.latitude, location.longitude, 0.0)
+        UserPositionListener(this, lifecycle) { location ->
+            mapView.setUserPosition(Coordinate(location.latitude, location.longitude, 0.0))
         }
 
-        mapView.setUserCoordinates(51.71858, 8.74905, 0.0)
+        mapView.setUserPosition(Coordinate(51.71858, 8.74905, 0.0))
     }
 
     private fun centerMapOnPosition() {
         Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
         // FIXME Implement
-        mapView.setUserCoordinates(51.71858, 8.74905, 0.0)
+        mapView.setUserPosition(Coordinate(51.71858, 8.74905, 0.0))
     }
 
     private fun onArButtonClick(it: View) {

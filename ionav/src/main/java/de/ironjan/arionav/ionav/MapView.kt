@@ -1,7 +1,6 @@
 package de.ironjan.arionav.ionav
 
 import android.content.Context
-import android.location.Location
 import android.util.AttributeSet
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
@@ -284,9 +283,9 @@ class MapView: MapView {
 
     }
 
-    fun setUserCoordinates(lat: Double, lon: Double, lvl: Double) {
+    fun setUserPosition(coordinate: Coordinate) {
         userPosLayer?.removeAllItems()
-        userPosLayer?.addItem(createMarkerItem(GeoPoint(lat, lon), R.drawable.marker_icon_blue))
+        userPosLayer?.addItem(createMarkerItem(GeoPoint(coordinate.lat, coordinate.lon), R.drawable.marker_icon_blue))
         map().updateMap(true)
     }
 }

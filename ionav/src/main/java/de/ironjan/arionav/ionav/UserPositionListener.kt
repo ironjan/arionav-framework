@@ -8,10 +8,10 @@ import androidx.lifecycle.OnLifecycleEvent
 import org.slf4j.LoggerFactory
 
 // Based on https://developer.android.com/topic/libraries/architecture/lifecycle#use-cases
-class LocationListener(private val context: Context,
-                       private val lifecycle: Lifecycle,
-                       private val callback: (Location) -> Unit)
-// FIXME implement location updates...
+class UserPositionListener(private val context: Context,
+                           private val lifecycle: Lifecycle,
+                           private val callback: (Location) -> Unit)
+// FIXME implement location updates... using a location provider wrapper thing
     : LifecycleObserver {
     companion object {
         const val TAG = "LocationListener"
