@@ -132,7 +132,7 @@ class MainActivity :
 
     private fun requestPermissions() {
 //        PermissionHelper.requestPermission(this, CAMERA, cameraRequestCode)
-//        PermissionHelper.requestPermission(this, ACCESS_FINE_LOCATION, cameraRequestCode)
+        PermissionHelper.requestPermission(this, ACCESS_FINE_LOCATION, cameraRequestCode)
     }
 
     override fun showRationale(requestCode: Int) {
