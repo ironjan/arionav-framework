@@ -5,7 +5,6 @@ import android.Manifest.permission.CAMERA
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -13,40 +12,20 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.google.android.material.snackbar.Snackbar
-import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
-import de.ironjan.arionav.ionav.GhzExtractor
-import de.ironjan.arionav.ionav.LoadGraphTask
-import de.ironjan.arionav.ionav.MapView
-import de.ironjan.arionav.ionav.OsmBoundsExtractor
+import de.ironjan.arionav.ionav.*
 import de.ironjan.graphhopper.extensions_core.Coordinate
-import de.ironjan.graphhopper.levelextension.Routing
 import kotlinx.android.synthetic.main.activity_main.*
-import org.oscim.android.canvas.AndroidGraphics
-import org.oscim.core.GeoPoint
-import org.oscim.event.Gesture
-import org.oscim.event.GestureListener
-import org.oscim.event.MotionEvent
-import org.oscim.layers.Layer
-import org.oscim.layers.marker.ItemizedLayer
-import org.oscim.layers.marker.MarkerItem
-import org.oscim.layers.marker.MarkerSymbol
-import org.oscim.layers.tile.buildings.BuildingLayer
-import org.oscim.layers.tile.vector.labeling.LabelLayer
-import org.oscim.layers.vector.geometries.Style
-import org.oscim.theme.VtmThemes
-import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
-import java.util.ArrayList
-import kotlin.math.log
 
 // todo initialize spinner with level data
 class MainActivity :
     AppCompatActivity(),
-    ActivityCompat.OnRequestPermissionsResultCallback {
+    ActivityCompat.OnRequestPermissionsResultCallback,
+    PermissionHelper.PermissionHelperCallback {
+
 
     private var displayedRoute: PathWrapper? = null
     private var selectedLevel: Double = 0.0
@@ -59,6 +38,8 @@ class MainActivity :
     private val mapName = ArionavSampleApplication.mapName
 
     private lateinit var ghzExtractor: GhzExtractor
+
+    private val permissionHelper = PermissionHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,42 +131,17 @@ class MainActivity :
     }
 
 
-
     private fun requestPermissions(activity: Activity) {
-//        requestCameraPermission(activity)
-//        requestLocationPermission(activity)
+//        permissionHelper.requestPermission(CAMERA, cameraRequestCode)
+//        permissionHelper.requestLocationPermission(locationRequestCode)
     }
 
-    private fun requestLocationPermission(activity: Activity) {
-        if (isPermissionGranted(ACCESS_FINE_LOCATION)) {
-            logger.debug("Location permissions are already granted.")
-        } else {
-            if (shouldShowRequestPermissionRationale(activity, ACCESS_FINE_LOCATION)
-            ) {
-                logger.info("Displaying fine location permission rationale to provide additional context.")
-                showFineLocationRationale()
-            } else {
-                requestPermissions(activity, arrayOf(ACCESS_FINE_LOCATION), locationRequestCode)
-            }
-        }
-    }
-
-    private fun showFineLocationRationale() = showPermissionRational(R.string.permission_fine_location_rationale, ACCESS_FINE_LOCATION, locationRequestCode)
-
-    /**
-     * TODO move to library
-     */
-    private fun requestCameraPermission(activity: Activity) {
-        if (isPermissionGranted(CAMERA)) {
-            logger.debug("Camera permission is already granted.")
-        } else {
-            if (shouldShowRequestPermissionRationale(activity, CAMERA)) {
-                logger.info("Displaying camera permission rationale to provide additional context.")
-                showCameraRationale()
-            } else {
-                logger.info("Requesting camera permission.")
-                requestPermissions(activity, arrayOf(CAMERA), cameraRequestCode)
-            }
+    override fun showRationale(requestCode: Int) {
+        when (requestCode) {
+            locationRequestCode ->
+                showPermissionRational(R.string.permission_fine_location_rationale, ACCESS_FINE_LOCATION, locationRequestCode)
+            cameraRequestCode ->
+                showPermissionRational(R.string.permission_camera_rationale, CAMERA, cameraRequestCode)
         }
     }
 
@@ -199,8 +155,6 @@ class MainActivity :
             .show()
     }
 
-    private fun isPermissionGranted(permission: String) = checkSelfPermission(permission) == PERMISSION_GRANTED
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (permissions.isEmpty()) return
 
@@ -213,7 +167,7 @@ class MainActivity :
             }
             locationRequestCode -> {
                 if (grantResults.any { it == PERMISSION_DENIED }) {
-                    showFineLocationRationale()
+                    showPermissionRational(R.string.permission_fine_location_rationale, ACCESS_FINE_LOCATION, locationRequestCode)
                 }
             }
         }
