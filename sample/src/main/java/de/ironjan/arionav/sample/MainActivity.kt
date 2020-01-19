@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
@@ -78,7 +79,7 @@ class MainActivity :
         mapView.initialize(ghzExtractor, mapEventsCallback)
 
         buttonCenterOnPos.setOnClickListener {
-            // TODO
+            centerMapOnPosition()
         }
 
         button_AR.setOnClickListener(this::onArButtonClick)
@@ -96,6 +97,18 @@ class MainActivity :
             }
 
         }
+
+        LocationListener(this, lifecycle) { location ->
+            mapView.setUserCoordinates(location.latitude, location.longitude, 0.0)
+        }
+
+        mapView.setUserCoordinates(51.71858, 8.74905, 0.0)
+    }
+
+    private fun centerMapOnPosition() {
+        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
+        // FIXME Implement
+        mapView.setUserCoordinates(51.71858, 8.74905, 0.0)
     }
 
     private fun onArButtonClick(it: View) {

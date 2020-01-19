@@ -1,6 +1,7 @@
 package de.ironjan.arionav.ionav
 
 import android.content.Context
+import android.location.Location
 import android.util.AttributeSet
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
@@ -39,6 +40,7 @@ class MapView: MapView {
     private var hopper: GraphHopper? = null
 
     private var startEndMarkerLayer: ItemizedLayer<MarkerItem>? = null
+    private var userPosLayer: ItemizedLayer<MarkerItem>? = null
 
     private val logger = LoggerFactory.getLogger(TAG)
     fun initialize(ghzExtractor: GhzExtractor, mapEventsCallback: MapEventsCallback) {
@@ -85,6 +87,11 @@ class MapView: MapView {
         startEndMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
         map().layers().add(startEndMarkerLayer)
         logger.debug("Added marker layer")
+
+
+        userPosLayer = ItemizedLayer(map(), null as MarkerSymbol?)
+        map().layers().add(userPosLayer)
+        logger.debug("Added user position layer")
 
         // Map position
         centerMap()
@@ -275,5 +282,11 @@ class MapView: MapView {
             return null
         }
 
+    }
+
+    fun setUserCoordinates(lat: Double, lon: Double, lvl: Double) {
+        userPosLayer?.removeAllItems()
+        userPosLayer?.addItem(createMarkerItem(GeoPoint(lat, lon), R.drawable.marker_icon_blue))
+        map().updateMap(true)
     }
 }
