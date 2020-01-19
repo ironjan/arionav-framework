@@ -180,20 +180,6 @@ class ArViewActivity : AppCompatActivity(),
         else {
         logger.info("No route given..") // todo show ui notification
         }
-//
-//        // Now lets create our location markers.
-//        // First, a layout
-//        addPoi(51.70948, 8.75226, "G74")
-//        addPoi(51.70986, 8.75436, "G61")
-//        addPoi(51.70951, 8.75273, "G81")
-//        addPoi(51.719, 8.7559, "Dom")
-//        addPoi(51.71536, 8.74495, "Herz-Jesu Kirche")
-//        addPoi(51.70187, 8.76550, "tp25")
-//        addPoi(51.70689, 8.77120, "fs")
-//        addPoi(51.73181, 8.73459, "hni")
-
-
-//        buildRoute()
     }
 
 
