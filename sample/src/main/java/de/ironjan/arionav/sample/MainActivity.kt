@@ -39,13 +39,12 @@ class MainActivity :
 
     private lateinit var ghzExtractor: GhzExtractor
 
-    private val permissionHelper = PermissionHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        requestPermissions(this)
+        requestPermissions()
 
         // todo move to Application class?
         ghzExtractor = GhzExtractor(this, ghzResId, mapName)
@@ -131,9 +130,9 @@ class MainActivity :
     }
 
 
-    private fun requestPermissions(activity: Activity) {
-//        permissionHelper.requestPermission(CAMERA, cameraRequestCode)
-//        permissionHelper.requestPermission(ACCESS_FINE_LOCATION, cameraRequestCode)
+    private fun requestPermissions() {
+//        PermissionHelper.requestPermission(this, CAMERA, cameraRequestCode)
+//        PermissionHelper.requestPermission(this, ACCESS_FINE_LOCATION, cameraRequestCode)
     }
 
     override fun showRationale(requestCode: Int) {
