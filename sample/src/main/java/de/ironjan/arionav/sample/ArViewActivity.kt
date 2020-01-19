@@ -14,6 +14,7 @@ import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
+import de.ironjan.arionav.framework.views.ArRouteView
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
@@ -28,14 +29,15 @@ class ArViewActivity : AppCompatActivity(),
     private var locationScene: LocationScene? = null
     private var hasFinishedLoading: Boolean = false
     private var poiLayoutRenderable: ViewRenderable? = null
-    private var arSceneView: ArSceneView? = null
+    private var arSceneView: ArRouteView? = null
     private var loadingMessageSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar_view)
 
-        arSceneView = findViewById<ArSceneView>(R.id.ar_scene_view)
+        arSceneView = findViewById(R.id.ar_scene_view)
+        lifecycle.addObserver(arSceneView!!)
 
         loadRenderables()
         addUpdateListenerToSceneView()
