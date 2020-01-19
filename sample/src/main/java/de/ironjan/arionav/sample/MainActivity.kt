@@ -2,7 +2,6 @@ package de.ironjan.arionav.sample
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
@@ -78,7 +77,7 @@ class MainActivity :
         }
         mapView.initialize(ghzExtractor, mapEventsCallback)
 
-        buttonToggleLocation.setOnClickListener {
+        buttonCenterOnPos.setOnClickListener {
             // TODO
         }
 
