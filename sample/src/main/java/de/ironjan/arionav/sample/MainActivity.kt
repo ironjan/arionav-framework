@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
+import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
@@ -98,7 +99,7 @@ class MainActivity :
 
         }
 
-        UserPositionListener(this, lifecycle) { location ->
+        PositionListenerBaseImplementation(this, lifecycle) { location ->
             mapView.setUserPosition(Coordinate(location.latitude, location.longitude, 0.0))
         }
 
