@@ -29,6 +29,7 @@ class MapView: MapView {
 
     constructor(context: Context): super(context, null){}
 
+    private var userPosition: Coordinate? = null
     private lateinit var mapEventsCallback: MapEventsCallback
     private lateinit var ghzExtractor: GhzExtractor
     private var endCoordinate: Coordinate? = null
@@ -284,8 +285,23 @@ class MapView: MapView {
     }
 
     fun setUserPosition(coordinate: Coordinate) {
+        userPosition = coordinate
+
+        updateUserPositionOnMap()
+    }
+
+    private fun updateUserPositionOnMap() {
+        val lUserPosition = userPosition ?: return
         userPosLayer?.removeAllItems()
-        userPosLayer?.addItem(createMarkerItem(GeoPoint(coordinate.lat, coordinate.lon), R.drawable.marker_icon_blue))
+        userPosLayer?.addItem(createMarkerItem(GeoPoint(lUserPosition.lat, lUserPosition.lon), R.drawable.marker_icon_blue))
         map().updateMap(true)
+    }
+
+    fun centerOnUserPosition() {
+        val lUserPosition = userPosition ?: return
+
+        val scale = map().mapPosition.scale
+        map().setMapPosition(lUserPosition.lat, lUserPosition.lon, scale)
+
     }
 }
