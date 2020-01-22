@@ -86,6 +86,10 @@ class MainActivity :
             centerMapOnPosition()
         }
 
+        buttonLocationAsStart.setOnClickListener {
+            val coordinate = gpsPositionProvider.lastKnownPosition ?: return@setOnClickListener
+            mapView.setStartCoordinate(coordinate)
+        }
 
         button_AR.setOnClickListener(this::onArButtonClick)
 

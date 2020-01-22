@@ -24,22 +24,27 @@ import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
-class MapView: MapView {
+class MapView : MapView {
     constructor(context: Context, attrsSet: AttributeSet) : super(context, attrsSet) {}
 
-    constructor(context: Context): super(context, null){}
+    constructor(context: Context) : super(context, null) {}
+
 
     private var userPosition: Coordinate? = null
     private lateinit var mapEventsCallback: MapEventsCallback
     private lateinit var ghzExtractor: GhzExtractor
     private var endCoordinate: Coordinate? = null
     private var startCoordinate: Coordinate? = null
+    private val canComputeRoute: Boolean
+        get() = startCoordinate != null && endCoordinate != null
+
     private var routeLayer: org.oscim.layers.vector.PathLayer? = null
     var selectedLevel: Double = 0.0
 
     private var hopper: GraphHopper? = null
 
-    private var startEndMarkerLayer: ItemizedLayer<MarkerItem>? = null
+    private var startMarkerLayer: ItemizedLayer<MarkerItem>? = null
+    private var endMarkerLayer: ItemizedLayer<MarkerItem>? = null
     private var userPosLayer: ItemizedLayer<MarkerItem>? = null
 
     private val logger = LoggerFactory.getLogger(TAG)
@@ -84,8 +89,10 @@ class MapView: MapView {
         map().layers().add(LabelLayer(map(), l))
         logger.debug("Added label layer")
 
-        startEndMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
-        map().layers().add(startEndMarkerLayer)
+        startMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
+        endMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
+        map().layers().add(startMarkerLayer)
+        map().layers().add(endMarkerLayer)
         logger.debug("Added marker layer")
 
 
@@ -118,14 +125,12 @@ class MapView: MapView {
     }
 
 
-
     companion object {
         const val TAG = "de.ironjan.arionav.ionav.MapView"
     }
 
 
-
-    interface MapEventsCallback{
+    interface MapEventsCallback {
         fun startPointChanged(coordinate: Coordinate)
         fun endPointChanged(coordinate: Coordinate)
         fun startPointCleared()
@@ -165,20 +170,17 @@ class MapView: MapView {
         if (startCoordinate != null && endCoordinate != null) {
             // clear start and end points
             clearRoute()
-            startEndMarkerLayer?.removeAllItems()
             setStartCoordinate(null)
             setEndCoordnate(null)
         }
 
         if (startCoordinate == null) {
             setStartCoordinate(p)
-            logger.debug("Set start coordinate to $startCoordinate.")
             return true
         }
 
         if (endCoordinate == null) {
             setEndCoordnate(p)
-            logger.debug("Set end coordinate to $endCoordinate.")
             computeAndShowRoute()
             return true
         }
@@ -186,43 +188,66 @@ class MapView: MapView {
         return true
     }
 
-    /**
-     * sets the start coordinate from an external source
-     */
-  fun setStartCoordinate(coordinate: Coordinate) {
-        startCoordinate = coordinate
-  }
+
     private fun setStartCoordinate(p: GeoPoint?) {
-        if(p == null){
+        startMarkerLayer?.removeAllItems()
+        if (p == null) {
             startCoordinate = null
             mapEventsCallback.startPointCleared()
             return
         }
-
-
-        startEndMarkerLayer?.addItem(createMarkerItem(p, R.drawable.marker_icon_green))
-        map().updateMap(true)
-
-        val coordinate = Coordinate(p.latitude, p.longitude, selectedLevel)
-        startCoordinate = coordinate
-        mapEventsCallback.startPointChanged(coordinate)
+        setStartCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
+        logger.debug("Set start coordinate to $startCoordinate.")
     }
 
 
     private fun setEndCoordnate(p: GeoPoint?) {
-        if(p == null){
+        endMarkerLayer?.removeAllItems()
+        if (p == null) {
             endCoordinate = null
             mapEventsCallback.endPointCleared()
             return
         }
 
-        startEndMarkerLayer?.addItem(createMarkerItem(p, R.drawable.marker_icon_red))
+        setEndCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
+        logger.debug("Set end coordinate to $endCoordinate.")
+    }
+
+
+    /**
+     * sets the start coordinate and displays it on map. triggers route update if possible.
+     */
+    fun setStartCoordinate(coordinate: Coordinate) {
+        startCoordinate = coordinate
+        mapEventsCallback.startPointChanged(coordinate)
+
+        startMarkerLayer?.apply {
+            removeAllItems()
+            addItem(createMarkerItem(coordinate, R.drawable.marker_icon_green))
+        }
         map().updateMap(true)
 
-        val coordinate = Coordinate(p.latitude, p.longitude, selectedLevel)
+        if (canComputeRoute) {
+            computeAndShowRoute()
+        }
+    }
+
+    /** sets the end coordinate and displays it on map. triggers route update if possible. */
+    fun setEndCoordinate(coordinate: Coordinate) {
         endCoordinate = coordinate
         mapEventsCallback.endPointChanged(coordinate)
+
+        endMarkerLayer?.apply {
+            removeAllItems()
+            addItem(createMarkerItem(coordinate, R.drawable.marker_icon_red))
+        }
+        map().updateMap(true)
+
+        if(canComputeRoute) {
+            computeAndShowRoute()
+        }
     }
+    private fun createMarkerItem(coordinate: Coordinate, resource: Int) = createMarkerItem(GeoPoint(coordinate.lat, coordinate.lon), resource)
 
     private fun createMarkerItem(p: GeoPoint?, resource: Int): MarkerItem {
         val drawable = resources.getDrawable(resource)
