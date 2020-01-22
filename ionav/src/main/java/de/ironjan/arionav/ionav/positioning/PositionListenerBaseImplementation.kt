@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory
 abstract class PositionListenerBaseImplementation(private val context: Context,
                                          private val lifecycle: Lifecycle,
                                          private val callback: (Location) -> Unit)
-    : LifecycleObserver,
-      PositionListener{
+    : LifecycleObserver{
     companion object {
         const val TAG = "LocationListener"
     }
@@ -22,8 +21,6 @@ abstract class PositionListenerBaseImplementation(private val context: Context,
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     abstract fun start()
-
-    abstract fun enable()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     abstract fun stop()
