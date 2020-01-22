@@ -7,27 +7,36 @@
     android:id="@+id/mainLayout"
     tools:context=".MainActivity">
 
-    <LinearLayout
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="POS"
+        android:tooltipText="Use current location as start position."
+        android:id="@+id/buttonLocationAsStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <EditText
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/buttonLocationAsStart"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonLocationAsStart"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_start_coordinates"
+        android:hint="Start Coordinates (lat,lon,lvl)" />
+
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_start_coordinates"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/search_panel"
-        android:background="@android:color/darker_gray"
-        android:orientation="vertical">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/edit_start_coordinates"
-            android:hint="Start Coordinates (lat,lon,lvl)" />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/edit_end_coordinates"
-            android:hint="End Coordinates (lat,lon,lvl)" />
+        app:layout_constraintLeft_toRightOf="parent"
+        android:id="@+id/edit_end_coordinates"
+        android:hint="End Coordinates (lat,lon,lvl)" />
 
-    </LinearLayout>
     <de.ironjan.arionav.ionav.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -35,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_panel"/>
+        app:layout_constraintTop_toBottomOf="@+id/edit_end_coordinates"/>
 
 
     <Spinner
@@ -63,6 +72,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="AR"
+        android:tooltipText="Show route in AR"
         android:enabled="false"
         android:id="@+id/button_AR" />
 
@@ -71,8 +81,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/buttonCenterOnPos"
+        android:tooltipText="Follow the current position on the map and for route calculation."
         android:id="@+id/buttonFollowLocation"
         />
 
-    <!-- todo add search boxes at top like in mocks-->
 </androidx.constraintlayout.widget.ConstraintLayout>
