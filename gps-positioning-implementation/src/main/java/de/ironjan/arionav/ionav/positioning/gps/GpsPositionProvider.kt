@@ -11,6 +11,7 @@ import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
+import org.slf4j.LoggerFactory
 
 /**
  *
@@ -23,29 +24,46 @@ class GpsPositionProvider(
     private val callback: (Location) -> Unit
 ) : PositionListenerBaseImplementation(context, lifecycle, callback) {
 
+    private val logger = LoggerFactory.getLogger(TAG)
+
     init {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             throw SecurityException("Missing Manifest.permission.ACCESS_FINE_LOCATION")
         }
+
     }
 
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     val locationListener: LocationListener = object : LocationListener {
+        private var currentBestLocation: Location? = null
+        private val listenerTag = "GpsPositionProvider.LocationListener"
+        private val listenerLogger = LoggerFactory.getLogger(listenerTag)
+
         override fun onLocationChanged(location: Location?) {
-            val lastKnownLocation = location ?: return
-            callback(lastKnownLocation)
+            listenerLogger.debug("onLocationChanged($location) called")
+
+            location ?: return
+
+            if(isBetterLocation(location, currentBestLocation)) {
+                currentBestLocation = location
+                callback(location)
+                listenerLogger.debug("Updated current best location and invoked callback.")
+            }
+            listenerLogger.debug("onLocationChanged($location) finished.")
         }
 
         override fun onStatusChanged(provider: String, status: Int,  extras: Bundle) {
             /* This method was deprecated in API level 29. This callback will never be invoked */
         }
 
-        override fun onProviderEnabled(p0: String?) {
+        override fun onProviderEnabled(provider: String?) {
+            listenerLogger.debug("onProviderEnabled($provider)")
             start()
         }
 
-        override fun onProviderDisabled(p0: String?) {
+        override fun onProviderDisabled(provider: String?) {
+            listenerLogger.debug("onProviderDisabled($provider)")
             stop()
         }
 
@@ -56,6 +74,7 @@ class GpsPositionProvider(
          * @param currentBestLocation The current Location fix, to which you want to compare the new one
          */
         fun isBetterLocation(location: Location, currentBestLocation: Location?): Boolean {
+            listenerLogger.debug("isBetterLocation($location, $currentBestLocation) called")
             if (currentBestLocation == null) {
                 // A new location is always better than no location
                 return true
@@ -97,14 +116,20 @@ class GpsPositionProvider(
     private val locationProvider = LocationManager.GPS_PROVIDER
 
     override fun start() {
+        logger.debug("start() called.")
         locationManager.requestLocationUpdates(locationProvider, 0L, 0f, locationListener)
         val lastKnownLocation: Location = locationManager.getLastKnownLocation(locationProvider) ?: return
         callback(lastKnownLocation)
+        logger.debug("start() done.")
     }
 
     override fun stop() {
+        logger.debug("stop() called.")
         locationManager.removeUpdates(locationListener)
+        logger.debug("stop() done.")
     }
 
-
+    companion object {
+        const val TAG = "GpsPositionProvider"
+    }
 }
