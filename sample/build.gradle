@@ -42,5 +42,6 @@ dependencies {
     implementation project(path: ':arionav-extension')
     implementation 'com.google.android.material:material:1.0.0'
     implementation project(path: ':ionav')
+    implementation project(path: ':gps-positioning-implementation')
 
 }
