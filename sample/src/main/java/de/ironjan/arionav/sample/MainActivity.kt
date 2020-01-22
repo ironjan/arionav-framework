@@ -16,7 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
-import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
+import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
@@ -27,6 +27,8 @@ class MainActivity :
     ActivityCompat.OnRequestPermissionsResultCallback,
     PermissionHelper.PermissionHelperCallback {
 
+
+    private lateinit var gpsPositionProvider: GpsPositionProvider
 
     private var displayedRoute: PathWrapper? = null
     private var selectedLevel: Double = 0.0
@@ -99,17 +101,16 @@ class MainActivity :
 
         }
 
-        PositionListenerBaseImplementation(this, lifecycle) { location ->
+        gpsPositionProvider = GpsPositionProvider(this, lifecycle) { location ->
             mapView.setUserPosition(Coordinate(location.latitude, location.longitude, 0.0))
         }
-
-        mapView.setUserPosition(Coordinate(51.71858, 8.74905, 0.0))
+        gpsPositionProvider.start()
+//        mapView.setUserPosition(Coordinate(51.71858, 8.74905, 0.0))
     }
 
     private fun centerMapOnPosition() {
         Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
-        // FIXME Implement
-        mapView.setUserPosition(Coordinate(51.71858, 8.74905, 0.0))
+        mapView.centerOnUserPosition()
     }
 
     private fun onArButtonClick(it: View) {
