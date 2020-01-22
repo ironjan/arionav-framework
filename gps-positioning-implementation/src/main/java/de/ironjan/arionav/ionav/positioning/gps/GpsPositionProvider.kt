@@ -11,6 +11,7 @@ import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
 /**
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory
 class GpsPositionProvider(
     private val context: Context,
     private val lifecycle: Lifecycle,
-    private val callback: (Location) -> Unit
+    private val callback: (Coordinate) -> Unit
 ) : PositionListenerBaseImplementation(context, lifecycle, callback) {
 
     private val logger = LoggerFactory.getLogger(TAG)
@@ -47,7 +48,10 @@ class GpsPositionProvider(
 
             if(isBetterLocation(location, currentBestLocation)) {
                 currentBestLocation = location
-                callback(location)
+                // FIXME level...
+                val lLastKnownPosition = locationToCoordinate(location)
+                lastKnownPosition = lLastKnownPosition
+                callback(lLastKnownPosition)
                 listenerLogger.debug("Updated current best location and invoked callback.")
             }
             listenerLogger.debug("onLocationChanged($location) finished.")
@@ -119,7 +123,7 @@ class GpsPositionProvider(
         logger.debug("start() called.")
         locationManager.requestLocationUpdates(locationProvider, 0L, 0f, locationListener)
         val lastKnownLocation: Location = locationManager.getLastKnownLocation(locationProvider) ?: return
-        callback(lastKnownLocation)
+        callback(locationToCoordinate(lastKnownLocation))
         logger.debug("start() done.")
     }
 
@@ -128,6 +132,8 @@ class GpsPositionProvider(
         locationManager.removeUpdates(locationListener)
         logger.debug("stop() done.")
     }
+
+    private fun locationToCoordinate(location: Location) = Coordinate(location.latitude, location.longitude, 0.0)
 
     companion object {
         const val TAG = "GpsPositionProvider"

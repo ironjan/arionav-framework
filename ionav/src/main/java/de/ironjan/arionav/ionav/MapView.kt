@@ -186,6 +186,12 @@ class MapView: MapView {
         return true
     }
 
+    /**
+     * sets the start coordinate from an external source
+     */
+  fun setStartCoordinate(coordinate: Coordinate) {
+        startCoordinate = coordinate
+  }
     private fun setStartCoordinate(p: GeoPoint?) {
         if(p == null){
             startCoordinate = null

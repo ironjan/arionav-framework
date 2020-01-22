@@ -86,6 +86,7 @@ class MainActivity :
             centerMapOnPosition()
         }
 
+
         button_AR.setOnClickListener(this::onArButtonClick)
 
         val levelList = listOf(-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0)
@@ -105,8 +106,8 @@ class MainActivity :
         gpsPositionProvider.start()
     }
 
-    private fun onNewUserPosition(location: Location) {
-        mapView.setUserPosition(Coordinate(location.latitude, location.longitude, 0.0))
+    private fun onNewUserPosition(coordinate: Coordinate) {
+        mapView.setUserPosition(coordinate)
         if(buttonFollowLocation.isChecked) {
             centerMapOnPosition()
         }

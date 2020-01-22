@@ -5,13 +5,17 @@ import android.location.Location
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
 // Based on https://developer.android.com/topic/libraries/architecture/lifecycle#use-cases
 abstract class PositionListenerBaseImplementation(private val context: Context,
                                          private val lifecycle: Lifecycle,
-                                         private val callback: (Location) -> Unit)
+                                         private val callback: (Coordinate) -> Unit)
     : LifecycleObserver{
+
+    var lastKnownPosition: Coordinate? = null
+
     companion object {
         const val TAG = "LocationListener"
     }
