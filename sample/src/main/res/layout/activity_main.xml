@@ -66,6 +66,13 @@
         android:enabled="false"
         android:id="@+id/button_AR" />
 
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCenterOnPos"
+        android:id="@+id/buttonFollowLocation"
+        />
 
     <!-- todo add search boxes at top like in mocks-->
 </androidx.constraintlayout.widget.ConstraintLayout>

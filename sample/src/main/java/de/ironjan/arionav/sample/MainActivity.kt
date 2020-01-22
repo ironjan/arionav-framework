@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
+import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -98,14 +99,17 @@ class MainActivity :
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 setSelectedLevel(levelList[p2])
             }
-
         }
 
-        gpsPositionProvider = GpsPositionProvider(this, lifecycle) { location ->
-            mapView.setUserPosition(Coordinate(location.latitude, location.longitude, 0.0))
-        }
+        gpsPositionProvider = GpsPositionProvider(this, lifecycle) { l -> onNewUserPosition(l)}
         gpsPositionProvider.start()
-//        mapView.setUserPosition(Coordinate(51.71858, 8.74905, 0.0))
+    }
+
+    private fun onNewUserPosition(location: Location) {
+        mapView.setUserPosition(Coordinate(location.latitude, location.longitude, 0.0))
+        if(buttonFollowLocation.isChecked) {
+            centerMapOnPosition()
+        }
     }
 
     private fun centerMapOnPosition() {
