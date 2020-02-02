@@ -31,6 +31,8 @@ class MapView : MapView {
     constructor(context: Context) : super(context, null) {}
 
     private var isInitialized: Boolean = false
+    private val  notYetInitialized
+            get() = !isInitialized
 
     private val mapViewViewModel: MapViewViewModel = MapViewViewModel()
 
@@ -64,6 +66,7 @@ class MapView : MapView {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
                 hopper = graphHopper
+                mapViewViewModel.hopper = hopper
                 isInitialized = true
             }
 
@@ -164,7 +167,8 @@ class MapView : MapView {
 
     private fun onLongPress(p: GeoPoint): Boolean {
         logger.debug("longpress at $p")
-        if (isInitialized) {
+
+        if (notYetInitialized) {
             val msg = "Graph not loaded yet. Please wait."
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             logger.info(msg)
@@ -299,25 +303,7 @@ class MapView : MapView {
         return pathLayer
     }
 
-    private fun computeRoute(): PathWrapper? {
-        val lStartCoordinate = mapViewViewModel.startCoordinate
-        val lEndCoordinate = mapViewViewModel.endCoordinate
-        if (lStartCoordinate == null || lEndCoordinate == null) {
-            logger.info("computeRoute was called with null for either start coordinate or end coordinate (start: $lStartCoordinate, end: $lEndCoordinate).")
-            return null
-        }
-
-        return try {
-            val route = Routing(hopper).route(lStartCoordinate, lEndCoordinate)
-            logger.debug("Computed route: $route")
-            route
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-
-            null
-        }
-
-    }
+    private fun computeRoute(): PathWrapper? = mapViewViewModel.computeRoute()
 
     fun setUserPosition(coordinate: Coordinate) {
         userPosition = coordinate
