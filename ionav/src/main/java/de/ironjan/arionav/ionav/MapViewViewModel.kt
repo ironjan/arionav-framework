@@ -12,7 +12,21 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel() {
     var endCoordinate: Coordinate? = null
     var currentRoute: PathWrapper? = null
 
+    val hasStartCoordinate: Boolean
+      get() = startCoordinate != null
+
+    val hasEndCoordinate: Boolean
+      get() = endCoordinate != null
+
+    val hasBothCoordinates: Boolean
+    get() = hasStartCoordinate && hasEndCoordinate
+
+    fun clearStartCoordinate() { startCoordinate = null }
+    fun clearEndCoordinate() { endCoordinate = null }
+
     var currentUserPosition: Coordinate? = null
+
+
 
 
     val canComputeRoute: Boolean

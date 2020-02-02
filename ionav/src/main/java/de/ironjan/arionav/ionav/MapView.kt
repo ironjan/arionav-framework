@@ -171,7 +171,7 @@ class MapView : MapView {
             return false
         }
 
-        if (mapViewViewModel.startCoordinate != null && mapViewViewModel.endCoordinate != null) {
+        if (mapViewViewModel.hasBothCoordinates) {
             // clear start and end points
             clearRoute()
             setStartCoordinate(null)
