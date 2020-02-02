@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.graphhopper.extensions_core.Coordinate
-import de.ironjan.graphhopper.levelextension.Routing
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics
 import org.oscim.core.GeoPoint
@@ -44,8 +43,6 @@ class MapView : MapView {
     private var routeLayer: org.oscim.layers.vector.PathLayer? = null
     var selectedLevel: Double = 0.0
 
-    private var hopper: GraphHopper? = null
-
     private var startMarkerLayer: ItemizedLayer<MarkerItem>? = null
     private var endMarkerLayer: ItemizedLayer<MarkerItem>? = null
     private var userPosLayer: ItemizedLayer<MarkerItem>? = null
@@ -65,8 +62,7 @@ class MapView : MapView {
         val loadGraphTask = LoadGraphTask(ghzExtractor.mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
-                hopper = graphHopper
-                mapViewViewModel.hopper = hopper
+                mapViewViewModel.hopper = graphHopper
                 isInitialized = true
             }
 
