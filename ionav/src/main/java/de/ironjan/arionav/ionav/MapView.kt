@@ -36,9 +36,6 @@ class MapView : MapView {
     private lateinit var mapEventsCallback: MapEventsCallback
     private lateinit var ghzExtractor: GhzExtractor
 
-    private val canComputeRoute: Boolean
-        get() = mapViewViewModel.startCoordinate != null && mapViewViewModel.endCoordinate != null
-
     private var routeLayer: org.oscim.layers.vector.PathLayer? = null
     var selectedLevel: Double = 0.0
 
@@ -229,7 +226,7 @@ class MapView : MapView {
         }
         map().updateMap(true)
 
-        if (canComputeRoute) {
+        if (mapViewViewModel.canComputeRoute) {
             computeAndShowRoute()
         }
     }
@@ -245,7 +242,7 @@ class MapView : MapView {
         }
         map().updateMap(true)
 
-        if(canComputeRoute) {
+        if(mapViewViewModel.canComputeRoute) {
             computeAndShowRoute()
         }
     }

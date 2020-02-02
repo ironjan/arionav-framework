@@ -7,7 +7,9 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 class MapViewViewModel() : ViewModel() {
     var startCoordinate: Coordinate? = null
     var endCoordinate: Coordinate? = null
-
     var currentRoute: PathWrapper? = null
+
     var currentUserPosition: Coordinate? = null
+
+    val canComputeRoute: Boolean = startCoordinate != null && endCoordinate != null
 }

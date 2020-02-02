@@ -44,9 +44,11 @@ class MainActivity :
     private lateinit var ghzExtractor: GhzExtractor
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         requestPermissions()
 
