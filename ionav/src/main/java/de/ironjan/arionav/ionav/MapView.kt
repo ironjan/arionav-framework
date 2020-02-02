@@ -2,6 +2,7 @@ package de.ironjan.arionav.ionav
 
 import android.content.Context
 import android.util.AttributeSet
+import android.widget.Toast
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -28,6 +29,8 @@ class MapView : MapView {
     constructor(context: Context, attrsSet: AttributeSet) : super(context, attrsSet) {}
 
     constructor(context: Context) : super(context, null) {}
+
+    private var isInitialized: Boolean = false
 
     private val mapViewViewModel: MapViewViewModel = MapViewViewModel()
 
@@ -61,6 +64,7 @@ class MapView : MapView {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
                 hopper = graphHopper
+                isInitialized = true
             }
 
             override fun onError(exception: Exception) {
@@ -160,9 +164,10 @@ class MapView : MapView {
 
     private fun onLongPress(p: GeoPoint): Boolean {
         logger.debug("longpress at $p")
-        if (hopper == null) {
-            // FIXME show message
-            logger.info("Graph not loaded yet. Ignoring long tap.")
+        if (isInitialized) {
+            val msg = "Graph not loaded yet. Please wait."
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            logger.info(msg)
             return false
         }
 
@@ -302,14 +307,14 @@ class MapView : MapView {
             return null
         }
 
-        try {
+        return try {
             val route = Routing(hopper).route(lStartCoordinate, lEndCoordinate)
             logger.debug("Computed route: $route")
-            return route
+            route
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
 
-            return null
+            null
         }
 
     }
