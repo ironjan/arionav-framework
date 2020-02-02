@@ -29,14 +29,15 @@ class MapView : MapView {
 
     constructor(context: Context) : super(context, null) {}
 
+    private val mapViewViewModel: MapViewViewModel = MapViewViewModel()
+
 
     private var userPosition: Coordinate? = null
     private lateinit var mapEventsCallback: MapEventsCallback
     private lateinit var ghzExtractor: GhzExtractor
-    private var endCoordinate: Coordinate? = null
-    private var startCoordinate: Coordinate? = null
+
     private val canComputeRoute: Boolean
-        get() = startCoordinate != null && endCoordinate != null
+        get() = mapViewViewModel.startCoordinate != null && mapViewViewModel.endCoordinate != null
 
     private var routeLayer: org.oscim.layers.vector.PathLayer? = null
     var selectedLevel: Double = 0.0
@@ -48,6 +49,7 @@ class MapView : MapView {
     private var userPosLayer: ItemizedLayer<MarkerItem>? = null
 
     private val logger = LoggerFactory.getLogger(TAG)
+
     fun initialize(ghzExtractor: GhzExtractor, mapEventsCallback: MapEventsCallback) {
         this.ghzExtractor = ghzExtractor
         this.mapEventsCallback = mapEventsCallback
@@ -167,19 +169,19 @@ class MapView : MapView {
             return false
         }
 
-        if (startCoordinate != null && endCoordinate != null) {
+        if (mapViewViewModel.startCoordinate != null && mapViewViewModel.endCoordinate != null) {
             // clear start and end points
             clearRoute()
             setStartCoordinate(null)
             setEndCoordnate(null)
         }
 
-        if (startCoordinate == null) {
+        if (mapViewViewModel.startCoordinate == null) {
             setStartCoordinate(p)
             return true
         }
 
-        if (endCoordinate == null) {
+        if (mapViewViewModel.endCoordinate == null) {
             setEndCoordnate(p)
             computeAndShowRoute()
             return true
@@ -192,25 +194,25 @@ class MapView : MapView {
     private fun setStartCoordinate(p: GeoPoint?) {
         startMarkerLayer?.removeAllItems()
         if (p == null) {
-            startCoordinate = null
+            mapViewViewModel.startCoordinate = null
             mapEventsCallback.startPointCleared()
             return
         }
         setStartCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
-        logger.debug("Set start coordinate to $startCoordinate.")
+        logger.debug("Set start coordinate to $mapViewViewModel.startCoordinate.")
     }
 
 
     private fun setEndCoordnate(p: GeoPoint?) {
         endMarkerLayer?.removeAllItems()
         if (p == null) {
-            endCoordinate = null
+            mapViewViewModel.endCoordinate = null
             mapEventsCallback.endPointCleared()
             return
         }
 
         setEndCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
-        logger.debug("Set end coordinate to $endCoordinate.")
+        logger.debug("Set end coordinate to ${mapViewViewModel.endCoordinate}.")
     }
 
 
@@ -218,7 +220,7 @@ class MapView : MapView {
      * sets the start coordinate and displays it on map. triggers route update if possible.
      */
     fun setStartCoordinate(coordinate: Coordinate) {
-        startCoordinate = coordinate
+        mapViewViewModel.startCoordinate = coordinate
         mapEventsCallback.startPointChanged(coordinate)
 
         startMarkerLayer?.apply {
@@ -234,7 +236,7 @@ class MapView : MapView {
 
     /** sets the end coordinate and displays it on map. triggers route update if possible. */
     fun setEndCoordinate(coordinate: Coordinate) {
-        endCoordinate = coordinate
+        mapViewViewModel.endCoordinate = coordinate
         mapEventsCallback.endPointChanged(coordinate)
 
         endMarkerLayer?.apply {
@@ -296,8 +298,8 @@ class MapView : MapView {
     }
 
     private fun computeRoute(): PathWrapper? {
-        val lStartCoordinate = startCoordinate
-        val lEndCoordinate = endCoordinate
+        val lStartCoordinate = mapViewViewModel.startCoordinate
+        val lEndCoordinate = mapViewViewModel.endCoordinate
         if (lStartCoordinate == null || lEndCoordinate == null) {
             logger.info("computeRoute was called with null for either start coordinate or end coordinate (start: $lStartCoordinate, end: $lEndCoordinate).")
             return null
