@@ -113,7 +113,7 @@ class MapView : MapView {
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
-        var readBoundsFromOsm: OsmBoundsExtractor.Bounds? = OsmBoundsExtractor.extractBoundsFromOsm(osmFilePath)
+        val readBoundsFromOsm: OsmBoundsExtractor.Bounds? = OsmBoundsExtractor.extractBoundsFromOsm(osmFilePath)
 
         if (readBoundsFromOsm != null) {
 
