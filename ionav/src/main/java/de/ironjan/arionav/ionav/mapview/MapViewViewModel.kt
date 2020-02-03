@@ -2,10 +2,13 @@ package de.ironjan.arionav.ionav.mapview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomViewModel
+import de.ironjan.arionav.ionav.positioning.IPositionObserver
+import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
@@ -85,5 +88,15 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
             null
         }
 
+    }
+
+    private val iPositionObserver = object : IPositionObserver {
+        override fun onPositionChange(c: Coordinate) {
+            // FIXME update user position
+        }
+    }
+
+    fun setUserPositionProvider(positionProvider: PositionListenerBaseImplementation) {
+        positionProvider.registerObserver(iPositionObserver)
     }
 }

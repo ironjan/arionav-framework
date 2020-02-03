@@ -23,9 +23,8 @@ import org.slf4j.LoggerFactory
 @SuppressLint("MissingPermission")
 class GpsPositionProvider(
     private val context: Context,
-    private val lifecycle: Lifecycle,
-    private val callback: (Coordinate) -> Unit
-) : PositionListenerBaseImplementation(context, lifecycle, callback) {
+    private val lifecycle: Lifecycle)
+    : PositionListenerBaseImplementation(context, lifecycle) {
     private val observers: MutableList<IPositionObserver> = mutableListOf()
 
     override fun registerObserver(observer: IPositionObserver) {
@@ -71,7 +70,7 @@ class GpsPositionProvider(
                 // FIXME level...
                 val lLastKnownPosition = locationToCoordinate(location)
                 lastKnownPosition = lLastKnownPosition
-                callback(lLastKnownPosition)
+                notifyObservers()
                 listenerLogger.debug("Updated current best location and invoked callback.")
             }
             listenerLogger.debug("onLocationChanged($location) finished.")
@@ -143,7 +142,7 @@ class GpsPositionProvider(
         logger.debug("start() called.")
         locationManager.requestLocationUpdates(locationProvider, 0L, 0f, locationListener)
         val lastKnownLocation: Location = locationManager.getLastKnownLocation(locationProvider) ?: return
-        callback(locationToCoordinate(lastKnownLocation))
+        notifyObservers()
         logger.debug("start() done.")
     }
 

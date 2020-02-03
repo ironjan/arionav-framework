@@ -4,7 +4,6 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
-import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -18,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
+import de.ironjan.arionav.ionav.positioning.IPositionObserver
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,7 +28,15 @@ import java.lang.IllegalArgumentException
 class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
-    PermissionHelper.PermissionHelperCallback {
+    PermissionHelper.PermissionHelperCallback, IPositionObserver {
+
+    override fun onPositionChange(c: Coordinate) {
+        // todo this should be in the vm/view
+        mapView.setUserPosition(c)
+        if (buttonFollowLocation.isChecked) {
+            centerMapOnPosition()
+        }
+    }
 
 
     private lateinit var gpsPositionProvider: GpsPositionProvider
@@ -44,7 +52,6 @@ class MainActivity :
     private val mapName = ArionavSampleApplication.mapName
 
     private lateinit var ghzExtractor: GhzExtractor
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,20 +118,15 @@ class MainActivity :
             }
         }
 
-        gpsPositionProvider = GpsPositionProvider(this, lifecycle) { l -> onNewUserPosition(l)}
+        gpsPositionProvider = GpsPositionProvider(this, lifecycle)
+        gpsPositionProvider.registerObserver(this)
         gpsPositionProvider.start()
+        mapView.viewModel.setUserPositionProvider(gpsPositionProvider)
     }
 
     private fun attachLifeCycleOwnerToMapView() {
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
         mapView.onLifecycleOwnerAttached(lifecycleOwner)
-    }
-
-    private fun onNewUserPosition(coordinate: Coordinate) {
-        mapView.setUserPosition(coordinate)
-        if(buttonFollowLocation.isChecked) {
-            centerMapOnPosition()
-        }
     }
 
     private fun centerMapOnPosition() {
