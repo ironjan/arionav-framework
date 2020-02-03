@@ -3,8 +3,13 @@ package de.ironjan.arionav.ionav
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
+import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomView
+import de.ironjan.arionav.ionav.mapview.MapViewState
+import de.ironjan.arionav.ionav.mapview.MapViewViewModel
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics
@@ -24,16 +29,51 @@ import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
-class MapView : MapView {
+class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
+    override val viewModel = MapViewViewModel()
+
+    override fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner) {
+        observeLiveData(lifecycleOwner)
+    }
+
+    private val endCoordinateMarker = R.drawable.marker_icon_red
+
+    private val startCoordinateMarker = R.drawable.marker_icon_green
+
+    private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
+        val startCoordinateObserver = Observer<Coordinate?> {
+            startMarkerLayer?.removeAllItems()
+            redrawMap()
+
+            if (it == null) return@Observer
+
+            startMarkerLayer?.addItem(createMarkerItem(it, startCoordinateMarker))
+            redrawMap()
+
+            logger.info("Updated start coordinate in view to $it.")
+        }
+        viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, startCoordinateObserver)
+
+        viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
+            endMarkerLayer?.removeAllItems()
+            redrawMap()
+
+            if(it == null) return@Observer
+
+            endMarkerLayer?.addItem(createMarkerItem(it, endCoordinateMarker))
+            redrawMap()
+
+            logger.debug("Updated end coordinate in view to $it.")
+        })
+    }
+
     constructor(context: Context, attrsSet: AttributeSet) : super(context, attrsSet) {}
 
     constructor(context: Context) : super(context, null) {}
 
     private var isInitialized: Boolean = false
-    private val  notYetInitialized
-            get() = !isInitialized
-
-    private val mapViewViewModel: MapViewViewModel = MapViewViewModel()
+    private val notYetInitialized
+        get() = !isInitialized
 
 
     private var userPosition: Coordinate? = null
@@ -62,7 +102,7 @@ class MapView : MapView {
         val loadGraphTask = LoadGraphTask(ghzExtractor.mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
-                mapViewViewModel.hopper = graphHopper
+                viewModel.hopper = graphHopper
                 isInitialized = true
             }
 
@@ -162,7 +202,7 @@ class MapView : MapView {
 
 
     private fun onLongPress(p: GeoPoint): Boolean {
-        logger.debug("longpress at $p")
+        logger.info("longpress at $p")
 
         if (notYetInitialized) {
             val msg = "Graph not loaded yet. Please wait."
@@ -171,20 +211,21 @@ class MapView : MapView {
             return false
         }
 
-        if (mapViewViewModel.hasBothCoordinates) {
+        if (viewModel.hasBothCoordinates) {
             // clear start and end points
             clearRoute()
-            setStartCoordinate(null)
-            setEndCoordnate(null)
+            viewModel.clearStartCoordinate()
+            viewModel.clearEndCoordinate()
         }
 
-        if (mapViewViewModel.startCoordinate == null) {
-            setStartCoordinate(p)
+        if (!viewModel.hasStartCoordinate) {
+            viewModel.setStartCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
             return true
         }
 
-        if (mapViewViewModel.endCoordinate == null) {
-            setEndCoordnate(p)
+        if (!viewModel.hasEndCoordinate) {
+            viewModel.setEndCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
+
             computeAndShowRoute()
             return true
         }
@@ -193,64 +234,7 @@ class MapView : MapView {
     }
 
 
-    private fun setStartCoordinate(p: GeoPoint?) {
-        startMarkerLayer?.removeAllItems()
-        if (p == null) {
-            mapViewViewModel.startCoordinate = null
-            mapEventsCallback.startPointCleared()
-            return
-        }
-        setStartCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
-        logger.debug("Set start coordinate to $mapViewViewModel.startCoordinate.")
-    }
 
-
-    private fun setEndCoordnate(p: GeoPoint?) {
-        endMarkerLayer?.removeAllItems()
-        if (p == null) {
-            mapViewViewModel.endCoordinate = null
-            mapEventsCallback.endPointCleared()
-            return
-        }
-
-        setEndCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
-        logger.debug("Set end coordinate to ${mapViewViewModel.endCoordinate}.")
-    }
-
-
-    /**
-     * sets the start coordinate and displays it on map. triggers route update if possible.
-     */
-    fun setStartCoordinate(coordinate: Coordinate) {
-        mapViewViewModel.startCoordinate = coordinate
-        mapEventsCallback.startPointChanged(coordinate)
-
-        startMarkerLayer?.apply {
-            removeAllItems()
-            addItem(createMarkerItem(coordinate, R.drawable.marker_icon_green))
-        }
-        map().updateMap(true)
-
-        if (mapViewViewModel.canComputeRoute) {
-            computeAndShowRoute()
-        }
-    }
-
-    /** sets the end coordinate and displays it on map. triggers route update if possible. */
-    fun setEndCoordinate(coordinate: Coordinate) {
-        mapViewViewModel.endCoordinate = coordinate
-        mapEventsCallback.endPointChanged(coordinate)
-
-        endMarkerLayer?.apply {
-            removeAllItems()
-            addItem(createMarkerItem(coordinate, R.drawable.marker_icon_red))
-        }
-        map().updateMap(true)
-
-        if(mapViewViewModel.canComputeRoute) {
-            computeAndShowRoute()
-        }
-    }
     private fun createMarkerItem(coordinate: Coordinate, resource: Int) = createMarkerItem(GeoPoint(coordinate.lat, coordinate.lon), resource)
 
     private fun createMarkerItem(p: GeoPoint?, resource: Int): MarkerItem {
@@ -273,13 +257,13 @@ class MapView : MapView {
         clearRoute()
         routeLayer = createRouteLayer(route)
         map().layers().add(routeLayer)
-        map().updateMap(true)
+        redrawMap()
         mapEventsCallback.onRouteShown(route)
     }
 
     private fun clearRoute() {
         map().layers().remove(routeLayer)
-        map().updateMap(true)
+        redrawMap()
         mapEventsCallback.onRouteCleared()
     }
 
@@ -299,7 +283,7 @@ class MapView : MapView {
         return pathLayer
     }
 
-    private fun computeRoute(): PathWrapper? = mapViewViewModel.computeRoute()
+    private fun computeRoute(): PathWrapper? = viewModel.computeRoute()
 
     fun setUserPosition(coordinate: Coordinate) {
         userPosition = coordinate
@@ -311,6 +295,10 @@ class MapView : MapView {
         val lUserPosition = userPosition ?: return
         userPosLayer?.removeAllItems()
         userPosLayer?.addItem(createMarkerItem(GeoPoint(lUserPosition.lat, lUserPosition.lon), R.drawable.marker_icon_blue))
+        redrawMap()
+    }
+
+    private fun redrawMap() {
         map().updateMap(true)
     }
 

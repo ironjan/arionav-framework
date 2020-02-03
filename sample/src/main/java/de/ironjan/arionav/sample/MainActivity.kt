@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
@@ -21,6 +22,7 @@ import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 
 // todo initialize spinner with level data
 class MainActivity :
@@ -49,6 +51,7 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        attachLifeCycleOwnerToMapView()
 
         requestPermissions()
 
@@ -90,7 +93,7 @@ class MainActivity :
 
         buttonLocationAsStart.setOnClickListener {
             val coordinate = gpsPositionProvider.lastKnownPosition ?: return@setOnClickListener
-            mapView.setStartCoordinate(coordinate)
+            mapView.viewModel.setStartCoordinate(coordinate)
         }
 
         button_AR.setOnClickListener(this::onArButtonClick)
@@ -110,6 +113,11 @@ class MainActivity :
 
         gpsPositionProvider = GpsPositionProvider(this, lifecycle) { l -> onNewUserPosition(l)}
         gpsPositionProvider.start()
+    }
+
+    private fun attachLifeCycleOwnerToMapView() {
+        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+        mapView.onLifecycleOwnerAttached(lifecycleOwner)
     }
 
     private fun onNewUserPosition(coordinate: Coordinate) {
