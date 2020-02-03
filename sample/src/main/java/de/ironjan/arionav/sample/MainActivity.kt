@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
@@ -58,7 +59,9 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        attachLifeCycleOwnerToMapView()
+        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+        attachLifeCycleOwnerToMapView(lifecycleOwner)
+        registerLiveDataObservers(lifecycleOwner)
 
         requestPermissions()
 
@@ -121,11 +124,21 @@ class MainActivity :
         gpsPositionProvider = GpsPositionProvider(this, lifecycle)
         gpsPositionProvider.registerObserver(this)
         gpsPositionProvider.start()
+
+
         mapView.viewModel.setUserPositionProvider(gpsPositionProvider)
     }
 
-    private fun attachLifeCycleOwnerToMapView() {
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+    private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
+        mapView.viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, Observer {
+            edit_start_coordinates.setText(it?.asString() ?: "")
+        })
+        mapView.viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
+            edit_end_coordinates.setText(it?.asString() ?: "")
+        })
+    }
+
+    private fun attachLifeCycleOwnerToMapView(lifecycleOwner: LifecycleOwner) {
         mapView.onLifecycleOwnerAttached(lifecycleOwner)
     }
 
