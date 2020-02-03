@@ -38,6 +38,10 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     }
     fun clearEndCoordinate() = setEndCoordinate(null)
 
+    private val userPosition: MutableLiveData<Coordinate?> = MutableLiveData()
+    fun getUserPositionLiveData(): LiveData<Coordinate?> = userPosition
+    
+    
 
     var currentRoute: PathWrapper? = null
 
@@ -51,7 +55,6 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     get() = hasStartCoordinate && hasEndCoordinate
 
 
-    var currentUserPosition: Coordinate? = null
 
 
 
@@ -91,8 +94,8 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     }
 
     private val iPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: Coordinate) {
-            // FIXME update user position
+        override fun onPositionChange(c: Coordinate?) {
+            userPosition.value = c
         }
     }
 

@@ -33,7 +33,6 @@ class MainActivity :
 
     override fun onPositionChange(c: Coordinate) {
         // todo this should be in the vm/view
-        mapView.setUserPosition(c)
         if (buttonFollowLocation.isChecked) {
             centerMapOnPosition()
         }

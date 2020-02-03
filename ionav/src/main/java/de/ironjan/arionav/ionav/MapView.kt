@@ -42,28 +42,30 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
         viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, Observer {
-            startMarkerLayer?.removeAllItems()
-            redrawMap()
 
-            if (it == null) return@Observer
-
-            startMarkerLayer?.addItem(createMarkerItem(it, startCoordinateMarker))
-            redrawMap()
-
+            updateMarkerLayer(startMarkerLayer, it, startCoordinateMarker)
             logger.info("Updated start coordinate in view to $it.")
         })
 
         viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
-            endMarkerLayer?.removeAllItems()
-            redrawMap()
-
-            if(it == null) return@Observer
-
-            endMarkerLayer?.addItem(createMarkerItem(it, endCoordinateMarker))
-            redrawMap()
+            updateMarkerLayer(endMarkerLayer, it, endCoordinateMarker)
 
             logger.debug("Updated end coordinate in view to $it.")
         })
+
+        viewModel.getUserPositionLiveData().observe(lifecycleOwner, Observer {
+            updateMarkerLayer(userPosLayer, it, currentUserPositionMarker)
+        })
+    }
+
+    private fun updateMarkerLayer(layer: ItemizedLayer<MarkerItem>?, it: Coordinate?, marker: Int) {
+        layer?.removeAllItems()
+        redrawMap()
+
+        if (it == null) return
+
+        layer?.addItem(createMarkerItem(it, marker))
+        redrawMap()
     }
 
     constructor(context: Context, attrsSet: AttributeSet) : super(context, attrsSet) {}
@@ -75,7 +77,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         get() = !isInitialized
 
 
-    private var userPosition: Coordinate? = null
     private lateinit var mapEventsCallback: MapEventsCallback
     private lateinit var ghzExtractor: GhzExtractor
 
@@ -233,7 +234,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     }
 
 
-
     private fun createMarkerItem(coordinate: Coordinate, resource: Int) = createMarkerItem(GeoPoint(coordinate.lat, coordinate.lon), resource)
 
     private fun createMarkerItem(p: GeoPoint?, resource: Int): MarkerItem {
@@ -284,25 +284,12 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private fun computeRoute(): PathWrapper? = viewModel.computeRoute()
 
-    fun setUserPosition(coordinate: Coordinate) {
-        userPosition = coordinate
-
-        updateUserPositionOnMap()
-    }
-
-    private fun updateUserPositionOnMap() {
-        val lUserPosition = userPosition ?: return
-        userPosLayer?.removeAllItems()
-        userPosLayer?.addItem(createMarkerItem(GeoPoint(lUserPosition.lat, lUserPosition.lon), currentUserPositionMarker))
-        redrawMap()
-    }
-
     private fun redrawMap() {
         map().updateMap(true)
     }
 
     fun centerOnUserPosition() {
-        val lUserPosition = userPosition ?: return
+        val lUserPosition = viewModel.getUserPositionLiveData().value ?: return
 
         val scale = map().mapPosition.scale
         map().setMapPosition(lUserPosition.lat, lUserPosition.lon, scale)
