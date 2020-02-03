@@ -2,7 +2,7 @@
 
 Implementation of an Augmented Reality Indoor/Outdoor Navigat Framework for Android. Part of my master thesis. 
 
-The framework is currently developed on my university's gitlab instance and automatically synchronized to URL.
+The framework is currently developed on my university's gitlab instance and automatically synchronized to gitlab.com/lippertsjan/arionav-framework.
 
 # Adding the libraries
 
