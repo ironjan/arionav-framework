@@ -10,6 +10,8 @@ import android.location.LocationManager
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
+import de.ironjan.arionav.ionav.positioning.IPositionObserver
 import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
@@ -24,6 +26,24 @@ class GpsPositionProvider(
     private val lifecycle: Lifecycle,
     private val callback: (Coordinate) -> Unit
 ) : PositionListenerBaseImplementation(context, lifecycle, callback) {
+    private val observers: MutableList<IPositionObserver> = mutableListOf()
+
+    override fun registerObserver(observer: IPositionObserver) {
+        if(observers.contains(observer)) return
+
+        observers.add(observer)
+    }
+
+    override fun removeObserver(observer: IPositionObserver) {
+        observers.remove(observer)
+    }
+
+    override fun notifyObservers() {
+        observers.forEach { o ->
+            val position = lastKnownPosition ?: return
+            o.onPositionChange(position)
+        }
+    }
 
     private val logger = LoggerFactory.getLogger(TAG)
 
