@@ -37,11 +37,11 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     }
 
     private val endCoordinateMarker = R.drawable.marker_icon_red
-
     private val startCoordinateMarker = R.drawable.marker_icon_green
+    private val currentUserPositionMarker = R.drawable.marker_icon_blue
 
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
-        val startCoordinateObserver = Observer<Coordinate?> {
+        viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, Observer {
             startMarkerLayer?.removeAllItems()
             redrawMap()
 
@@ -51,8 +51,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             redrawMap()
 
             logger.info("Updated start coordinate in view to $it.")
-        }
-        viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, startCoordinateObserver)
+        })
 
         viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
             endMarkerLayer?.removeAllItems()
@@ -294,7 +293,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private fun updateUserPositionOnMap() {
         val lUserPosition = userPosition ?: return
         userPosLayer?.removeAllItems()
-        userPosLayer?.addItem(createMarkerItem(GeoPoint(lUserPosition.lat, lUserPosition.lon), R.drawable.marker_icon_blue))
+        userPosLayer?.addItem(createMarkerItem(GeoPoint(lUserPosition.lat, lUserPosition.lon), currentUserPositionMarker))
         redrawMap()
     }
 
