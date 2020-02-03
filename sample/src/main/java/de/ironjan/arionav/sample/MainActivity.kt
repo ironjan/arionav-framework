@@ -31,7 +31,7 @@ class MainActivity :
     ActivityCompat.OnRequestPermissionsResultCallback,
     PermissionHelper.PermissionHelperCallback, IPositionObserver {
 
-    override fun onPositionChange(c: Coordinate) {
+    override fun onPositionChange(c: Coordinate?) {
         // todo this should be in the vm/view
         if (buttonFollowLocation.isChecked) {
             centerMapOnPosition()

@@ -56,6 +56,10 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         viewModel.getUserPositionLiveData().observe(lifecycleOwner, Observer {
             updateMarkerLayer(userPosLayer, it, currentUserPositionMarker)
         })
+
+        viewModel.getCurrentRouteLiveData().observe(lifecycleOwner, Observer {
+            showRoute(it)
+        })
     }
 
     private fun updateMarkerLayer(layer: ItemizedLayer<MarkerItem>?, it: Coordinate?, marker: Int) {
@@ -225,8 +229,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
         if (!viewModel.hasEndCoordinate) {
             viewModel.setEndCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
-
-            computeAndShowRoute()
             return true
         }
 
@@ -245,11 +247,11 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         return markerItem
     }
 
-    private fun computeAndShowRoute() = showRoute(computeRoute())
 
     private fun showRoute(route: PathWrapper?) {
         if (route == null) {
             logger.info("Show route was called with a null route.")
+            clearRoute()
             return
         }
 
@@ -281,8 +283,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         pathLayer.setPoints(geoPoints)
         return pathLayer
     }
-
-    private fun computeRoute(): PathWrapper? = viewModel.computeRoute()
 
     private fun redrawMap() {
         map().updateMap(true)

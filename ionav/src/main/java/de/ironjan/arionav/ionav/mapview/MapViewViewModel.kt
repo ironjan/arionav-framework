@@ -12,6 +12,7 @@ import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
+import java.nio.file.Path
 
 class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCustomViewModel<MapViewState> {
     override var state: MapViewState = MapViewState()
@@ -22,7 +23,6 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     fun setStartCoordinate(value: Coordinate?) {
         state.startCoordinate = value
         startCoordinate.value = value
-        startCoordinate.postValue(value)
         logger.info("Updated start coordinate to $value in view model.")
     }
 
@@ -35,6 +35,8 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     fun setEndCoordinate(value: Coordinate?) {
         state.endCoordinate = value
         endCoordinate.value = value
+        logger.info("Updated end coordinate to $value in view model.")
+        computeRoute()
     }
     fun clearEndCoordinate() = setEndCoordinate(null)
 
@@ -43,7 +45,8 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     
     
 
-    var currentRoute: PathWrapper? = null
+    private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
+    fun getCurrentRouteLiveData(): LiveData<PathWrapper?> = currentRoute
 
     val hasStartCoordinate: Boolean
       get() = state.startCoordinate != null
@@ -84,6 +87,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         return try {
             val route = Routing(hopper).route(lStartCoordinate, lEndCoordinate)
             logger.debug("Computed route: $route")
+            currentRoute.value = route
             route
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
