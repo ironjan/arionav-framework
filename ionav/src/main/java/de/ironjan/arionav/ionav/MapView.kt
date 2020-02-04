@@ -65,12 +65,19 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         })
 
         viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
-            if(viewModel.getShowRemainingRouteLiveData().value == true){
+            if(viewModel.getShowRemainingRouteCurrentValue()){
                 showRemainingRoute(it)
             }
         })
         viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
             showRemainingRoute(null)
+        })
+
+        viewModel.getNextInstructionLiveData().observe(lifecycleOwner, Observer {
+            if(it == null) return@Observer
+            if(viewModel.getShowRemainingRouteCurrentValue()){
+                Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
+            }
         })
     }
 

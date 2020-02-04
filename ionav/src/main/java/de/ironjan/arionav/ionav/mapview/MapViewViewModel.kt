@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
+import com.graphhopper.util.Instruction
 import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
 import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
@@ -14,6 +15,9 @@ import org.slf4j.LoggerFactory
 import java.lang.Exception
 
 class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCustomViewModel<MapViewState> {
+    private val nextInstruction: MutableLiveData<Instruction?> = MutableLiveData()
+    fun getNextInstructionLiveData(): LiveData<Instruction?> = nextInstruction
+
     override var state: MapViewState = MapViewState()
 
     private val startCoordinate: MutableLiveData<Coordinate?> = MutableLiveData()
@@ -85,6 +89,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     }
 
     fun getShowRemainingRouteLiveData(): LiveData<Boolean> = showRemainingRoute
+    fun getShowRemainingRouteCurrentValue(): Boolean = showRemainingRoute.value ?: false
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
@@ -123,7 +128,9 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
             return
         }
 
-        remainingRoute.value = computeRouteFromTo(lUserPosition, lEndCoordinate)
+        val computedRoute = computeRouteFromTo(lUserPosition, lEndCoordinate)
+        remainingRoute.value = computedRoute
+        nextInstruction.value =computedRoute?.instructions?.first()
     }
 
     private fun computeRouteFromTo(lStartCoordinate: Coordinate, lEndCoordinate: Coordinate): PathWrapper? {
