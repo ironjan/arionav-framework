@@ -26,6 +26,11 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         logger.info("Updated start coordinate to $value in view model.")
     }
 
+    fun clearStartAndEndCoordinates() {
+        clearStartCoordinate();
+        clearEndCoordinate();
+    }
+
     fun clearStartCoordinate() = setStartCoordinate(null)
 
     private val endCoordinate: MutableLiveData<Coordinate?> = MutableLiveData()
@@ -38,41 +43,36 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         logger.info("Updated end coordinate to $value in view model.")
         computeRoute()
     }
+
     fun clearEndCoordinate() = setEndCoordinate(null)
 
     private val userPosition: MutableLiveData<Coordinate?> = MutableLiveData()
     fun getUserPositionLiveData(): LiveData<Coordinate?> = userPosition
-    
-    
+
 
     private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
     fun getCurrentRouteLiveData(): LiveData<PathWrapper?> = currentRoute
 
     val hasStartCoordinate: Boolean
-      get() = state.startCoordinate != null
+        get() = state.startCoordinate != null
 
     val hasEndCoordinate: Boolean
-      get() = state.endCoordinate != null
+        get() = state.endCoordinate != null
 
     val hasBothCoordinates: Boolean
-    get() = hasStartCoordinate && hasEndCoordinate
-
-
-
-
+        get() = hasStartCoordinate && hasEndCoordinate
 
 
     val canComputeRoute: Boolean
-    get() = hopper != null
-            && state.startCoordinate != null
-            && state.endCoordinate  != null
-
+        get() = hopper != null
+                && state.startCoordinate != null
+                && state.endCoordinate != null
 
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
     fun computeRoute(): PathWrapper? {
-        if(!canComputeRoute) {
+        if (!canComputeRoute) {
             // TODO throw exception...
             return null
         }

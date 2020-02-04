@@ -216,10 +216,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         }
 
         if (viewModel.hasBothCoordinates) {
-            // clear start and end points
-            clearRoute()
-            viewModel.clearStartCoordinate()
-            viewModel.clearEndCoordinate()
+            viewModel.clearStartAndEndCoordinates()
         }
 
         if (!viewModel.hasStartCoordinate) {
@@ -265,7 +262,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private fun clearRoute() {
         map().layers().remove(routeLayer)
         redrawMap()
-        mapEventsCallback.onRouteCleared()
     }
 
     private fun createRouteLayer(route: PathWrapper): org.oscim.layers.vector.PathLayer {
