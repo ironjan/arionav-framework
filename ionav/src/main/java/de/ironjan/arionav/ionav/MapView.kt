@@ -280,9 +280,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         return pathLayer
     }
 
-    private fun redrawMap() {
-        map().updateMap(true)
-    }
+    private fun redrawMap() = map().updateMap(true)
 
     fun centerOnUserPosition() {
         val lUserPosition = viewModel.getUserPositionLiveData().value ?: return
