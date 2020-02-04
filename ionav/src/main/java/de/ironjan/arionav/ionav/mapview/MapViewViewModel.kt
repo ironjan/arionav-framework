@@ -23,11 +23,14 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         state.startCoordinate = value
         startCoordinate.value = value
         logger.info("Updated start coordinate to $value in view model.")
+        computeRoute()
     }
 
     fun clearStartAndEndCoordinates() {
-        clearStartCoordinate();
-        clearEndCoordinate();
+        clearStartCoordinate()
+        clearEndCoordinate()
+        currentRoute.value = null
+        remainingRoute.value = null
     }
 
     fun clearStartCoordinate() = setStartCoordinate(null)
@@ -98,7 +101,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
     private fun computeRoute() {
         if (!canComputeRoute) {
-            // TODO throw exception...?
+            // just ignore. Called on every start and end coordinate change
             return
         }
 
