@@ -2,7 +2,6 @@ package de.ironjan.arionav.ionav.mapview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
@@ -12,7 +11,6 @@ import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
-import java.nio.file.Path
 
 class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCustomViewModel<MapViewState> {
     override var state: MapViewState = MapViewState()
@@ -68,6 +66,11 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
                 && state.startCoordinate != null
                 && state.endCoordinate != null
 
+    private val followUserPosition: MutableLiveData<Boolean> = MutableLiveData(false)
+    fun getFollowUserPositionLiveData(): LiveData<Boolean> = followUserPosition
+    fun toggleFollowUserPosition() {
+        followUserPosition.value = followUserPosition.value?.not()
+    }
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 

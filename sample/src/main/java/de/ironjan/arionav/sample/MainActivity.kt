@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
@@ -18,7 +17,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
-import de.ironjan.arionav.ionav.positioning.IPositionObserver
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,14 +27,8 @@ import java.lang.IllegalArgumentException
 class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
-    PermissionHelper.PermissionHelperCallback, IPositionObserver {
+    PermissionHelper.PermissionHelperCallback {
 
-    override fun onPositionChange(c: Coordinate?) {
-        // todo this should be in the vm/view
-        if (buttonFollowLocation.isChecked) {
-            centerMapOnPosition()
-        }
-    }
 
 
     private lateinit var gpsPositionProvider: GpsPositionProvider
@@ -97,7 +89,7 @@ class MainActivity :
         mapView.initialize(ghzExtractor, mapEventsCallback)
 
         buttonCenterOnPos.setOnClickListener {
-            centerMapOnPosition()
+            mapView.centerOnUserPosition()
         }
 
         buttonLocationAsStart.setOnClickListener {
@@ -121,11 +113,12 @@ class MainActivity :
         }
 
         gpsPositionProvider = GpsPositionProvider(this, lifecycle)
-        gpsPositionProvider.registerObserver(this)
         gpsPositionProvider.start()
 
 
         mapView.viewModel.setUserPositionProvider(gpsPositionProvider)
+        buttonFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
+
     }
 
     private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
@@ -135,15 +128,13 @@ class MainActivity :
         mapView.viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
             edit_end_coordinates.setText(it?.asString() ?: "")
         })
+        mapView.viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
+            buttonFollowLocation.isChecked = it
+        })
     }
 
     private fun attachLifeCycleOwnerToMapView(lifecycleOwner: LifecycleOwner) {
         mapView.onLifecycleOwnerAttached(lifecycleOwner)
-    }
-
-    private fun centerMapOnPosition() {
-        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
-        mapView.centerOnUserPosition()
     }
 
     private fun onArButtonClick(it: View) {

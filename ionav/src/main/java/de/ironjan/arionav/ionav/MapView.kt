@@ -55,11 +55,15 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
         viewModel.getUserPositionLiveData().observe(lifecycleOwner, Observer {
             updateMarkerLayer(userPosLayer, it, currentUserPositionMarker)
+            if(viewModel.getFollowUserPositionLiveData().value == true){
+                centerOnUserPosition()
+            }
         })
 
         viewModel.getCurrentRouteLiveData().observe(lifecycleOwner, Observer {
             showRoute(it)
         })
+
     }
 
     private fun updateMarkerLayer(layer: ItemizedLayer<MarkerItem>?, it: Coordinate?, marker: Int) {
@@ -85,6 +89,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private lateinit var ghzExtractor: GhzExtractor
 
     private var routeLayer: org.oscim.layers.vector.PathLayer? = null
+    private var remainingRouteLayer: org.oscim.layers.vector.PathLayer? = null
     var selectedLevel: Double = 0.0
 
     private var startMarkerLayer: ItemizedLayer<MarkerItem>? = null
