@@ -52,7 +52,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
     fun getCurrentRouteLiveData(): LiveData<PathWrapper?> = currentRoute
     private val hasRoute: Boolean
-      get() = currentRoute.value != null
+        get() = currentRoute.value != null
     val hasStartCoordinate: Boolean
         get() = state.startCoordinate != null
 
@@ -75,6 +75,13 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     fun toggleFollowUserPosition() {
         followUserPosition.value = followUserPosition.value?.not()
     }
+
+    private val showRemainingRoute: MutableLiveData<Boolean> = MutableLiveData(false)
+    fun toggleShowRemainingRoute() {
+        showRemainingRoute.value = showRemainingRoute.value?.not()
+    }
+
+    fun getShowRemainingRouteLiveData(): LiveData<Boolean> = showRemainingRoute
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 

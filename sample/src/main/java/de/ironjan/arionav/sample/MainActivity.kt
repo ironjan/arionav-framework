@@ -118,7 +118,7 @@ class MainActivity :
 
         mapView.viewModel.setUserPositionProvider(gpsPositionProvider)
         buttonMapFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
-
+        buttonRemainingRoute.setOnClickListener { mapView.viewModel.toggleShowRemainingRoute() }
     }
 
     private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
@@ -130,6 +130,9 @@ class MainActivity :
         })
         mapView.viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
             buttonMapFollowLocation.isChecked = it
+        })
+        mapView.viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+            buttonRemainingRoute.isChecked = it
         })
     }
 

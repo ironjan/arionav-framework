@@ -64,18 +64,14 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             showRoute(it)
         })
 
-        viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
-            if(viewModel.getFollowUserPositionLiveData().value == false){
-                map().layers().remove(remainingRouteLayer)
-                redrawMap()
-            }
-        })
         viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
-            if(viewModel.getFollowUserPositionLiveData().value == true){
+            if(viewModel.getShowRemainingRouteLiveData().value == true){
                 showRemainingRoute(it)
             }
         })
-
+        viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+            showRemainingRoute(null)
+        })
     }
 
     private fun updateMarkerLayer(layer: ItemizedLayer<MarkerItem>?, it: Coordinate?, marker: Int) {
@@ -283,8 +279,9 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private fun showRemainingRoute(remainingRoute: PathWrapper?){
         if (remainingRoute == null) {
-            logger.info("showRemainingRoute was called with a null route.")
-            clearRoute()
+            logger.info("showRemainingRoute was called with a null route. Removing remaining route.")
+            map().layers().remove(remainingRouteLayer)
+            redrawMap()
             return
         }
 

@@ -87,4 +87,13 @@
         android:textOn="cm on"
         />
 
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/button_AR"
+        android:tooltipText="Show remaining route on map"
+        android:id="@+id/buttonRemainingRoute"
+        android:textOn="r on"
+        android:textOff="r off" />
 </androidx.constraintlayout.widget.ConstraintLayout>
