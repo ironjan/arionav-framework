@@ -11,6 +11,7 @@ import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 
 class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCustomViewModel<MapViewState> {
     override var state: MapViewState = MapViewState()
@@ -50,7 +51,8 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
     private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
     fun getCurrentRouteLiveData(): LiveData<PathWrapper?> = currentRoute
-
+    private val hasRoute: Boolean
+      get() = currentRoute.value != null
     val hasStartCoordinate: Boolean
         get() = state.startCoordinate != null
 
@@ -60,6 +62,8 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     val hasBothCoordinates: Boolean
         get() = hasStartCoordinate && hasEndCoordinate
 
+    private val remainingRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
+    fun getRemainingRouteLiveData(): LiveData<PathWrapper?> = remainingRoute
 
     val canComputeRoute: Boolean
         get() = hopper != null
@@ -74,35 +78,51 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
-    fun computeRoute(): PathWrapper? {
+
+    private val iPositionObserver = object : IPositionObserver {
+        override fun onPositionChange(c: Coordinate?) {
+            userPosition.value = c
+            if (hasRoute) {
+                recomputeRemainingRoute()
+            }
+        }
+    }
+
+
+    private fun computeRoute() {
         if (!canComputeRoute) {
-            // TODO throw exception...
-            return null
+            // TODO throw exception...?
+            return
         }
 
         val lStartCoordinate = state.startCoordinate
         val lEndCoordinate = state.endCoordinate
         if (lStartCoordinate == null || lEndCoordinate == null) {
             logger.info("computeRoute was called with null for either start coordinate or end coordinate (start: $lStartCoordinate, end: $lEndCoordinate).")
-            return null
+            return
         }
 
+        currentRoute.value = computeRouteFromTo(lStartCoordinate, lEndCoordinate)
+    }
+
+    private fun recomputeRemainingRoute() {
+        val lUserPosition = userPosition.value
+        val lEndCoordinate = state.endCoordinate
+        if (lUserPosition == null || lEndCoordinate == null) {
+            logger.info("recomputeRemainingRoute was called with null for either start coordinate or end coordinate (start: $lEndCoordinate, end: $lUserPosition).")
+            return
+        }
+
+        remainingRoute.value = computeRouteFromTo(lUserPosition, lEndCoordinate)
+    }
+
+    private fun computeRouteFromTo(lStartCoordinate: Coordinate, lEndCoordinate: Coordinate): PathWrapper? {
         return try {
-            val route = Routing(hopper).route(lStartCoordinate, lEndCoordinate)
-            logger.debug("Computed route: $route")
-            currentRoute.value = route
-            route
-        } catch (e: java.lang.Exception) {
+            Routing(hopper).route(lStartCoordinate, lEndCoordinate)
+        } catch (e: Exception) {
             e.printStackTrace()
 
             null
-        }
-
-    }
-
-    private val iPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: Coordinate?) {
-            userPosition.value = c
         }
     }
 

@@ -64,6 +64,18 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             showRoute(it)
         })
 
+        viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
+            if(viewModel.getFollowUserPositionLiveData().value == false){
+                map().layers().remove(remainingRouteLayer)
+                redrawMap()
+            }
+        })
+        viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+            if(viewModel.getFollowUserPositionLiveData().value == true){
+                showRemainingRoute(it)
+            }
+        })
+
     }
 
     private fun updateMarkerLayer(layer: ItemizedLayer<MarkerItem>?, it: Coordinate?, marker: Int) {
@@ -258,7 +270,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         }
 
         clearRoute()
-        routeLayer = createRouteLayer(route)
+        routeLayer = createRouteLayer(route, -0x66ff33cd)
         map().layers().add(routeLayer)
         redrawMap()
         mapEventsCallback.onRouteShown(route)
@@ -269,11 +281,25 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         redrawMap()
     }
 
-    private fun createRouteLayer(route: PathWrapper): org.oscim.layers.vector.PathLayer {
+    private fun showRemainingRoute(remainingRoute: PathWrapper?){
+        if (remainingRoute == null) {
+            logger.info("showRemainingRoute was called with a null route.")
+            clearRoute()
+            return
+        }
+
+        map().layers().remove(remainingRouteLayer)
+        redrawMap()
+        remainingRouteLayer = createRouteLayer(remainingRoute, -0x660033cd)
+        map().layers().add(remainingRouteLayer)
+        redrawMap()
+    }
+
+    private fun createRouteLayer(route: PathWrapper, strokeColor: Int): org.oscim.layers.vector.PathLayer {
         val style = Style.builder()
             .fixed(true)
             .generalization(Style.GENERALIZATION_SMALL)
-            .strokeColor(-0x66ff33cd)
+            .strokeColor(strokeColor)
             .strokeWidth(4 * resources.displayMetrics.density)
             .build()
         val pathLayer = org.oscim.layers.vector.PathLayer(map(), style)
