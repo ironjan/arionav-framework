@@ -82,7 +82,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/buttonCenterOnPos"
         android:tooltipText="Follow the current position on the map and for route calculation."
-        android:id="@+id/buttonFollowLocation"
+        android:id="@+id/buttonMapFollowLocation"
+        android:textOff="cm off"
+        android:textOn="cm on"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

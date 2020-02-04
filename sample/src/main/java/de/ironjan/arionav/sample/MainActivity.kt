@@ -117,7 +117,7 @@ class MainActivity :
 
 
         mapView.viewModel.setUserPositionProvider(gpsPositionProvider)
-        buttonFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
+        buttonMapFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
 
     }
 
@@ -129,7 +129,7 @@ class MainActivity :
             edit_end_coordinates.setText(it?.asString() ?: "")
         })
         mapView.viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
-            buttonFollowLocation.isChecked = it
+            buttonMapFollowLocation.isChecked = it
         })
     }
 
