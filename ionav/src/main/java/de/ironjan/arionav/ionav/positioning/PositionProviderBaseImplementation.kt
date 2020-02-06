@@ -8,8 +8,8 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
 // Based on https://developer.android.com/topic/libraries/architecture/lifecycle#use-cases
-abstract class PositionListenerBaseImplementation(private val context: Context,
-                                         private val lifecycle: Lifecycle)
+abstract class PositionProviderBaseImplementation(private val context: Context,
+                                                  private val lifecycle: Lifecycle)
     : LifecycleObserver, IPositionProvider {
 
     override var lastKnownPosition: Coordinate? = null

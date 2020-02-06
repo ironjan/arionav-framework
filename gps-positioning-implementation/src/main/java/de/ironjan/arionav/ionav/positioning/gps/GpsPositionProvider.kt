@@ -10,9 +10,8 @@ import android.location.LocationManager
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
-import de.ironjan.arionav.ionav.positioning.PositionListenerBaseImplementation
+import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
@@ -23,12 +22,12 @@ import org.slf4j.LoggerFactory
 @SuppressLint("MissingPermission")
 class GpsPositionProvider(
     private val context: Context,
-    private val lifecycle: Lifecycle)
-    : PositionListenerBaseImplementation(context, lifecycle) {
+    private val lifecycle: Lifecycle
+) : PositionProviderBaseImplementation(context, lifecycle) {
     private val observers: MutableList<IPositionObserver> = mutableListOf()
 
     override fun registerObserver(observer: IPositionObserver) {
-        if(observers.contains(observer)) return
+        if (observers.contains(observer)) return
 
         observers.add(observer)
     }
@@ -65,7 +64,7 @@ class GpsPositionProvider(
 
             location ?: return
 
-            if(isBetterLocation(location, currentBestLocation)) {
+            if (isBetterLocation(location, currentBestLocation)) {
                 currentBestLocation = location
                 // FIXME level...
                 val lLastKnownPosition = locationToCoordinate(location)
@@ -76,7 +75,7 @@ class GpsPositionProvider(
             listenerLogger.debug("onLocationChanged($location) finished.")
         }
 
-        override fun onStatusChanged(provider: String, status: Int,  extras: Bundle) {
+        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
             /* This method was deprecated in API level 29. This callback will never be invoked */
         }
 
@@ -106,7 +105,7 @@ class GpsPositionProvider(
             // Check whether the new location fix is newer or older
             val timeDelta: Long = location.time - currentBestLocation.time
             val isSignificantlyNewer: Boolean = timeDelta > TWO_MINUTES
-            val isSignificantlyOlder:Boolean = timeDelta < -TWO_MINUTES
+            val isSignificantlyOlder: Boolean = timeDelta < -TWO_MINUTES
 
             when {
                 // If it's been more than two minutes since the current location, use the new location
@@ -142,6 +141,7 @@ class GpsPositionProvider(
         logger.debug("start() called.")
         locationManager.requestLocationUpdates(locationProvider, 0L, 0f, locationListener)
         val lastKnownLocation: Location = locationManager.getLastKnownLocation(locationProvider) ?: return
+        lastKnownPosition = locationToCoordinate(lastKnownLocation)
         notifyObservers()
         logger.debug("start() done.")
     }
