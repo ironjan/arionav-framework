@@ -52,9 +52,9 @@ class GpsPositionProvider(
 
     }
 
-    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    val locationListener: LocationListener = object : LocationListener {
+    private val locationListener: LocationListener = object : LocationListener {
         private var currentBestLocation: Location? = null
         private val listenerTag = "GpsPositionProvider.LocationListener"
         private val listenerLogger = LoggerFactory.getLogger(listenerTag)
