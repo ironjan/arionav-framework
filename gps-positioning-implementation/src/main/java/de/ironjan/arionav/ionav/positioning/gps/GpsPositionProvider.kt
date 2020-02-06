@@ -152,7 +152,9 @@ class GpsPositionProvider(
         logger.debug("stop() done.")
     }
 
-    private fun locationToCoordinate(location: Location) = Coordinate(location.latitude, location.longitude, 0.0)
+    var level = 0.0
+
+    private fun locationToCoordinate(location: Location) = Coordinate(location.latitude, location.longitude, level)
 
     companion object {
         const val TAG = "GpsPositionProvider"
