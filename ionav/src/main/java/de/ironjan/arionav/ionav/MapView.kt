@@ -72,13 +72,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
             showRemainingRoute(null)
         })
-
-        viewModel.getNextInstructionLiveData().observe(lifecycleOwner, Observer {
-            if(it == null) return@Observer
-            if(viewModel.getShowRemainingRouteCurrentValue()){
-                Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     private fun updateMarkerLayer(layer: ItemizedLayer<MarkerItem>?, it: Coordinate?, marker: Int) {

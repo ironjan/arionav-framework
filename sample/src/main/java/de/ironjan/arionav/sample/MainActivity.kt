@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
@@ -19,10 +20,12 @@ import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
+import de.ironjan.arionav.ionav.res_helper.InstructionSignToText
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
+import kotlin.math.round
 
 // todo initialize spinner with level data
 class MainActivity :
@@ -111,24 +114,40 @@ class MainActivity :
         buttonRemainingRoute.setOnClickListener { mapView.viewModel.toggleShowRemainingRoute() }
     }
 
+    private val viewModel
+        get() = mapView.viewModel
+
     private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
-        mapView.viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, Observer {
+        viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, Observer {
             edit_start_coordinates.setText(it?.asString() ?: "")
         })
-        mapView.viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
+        viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
             edit_end_coordinates.setText(it?.asString() ?: "")
         })
-        mapView.viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
+        viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
             buttonMapFollowLocation.isChecked = it
         })
-        mapView.viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+        viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
             buttonRemainingRoute.isChecked = it
         })
-        mapView.viewModel.getLevelListLiveData().observe(lifecycleOwner, Observer {
+        viewModel.getLevelListLiveData().observe(lifecycleOwner, Observer {
             spinnerLevel.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, it)
         })
-        mapView.viewModel.getSelectedLevelListPosition().observe(lifecycleOwner, Observer {
+        viewModel.getSelectedLevelListPosition().observe(lifecycleOwner, Observer {
             spinnerLevel.setSelection(it)
+        })
+        viewModel.getNextInstructionLiveData().observe(lifecycleOwner, Observer {
+            if (it == null) return@Observer
+            if (viewModel.getShowRemainingRouteCurrentValue()) {
+
+                val distance = round(it.distance * 100) / 100
+                val instructionText = InstructionSignToText.getTextFor(it.sign)
+                val timeInSeconds = it.time / 1000
+                val timeInMinutes = timeInSeconds /60
+                val msg = "$instructionText ${it.name}, ${distance}m, ${timeInMinutes}min"
+
+                txtCurrentInstruction.setText(msg)
+            }
         })
 
         spinnerLevel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -136,7 +155,7 @@ class MainActivity :
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, pos: Int, value: Long) {
-                mapView.viewModel.selectLevelListPosition(pos)
+                viewModel.selectLevelListPosition(pos)
             }
         }
 

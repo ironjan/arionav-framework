@@ -96,4 +96,12 @@
         android:id="@+id/buttonRemainingRoute"
         android:textOn="r on"
         android:textOff="r off" />
+
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/edit_end_coordinates"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/spinnerLevel"
+        android:layout_marginRight="8dp" android:id="@+id/txtCurrentInstruction" />
 </androidx.constraintlayout.widget.ConstraintLayout>
