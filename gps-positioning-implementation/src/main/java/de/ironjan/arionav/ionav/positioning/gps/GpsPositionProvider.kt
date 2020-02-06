@@ -11,7 +11,7 @@ import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
-import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
+import de.ironjan.arionav.ionav.positioning.LevelDependentPositionProviderBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory
  * MissingPermission is suppressed because the permission is verified when initializing the gps provider
  */
 @SuppressLint("MissingPermission")
-class GpsPositionProvider(
+open class GpsPositionProvider(
     private val context: Context,
     private val lifecycle: Lifecycle
-) : PositionProviderBaseImplementation(context, lifecycle) {
+) : LevelDependentPositionProviderBaseImplementation(context, lifecycle) {
     private val observers: MutableList<IPositionObserver> = mutableListOf()
 
     override fun registerObserver(observer: IPositionObserver) {
@@ -152,9 +152,7 @@ class GpsPositionProvider(
         logger.debug("stop() done.")
     }
 
-    var level = 0.0
-
-    private fun locationToCoordinate(location: Location) = Coordinate(location.latitude, location.longitude, level)
+    private fun locationToCoordinate(location: Location) = Coordinate(location.latitude, location.longitude, currentLevel)
 
     companion object {
         const val TAG = "GpsPositionProvider"

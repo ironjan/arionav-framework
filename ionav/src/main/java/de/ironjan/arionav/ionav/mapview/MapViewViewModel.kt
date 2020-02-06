@@ -8,6 +8,7 @@ import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
+import de.ironjan.arionav.ionav.positioning.LevelDependentPositionProviderBaseImplementation
 import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
@@ -15,6 +16,9 @@ import org.slf4j.LoggerFactory
 import java.lang.Exception
 
 class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCustomViewModel<MapViewState> {
+    // FIXME should be IPositionObserver instead
+    private var positionProvider: LevelDependentPositionProviderBaseImplementation?= null
+
     private val nextInstruction: MutableLiveData<Instruction?> = MutableLiveData()
     fun getNextInstructionLiveData(): LiveData<Instruction?> = nextInstruction
 
@@ -72,7 +76,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     private val remainingRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
     fun getRemainingRouteLiveData(): LiveData<PathWrapper?> = remainingRoute
 
-    val canComputeRoute: Boolean
+    private val canComputeRoute: Boolean
         get() = hopper != null
                 && state.startCoordinate != null
                 && state.endCoordinate != null
@@ -90,6 +94,17 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
     fun getShowRemainingRouteLiveData(): LiveData<Boolean> = showRemainingRoute
     fun getShowRemainingRouteCurrentValue(): Boolean = showRemainingRoute.value ?: false
+
+    private val  levelList = MutableLiveData(listOf(-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0))
+    private val selectedLevelListPosition = MutableLiveData(4)
+
+    fun getLevelListLiveData(): LiveData<List<Double>> = levelList
+    fun getSelectedLevelListPosition(): LiveData<Int> = selectedLevelListPosition
+    fun selectLevelListPosition(pos: Int) {
+        selectedLevelListPosition.value = pos
+        val lLevelList = levelList.value ?: return
+        positionProvider?.currentLevel = lLevelList[pos]
+    }
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
@@ -143,7 +158,8 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         }
     }
 
-    fun setUserPositionProvider(positionProvider: PositionProviderBaseImplementation) {
+    fun setUserPositionProvider(positionProvider: LevelDependentPositionProviderBaseImplementation) {
         positionProvider.registerObserver(iPositionObserver)
+        this.positionProvider = positionProvider
     }
 }

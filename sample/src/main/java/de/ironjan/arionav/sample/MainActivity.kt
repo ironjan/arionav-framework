@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.PathWrapper
@@ -28,7 +29,6 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
     PermissionHelper.PermissionHelperCallback {
-
 
 
     private lateinit var gpsPositionProvider: GpsPositionProvider
@@ -100,17 +100,7 @@ class MainActivity :
         button_AR.setOnClickListener(this::onArButtonClick)
 
         val levelList = listOf(-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0)
-        spinnerLevel.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, levelList)
-        spinnerLevel.setSelection(4)
-        spinnerLevel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                setSelectedLevel(levelList[4])
-            }
 
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                setSelectedLevel(levelList[p2])
-            }
-        }
 
         gpsPositionProvider = GpsPositionProvider(this, lifecycle)
         gpsPositionProvider.start()
@@ -134,6 +124,22 @@ class MainActivity :
         mapView.viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
             buttonRemainingRoute.isChecked = it
         })
+        mapView.viewModel.getLevelListLiveData().observe(lifecycleOwner, Observer {
+            spinnerLevel.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, it)
+        })
+        mapView.viewModel.getSelectedLevelListPosition().observe(lifecycleOwner, Observer {
+            spinnerLevel.setSelection(it)
+        })
+
+        spinnerLevel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, pos: Int, value: Long) {
+                mapView.viewModel.selectLevelListPosition(pos)
+            }
+        }
+
     }
 
     private fun attachLifeCycleOwnerToMapView(lifecycleOwner: LifecycleOwner) {

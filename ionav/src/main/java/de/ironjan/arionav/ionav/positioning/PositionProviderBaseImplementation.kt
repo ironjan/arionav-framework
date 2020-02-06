@@ -12,7 +12,12 @@ abstract class PositionProviderBaseImplementation(private val context: Context,
                                                   private val lifecycle: Lifecycle)
     : LifecycleObserver, IPositionProvider {
 
-    override var lastKnownPosition: Coordinate? = null
+    private var _lastPosition: Coordinate? = null
+
+    override var lastKnownPosition : Coordinate?
+      get() = _lastPosition
+    protected set(value) { _lastPosition = value }
+
 
     companion object {
         const val TAG = "LocationListener"
