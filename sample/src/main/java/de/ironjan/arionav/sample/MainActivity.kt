@@ -20,7 +20,6 @@ import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
-import de.ironjan.arionav.ionav.res_helper.InstructionSignToText
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
@@ -236,5 +235,34 @@ class MainActivity :
                 }
             }
         }
+    }
+
+    object InstructionSignToText {
+      fun getTextFor(sign: Int): String {
+        return when(sign) {
+          -99 ->  "UNKNOWN"
+          -98 ->  "U_TURN_UNKNOWN"
+          -8 ->  "U_TURN_LEFT"
+          -7 ->  "KEEP_LEFT"
+            -6 ->  "LEAVE_ROUNDABOUT" // for future use
+            -3 ->  "TURN_SHARP_LEFT"
+            -2 ->  "TURN_LEFT"
+            -1 ->  "TURN_SLIGHT_LEFT"
+            0 ->  "CONTINUE_ON_STREET"
+            1 ->  "TURN_SLIGHT_RIGHT"
+            2 ->  "TURN_RIGHT"
+            3 ->  "TURN_SHARP_RIGHT"
+            4 ->  "FINISH"
+            5 ->  "REACHED_VIA"
+            6 ->  "USE_ROUNDABOUT"
+            Integer.MIN_VALUE ->  "IGNORE"
+            7 ->  "KEEP_RIGHT"
+            8 ->  "U_TURN_RIGHT"
+            101 ->  "PT_START_TRIP"
+            102 ->  "PT_TRANSFER"
+            103 ->  "PT_END_TRIP"
+          else -> "UNKNOWN"
+        }
+      }
     }
 }
