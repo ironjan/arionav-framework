@@ -52,8 +52,8 @@ dependencies {
     api 'org.mapsforge:vtm-jts:0.12.0'
     api 'org.mapsforge:vtm-themes:0.12.0'
 
-    api 'com.github.ironjan.graphhopper:geocoding:gh-extensions-SNAPSHOT'
-    api 'com.github.ironjan.graphhopper:level-extension:gh-extensions-SNAPSHOT'
+    api 'com.github.ironjan.graphhopper:geocoding:1.0-pre20-gh-002'
+    api 'com.github.ironjan.graphhopper:level-extension:1.0-pre20-gh-002'
 
 
     testImplementation 'junit:junit:4.12'
