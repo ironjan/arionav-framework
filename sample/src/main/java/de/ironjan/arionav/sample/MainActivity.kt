@@ -59,7 +59,7 @@ class MainActivity :
         requestPermissions()
 
         // todo move to Application class?
-        ghzExtractor = GhzExtractor(this, ghzResId, mapName)
+        ghzExtractor = GhzExtractor(this.applicationContext, ghzResId, mapName)
 
         val mapEventsCallback = object : MapView.MapEventsCallback {
             override fun onRouteShown(pathWrapper: PathWrapper) {
