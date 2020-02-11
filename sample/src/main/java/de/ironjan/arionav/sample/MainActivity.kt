@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -20,6 +21,8 @@ import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
+import de.ironjan.arionav.ionav.room_routing.RoomRepository
+import de.ironjan.arionav.ionav.room_routing.model.Room
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
@@ -34,19 +37,17 @@ class MainActivity :
 
 
     private lateinit var gpsPositionProvider: GpsPositionProvider
-
     private var displayedRoute: PathWrapper? = null
+
     private var selectedLevel: Double = 0.0
     val logger = LoggerFactory.getLogger("MainActivity")
-
     private val cameraRequestCode: Int = 1
 
     private val locationRequestCode: Int = 2
+
     private val ghzResId = ArionavSampleApplication.ghzResId
     private val mapName = ArionavSampleApplication.mapName
-
     private lateinit var ghzExtractor: GhzExtractor
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +112,36 @@ class MainActivity :
         mapView.viewModel.setUserPositionProvider(gpsPositionProvider)
         buttonMapFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
         buttonRemainingRoute.setOnClickListener { mapView.viewModel.toggleShowRemainingRoute() }
+
+        prepareRoomHandling(lifecycleOwner)
+    }
+
+
+    private var roomNames= listOf<String>()
+    private lateinit var roomLiveData: LiveData<List<Room>>
+
+    private fun prepareRoomHandling(lifecycleOwner: LifecycleOwner) {
+        if(true) return
+        // FIXME do in background
+
+        roomLiveData = RoomRepository().getRooms(ghzExtractor.osmFilePath)
+        roomLiveData.observe(lifecycleOwner, Observer {
+            roomNames = it.map { it.name }
+        })
+        edit_end_coordinates.doOnTextChanged { text, _, _, _ ->
+            logger.info("Text is $text.")
+            val room = text.toString()
+            if(roomNames.contains(room)) {
+                val room = roomLiveData.value?.firstOrNull() { it.name == room } ?: return@doOnTextChanged
+
+                logger.info("Got room: $room")
+
+                val targetCoordinate = room.doors.firstOrNull() ?: return@doOnTextChanged
+                Toast.makeText(this, "Found room with name $text. Replacing end coordinate with $targetCoordinate.", Toast.LENGTH_LONG).show()
+                logger.info("Got door: $targetCoordinate")
+                viewModel.setEndCoordinate(targetCoordinate)
+            }
+        }
     }
 
     private val viewModel
