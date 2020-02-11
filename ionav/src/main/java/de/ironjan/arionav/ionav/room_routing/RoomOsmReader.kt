@@ -1,6 +1,7 @@
 package de.ironjan.arionav.ionav.room_routing
 
 import android.util.Xml
+import de.ironjan.arionav.ionav.room_routing.model.Room
 import de.ironjan.arionav.ionav.room_routing.model.osm.Node
 import de.ironjan.arionav.ionav.room_routing.model.osm.Way
 import de.ironjan.graphhopper.extensions_core.Coordinate
