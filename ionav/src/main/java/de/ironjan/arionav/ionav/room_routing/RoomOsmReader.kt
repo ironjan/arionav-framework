@@ -29,7 +29,7 @@ class RoomOsmReader {
             parser.setInput(fis, null)
             parser.nextTag()
             ways = readWays(parser)
-            logger.warn("Read ${ways.count()} rooms...")
+            logger.info("Read ${ways.count()} rooms...")
             //val nodes = readRelevantNodes(ways, parser)
         }
 
@@ -45,28 +45,37 @@ class RoomOsmReader {
             parser.nextTag()
 
 
-            nodes = readRelevantDoorNodes(ndRefs, parser)
+            nodes = readRelevantNodes(ndRefs, parser)
         }
 
         val nodesDone = System.currentTimeMillis()
 
         val nodeMap = nodes.map { Pair(it.id, it) }.toMap()
 
-        val rooms = ways.map {
-            val name = it.tags["name"]!!
+        val rooms = ways.map { w ->
+            val name = w.tags["name"]!!
 
             val doorNodes =
-                it.nodeRefs
-                    .map { nodeMap[it] }
-                    .filterNotNull()
+                w.nodeRefs
+                    .mapNotNull { nodeMap[it] }
+                    .filter {it.tags.containsKey("door") }
 
-            val doorCoordinates = doorNodes.map {
-                val levelString = it.tags["level"] ?: "0"
-                val level = levelString.toDoubleOrNull() ?: 0.0
-                Coordinate(it.lat, it.lon, level)
+            val levelString = w.tags["level"] ?: "0"
+            val level = levelString.toDoubleOrNull() ?: 0.0
+
+            val doorCoordinates = doorNodes.map { n ->
+                Coordinate(n.lat, n.lon, level)
             }
 
-            Room(name, doorCoordinates)
+            val n = nodes.count()
+            val lat = nodes.map { it.lat }.sum() / n
+            val lon = nodes.map { it.lat }.sum() / n
+
+            val center = Coordinate(lat, lon, 0.0)
+
+            val room = Room(name, center, doorCoordinates)
+            logger.debug("Conversion result: $room")
+            room
         }
         val convertEnd = System.currentTimeMillis()
 
@@ -74,10 +83,11 @@ class RoomOsmReader {
         val nodeTime = nodesDone - waysDone
         val convertTime = convertEnd - nodesDone
 
-        logger.warn("Read ${ways.count()} ways in ${wayTime}ms and ${nodes.count()} nodes in ${nodeTime}ms. Conversion into ${rooms.count()} rooms completed after ${convertTime}ms.")
+        logger.info("Read ${ways.count()} ways in ${wayTime}ms and ${nodes.count()} nodes in ${nodeTime}ms. Conversion into ${rooms.count()} rooms completed after ${convertTime}ms.")
 
         return rooms
     }
+
 
     private val logger = LoggerFactory.getLogger("RoomRepository")
 
@@ -97,10 +107,10 @@ class RoomOsmReader {
                                 && way.tags["indoor"] == "room"
                     val hasName =
                         way.tags.containsKey("name")
-                            && way.tags["name"]?.isNotBlank() ?: false
+                                && way.tags["name"]?.isNotBlank() ?: false
 
                     if (isRoom && hasName) {
-                        logger.warn("Added room $way")
+                        logger.debug("Added room $way")
                         ways.add(way)
                     }
                 }
@@ -171,7 +181,7 @@ class RoomOsmReader {
         }
     }
 
-    private fun readRelevantDoorNodes(ways: List<Long>, parser: XmlPullParser): List<Node> {
+    private fun readRelevantNodes(ways: List<Long>, parser: XmlPullParser): List<Node> {
         val nodes = mutableListOf<Node>()
 
         parser.require(XmlPullParser.START_TAG, null, "osm")
@@ -182,11 +192,8 @@ class RoomOsmReader {
             if (parser.name == "node") {
                 val node = readNode(parser)
                 if (node != null) {
-                    val isDoor = node.tags.containsKey("door")
-                    if (isDoor) {
-                        logger.warn("Added door $node")
-                        nodes.add(node)
-                    }
+                    logger.debug("Added node $node")
+                    nodes.add(node)
                 }
             } else {
                 skip(parser)
