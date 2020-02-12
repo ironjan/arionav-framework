@@ -19,46 +19,54 @@ class RoomOsmReader {
 
     @Throws(XmlPullParserException::class, IOException::class)
     fun parseOsmFile(osmFile: String): List<Room> {
-        var ways = listOf<Way>()
 
         val start = System.currentTimeMillis()
 
-        FileInputStream(osmFile).use { fis ->
-            val parser: XmlPullParser = Xml.newPullParser()
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-            parser.setInput(fis, null)
-            parser.nextTag()
-            ways = readWays(parser)
-            logger.info("Read ${ways.count()} rooms...")
-            //val nodes = readRelevantNodes(ways, parser)
+        val namedRoomFilter = { w: Way ->
+            val isRoom =
+                w.tags.containsKey("indoor")
+                        && w.tags["indoor"] == "room"
+            val hasName =
+                w.tags.containsKey("name")
+                        && w.tags["name"]?.isNotBlank() ?: false
+            isRoom && hasName
         }
+        val nodeFilter = { n: Node -> true }
 
+
+        var ways = parseWays(osmFile, namedRoomFilter)
+        logger.info("Read ${ways.count()} rooms...")
         val waysDone = System.currentTimeMillis()
 
-        val ndRefs = ways.flatMap { it.nodeRefs.distinct() }.distinct()
 
-        var nodes = listOf<Node>()
-        FileInputStream(osmFile).use { fis ->
-            val parser: XmlPullParser = Xml.newPullParser()
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-            parser.setInput(fis, null)
-            parser.nextTag()
-
-
-            nodes = readRelevantNodes(ndRefs, parser)
-        }
-
+        var nodes = parseNodes(osmFile, nodeFilter)
         val nodesDone = System.currentTimeMillis()
 
-        val nodeMap = nodes.map { Pair(it.id, it) }.toMap()
 
+        val rooms = convertOsmData(nodes, ways)
+        val convertEnd = System.currentTimeMillis()
+
+        val wayTime = waysDone - start
+        val nodeTime = nodesDone - waysDone
+        val convertTime = convertEnd - nodesDone
+
+        logger.info("Read ${ways.count()} ways in ${wayTime}ms and ${nodes.count()} nodes in ${nodeTime}ms. Conversion into ${rooms.count()} rooms completed after ${convertTime}ms.")
+
+        return rooms
+    }
+
+    private fun convertOsmData(
+        nodes: List<Node>,
+        ways: List<Way>
+    ): List<Room> {
+        val nodeMap = nodes.map { Pair(it.id, it) }.toMap()
         val rooms = ways.map { w ->
             val name = w.tags["name"]!!
 
             val doorNodes =
                 w.nodeRefs
                     .mapNotNull { nodeMap[it] }
-                    .filter {it.tags.containsKey("door") }
+                    .filter { it.tags.containsKey("door") }
 
             val levelString = w.tags["level"] ?: "0"
             val level = levelString.toDoubleOrNull() ?: 0.0
@@ -77,21 +85,43 @@ class RoomOsmReader {
             logger.debug("Conversion result: $room")
             room
         }
-        val convertEnd = System.currentTimeMillis()
-
-        val wayTime = waysDone - start
-        val nodeTime = nodesDone - waysDone
-        val convertTime = convertEnd - nodesDone
-
-        logger.info("Read ${ways.count()} ways in ${wayTime}ms and ${nodes.count()} nodes in ${nodeTime}ms. Conversion into ${rooms.count()} rooms completed after ${convertTime}ms.")
-
         return rooms
+    }
+
+    private fun parseNodes(
+        osmFile: String,
+        nodeFilter: (Node) -> Boolean
+    ): List<Node> {
+        var nodes = listOf<Node>()
+        FileInputStream(osmFile).use { fis ->
+            val parser: XmlPullParser = Xml.newPullParser()
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
+            parser.setInput(fis, null)
+            parser.nextTag()
+
+
+            nodes = readNodes(parser, nodeFilter)
+        }
+        return nodes
+    }
+
+    private fun parseWays(
+        osmFile: String,
+        namedRoomFilter: (Way) -> Boolean
+    ): List<Way> {
+        FileInputStream(osmFile).use { fis ->
+            val parser: XmlPullParser = Xml.newPullParser()
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
+            parser.setInput(fis, null)
+            parser.nextTag()
+            return readWays(parser, namedRoomFilter)
+        }
     }
 
 
     private val logger = LoggerFactory.getLogger("RoomRepository")
 
-    private fun readWays(parser: XmlPullParser): List<Way> {
+    private fun readWays(parser: XmlPullParser, wayFilter: (Way) -> Boolean): List<Way> {
         val ways = mutableListOf<Way>()
 
         parser.require(XmlPullParser.START_TAG, null, "osm")
@@ -102,14 +132,7 @@ class RoomOsmReader {
             if (parser.name == "way") {
                 val way = readWay(parser)
                 if (way != null) {
-                    val isRoom =
-                        way.tags.containsKey("indoor")
-                                && way.tags["indoor"] == "room"
-                    val hasName =
-                        way.tags.containsKey("name")
-                                && way.tags["name"]?.isNotBlank() ?: false
-
-                    if (isRoom && hasName) {
+                    if (wayFilter(way)) {
                         logger.debug("Added room $way")
                         ways.add(way)
                     }
@@ -181,7 +204,7 @@ class RoomOsmReader {
         }
     }
 
-    private fun readRelevantNodes(ways: List<Long>, parser: XmlPullParser): List<Node> {
+    private fun readNodes(parser: XmlPullParser, nodeFilter: (n: Node) -> Boolean): List<Node> {
         val nodes = mutableListOf<Node>()
 
         parser.require(XmlPullParser.START_TAG, null, "osm")
@@ -191,7 +214,7 @@ class RoomOsmReader {
             }
             if (parser.name == "node") {
                 val node = readNode(parser)
-                if (node != null) {
+                if (node != null && nodeFilter(node)) {
                     logger.debug("Added node $node")
                     nodes.add(node)
                 }
