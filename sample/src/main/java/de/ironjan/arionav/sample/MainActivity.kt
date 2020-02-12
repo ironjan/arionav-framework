@@ -21,8 +21,10 @@ import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
+import de.ironjan.arionav.ionav.special_routing.model.Poi
 import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
 import de.ironjan.arionav.ionav.special_routing.model.Room
+import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
@@ -117,31 +119,51 @@ class MainActivity :
     }
 
 
-    private var roomNames= listOf<String>()
-    private lateinit var roomLiveData: LiveData<List<Room>>
+    private lateinit var roomLiveData: LiveData<Map<String, Room>>
+    private lateinit var poiLiveData: LiveData<Map<String, Poi>>
 
     private fun prepareRoomHandling(lifecycleOwner: LifecycleOwner) {
 //        if(true) return
-        // FIXME do in background
 
         roomLiveData = RoomRepository().getRooms(ghzExtractor.osmFilePath)
+        poiLiveData = PoiRepository().getPois(ghzExtractor.osmFilePath)
+
         roomLiveData.observe(lifecycleOwner, Observer {
-            roomNames = it.map { it.name }
+            /* todo update vorschlagsliste */
         })
+        poiLiveData.observe(lifecycleOwner, Observer {
+            /* todo update vorschlagsliste */
+        })
+
         edit_end_coordinates.doOnTextChanged { text, _, _, _ ->
             logger.info("Text is $text.")
-            val room = text.toString()
-            if(roomNames.contains(room)) {
-                val room = roomLiveData.value?.firstOrNull() { it.name == room } ?: return@doOnTextChanged
+            val textAsString = text.toString()
 
-                logger.info("Got room: $room")
+            val room = roomLiveData.value?.get(textAsString)
+            val poi = poiLiveData.value?.get(textAsString)
 
-                val targetCoordinate = room.doors.firstOrNull() ?: return@doOnTextChanged
-                Toast.makeText(this, "Found room with name $text. Replacing end coordinate with $targetCoordinate.", Toast.LENGTH_LONG).show()
-                logger.info("Got door: $targetCoordinate")
-                viewModel.setEndCoordinate(targetCoordinate)
+            when {
+                room != null -> {
+                    logger.info("Got room: $room.")
+
+                    val targetCoordinate = room.coordinate
+                    Toast.makeText(this, "Found room with name $text. Replacing end coordinate with $targetCoordinate.", Toast.LENGTH_LONG).show()
+                    logger.info("Found room with name $text. Replacing end coordinate with $targetCoordinate.")
+                    viewModel.setEndCoordinate(targetCoordinate)
+                }
+                poi != null -> {
+                    logger.info("Got POI: $poi")
+
+                    val targetCoordinate = poi.coordinate
+                    Toast.makeText(this, "Found POI with name $text. Replacing end coordinate with $targetCoordinate.", Toast.LENGTH_LONG).show()
+                    logger.info("Found POI with name $text. Replacing end coordinate with $targetCoordinate.")
+                    viewModel.setEndCoordinate(targetCoordinate)
+                }
+                else -> logger.info("Ignoring, since there is neither a room nor a poi with name $textAsString.")
             }
         }
+
+
     }
 
     private val viewModel
@@ -173,7 +195,7 @@ class MainActivity :
                 val distance = round(it.distance * 100) / 100
                 val instructionText = InstructionSignToText.getTextFor(it.sign)
                 val timeInSeconds = it.time / 1000
-                val timeInMinutes = timeInSeconds /60
+                val timeInMinutes = timeInSeconds / 60
                 val msg = "$instructionText ${it.name}, ${distance}m, ${timeInMinutes}min"
 
                 txtCurrentInstruction.setText(msg)
@@ -269,31 +291,31 @@ class MainActivity :
     }
 
     object InstructionSignToText {
-      fun getTextFor(sign: Int): String {
-        return when(sign) {
-          -99 ->  "UNKNOWN"
-          -98 ->  "U_TURN_UNKNOWN"
-          -8 ->  "U_TURN_LEFT"
-          -7 ->  "KEEP_LEFT"
-            -6 ->  "LEAVE_ROUNDABOUT" // for future use
-            -3 ->  "TURN_SHARP_LEFT"
-            -2 ->  "TURN_LEFT"
-            -1 ->  "TURN_SLIGHT_LEFT"
-            0 ->  "CONTINUE_ON_STREET"
-            1 ->  "TURN_SLIGHT_RIGHT"
-            2 ->  "TURN_RIGHT"
-            3 ->  "TURN_SHARP_RIGHT"
-            4 ->  "FINISH"
-            5 ->  "REACHED_VIA"
-            6 ->  "USE_ROUNDABOUT"
-            Integer.MIN_VALUE ->  "IGNORE"
-            7 ->  "KEEP_RIGHT"
-            8 ->  "U_TURN_RIGHT"
-            101 ->  "PT_START_TRIP"
-            102 ->  "PT_TRANSFER"
-            103 ->  "PT_END_TRIP"
-          else -> "UNKNOWN"
+        fun getTextFor(sign: Int): String {
+            return when (sign) {
+                -99 -> "UNKNOWN"
+                -98 -> "U_TURN_UNKNOWN"
+                -8 -> "U_TURN_LEFT"
+                -7 -> "KEEP_LEFT"
+                -6 -> "LEAVE_ROUNDABOUT" // for future use
+                -3 -> "TURN_SHARP_LEFT"
+                -2 -> "TURN_LEFT"
+                -1 -> "TURN_SLIGHT_LEFT"
+                0 -> "CONTINUE_ON_STREET"
+                1 -> "TURN_SLIGHT_RIGHT"
+                2 -> "TURN_RIGHT"
+                3 -> "TURN_SHARP_RIGHT"
+                4 -> "FINISH"
+                5 -> "REACHED_VIA"
+                6 -> "USE_ROUNDABOUT"
+                Integer.MIN_VALUE -> "IGNORE"
+                7 -> "KEEP_RIGHT"
+                8 -> "U_TURN_RIGHT"
+                101 -> "PT_START_TRIP"
+                102 -> "PT_TRANSFER"
+                103 -> "PT_END_TRIP"
+                else -> "UNKNOWN"
+            }
         }
-      }
     }
 }
