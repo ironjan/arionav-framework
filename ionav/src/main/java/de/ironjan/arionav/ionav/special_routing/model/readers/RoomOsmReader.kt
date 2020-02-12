@@ -50,7 +50,7 @@ class RoomOsmReader : OsmReader<List<Room>>(
 
                     val n = nodes.count()
                     val lat = nodes.map { it.lat }.sum() / n
-                    val lon = nodes.map { it.lat }.sum() / n
+                    val lon = nodes.map { it.lon }.sum() / n
 
                     val center = Coordinate(lat, lon, 0.0)
 
