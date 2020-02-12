@@ -121,7 +121,7 @@ class MainActivity :
     private lateinit var roomLiveData: LiveData<List<Room>>
 
     private fun prepareRoomHandling(lifecycleOwner: LifecycleOwner) {
-        if(true) return
+//        if(true) return
         // FIXME do in background
 
         roomLiveData = RoomRepository().getRooms(ghzExtractor.osmFilePath)

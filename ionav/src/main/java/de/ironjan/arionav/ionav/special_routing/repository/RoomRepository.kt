@@ -1,5 +1,6 @@
 package de.ironjan.arionav.ionav.special_routing.repository
 
+import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import de.ironjan.arionav.ionav.special_routing.model.Room
@@ -17,18 +18,32 @@ class RoomRepository {
         if (roomList == null) {
             roomList = MutableLiveData()
             inMemoryCache[osmFile] = roomList
-            logger.info("Starting to load...")
-            val loaded = loadFromDisk(osmFile)
-            roomList.value = loaded
+            RoomListAsyncLoadTask(roomList, osmFile).execute()
 
-            logger.info("Loading complete.")
         }
 
         logger.info("Returning rooms.")
         return roomList
     }
 
-    private fun loadFromDisk(osmFile: String): List<Room> {
-        return RoomOsmReader().parseOsmFile(osmFile)
+
+    private class RoomListAsyncLoadTask(private val roomList: MutableLiveData<List<Room>>,
+                                        private val osmFile: String):
+        AsyncTask<String, Void, List<Room>>() {
+        private val logger = LoggerFactory.getLogger(RoomListAsyncLoadTask::class.java.simpleName)
+
+        override fun doInBackground(vararg args: String): List<Room> {
+            logger.info("Starting to load...")
+            val loaded = RoomOsmReader().parseOsmFile(osmFile)
+
+            logger.info("Loading complete.")
+            return loaded
+        }
+
+
+        override fun onPostExecute(data: List<Room>) {
+            roomList.value = data
+            logger.info("Loading completed and post execute done.")
+        }
     }
 }
