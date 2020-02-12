@@ -1,8 +1,8 @@
-package de.ironjan.arionav.ionav.room_routing
+package de.ironjan.arionav.ionav.special_routing.model.readers
 
 import android.util.Xml
-import de.ironjan.arionav.ionav.room_routing.model.osm.Node
-import de.ironjan.arionav.ionav.room_routing.model.osm.Way
+import de.ironjan.arionav.ionav.special_routing.model.osm.Node
+import de.ironjan.arionav.ionav.special_routing.model.osm.Way
 import org.slf4j.LoggerFactory
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException

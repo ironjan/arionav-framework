@@ -21,8 +21,8 @@ import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.*
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
-import de.ironjan.arionav.ionav.room_routing.RoomRepository
-import de.ironjan.arionav.ionav.room_routing.model.Room
+import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
+import de.ironjan.arionav.ionav.special_routing.model.Room
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory

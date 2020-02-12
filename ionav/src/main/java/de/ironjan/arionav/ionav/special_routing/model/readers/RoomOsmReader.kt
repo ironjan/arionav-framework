@@ -1,15 +1,19 @@
-package de.ironjan.arionav.ionav.room_routing
+package de.ironjan.arionav.ionav.special_routing.model.readers
 
-import de.ironjan.arionav.ionav.room_routing.model.Room
-import de.ironjan.arionav.ionav.room_routing.model.osm.Node
-import de.ironjan.arionav.ionav.room_routing.model.osm.Way
+import de.ironjan.arionav.ionav.special_routing.model.Room
+import de.ironjan.arionav.ionav.special_routing.model.osm.Node
+import de.ironjan.arionav.ionav.special_routing.model.osm.Way
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
 /**
  * Utility class to read an .osm file and retrieve a list of rooms contained in that file.
  */
-class RoomOsmReader : OsmReader<List<Room>>(isNamedRoomFilter, allNodeFilter, osmToRoomConverter) {
+class RoomOsmReader : OsmReader<List<Room>>(
+    isNamedRoomFilter,
+    allNodeFilter,
+    osmToRoomConverter
+) {
 
 
     companion object {

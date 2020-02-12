@@ -1,4 +1,4 @@
-package de.ironjan.arionav.ionav.room_routing.model.osm
+package de.ironjan.arionav.ionav.special_routing.model.osm
 
 /**
  * Represents a simplified osm node.

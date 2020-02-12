@@ -1,12 +1,16 @@
-package de.ironjan.arionav.ionav.room_routing
+package de.ironjan.arionav.ionav.special_routing.model.readers
 
-import de.ironjan.arionav.ionav.room_routing.model.Poi
-import de.ironjan.arionav.ionav.room_routing.model.osm.Node
-import de.ironjan.arionav.ionav.room_routing.model.osm.Way
+import de.ironjan.arionav.ionav.special_routing.model.Poi
+import de.ironjan.arionav.ionav.special_routing.model.osm.Node
+import de.ironjan.arionav.ionav.special_routing.model.osm.Way
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
 
-class PoiOsmReader : OsmReader<List<Poi>>(noWaysFilter, poiNodeFilter, converter) {
+class PoiOsmReader : OsmReader<List<Poi>>(
+    noWaysFilter,
+    poiNodeFilter,
+    converter
+) {
     companion object {
         private val noWaysFilter = { _: Way -> false }
         private val poiNodeFilter =

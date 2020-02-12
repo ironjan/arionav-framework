@@ -1,10 +1,9 @@
-package de.ironjan.arionav.ionav.room_routing
+package de.ironjan.arionav.ionav.special_routing.repository
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.ironjan.arionav.ionav.room_routing.model.Room
+import de.ironjan.arionav.ionav.special_routing.model.Room
+import de.ironjan.arionav.ionav.special_routing.model.readers.RoomOsmReader
 import org.slf4j.LoggerFactory
 
 
