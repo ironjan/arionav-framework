@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory
 /**
  * Utility class to read an .osm file and retrieve a list of rooms contained in that file.
  */
-class RoomOsmReader : OsmReader<List<Room>>(
-    isNamedRoomFilter, allNodeFilter,
-    osmToRoomConverter
-) {
+class RoomOsmReader : OsmReader<List<Room>>(isNamedRoomFilter, allNodeFilter, osmToRoomConverter) {
 
 
     companion object {
@@ -53,7 +50,7 @@ class RoomOsmReader : OsmReader<List<Room>>(
 
                     val center = Coordinate(lat, lon, 0.0)
 
-                    val room = Room(name, center, doorCoordinates)
+                    val room = Room(name, center, doorCoordinates, w.tags)
                     logger.debug("Conversion result: $room")
                     room
                 }
