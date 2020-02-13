@@ -93,7 +93,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         get() = !isInitialized
 
 
-    private lateinit var mapEventsCallback: MapEventsCallback
     private lateinit var ghzExtractor: GhzExtractor
 
     private var routeLayer: org.oscim.layers.vector.PathLayer? = null
@@ -106,9 +105,8 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private val logger = LoggerFactory.getLogger(TAG)
 
-    fun initialize(ghzExtractor: GhzExtractor, mapEventsCallback: MapEventsCallback) {
+    fun initialize(ghzExtractor: GhzExtractor) {
         this.ghzExtractor = ghzExtractor
-        this.mapEventsCallback = mapEventsCallback
         loadMap()
         loadGraphStorage()
     }
@@ -189,15 +187,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     }
 
 
-    interface MapEventsCallback {
-        fun startPointChanged(coordinate: Coordinate)
-        fun endPointChanged(coordinate: Coordinate)
-        fun startPointCleared()
-        fun endPointCleared()
-        fun onRouteShown(pathWrapper: PathWrapper)
-        fun onRouteCleared()
-    }
-
     internal inner class MapEventsReceiver(map: org.oscim.map.Map) : Layer(map), GestureListener {
 
         override fun onGesture(g: Gesture, e: MotionEvent): Boolean {
@@ -269,7 +258,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         routeLayer = createRouteLayer(route, -0x66ff33cd)
         map().layers().add(routeLayer)
         redrawMap()
-        mapEventsCallback.onRouteShown(route)
     }
 
     private fun clearRoute() {
