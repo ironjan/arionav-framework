@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import de.ironjan.arionav.ionav.special_routing.model.Poi
 import de.ironjan.arionav.ionav.special_routing.model.Room
 import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
 import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
+import de.ironjan.arionav.sample.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.slf4j.LoggerFactory
@@ -37,6 +39,8 @@ class MapFragment : Fragment() {
     private val mapName = ArionavSampleApplication.mapName
     private lateinit var ghzExtractor: GhzExtractor
 
+    private val model: SharedViewModel by activityViewModels()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_map, container, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +52,9 @@ class MapFragment : Fragment() {
 
         gpsPositionProvider = GpsPositionProvider(lContext, lifecycle)
         gpsPositionProvider.start()
-    }
+
+
+}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,6 +78,12 @@ class MapFragment : Fragment() {
         attachLifeCycleOwnerToMapView(lifecycleOwner)
         registerLiveDataObservers(lifecycleOwner)
         prepareRoomHandling(lifecycleOwner)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        model.inc()
+
     }
 
     private lateinit var roomLiveData: LiveData<Map<String, Room>>
@@ -176,7 +188,7 @@ class MapFragment : Fragment() {
         })
         button_AR.setOnClickListener(this::onArButtonClick)
 
-
+model.getC().observe(lifecycleOwner, Observer { logger.warn("Counter Value increased to $it.") })
     }
 
     private fun attachLifeCycleOwnerToMapView(lifecycleOwner: LifecycleOwner) {
@@ -191,7 +203,7 @@ class MapFragment : Fragment() {
             return
         }
 
-        logger.info("Starting AR activity with route {}", lDisplayedRoute)
+        logger.info("Starting AR view.", lDisplayedRoute)
         // todo implement
 
         val lContext = context ?: return

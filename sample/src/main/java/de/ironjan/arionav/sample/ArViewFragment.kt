@@ -9,12 +9,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import com.google.ar.core.*
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
+import de.ironjan.arionav.sample.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.activity_ar_view.*
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 import kotlinx.android.synthetic.main.fragment_ar_view.ar_scene_view
@@ -31,6 +33,8 @@ class ArViewFragment : Fragment() {
     private var poiLayoutRenderable: ViewRenderable? = null
     private var loadingMessageSnackbar: Snackbar? = null
 
+    private val model: SharedViewModel by activityViewModels()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_ar_view, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,6 +45,7 @@ class ArViewFragment : Fragment() {
         addUpdateListenerToSceneView()
 
     }
+
 
 
     private fun loadRenderables() {
@@ -78,6 +83,7 @@ class ArViewFragment : Fragment() {
     private var installRequested: Boolean = false
     override fun onResume() {
         super.onResume()
+        model.inc()
 
         locationScene?.resume()
         val lActivtiy = context as Activity ?:return
