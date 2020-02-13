@@ -97,7 +97,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private var routeLayer: org.oscim.layers.vector.PathLayer? = null
     private var remainingRouteLayer: org.oscim.layers.vector.PathLayer? = null
-    var selectedLevel: Double = 0.0
 
     private var startMarkerLayer: ItemizedLayer<MarkerItem>? = null
     private var endMarkerLayer: ItemizedLayer<MarkerItem>? = null
@@ -220,6 +219,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         if (viewModel.hasBothCoordinates) {
             viewModel.clearStartAndEndCoordinates()
         }
+        val selectedLevel = viewModel.getSelectedLevel().value!!
 
         if (!viewModel.hasStartCoordinate) {
             viewModel.setStartCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))

@@ -22,25 +22,22 @@ import de.ironjan.arionav.ionav.special_routing.model.Room
 import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
 import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_map.*
 import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
 import kotlin.math.round
 
 
-class MapFragment: Fragment() {
-private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
+class MapFragment : Fragment() {
+    private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
 
     private lateinit var gpsPositionProvider: GpsPositionProvider
-    private var displayedRoute: PathWrapper? = null
-
-    private var selectedLevel: Double = 0.0
 
     private val ghzResId = ArionavSampleApplication.ghzResId
     private val mapName = ArionavSampleApplication.mapName
     private lateinit var ghzExtractor: GhzExtractor
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-            = inflater.inflate(R.layout.fragment_map, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_map, container, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +63,6 @@ private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
             mapView.viewModel.setStartCoordinate(coordinate)
         }
 
-        button_AR.setOnClickListener(this::onArButtonClick)
 
         mapView.viewModel.setUserPositionProvider(gpsPositionProvider)
         buttonMapFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
@@ -105,18 +101,18 @@ private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
                 room != null -> {
                     logger.info("Got room: $room.")
 
-                     room.coordinate
+                    room.coordinate
 
                 }
                 poi != null -> {
                     logger.info("Got POI: $poi")
 
-                     poi.coordinate
+                    poi.coordinate
 
                 }
                 else -> null
             }
-            if(targetCoordinate != null) {
+            if (targetCoordinate != null) {
                 viewModel.setEndCoordinate(targetCoordinate)
 
                 val lContext = context ?: return@doOnTextChanged
@@ -170,8 +166,16 @@ private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, pos: Int, value: Long) {
                 viewModel.selectLevelListPosition(pos)
+                logger.info("Level List spinner was used. Selected position $pos...")
             }
         }
+
+        viewModel.getCurrentRouteLiveData().observe(lifecycleOwner, Observer {
+            val hasRoute = it != null
+            button_AR.isEnabled = hasRoute
+        })
+        button_AR.setOnClickListener(this::onArButtonClick)
+
 
     }
 
@@ -180,22 +184,17 @@ private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
     }
 
     private fun onArButtonClick(it: View) {
-        if (!it.isEnabled) {
-            logger.warn("button_AR was clicked but is not enabled. Ignoring.")
-            return
-        }
-
-        val lDisplayedRoute = displayedRoute
+        val lDisplayedRoute = viewModel.getRemainingRouteLiveData().value
         if (lDisplayedRoute == null) {
             logger.info("AR button was clicked with null route. Ignoring.")
             // TODO show warning in ui
             return
         }
 
-        logger.info("Starting AR activity with route {}", displayedRoute)
+        logger.info("Starting AR activity with route {}", lDisplayedRoute)
         // todo implement
 
-        val lContext = context ?:return
+        val lContext = context ?: return
         val i = Intent(lContext, ArViewActivity::class.java)
 
         val toSimplifiedRouteJson = PathWrapperJsonConverter.toSimplifiedRouteJson(lDisplayedRoute)
@@ -205,9 +204,5 @@ private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
 
     }
 
-    private fun setSelectedLevel(lvl: Double) {
-        selectedLevel = lvl
-        mapView.selectedLevel = lvl
-    }
 
 }

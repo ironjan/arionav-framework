@@ -105,6 +105,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         val lLevelList = levelList.value ?: return
         positionProvider?.currentLevel = lLevelList[pos]
     }
+    fun getSelectedLevel(): LiveData<Double> = MutableLiveData(levelList.value?.get(selectedLevelListPosition.value?:4))
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 

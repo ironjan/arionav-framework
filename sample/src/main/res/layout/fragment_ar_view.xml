@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@android:id/content">
 
-    <fragment
+    <de.ironjan.arionav.framework.views.ArRouteView
+        android:id="@+id/ar_scene_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="de.ironjan.arionav.sample.ArViewFragment"
-        android:id="@+id/fragment_ar_x" />
+        android:layout_gravity="top"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

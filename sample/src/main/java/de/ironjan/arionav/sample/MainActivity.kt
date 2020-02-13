@@ -27,6 +27,7 @@ import de.ironjan.arionav.ionav.special_routing.model.Room
 import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_map.*
 import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
 import kotlin.math.round
@@ -71,7 +72,7 @@ class MainActivity :
     private fun showCameraRationale() = showPermissionRational(R.string.permission_camera_rationale, CAMERA, cameraRequestCode)
 
     private fun showPermissionRational(rationaleResId: Int, permission: String, requestCode: Int) {
-        Snackbar.make(mainLayout, rationaleResId, Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(content, rationaleResId, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.ok) {
                 requestPermissions(this, arrayOf(permission), requestCode)
             }
