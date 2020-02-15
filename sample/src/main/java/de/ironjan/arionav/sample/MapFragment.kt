@@ -22,6 +22,7 @@ import de.ironjan.arionav.ionav.special_routing.model.Poi
 import de.ironjan.arionav.ionav.special_routing.model.Room
 import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
 import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
+import de.ironjan.arionav.sample.util.InstructionHelper
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.slf4j.LoggerFactory
@@ -58,6 +59,9 @@ class MapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mapView.initialize(ghzExtractor)
 
+
+        model.setMapViewViewModel(mapView.viewModel)
+
         buttonCenterOnPos.setOnClickListener {
             mapView.centerOnUserPosition()
         }
@@ -79,9 +83,13 @@ class MapFragment : Fragment() {
     }
 
     override fun onResume() {
+        mapView.onResume()
         super.onResume()
-        model.inc()
+    }
 
+    override fun onPause() {
+        mapView.onPause()
+        super.onPause()
     }
 
     private lateinit var roomLiveData: LiveData<Map<String, Room>>
@@ -187,14 +195,7 @@ class MapFragment : Fragment() {
         viewModel.getNextInstructionLiveData().observe(lifecycleOwner, Observer {
             if (it == null) return@Observer
             if (viewModel.getShowRemainingRouteCurrentValue()) {
-
-                val distance = round(it.distance * 100) / 100
-                val instructionText = MainActivity.InstructionSignToText.getTextFor(it.sign)
-                val timeInSeconds = it.time / 1000
-                val timeInMinutes = timeInSeconds / 60
-                val msg = "$instructionText ${it.name}, ${distance}m, ${timeInMinutes}min"
-
-                txtCurrentInstruction.setText(msg)
+                txtCurrentInstruction.setText(InstructionHelper.toText(it))
             }
         })
 
@@ -214,7 +215,7 @@ class MapFragment : Fragment() {
         })
         button_AR.setOnClickListener(this::onArButtonClick)
 
-        model.getC().observe(lifecycleOwner, Observer { logger.warn("Counter Value increased to $it.") })
+
     }
 
     private fun attachLifeCycleOwnerToMapView(lifecycleOwner: LifecycleOwner) {

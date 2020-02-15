@@ -10,20 +10,21 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.google.ar.core.*
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
-import de.ironjan.arionav.framework.PathWrapperJsonConverter
+import de.ironjan.arionav.sample.util.InstructionHelper
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
-import kotlinx.android.synthetic.main.activity_ar_view.*
-import kotlinx.android.synthetic.main.fragment_ar_view.*
 import kotlinx.android.synthetic.main.fragment_ar_view.ar_scene_view
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
+import java.lang.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 
@@ -44,13 +45,27 @@ class ArViewFragment : Fragment() {
         loadRenderables()
         addUpdateListenerToSceneView()
 
+        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+        registerLiveDataObservers(lifecycleOwner)
+    }
+
+    private var lastUpdate = 0L
+    private val FiveSecondsInMillis = 5000
+
+    private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
+        model.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+            val currentTime = System.currentTimeMillis()
+            if(currentTime - lastUpdate > FiveSecondsInMillis){
+                // FIXME verify that AR is setup...
+                updateLocationScene()
+            }
+        })
     }
 
 
-
     private fun loadRenderables() {
-        val lContext = context?:return
-        
+        val lContext = context ?: return
+
         // Build a renderable from a 2D View.
         val poiLayout = ViewRenderable.builder()
             .setView(lContext, R.layout.view_basic_instruction)
@@ -81,12 +96,12 @@ class ArViewFragment : Fragment() {
 
     // region lifecycle
     private var installRequested: Boolean = false
+
     override fun onResume() {
         super.onResume()
-        model.inc()
 
         locationScene?.resume()
-        val lActivtiy = context as Activity ?:return
+        val lActivtiy = context as Activity ?: return
 
         if (ar_scene_view?.session == null) {
             // If the session wasn't created yet, don't resume rendering.
@@ -121,6 +136,7 @@ class ArViewFragment : Fragment() {
         super.onPause()
         locationScene?.pause()
         ar_scene_view?.pause()
+        hideLoadingMessage()
     }
 
     override fun onDestroy() {
@@ -165,7 +181,13 @@ class ArViewFragment : Fragment() {
         }
     }
 
+
     private val logger = LoggerFactory.getLogger(ArViewFragment::class.java.simpleName)
+
+    private fun updateLocationScene() {
+        locationScene?.mLocationMarkers?.clear()
+        setupLocationScene()
+    }
 
     private fun setupLocationScene() {
         // If our locationScene object hasn't been setup yet, this is a good time to do it
@@ -173,25 +195,20 @@ class ArViewFragment : Fragment() {
         val lActivity = context as Activity ?: return
         locationScene = LocationScene(lActivity, ar_scene_view)
 
-        val json = arguments?.getString("ROUTE", "")
-        if (!json.isNullOrEmpty()) {
-            val route = PathWrapperJsonConverter.fromJson(json)
-            logger.info("Showing route {} in AR", route)
 
-            route.zipped.forEachIndexed { index, pair ->
-                val waypoint = pair.first
-                val instruction = pair.second
+        val route = model.getRemainingRouteLiveData().value
 
-                val name = "$index ${instruction.name}"
-                addPoi(waypoint.lat, waypoint.lon, name)
+        route
+            ?.instructions
+            ?.take(2)
+            ?.forEach { instr ->
+                val wp = instr.points.last()
+                addPoi(wp.lat, wp.lon, InstructionHelper.toText(instr))
             }
-        } else {
-            logger.info("No route given..") // todo show ui notification
-        }
     }
 
 
-    val maxDistance = 5000
+    val maxDistance = FiveSecondsInMillis
 
     private fun addPoi(lat: Double, lon: Double, poi: String) {
         val lContext = context ?: return
@@ -207,7 +224,7 @@ class ArViewFragment : Fragment() {
                 base.renderable = renderable
                 renderable.view.setOnTouchListener { _, _ ->
                     val lContext = context
-                    if(lContext != null){
+                    if (lContext != null) {
                         Toast.makeText(lContext, "$poi touched!", Toast.LENGTH_SHORT).show()
                     }
                     true
