@@ -14,7 +14,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.graphhopper.PathWrapper
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.GhzExtractor
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
@@ -23,7 +22,6 @@ import de.ironjan.arionav.ionav.special_routing.model.Room
 import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
 import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
@@ -32,13 +30,12 @@ import kotlin.math.round
 
 class MapFragment : Fragment() {
     private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
-
     private lateinit var gpsPositionProvider: GpsPositionProvider
 
     private val ghzResId = ArionavSampleApplication.ghzResId
+
     private val mapName = ArionavSampleApplication.mapName
     private lateinit var ghzExtractor: GhzExtractor
-
     private val model: SharedViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_map, container, false)
@@ -87,19 +84,29 @@ class MapFragment : Fragment() {
     }
 
     private lateinit var roomLiveData: LiveData<Map<String, Room>>
+
     private lateinit var poiLiveData: LiveData<Map<String, Poi>>
+    private val suggestionsList = mutableListOf<String>()
+    private val roomList = mutableSetOf<String>()
+    private val poiList = mutableSetOf<String>()
+    private lateinit var endSuggestionsAdapter: ArrayAdapter<String>
+    private lateinit var startSuggestionsAdapter: ArrayAdapter<String>
 
     private fun prepareRoomHandling(lifecycleOwner: LifecycleOwner) {
-//        if(true) return
+        val lContext = context ?: return
+        startSuggestionsAdapter = ArrayAdapter(lContext, android.R.layout.simple_dropdown_item_1line, suggestionsList)
+        edit_start_coordinates.setAdapter(startSuggestionsAdapter)
+        endSuggestionsAdapter = ArrayAdapter(lContext, android.R.layout.simple_dropdown_item_1line, suggestionsList)
+        edit_end_coordinates.setAdapter(endSuggestionsAdapter)
 
         roomLiveData = RoomRepository().getRooms(ghzExtractor.osmFilePath)
         poiLiveData = PoiRepository().getPois(ghzExtractor.osmFilePath)
 
         roomLiveData.observe(lifecycleOwner, Observer {
-            /* todo update vorschlagsliste */
+            replaceListContentWith(roomList, it.keys)
         })
         poiLiveData.observe(lifecycleOwner, Observer {
-            /* todo update vorschlagsliste */
+            replaceListContentWith(poiList, it.keys)
         })
 
         edit_end_coordinates.doOnTextChanged { text, _, _, _ ->
@@ -133,6 +140,24 @@ class MapFragment : Fragment() {
         }
 
 
+
+    }
+
+    private fun replaceListContentWith(list: MutableSet<String>, newContents: Set<String>) {
+        list.apply {
+            clear()
+            addAll(newContents)
+        }
+        updateSuggestionsList(startSuggestionsAdapter)
+        updateSuggestionsList(endSuggestionsAdapter)
+    }
+
+    private fun updateSuggestionsList(adapter: ArrayAdapter<String>) {
+        adapter.apply {
+            clear()
+            addAll(poiList)
+            addAll(roomList)
+        }
     }
 
     private val viewModel
