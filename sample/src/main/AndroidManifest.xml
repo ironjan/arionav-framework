@@ -19,7 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ArViewActivity" />
 
         <!-- Indicates that the app supports, but does not require ARCore ("AR Optional").
              Unlike "AR Required" apps, the Google Play Store will not automatically

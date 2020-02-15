@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.GhzExtractor
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
@@ -213,7 +214,7 @@ class MapFragment : Fragment() {
         })
         button_AR.setOnClickListener(this::onArButtonClick)
 
-model.getC().observe(lifecycleOwner, Observer { logger.warn("Counter Value increased to $it.") })
+        model.getC().observe(lifecycleOwner, Observer { logger.warn("Counter Value increased to $it.") })
     }
 
     private fun attachLifeCycleOwnerToMapView(lifecycleOwner: LifecycleOwner) {
@@ -228,17 +229,8 @@ model.getC().observe(lifecycleOwner, Observer { logger.warn("Counter Value incre
             return
         }
 
-        logger.info("Starting AR view.", lDisplayedRoute)
-        // todo implement
-
-        val lContext = context ?: return
-        val i = Intent(lContext, ArViewActivity::class.java)
-
-        val toSimplifiedRouteJson = PathWrapperJsonConverter.toSimplifiedRouteJson(lDisplayedRoute)
-        i.putExtra("ROUTE", toSimplifiedRouteJson)
-        startActivity(i);
-
-
+        logger.info("Switching to AR view.")
+        findNavController().navigate(R.id.action_to_arViewFragment)
     }
 
 

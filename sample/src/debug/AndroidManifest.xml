@@ -3,8 +3,5 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.ironjan.arionav.sample">
 
-    <application tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".ArViewActivity" android:exported="true" />
-    </application>
 
 </manifest>
