@@ -86,6 +86,9 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     fun toggleFollowUserPosition() {
         followUserPosition.value = followUserPosition.value?.not()
     }
+    fun setFollowUserPosition(b : Boolean) {
+        followUserPosition.value = b
+    }
 
     private val showRemainingRoute: MutableLiveData<Boolean> = MutableLiveData(false)
     fun toggleShowRemainingRoute() {

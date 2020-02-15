@@ -195,6 +195,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             }
 
             logger.debug("Gesture: $g, MotionEvent: ${e.action}, ${e.x}, ${e.y}, count: ${e.pointerCount}, time: ${e.time}")
+            viewModel.setFollowUserPosition(false)
             return false
         }
 
