@@ -44,13 +44,13 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
 
-    api 'org.mapsforge:vtm-android:0.12.0'
-    api 'org.mapsforge:vtm-android:0.12.0:natives-armeabi-v7a'
-    api 'org.mapsforge:vtm-android:0.12.0:natives-arm64-v8a'
-    api 'org.mapsforge:vtm-android:0.12.0:natives-x86'
-    api 'org.mapsforge:vtm-android:0.12.0:natives-x86_64'
-    api 'org.mapsforge:vtm-jts:0.12.0'
-    api 'org.mapsforge:vtm-themes:0.12.0'
+    api 'org.mapsforge:vtm-android:0.13.0'
+    api 'org.mapsforge:vtm-android:0.13.0:natives-armeabi-v7a'
+    api 'org.mapsforge:vtm-android:0.13.0:natives-arm64-v8a'
+    api 'org.mapsforge:vtm-android:0.13.0:natives-x86'
+    api 'org.mapsforge:vtm-android:0.13.0:natives-x86_64'
+    api 'org.mapsforge:vtm-jts:0.13.0'
+    api 'org.mapsforge:vtm-themes:0.13.0'
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha01"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha01"
