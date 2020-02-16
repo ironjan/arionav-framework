@@ -3,4 +3,7 @@
     <string name="permission_camera_rationale">Camera access is required for AR navigation.</string>
     <string name="ok">OK</string>
     <string name="permission_fine_location_rationale">The location permission is required for navigation and the app will not work without it.</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>
