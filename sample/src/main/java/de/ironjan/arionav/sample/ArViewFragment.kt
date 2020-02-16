@@ -17,7 +17,7 @@ import com.google.ar.core.*
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
-import de.ironjan.arionav.sample.util.InstructionHelper
+import com.graphhopper.util.Instruction
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.fragment_ar_view.ar_scene_view
 import org.slf4j.LoggerFactory
@@ -29,6 +29,8 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 
 class ArViewFragment : Fragment() {
+    private var locationSceneIsSetUp: Boolean = false
+
     private var locationScene: LocationScene? = null
     private var hasFinishedLoading: Boolean = false
     private var poiLayoutRenderable: ViewRenderable? = null
@@ -54,10 +56,13 @@ class ArViewFragment : Fragment() {
 
     private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
         model.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+            if(!locationSceneIsSetUp) return@Observer
+
             val currentTime = System.currentTimeMillis()
             if(currentTime - lastUpdate > FiveSecondsInMillis){
                 // FIXME verify that AR is setup...
                 updateLocationScene()
+                lastUpdate = currentTime
             }
         })
     }
@@ -186,6 +191,7 @@ class ArViewFragment : Fragment() {
 
     private fun updateLocationScene() {
         locationScene?.mLocationMarkers?.clear()
+        logger.info("Cleared scene")
         setupLocationScene()
     }
 
@@ -203,29 +209,33 @@ class ArViewFragment : Fragment() {
             ?.take(2)
             ?.forEach { instr ->
                 val wp = instr.points.last()
-                addPoi(wp.lat, wp.lon, InstructionHelper.toText(instr))
+                addPoi(wp.lat, wp.lon, instr)
             }
+        locationSceneIsSetUp = true
     }
 
 
     val maxDistance = FiveSecondsInMillis
 
-    private fun addPoi(lat: Double, lon: Double, poi: String) {
+    private fun addPoi(lat: Double, lon: Double, instruction: Instruction) {
+        logger.info("Added marker for '$instruction' at $lat,$lon.")
         val lContext = context ?: return
         ViewRenderable.builder()
             .setView(lContext, R.layout.view_basic_instruction)
             .build()
             .thenAccept { renderable ->
                 val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
+                val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
 
-                txtName.text = poi
+                txtName.text = instruction.name
+                txtDistance.text = "${instruction.distance}m"
 
                 val base = Node()
                 base.renderable = renderable
                 renderable.view.setOnTouchListener { _, _ ->
                     val lContext = context
                     if (lContext != null) {
-                        Toast.makeText(lContext, "$poi touched!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(lContext, "$instruction touched!", Toast.LENGTH_SHORT).show()
                     }
                     true
                 }
@@ -234,12 +244,13 @@ class ArViewFragment : Fragment() {
                 marker.apply {
                     setRenderEvent {
                         val eView = renderable.view
-                        val txtDistance = eView.findViewById<TextView>(R.id.instructionDistanceInMeters)
-                        txtDistance.text = "${it.distance}m"
-                        it.scaleModifier = if (it.distance < 100) 1f else 500f / it.distance
+                         "${it.distance}m"
+//                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
                     }
                     onlyRenderWhenWithin = maxDistance
                 }
+                marker.height=2f
+
 
                 // Adding the marker
                 locationScene?.mLocationMarkers?.add(marker)
