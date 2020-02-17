@@ -1,14 +1,12 @@
 package de.ironjan.arionav.sample.viewmodel
 
-import android.net.wifi.ScanResult
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav.ionav.positioning.wifi.model.SignalStrengthResult
 import de.ironjan.arionav.sample.R
 
-class MyAdapter(private var myDataset: List<SignalStrengthResult>) :
+class MyAdapter<T>(private var myDataset: List<T>, private val toStringConverter: (T) -> String) :
     RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     // Provide a reference to the views for each data item
@@ -32,16 +30,15 @@ class MyAdapter(private var myDataset: List<SignalStrengthResult>) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        val scanResult = myDataset[position]
 
 
-        holder.textView.text = "${scanResult.BSSID} ${scanResult.level} ${scanResult.scanResult.level}dbm"
+        holder.textView.text = toStringConverter(myDataset[position])
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
 
-    fun replaceData(it: List<SignalStrengthResult>) {
+    fun replaceData(it: List<T>) {
         myDataset = it
         notifyDataSetChanged()
     }
