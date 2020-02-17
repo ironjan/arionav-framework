@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav.bluetooth_positioning_provider_implementation.R
+import de.ironjan.arionav.sample.R
 
-class MyAdapter(private val myDataset: Array<String>) :
+class MyAdapter(private var myDataset: List<String>) :
     RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     // Provide a reference to the views for each data item
@@ -35,5 +35,10 @@ class MyAdapter(private val myDataset: Array<String>) :
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
+
+    fun replaceData(it: List<String>) {
+        myDataset = it
+        notifyDataSetChanged()
+    }
 }
 
