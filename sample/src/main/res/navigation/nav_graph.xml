@@ -11,14 +11,32 @@
         tools:layout="@layout/fragment_map"
         android:label="MapFragment" >
         <action
+            android:id="@+id/action_to_mapFragment"
+            app:destination="@id/mapFragment" />
+
+        <action
             android:id="@+id/action_to_arViewFragment"
             app:destination="@id/arViewFragment" />
+
+        <action android:id="@+id/action_to_nearbyWifiApsFragment"
+            app:destination="@+id/nearbyWifiAps" />
     </fragment>
     <fragment
         android:id="@+id/arViewFragment"
         android:name="de.ironjan.arionav.sample.ArViewFragment"
         tools:layout="@layout/fragment_ar_view"
         android:label="ArViewFragment" >
+        <action
+            android:id="@+id/action_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action android:id="@+id/action_to_nearbyWifiApsFragment"
+            app:destination="@+id/nearbyWifiAps" />
+    </fragment>
+
+    <fragment android:id="@+id/nearbyWifiAps"
+        android:name="de.ironjan.arionav.ionav.positioning.bluetooth.view.NearbyAccessPointsFragment"
+        tools:layout="@layout/fragment_nearby_wifi_aps"
+        android:label="NearbyAccessPointsFragment">
         <action
             android:id="@+id/action_to_mapFragment"
             app:destination="@id/mapFragment" />

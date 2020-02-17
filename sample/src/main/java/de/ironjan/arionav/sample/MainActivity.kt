@@ -2,44 +2,23 @@ package de.ironjan.arionav.sample
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
-import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.graphhopper.PathWrapper
-import de.ironjan.arionav.framework.PathWrapperJsonConverter
-import de.ironjan.arionav.ionav.*
-import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
-import de.ironjan.arionav.ionav.special_routing.model.Poi
-import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
-import de.ironjan.arionav.ionav.special_routing.model.Room
-import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
+import de.ironjan.arionav.ionav.PermissionHelper
 import de.ironjan.arionav.sample.util.Mailer
-import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_map.*
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
-import kotlin.math.round
 
 // todo initialize spinner with level data
 class MainActivity :
@@ -65,11 +44,13 @@ class MainActivity :
         main_drawer_layout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
 
-        val navController = findNavController(R.id.nav_host_fragment)
         nav_view.setupWithNavController(navController)
 
         nav_view.setNavigationItemSelectedListener { navigateOnMenuItem(it) }
     }
+
+    val navController
+        get() = findNavController(R.id.nav_host_fragment)
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,7 +70,17 @@ class MainActivity :
     }
 
     private fun navigateOnMenuItem(item: MenuItem): Boolean {
+        main_drawer_layout.closeDrawers();
+        // FIXME optimize: navigate only if destination!=location
         return when (item.itemId) {
+            R.id.mnuMap -> {
+                navController.navigate(R.id.action_to_mapFragment)
+                true
+            }
+            R.id.mnuWifiAps -> {
+                navController.navigate(R.id.action_to_nearbyWifiApsFragment)
+                true
+            }
             R.id.mnuFeedback -> {
                 Mailer.sendFeedback(this)
                 true

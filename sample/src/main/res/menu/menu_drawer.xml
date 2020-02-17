@@ -5,7 +5,20 @@
 <!--        android:title="My Account"/>-->
 <!--    <item android:id="@+id/settings"-->
 <!--        android:title="Settings"/>-->
-    <item android:id="@+id/mnuFeedback"
-        android:title="Send Feedback"/>
-
+    <group android:id="@+id/mnuGrpGeneral">
+        <item android:id="@+id/mnuMap"
+            android:title="Map View"/>
+    </group>
+    <group android:id="@+id/mnuGrpProviderDebug">
+        <item android:id="@+id/mnuWifiAps"
+            android:title="Nearby Wifi APs" />
+        <item android:id="@+id/mnuBtBeacons"
+            android:title="Nearby Bluetooth Beacons"
+            android:visible="false"/>
+    </group>
+    <group android:id="@+id/mnuGrpMisc">
+        <item
+            android:id="@+id/mnuFeedback"
+            android:title="Send Feedback" />
+    </group>
 </menu>
