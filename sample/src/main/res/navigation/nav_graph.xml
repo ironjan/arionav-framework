@@ -34,7 +34,7 @@
     </fragment>
 
     <fragment android:id="@+id/nearbyWifiAps"
-        android:name="de.ironjan.arionav.ionav.positioning.bluetooth.view.NearbyAccessPointsFragment"
+        android:name="de.ironjan.arionav.sample.NearbyAccessPointsFragment"
         tools:layout="@layout/fragment_nearby_wifi_aps"
         android:label="NearbyAccessPointsFragment">
         <action

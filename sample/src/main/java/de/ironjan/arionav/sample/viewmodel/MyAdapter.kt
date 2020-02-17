@@ -1,4 +1,4 @@
-package de.ironjan.arionav.ionav.positioning.bluetooth.view_model
+package de.ironjan.arionav.sample.viewmodel
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -36,3 +36,4 @@ class MyAdapter(private val myDataset: Array<String>) :
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
 }
+
