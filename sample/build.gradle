@@ -49,7 +49,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
     implementation project(path: ':ionav')
     implementation project(path: ':gps-positioning-implementation')
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
+    implementation project(path: ':wifi-positioning-provider-implementation')
+    implementation project(path: ':bluetooth-positioning-provider-implementation')
 
 }
