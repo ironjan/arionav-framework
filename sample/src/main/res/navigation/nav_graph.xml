@@ -40,5 +40,8 @@
         <action
             android:id="@+id/action_to_mapFragment"
             app:destination="@id/mapFragment" />
+
+        <action android:id="@+id/action_to_nearbyWifiApsFragment"
+            app:destination="@+id/nearbyWifiAps" />
     </fragment>
 </navigation>
