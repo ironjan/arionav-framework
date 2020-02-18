@@ -2,68 +2,17 @@ package de.ironjan.arionav.sample
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.RemoteException
 import android.view.View
 import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothLeSpike
-import org.altbeacon.beacon.*
 import org.slf4j.LoggerFactory
-import kotlin.math.log
 
 
 /* https://github.com/AltBeacon/android-beacon-library */
-class NearbyBluetoothTokensFragment : NearbySendersListFragment<String>({ it }), BeaconConsumer {
+class NearbyBluetoothTokensFragment : NearbySendersListFragment<String>({ it }) {
     private val logger = LoggerFactory.getLogger(NearbyBluetoothTokensFragment::class.java.simpleName)
-    override fun getApplicationContext(): Context {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun unbindService(p0: ServiceConnection?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun bindService(p0: Intent?, p1: ServiceConnection?, p2: Int): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onBeaconServiceConnect() {
-        beaconManager?.apply {
-            removeAllMonitorNotifiers()
-            addMonitorNotifier(object : MonitorNotifier {
-                override fun didEnterRegion(region: Region) {
-                    logger.info("I just saw an beacon for the first time! ${region.bluetoothAddress}")
-                }
-
-                override fun didExitRegion(region: Region) {
-                    logger.info("I no longer see an beacon: ${region.bluetoothAddress}")
-                }
-
-                override fun didDetermineStateForRegion(state: Int, region: Region) {
-                    logger.info("I have just switched from seeing/not seeing beacons: $state")
-                }
-            })
-            addRangeNotifier { beacons, region ->
-                if (beacons.isNotEmpty()) {
-                    logger.info("The first beacon I see is about " + beacons.iterator().next().distance + " meters away.")
-                }
-            }
-
-        }
-
-        try {
-            beaconManager?.startMonitoringBeaconsInRegion(Region("myMonitoringUniqueId", null, null, null))
-        } catch (e: RemoteException) {
-            logger.error(e.message, e)
-        }
-
-    }
-
-    private var beaconManager: BeaconManager? = null
 
     private val devices = emptyMap<String, String>().toMutableMap()
 
@@ -88,6 +37,8 @@ class NearbyBluetoothTokensFragment : NearbySendersListFragment<String>({ it }),
          val handler: Handler = Handler(Looper.getMainLooper())
 
         val bluetoothLeSpike = BluetoothLeSpike(lContext, cb, handler)
+
+        // FIXME keep scanning
         bluetoothLeSpike.scanLeDevice(true)
         logger.info("Triggered scan")
     }
@@ -116,11 +67,6 @@ class NearbyBluetoothTokensFragment : NearbySendersListFragment<String>({ it }),
             return ((rssi - MIN_RSSI).toFloat() * outputRange / inputRange).toInt()
         }
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        beaconManager?.unbind(this);
-    }
-
     companion object {
     }
 
