@@ -15,7 +15,7 @@ import de.ironjan.arionav.ionav.positioning.wifi.model.SignalStrengthResult
 import de.ironjan.arionav.sample.viewmodel.NearbyAccessPointsViewModel
 
 
-class NearbyAccessPointsFragment : NearbySendersListFragment<SignalStrengthResult>({ scanResult -> "${scanResult.BSSID} ${scanResult.level} ${scanResult.scanResult.level}dbm" }) {
+class NearbyAccessPointsFragment : CustomListFragment<SignalStrengthResult>({ scanResult -> "${scanResult.BSSID} ${scanResult.level} ${scanResult.scanResult.level}dbm" }) {
 
     private lateinit var wifiManager: WifiManager
     private lateinit var wifiScanReceiver: BroadcastReceiver

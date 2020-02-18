@@ -85,6 +85,10 @@ class MainActivity :
                 navController.navigate(R.id.action_to_nearbyBluetoothTokensFragment)
                 true
             }
+            R.id.mnuPoiList -> {
+                navController.navigate(R.id.action_to_poiListFragment)
+                true
+            }
             R.id.mnuFeedback -> {
                 Mailer.sendFeedback(this)
                 true

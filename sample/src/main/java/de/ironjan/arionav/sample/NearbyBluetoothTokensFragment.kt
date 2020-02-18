@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory
 
 
 /* https://github.com/AltBeacon/android-beacon-library */
-class NearbyBluetoothTokensFragment : NearbySendersListFragment<String>({ it }) {
+class NearbyBluetoothTokensFragment : CustomListFragment<String>({ it }) {
     private val logger = LoggerFactory.getLogger(NearbyBluetoothTokensFragment::class.java.simpleName)
 
     private val devices = emptyMap<String, String>().toMutableMap()

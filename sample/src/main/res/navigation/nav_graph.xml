@@ -21,6 +21,9 @@
         <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
             app:destination="@+id/nearbyBluetoothTokensFragment" />
 
+        <action android:id="@+id/action_to_poiListFragment"
+            app:destination="@+id/poiListFragment" />
+
 
 
         <action
@@ -42,6 +45,9 @@
 
         <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
             app:destination="@+id/nearbyBluetoothTokensFragment" />
+
+        <action android:id="@+id/action_to_poiListFragment"
+            app:destination="@+id/poiListFragment" />
     </fragment>
 
     <fragment android:id="@+id/nearbyWifiAps"
@@ -57,6 +63,9 @@
 
         <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
             app:destination="@+id/nearbyBluetoothTokensFragment" />
+
+        <action android:id="@+id/action_to_poiListFragment"
+            app:destination="@+id/poiListFragment" />
     </fragment>
     <fragment
         android:id="@+id/nearbyBluetoothTokensFragment"
@@ -72,5 +81,26 @@
 
         <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
             app:destination="@+id/nearbyBluetoothTokensFragment" />
+
+        <action android:id="@+id/action_to_poiListFragment"
+            app:destination="@+id/poiListFragment" />
+    </fragment>
+
+    <fragment android:id="@+id/poiListFragment"
+        android:name="de.ironjan.arionav.sample.PoiListFragment"
+        android:label="PoiListFragment" >
+
+        <action
+            android:id="@+id/action_to_mapFragment"
+            app:destination="@id/mapFragment" />
+
+        <action android:id="@+id/action_to_nearbyWifiApsFragment"
+            app:destination="@+id/nearbyWifiAps" />
+
+        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
+            app:destination="@+id/nearbyBluetoothTokensFragment" />
+
+        <action android:id="@+id/action_to_poiListFragment"
+            app:destination="@+id/poiListFragment" />
     </fragment>
 </navigation>

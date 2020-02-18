@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav.sample.viewmodel.MyAdapter
 
-abstract class NearbySendersListFragment<T>(private val toStringConverter: (T) -> String) : Fragment() {
+abstract class CustomListFragment<T>(private val toStringConverter: (T) -> String) : Fragment() {
     lateinit var dataAdapter: MyAdapter<T>
 
 
