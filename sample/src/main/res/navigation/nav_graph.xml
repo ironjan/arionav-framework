@@ -10,16 +10,23 @@
         android:name="de.ironjan.arionav.sample.MapFragment"
         tools:layout="@layout/fragment_map"
         android:label="MapFragment" >
+
         <action
             android:id="@+id/action_to_mapFragment"
             app:destination="@id/mapFragment" />
+
+        <action android:id="@+id/action_to_nearbyWifiApsFragment"
+            app:destination="@+id/nearbyWifiAps" />
+
+        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
+            app:destination="@+id/nearbyBluetoothTokensFragment" />
+
+
 
         <action
             android:id="@+id/action_to_arViewFragment"
             app:destination="@id/arViewFragment" />
 
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
     </fragment>
     <fragment
         android:id="@+id/arViewFragment"
@@ -29,8 +36,12 @@
         <action
             android:id="@+id/action_to_mapFragment"
             app:destination="@id/mapFragment" />
+
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />
+
+        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
+            app:destination="@+id/nearbyBluetoothTokensFragment" />
     </fragment>
 
     <fragment android:id="@+id/nearbyWifiAps"
@@ -43,5 +54,23 @@
 
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />
+
+        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
+            app:destination="@+id/nearbyBluetoothTokensFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nearbyBluetoothTokensFragment"
+        android:name="de.ironjan.arionav.sample.NearbyBluetoothTokensFragment"
+        android:label="NearbyBluetoothTokensFragment">
+
+        <action
+            android:id="@+id/action_to_mapFragment"
+            app:destination="@id/mapFragment" />
+
+        <action android:id="@+id/action_to_nearbyWifiApsFragment"
+            app:destination="@+id/nearbyWifiAps" />
+
+        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
+            app:destination="@+id/nearbyBluetoothTokensFragment" />
     </fragment>
 </navigation>

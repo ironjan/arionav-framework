@@ -13,8 +13,7 @@
         <item android:id="@+id/mnuWifiAps"
             android:title="Nearby Wifi APs" />
         <item android:id="@+id/mnuBtBeacons"
-            android:title="Nearby Bluetooth Beacons"
-            android:visible="false"/>
+            android:title="Nearby Bluetooth Beacons"/>
     </group>
     <group android:id="@+id/mnuGrpMisc">
         <item

@@ -81,6 +81,10 @@ class MainActivity :
                 navController.navigate(R.id.action_to_nearbyWifiApsFragment)
                 true
             }
+            R.id.mnuBtBeacons -> {
+                navController.navigate(R.id.action_to_nearbyBluetoothTokensFragment)
+                true
+            }
             R.id.mnuFeedback -> {
                 Mailer.sendFeedback(this)
                 true
@@ -92,7 +96,7 @@ class MainActivity :
 
     private fun requestPermissions() {
         PermissionHelper.requestPermission(this, CAMERA, cameraRequestCode)
-        PermissionHelper.requestPermission(this, ACCESS_FINE_LOCATION, cameraRequestCode)
+        PermissionHelper.requestPermission(this, ACCESS_FINE_LOCATION, locationRequestCode)
     }
 
     override fun showRationale(requestCode: Int) {
