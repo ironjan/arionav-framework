@@ -1,19 +1,19 @@
 package de.ironjan.arionav.sample
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.RemoteException
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav.sample.viewmodel.MyAdapter
+import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothLeSpike
 import org.altbeacon.beacon.*
 import org.slf4j.LoggerFactory
+import kotlin.math.log
 
 
 /* https://github.com/AltBeacon/android-beacon-library */
@@ -65,27 +65,63 @@ class NearbyBluetoothTokensFragment : NearbySendersListFragment<String>({ it }),
 
     private var beaconManager: BeaconManager? = null
 
+    private val devices = emptyMap<String, String>().toMutableMap()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val lContext = context ?: return
-        beaconManager = BeaconManager.getInstanceForApplication(lContext);
-        // To detect proprietary beacons, you must add a line like below corresponding to your beacon
-        // type.  Do a web search for "setBeaconLayout" to get the proper expression.
-         beaconManager?.apply {
-             beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.ALTBEACON_LAYOUT));
-             beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.URI_BEACON_LAYOUT));
-             beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.EDDYSTONE_TLM_LAYOUT));
-             beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.EDDYSTONE_UID_LAYOUT));
-             beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.EDDYSTONE_URL_LAYOUT));
-             bind(this@NearbyBluetoothTokensFragment)
-         }
+        val cb = object: BluetoothAdapter.LeScanCallback {
+            val numLevels = 10
+            override fun onLeScan(device: BluetoothDevice?, rssi: Int, scanRecord: ByteArray?) {
+                logger.info("onLeScan: $device, $rssi, $scanRecord")
+                if(device==null) return
+                val address = device.address
+                val strength = calculateSignalLevel(rssi, numLevels)
+                val s = "$address ${device.name} $rssi , $strength/$numLevels"
+
+                devices[address] = s
+                dataAdapter.replaceData(devices.values.toList())
+            }
+
+        }
+         val handler: Handler = Handler(Looper.getMainLooper())
+
+        val bluetoothLeSpike = BluetoothLeSpike(lContext, cb, handler)
+        bluetoothLeSpike.scanLeDevice(true)
+        logger.info("Triggered scan")
     }
 
 
+    /**
+     * Calculates the level of the signal. This should be used any time a signal
+     * is being shown.
+     * From WifiManager.calculateSignalLevel
+     * @param rssi The power of the signal measured in RSSI.
+     * @param numLevels The number of levels to consider in the calculated
+     * level.
+     * @return A level of the signal, given in the range of 0 to numLevels-1
+     * (both inclusive).
+     */
+    fun calculateSignalLevel(rssi: Int, numLevels: Int): Int {
+        val MIN_RSSI = -100
+        val MAX_RSSI = -30 // by test with big tokens right beside phone
+        if (rssi <= MIN_RSSI) {
+            return 0
+        } else if (rssi >= MAX_RSSI) {
+            return numLevels - 1
+        } else {
+            val inputRange = (MAX_RSSI - MIN_RSSI).toFloat()
+            val outputRange = (numLevels - 1).toFloat()
+            return ((rssi - MIN_RSSI).toFloat() * outputRange / inputRange).toInt()
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         beaconManager?.unbind(this);
+    }
+
+    companion object {
     }
 
 }
