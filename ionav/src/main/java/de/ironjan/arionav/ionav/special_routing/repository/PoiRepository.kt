@@ -22,26 +22,6 @@ class PoiRepository {
         }
         return pois
     }
-    /*
-      private val inMemoryCache = mutableMapOf<String, MutableLiveData<List<Room>>>()
-    private val logger = LoggerFactory.getLogger("RoomRepository")
-
-    fun getRooms(osmFile: String): LiveData<List<Room>> {
-        var roomList = inMemoryCache[osmFile]
-
-        if (roomList == null) {
-            roomList = MutableLiveData()
-            inMemoryCache[osmFile] = roomList
-            RoomListAsyncLoadTask(roomList, osmFile).execute()
-
-        }
-
-        logger.info("Returning rooms.")
-        return roomList
-    }
-
-
-     */
 
     private class PoiListAsyncLoadTask(private val poiList: MutableLiveData<Map<String,Poi>>,
                                        private val osmFile: String)
