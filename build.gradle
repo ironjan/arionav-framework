@@ -12,7 +12,7 @@ buildscript {
 
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0-alpha01"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0-alpha02"
 
     }
 }
