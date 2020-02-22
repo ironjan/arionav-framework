@@ -36,9 +36,11 @@ class RoomOsmReader : OsmReader<List<Room>>(
                 val rooms = ways.map { w ->
                     val name = w.tags["name"]!!
 
+                    val roomWayNodeRefs = w.nodeRefs
+                        .mapNotNull { nodeMap[it] }
+
                     val doorNodes =
-                        w.nodeRefs
-                            .mapNotNull { nodeMap[it] }
+                        roomWayNodeRefs
                             .filter { it.tags.containsKey("door") }
 
                     val levelString = w.tags["level"] ?: "0"
@@ -48,9 +50,9 @@ class RoomOsmReader : OsmReader<List<Room>>(
                         Coordinate(n.lat, n.lon, level)
                     }
 
-                    val n = nodes.count()
-                    val lat = nodes.map { it.lat }.sum() / n
-                    val lon = nodes.map { it.lon }.sum() / n
+                    val n = roomWayNodeRefs.count()
+                    val lat = roomWayNodeRefs.map { it.lat }.sum() / n
+                    val lon = roomWayNodeRefs.map { it.lon }.sum() / n
 
                     val center = Coordinate(lat, lon, 0.0)
 
