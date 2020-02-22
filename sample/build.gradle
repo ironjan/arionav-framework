@@ -51,8 +51,8 @@ dependencies {
     implementation project(path: ':wifi-positioning-provider-implementation')
     implementation project(path: ':bluetooth-positioning-provider-implementation')
 
-    compile "io.arrow-kt:arrow-core:0.10.4"
-    compile "io.arrow-kt:arrow-syntax:0.10.4"
+    implementation "io.arrow-kt:arrow-core:0.10.4"
+    implementation "io.arrow-kt:arrow-syntax:0.10.4"
     kapt    "io.arrow-kt:arrow-meta:0.10.4"
 
 
