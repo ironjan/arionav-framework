@@ -24,7 +24,7 @@ class PlacesFragment : Fragment() {
     private var places: List<NamedPlace> = emptyList()
     lateinit var dataAdapter: NamedPlacesAdapter
 
-val logger = LoggerFactory.getLogger(PlacesFragment::class.java.name)
+    val logger = LoggerFactory.getLogger(PlacesFragment::class.java.name)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_nearby_wifi_aps, container, false)
