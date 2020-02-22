@@ -91,7 +91,7 @@
     </fragment>
 
     <fragment android:id="@+id/poiListFragment"
-        android:name="de.ironjan.arionav.sample.PoiListFragment"
+        android:name="de.ironjan.arionav.sample.PlacesFragment"
         android:label="PoiListFragment" >
 
         <action

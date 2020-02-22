@@ -5,19 +5,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import arrow.core.Either
+import de.ironjan.arionav.ionav.special_routing.model.NamedPlace
 import de.ironjan.arionav.ionav.special_routing.model.Poi
 import de.ironjan.arionav.ionav.special_routing.model.Room
 import de.ironjan.arionav.sample.R
 
 
-class EitherPoiRoomAdapter(
-    private var myDataset: List<Either<Poi, Room>>,
-    private val onItemClickListener: EitherPoiRoomAdapter.OnItemClickListener
-) : RecyclerView.Adapter<EitherPoiRoomAdapter.EitherPoiRoomAdapterViewHolder>() {
+class NamedPlacesAdapter(
+    private var myDataset: List<NamedPlace>,
+    private val onItemClickListener: NamedPlacesAdapter.OnItemClickListener
+) : RecyclerView.Adapter<NamedPlacesAdapter.EitherPoiRoomAdapterViewHolder>() {
     class EitherPoiRoomAdapterViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
 
     interface OnItemClickListener {
-        fun onItemClick(item: Either<Poi, Room>)
+        fun onItemClick(item: NamedPlace)
     }
 
     // Create new views (invoked by the layout manager)
@@ -34,20 +35,16 @@ class EitherPoiRoomAdapter(
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: EitherPoiRoomAdapterViewHolder, position: Int) {
-        val either = myDataset[position]
+        val place = myDataset[position]
         val tv = holder.textView
-        tv.text =
-            when (either) {
-                is Either.Left -> either.a.name
-                is Either.Right -> either.b.name
-            }
-        tv.setOnClickListener { onItemClickListener.onItemClick(either) }
+        tv.text = place.name
+        tv.setOnClickListener { onItemClickListener.onItemClick(place) }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
 
-    fun replaceData(it: List<Either<Poi, Room>>) {
+    fun replaceData(it: List<NamedPlace>) {
         myDataset = it
         notifyDataSetChanged()
     }

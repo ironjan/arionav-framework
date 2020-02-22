@@ -9,22 +9,22 @@ import org.xmlpull.v1.XmlPullParserException
 import java.io.FileInputStream
 import java.io.IOException
 
-abstract class OsmReader<T>(private val wayFilter: (Way)->Boolean ,
+open class OsmReader<T>(private val wayFilter: (Way)->Boolean ,
                             private val nodeFilter: (Node)->Boolean ,
-                            private val  converter: (nodes: List<Node>, ways: List<Way>)-> T) {
+                            private val  converter: (nodes: List<Node>, ways: List<Way>)-> List<T>) {
     private val ns: String? = null
 
     @Throws(XmlPullParserException::class, IOException::class)
-     fun parseOsmFile(osmFile: String): T {
+     fun parseOsmFile(osmFile: String): List<T> {
 
         val start = System.currentTimeMillis()
 
-        var ways = parseWays(osmFile, wayFilter)
+        val ways = parseWays(osmFile, wayFilter)
         logger.info("Read ${ways.count()} relevant ways...")
         val waysDone = System.currentTimeMillis()
 
 
-        var nodes = parseNodes(osmFile, nodeFilter)
+        val nodes = parseNodes(osmFile, nodeFilter)
         logger.info("Read ${nodes.count()} relevant nodes...")
         val nodesDone = System.currentTimeMillis()
 

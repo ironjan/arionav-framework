@@ -1,19 +1,20 @@
 package de.ironjan.arionav.ionav.special_routing.model.readers
 
+import de.ironjan.arionav.ionav.special_routing.model.NamedPlace
 import de.ironjan.arionav.ionav.special_routing.model.Poi
 import de.ironjan.arionav.ionav.special_routing.model.osm.Node
 import de.ironjan.arionav.ionav.special_routing.model.osm.Way
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
 
-class PoiOsmReader : OsmReader<List<Poi>>(
+class PoiOsmReader : OsmReader<Poi>(
     noWaysFilter,
     poiNodeFilter,
     converter
 ) {
     companion object {
-        private val noWaysFilter = { _: Way -> false }
-        private val poiNodeFilter =
+        internal val noWaysFilter = { _: Way -> false }
+        internal val poiNodeFilter =
             { n: Node ->
                 val tourismValue = n.tags["tourism"]
                 val isTouristicAttraction = "attraction" == tourismValue
@@ -21,7 +22,7 @@ class PoiOsmReader : OsmReader<List<Poi>>(
 
                 isTouristicAttraction || isTouristicArtwork
             }
-        private val converter =
+        internal val converter =
             { nodes: List<Node>, _: List<Way> ->
                 nodes.map {
                     val name = it.tags["name"] ?: "N.N."
