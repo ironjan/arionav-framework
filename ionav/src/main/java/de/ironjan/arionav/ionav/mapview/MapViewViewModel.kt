@@ -61,7 +61,11 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
 
     private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
-    fun getCurrentRouteLiveData(): LiveData<PathWrapper?> = currentRoute
+    fun getCurrentRouteLiveData(): LiveData<PathWrapper?> {
+        // FIXME better: cache route
+        computeRoute()
+        return currentRoute
+    }
     private val hasRoute: Boolean
         get() = currentRoute.value != null
     val hasStartCoordinate: Boolean
@@ -74,7 +78,11 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         get() = hasStartCoordinate && hasEndCoordinate
 
     private val remainingRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
-    fun getRemainingRouteLiveData(): LiveData<PathWrapper?> = remainingRoute
+    fun getRemainingRouteLiveData(): LiveData<PathWrapper?> {
+        // FIXME better: cache route
+        computeRoute()
+        return remainingRoute
+    }
 
     private val canComputeRoute: Boolean
         get() = hopper != null
@@ -123,7 +131,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     }
 
 
-    private fun computeRoute() {
+    internal fun computeRoute() {
         if (!canComputeRoute) {
             // just ignore. Called on every start and end coordinate change
             return

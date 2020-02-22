@@ -1,6 +1,5 @@
 package de.ironjan.arionav.sample
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import de.ironjan.arionav.framework.PathWrapperJsonConverter
 import de.ironjan.arionav.ionav.GhzExtractor
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.arionav.ionav.special_routing.model.Poi
@@ -24,10 +22,10 @@ import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
 import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
 import de.ironjan.arionav.sample.util.InstructionHelper
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
-import kotlin.math.round
 
 
 class MapFragment : Fragment() {
@@ -76,10 +74,26 @@ class MapFragment : Fragment() {
         buttonMapFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
         buttonRemainingRoute.setOnClickListener { mapView.viewModel.toggleShowRemainingRoute() }
 
+        val selectedPoi = arguments?.getString("selectedPoiCoordinate")
+        if(selectedPoi != null) {
+            logger.info("Selected poi from bundle: $selectedPoi")
+            val coordinate = Coordinate.fromString(selectedPoi)
+            mapView.viewModel.setEndCoordinate(coordinate)
+            mapView.centerOn(coordinate)
+
+            logger.info("Centered map on $coordinate")
+        }
+
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
         attachLifeCycleOwnerToMapView(lifecycleOwner)
         registerLiveDataObservers(lifecycleOwner)
-        prepareRoomHandling(lifecycleOwner)
+        prepareRoomAndPoiHandling(lifecycleOwner)
+
+        if(!mapView.viewModel.hasBothCoordinates) {
+            mapView.viewModel.setStartCoordinate(Coordinate(51.718060,8.748366,0.0))
+            mapView.viewModel.setEndCoordinate(Coordinate(51.718631,8.749061,0.0))
+
+        }
     }
 
     override fun onResume() {
@@ -101,7 +115,7 @@ class MapFragment : Fragment() {
     private lateinit var endSuggestionsAdapter: ArrayAdapter<String>
     private lateinit var startSuggestionsAdapter: ArrayAdapter<String>
 
-    private fun prepareRoomHandling(lifecycleOwner: LifecycleOwner) {
+    private fun prepareRoomAndPoiHandling(lifecycleOwner: LifecycleOwner) {
         val lContext = context ?: return
         startSuggestionsAdapter = ArrayAdapter(lContext, android.R.layout.simple_dropdown_item_1line, suggestionsList)
         edit_start_coordinates.setAdapter(startSuggestionsAdapter)

@@ -29,6 +29,10 @@
         <action
             android:id="@+id/action_to_arViewFragment"
             app:destination="@id/arViewFragment" />
+        <argument
+            android:name="selectedPoiCoordinate"
+            app:argType="string"
+            app:nullable="true" />
 
     </fragment>
     <fragment

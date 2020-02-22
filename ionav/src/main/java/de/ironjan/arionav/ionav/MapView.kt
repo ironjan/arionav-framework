@@ -60,9 +60,11 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             }
         })
 
-        viewModel.getCurrentRouteLiveData().observe(lifecycleOwner, Observer {
+        val currentRouteLiveData = viewModel.getCurrentRouteLiveData()
+        currentRouteLiveData.observe(lifecycleOwner, Observer {
             showRoute(it)
         })
+        showRoute(currentRouteLiveData.value)
 
         viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
             if(viewModel.getShowRemainingRouteCurrentValue()){
@@ -117,6 +119,8 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
                 viewModel.hopper = graphHopper
+                // FIXME workaround!
+                viewModel.computeRoute()
                 isInitialized = true
             }
 
@@ -300,10 +304,15 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private fun redrawMap() = map().updateMap(true)
 
     fun centerOnUserPosition() {
-        val lUserPosition = viewModel.getUserPositionLiveData().value ?: return
+        val coordinate = viewModel.getUserPositionLiveData().value ?: return
 
+        centerOn(coordinate)
+
+    }
+
+     fun centerOn(coordinate: Coordinate) {
         val scale = map().mapPosition.scale
-        map().setMapPosition(lUserPosition.lat, lUserPosition.lon, scale)
-
+        map().setMapPosition(coordinate.lat, coordinate.lon, scale)
+         redrawMap()
     }
 }
