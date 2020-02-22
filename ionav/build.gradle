@@ -56,8 +56,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha01"
 
 
-    api 'com.github.ironjan.graphhopper:geocoding:1.0-pre20-gh-004'
-    api 'com.github.ironjan.graphhopper:level-extension:1.0-pre20-gh-004'
+    api 'com.github.ironjan.graphhopper:level-extension:1.0-pre20-gh-006'
 
 
     testImplementation 'junit:junit:4.12'
