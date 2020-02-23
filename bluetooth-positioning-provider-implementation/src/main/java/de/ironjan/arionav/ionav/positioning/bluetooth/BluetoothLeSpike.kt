@@ -2,6 +2,8 @@ package de.ironjan.arionav.ionav.positioning.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
+import android.bluetooth.le.BluetoothLeScanner
+import android.bluetooth.le.ScanCallback
 import android.content.Context
 import android.os.Handler
 import androidx.core.content.ContextCompat
@@ -17,13 +19,13 @@ bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
 
  */
 class BluetoothLeSpike(private val context: Context,
-                       private val leScanCallback: BluetoothAdapter.LeScanCallback,
+                       private val leScanCallback: ScanCallback,
                        private val handler: Handler) {
 
 
-    private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
+    private val bluetoothAdapter: BluetoothLeScanner? by lazy(LazyThreadSafetyMode.NONE) {
         val bluetoothManager = ContextCompat.getSystemService(context, BluetoothManager::class.java)
-        bluetoothManager?.adapter
+        bluetoothManager?.adapter?.bluetoothLeScanner
     }
 
     private val BluetoothAdapter.isDisabled: Boolean
@@ -37,14 +39,14 @@ class BluetoothLeSpike(private val context: Context,
                 // Stops scanning after a pre-defined scan period.
                 handler.postDelayed({
                     mScanning = false
-                    bluetoothAdapter?.stopLeScan(leScanCallback)
+                    bluetoothAdapter?.stopScan(leScanCallback)
                 }, SCAN_PERIOD)
                 mScanning = true
-                bluetoothAdapter?.startLeScan(leScanCallback)
+                bluetoothAdapter?.startScan(leScanCallback)
             }
             else -> {
                 mScanning = false
-                bluetoothAdapter?.stopLeScan(leScanCallback)
+                bluetoothAdapter?.stopScan(leScanCallback)
             }
         }
     }

@@ -2,6 +2,8 @@ package de.ironjan.arionav.sample
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,12 +21,22 @@ class NearbyBluetoothTokensFragment : CustomListFragment<String>({ it }) {
         super.onViewCreated(view, savedInstanceState)
 
         val lContext = context ?: return
-        val cb = object: BluetoothAdapter.LeScanCallback {
+        val cb = object: ScanCallback() {
             val numLevels = 10
-            override fun onLeScan(device: BluetoothDevice?, rssi: Int, scanRecord: ByteArray?) {
-                logger.info("onLeScan: $device, $rssi, $scanRecord")
-                if(device==null) return
+            override fun onScanFailed(errorCode: Int) {
+                super.onScanFailed(errorCode)
+            }
+
+            override fun onScanResult(callbackType: Int, result: ScanResult?) {
+                super.onScanResult(callbackType, result)
+                logger.info("onScanResult: $callbackType, $result")
+
+                if(result==null) return
+
+                val device = result.device
                 val address = device.address
+                val rssi = result.rssi
+
                 val strength = calculateSignalLevel(rssi, numLevels)
                 val s = "$address ${device.name} $rssi , $strength/$numLevels"
 
@@ -32,6 +44,9 @@ class NearbyBluetoothTokensFragment : CustomListFragment<String>({ it }) {
                 dataAdapter.replaceData(devices.values.toList())
             }
 
+            override fun onBatchScanResults(results: MutableList<ScanResult>?) {
+                super.onBatchScanResults(results)
+            }
         }
          val handler: Handler = Handler(Looper.getMainLooper())
 
