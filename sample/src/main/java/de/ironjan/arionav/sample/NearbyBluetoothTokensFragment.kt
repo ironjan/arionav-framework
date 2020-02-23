@@ -22,7 +22,6 @@ class NearbyBluetoothTokensFragment : CustomListFragment<ScanResult>(scanResultT
         override fun onPositionChange(c: Coordinate?) {
             Toast.makeText(context ?: return, "BT Position: $c", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

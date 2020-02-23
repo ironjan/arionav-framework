@@ -82,12 +82,13 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
 
         val bestDevicesAsString = bestBtDevices.joinToString("; ", prefix = "Best BTs: ") {
             val device = it
-            "${device.BSSID} ${device.SSID} ${it.level} ${calculateSignalLevel(it.level)}"
+            val calculateSignalLevel = calculateSignalLevel(it.level,10)
+            "${device.BSSID} ${device.SSID} ${it.level} $calculateSignalLevel"
         }
         logger.info(bestDevicesAsString)
 
 
-        val knownCoordinateDevices = bestBtDevices.filter { tmpIdToCoordinate.containsKey(it.device.address) }
+        val knownCoordinateDevices = bestBtDevices.filter { tmpIdToCoordinate.containsKey(it.BSSID) }
         val signalStrengths = knownCoordinateDevices
             .map { SignalStrength(it.BSSID, tmpIdToCoordinate[it.BSSID]!!, it.level) }
 
