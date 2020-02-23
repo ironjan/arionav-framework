@@ -7,13 +7,11 @@ import android.net.wifi.WifiManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.ironjan.arionav.ionav.positioning.IPositionObserver
 import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
 import de.ironjan.arionav.ionav.positioning.SignalStrength
 import de.ironjan.arionav.ionav.positioning.Trilateraion
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
-import kotlin.math.round
 
 
 /*
@@ -26,13 +24,13 @@ bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
 }
 
  */
-class BluetoothProviderImplementation(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
+class BluetoothProviderImplementation(private val context: Context, private val lifecycle: Lifecycle)
+    : PositionProviderBaseImplementation(context, lifecycle) {
 
     private val devices: MutableMap<String, ScanResult> = mutableMapOf()
     private val listOfVisibleBtDevices: MutableLiveData<List<ScanResult>> = MutableLiveData(listOf())
     fun getVisibleBluetoothDevices(): LiveData<List<ScanResult>> = listOfVisibleBtDevices
 
-    private val observers: MutableList<IPositionObserver> = mutableListOf()
     private val logger = LoggerFactory.getLogger(BluetoothProviderImplementation::class.java.simpleName)
 
     override var lastKnownPosition: Coordinate? = null
@@ -46,22 +44,6 @@ class BluetoothProviderImplementation(private val context: Context, private val 
         "EC:CD:47:40:AD:DC" to Coordinate(0.0, 0.0, 100.0) // Miband
     )
 
-    override fun registerObserver(observer: IPositionObserver) {
-        if (observers.contains(observer)) return
-
-        observers.add(observer)
-    }
-
-    override fun removeObserver(observer: IPositionObserver) {
-        observers.remove(observer)
-    }
-
-    override fun notifyObservers() {
-        observers.forEach { o ->
-            val position = lastKnownPosition ?: return
-            o.onPositionChange(position)
-        }
-    }
 
     override fun start() {
 
@@ -82,6 +64,10 @@ class BluetoothProviderImplementation(private val context: Context, private val 
                 logger.debug("$s ... onScanResult($callbackType, $result)")
 
                 devices[address] = result
+                val bestBtDevices = devices.values
+                    .sortedBy { -it.rssi }
+
+                listOfVisibleBtDevices.value = bestBtDevices
 
                 updatePositionEstimate()
             }
@@ -101,17 +87,13 @@ class BluetoothProviderImplementation(private val context: Context, private val 
 
         lastUpdate = currentTime
 
-        val bestBtDevices = devices.values
-            .sortedBy { -it.rssi }
 
+        val bestBtDevices = listOfVisibleBtDevices.value!!
 
-        listOfVisibleBtDevices.value = bestBtDevices
-
-
-        val bestDevicesAsString = bestBtDevices.map {
+        val bestDevicesAsString = bestBtDevices.joinToString("; ", prefix = "Best BTs: ") {
             val device = it.device
             "${device.address} ${device.name} ${it.rssi} ${calculateSignalLevel(it.rssi)}"
-        }.joinToString("; ", prefix = "Best BTs: ")
+        }
         logger.info(bestDevicesAsString)
 
 

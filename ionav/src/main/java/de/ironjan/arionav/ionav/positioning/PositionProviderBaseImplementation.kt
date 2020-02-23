@@ -32,5 +32,23 @@ abstract class PositionProviderBaseImplementation(private val context: Context,
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     abstract fun stop()
 
+    internal val observers: MutableList<IPositionObserver> = mutableListOf()
 
+
+    override fun registerObserver(observer: IPositionObserver) {
+        if (observers.contains(observer)) return
+
+        observers.add(observer)
+    }
+
+    override fun removeObserver(observer: IPositionObserver) {
+        observers.remove(observer)
+    }
+
+    override fun notifyObservers() {
+        observers.forEach { o ->
+            val position = lastKnownPosition ?: return
+            o.onPositionChange(position)
+        }
+    }
 }
