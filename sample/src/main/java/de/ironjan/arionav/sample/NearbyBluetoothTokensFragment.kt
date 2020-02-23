@@ -10,7 +10,6 @@ import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothLeSpike
 import org.slf4j.LoggerFactory
 
 
-/* https://github.com/AltBeacon/android-beacon-library */
 class NearbyBluetoothTokensFragment : CustomListFragment<String>({ it }) {
     private val logger = LoggerFactory.getLogger(NearbyBluetoothTokensFragment::class.java.simpleName)
 
