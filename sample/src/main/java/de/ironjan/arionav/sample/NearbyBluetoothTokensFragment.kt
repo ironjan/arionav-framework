@@ -23,9 +23,6 @@ class NearbyBluetoothTokensFragment : CustomListFragment<String>({ it }) {
         val lContext = context ?: return
         val cb = object: ScanCallback() {
             val numLevels = 10
-            override fun onScanFailed(errorCode: Int) {
-                super.onScanFailed(errorCode)
-            }
 
             override fun onScanResult(callbackType: Int, result: ScanResult?) {
                 super.onScanResult(callbackType, result)
@@ -42,10 +39,6 @@ class NearbyBluetoothTokensFragment : CustomListFragment<String>({ it }) {
 
                 devices[address] = s
                 dataAdapter.replaceData(devices.values.toList())
-            }
-
-            override fun onBatchScanResults(results: MutableList<ScanResult>?) {
-                super.onBatchScanResults(results)
             }
         }
          val handler: Handler = Handler(Looper.getMainLooper())
