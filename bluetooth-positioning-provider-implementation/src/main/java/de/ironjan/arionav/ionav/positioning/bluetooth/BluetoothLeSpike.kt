@@ -6,21 +6,11 @@ import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import androidx.core.content.ContextCompat
 
-/*
-FIXME: ensure bt enabled in activity
-// Ensures Bluetooth is available on the device and it is enabled. If not,
-// displays a dialog requesting user permission to enable Bluetooth.
-bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
-    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
-}
-
- */
 class BluetoothLeSpike(private val context: Context,
-                       private val leScanCallback: ScanCallback,
-                       private val handler: Handler) {
+                       private val leScanCallback: ScanCallback) {
 
 
     private val bluetoothAdapter: BluetoothLeScanner? by lazy(LazyThreadSafetyMode.NONE) {
@@ -37,7 +27,7 @@ class BluetoothLeSpike(private val context: Context,
         when (enable) {
             true -> {
                 // Stops scanning after a pre-defined scan period.
-                handler.postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     mScanning = false
                     bluetoothAdapter?.stopScan(leScanCallback)
                 }, SCAN_PERIOD)
@@ -53,6 +43,6 @@ class BluetoothLeSpike(private val context: Context,
 
 
     companion object{
-    const val SCAN_PERIOD: Long = 10000
+    const val SCAN_PERIOD: Long = 100000
 }
 }

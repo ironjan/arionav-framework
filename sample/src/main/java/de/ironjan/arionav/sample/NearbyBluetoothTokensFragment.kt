@@ -1,80 +1,58 @@
 package de.ironjan.arionav.sample
 
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
-import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothLeSpike
+import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import de.ironjan.arionav.ionav.positioning.IPositionObserver
+import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothProviderImplementation
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 
 
-class NearbyBluetoothTokensFragment : CustomListFragment<String>({ it }) {
+class NearbyBluetoothTokensFragment : CustomListFragment<ScanResult>(scanResultToString) {
+    private lateinit var bluetoothProviderImplementation: BluetoothProviderImplementation
     private val logger = LoggerFactory.getLogger(NearbyBluetoothTokensFragment::class.java.simpleName)
-
     private val devices = emptyMap<String, String>().toMutableMap()
+
+    private val observer: IPositionObserver = object : IPositionObserver {
+        override fun onPositionChange(c: Coordinate?) {
+            Toast.makeText(context ?: return, "BT Position: $c", Toast.LENGTH_SHORT).show()
+        }
+
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val lContext = context ?: return
-        val cb = object: ScanCallback() {
-            val numLevels = 10
+        bluetoothProviderImplementation = BluetoothProviderImplementation(context ?: return, lifecycle)
+        bluetoothProviderImplementation.registerObserver(observer)
+        bluetoothProviderImplementation.start()
 
-            override fun onScanResult(callbackType: Int, result: ScanResult?) {
-                super.onScanResult(callbackType, result)
-                logger.info("onScanResult: $callbackType, $result")
-
-                if(result==null) return
-
-                val device = result.device
-                val address = device.address
-                val rssi = result.rssi
-
-                val strength = calculateSignalLevel(rssi, numLevels)
-                val s = "$address ${device.name} $rssi , $strength/$numLevels"
-
-                devices[address] = s
-                dataAdapter.replaceData(devices.values.toList())
-            }
-        }
-         val handler: Handler = Handler(Looper.getMainLooper())
-
-        val bluetoothLeSpike = BluetoothLeSpike(lContext, cb, handler)
-
-        // FIXME keep scanning
-        bluetoothLeSpike.scanLeDevice(true)
-        logger.info("Triggered scan")
+        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+        bluetoothProviderImplementation.getVisibleBluetoothDevices().observe(lifecycleOwner, Observer {
+            dataAdapter.replaceData(it)
+        })
     }
 
-
-    /**
-     * Calculates the level of the signal. This should be used any time a signal
-     * is being shown.
-     * From WifiManager.calculateSignalLevel
-     * @param rssi The power of the signal measured in RSSI.
-     * @param numLevels The number of levels to consider in the calculated
-     * level.
-     * @return A level of the signal, given in the range of 0 to numLevels-1
-     * (both inclusive).
-     */
-    fun calculateSignalLevel(rssi: Int, numLevels: Int): Int {
-        val MIN_RSSI = -100
-        val MAX_RSSI = -30 // by test with big tokens right beside phone
-        if (rssi <= MIN_RSSI) {
-            return 0
-        } else if (rssi >= MAX_RSSI) {
-            return numLevels - 1
-        } else {
-            val inputRange = (MAX_RSSI - MIN_RSSI).toFloat()
-            val outputRange = (numLevels - 1).toFloat()
-            return ((rssi - MIN_RSSI).toFloat() * outputRange / inputRange).toInt()
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        bluetoothProviderImplementation.removeObserver(observer)
     }
+
     companion object {
-    }
+        private val scanResultToString: (ScanResult) -> String = {
 
+            val device = it.device
+            val address = device.address
+            val rssi = it.rssi
+
+            val strength = BluetoothProviderImplementation.calculateSignalLevel(rssi, BluetoothProviderImplementation.numLevels)
+            val s = "$address ${device.name} $rssi , $strength/${BluetoothProviderImplementation.numLevels}"
+            s
+        }
+    }
 }
