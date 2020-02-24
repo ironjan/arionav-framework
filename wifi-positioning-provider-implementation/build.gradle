@@ -34,6 +34,10 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.core:core-ktx:$core_ktx_version"
 
+    api "com.google.dagger:dagger:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+
+
     implementation project(path: ':ionav')
 
     testImplementation "junit:junit:$junit_version"

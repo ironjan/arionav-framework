@@ -42,6 +42,9 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
+    api "com.google.dagger:dagger:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+
 
     api 'org.mapsforge:vtm-android:0.13.0'
     api 'org.mapsforge:vtm-android:0.13.0:natives-armeabi-v7a'
