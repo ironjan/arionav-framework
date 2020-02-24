@@ -55,9 +55,17 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
         viewModel.getUserPositionLiveData().observe(lifecycleOwner, Observer {
             updateMarkerLayer(userPosLayer, it, currentUserPositionMarker)
-            if(viewModel.getFollowUserPositionLiveData().value == true){
-                centerOnUserPosition()
+        })
+        viewModel.getMapCenterLiveData().observe(lifecycleOwner, Observer {
+            if (viewModel.getFollowUserPositionLiveData().value == true
+                && it != null) {
+                centerOn(it)
             }
+        })
+        viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
+            if(!it) return@Observer
+
+            viewModel.centerOnUserPos()
         })
 
         val currentRouteLiveData = viewModel.getCurrentRouteLiveData()
@@ -67,7 +75,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         showRoute(currentRouteLiveData.value)
 
         viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
-            if(viewModel.getShowRemainingRouteCurrentValue()){
+            if (viewModel.getShowRemainingRouteCurrentValue()) {
                 showRemainingRoute(it)
             }
         })
@@ -270,7 +278,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         redrawMap()
     }
 
-    private fun showRemainingRoute(remainingRoute: PathWrapper?){
+    private fun showRemainingRoute(remainingRoute: PathWrapper?) {
         if (remainingRoute == null) {
             logger.info("showRemainingRoute was called with a null route. Removing remaining route.")
             map().layers().remove(remainingRouteLayer)
@@ -303,16 +311,11 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private fun redrawMap() = map().updateMap(true)
 
-    fun centerOnUserPosition() {
-        val coordinate = viewModel.getUserPositionLiveData().value ?: return
 
-        centerOn(coordinate)
 
-    }
-
-     fun centerOn(coordinate: Coordinate) {
+    fun centerOn(coordinate: Coordinate) {
         val scale = map().mapPosition.scale
         map().setMapPosition(coordinate.lat, coordinate.lon, scale)
-         redrawMap()
+        redrawMap()
     }
 }

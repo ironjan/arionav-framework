@@ -33,9 +33,6 @@ class BluetoothProviderImplementation(private val context: Context, private val 
 
     private val logger = LoggerFactory.getLogger(BluetoothProviderImplementation::class.java.simpleName)
 
-    override var lastKnownPosition: Coordinate? = null
-
-    private var lastUpdate = 0L
     private lateinit var bluetoothLeSpike: BluetoothLeSpike
 
     private val tmpIdToCoordinate: Map<String, Coordinate> = mapOf(
@@ -102,8 +99,6 @@ class BluetoothProviderImplementation(private val context: Context, private val 
             .map { SignalStrength(it.device.address, tmpIdToCoordinate[it.device.address]!!, it.rssi) }
 
         lastKnownPosition = naiveTrilateration(signalStrengths)
-
-        notifyObservers()
     }
 
     private fun naiveTrilateration(devices: List<SignalStrength>): Coordinate {

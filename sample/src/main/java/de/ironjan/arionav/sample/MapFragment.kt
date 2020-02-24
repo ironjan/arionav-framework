@@ -30,7 +30,6 @@ import java.lang.IllegalArgumentException
 
 class MapFragment : Fragment() {
     private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
-    private lateinit var gpsPositionProvider: GpsPositionProvider
 
     private val ghzResId = ArionavSampleApplication.ghzResId
 
@@ -47,8 +46,6 @@ class MapFragment : Fragment() {
         ghzExtractor = GhzExtractor(lContext.applicationContext, ghzResId, mapName)
 
 
-        gpsPositionProvider = GpsPositionProvider(lContext, lifecycle)
-        gpsPositionProvider.start()
 
 
 }
@@ -61,16 +58,21 @@ class MapFragment : Fragment() {
         model.setMapViewViewModel(mapView.viewModel)
 
         buttonCenterOnPos.setOnClickListener {
-            mapView.centerOnUserPosition()
+            val tmp= viewModel.getFollowUserPositionLiveData().value?:false
+            viewModel.setFollowUserPosition(true)
+            viewModel.centerOnUserPos()
+            viewModel.setFollowUserPosition(tmp)
         }
 
         buttonLocationAsStart.setOnClickListener {
-            val coordinate = gpsPositionProvider.lastKnownPosition ?: return@setOnClickListener
-            mapView.viewModel.setStartCoordinate(coordinate)
+            mapView.viewModel.setStartCoordinateToUserPos()
         }
 
 
-        mapView.viewModel.setUserPositionProvider(gpsPositionProvider)
+        val mainActivity = context as MainActivity
+        val positionProvider = mainActivity.positionProvider
+        mapView.viewModel.setUserPositionProvider(positionProvider)
+
         buttonMapFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
         buttonRemainingRoute.setOnClickListener { mapView.viewModel.toggleShowRemainingRoute() }
 
@@ -228,7 +230,6 @@ class MapFragment : Fragment() {
             button_AR.isEnabled = hasRoute
         })
         button_AR.setOnClickListener(this::onArButtonClick)
-
 
     }
 

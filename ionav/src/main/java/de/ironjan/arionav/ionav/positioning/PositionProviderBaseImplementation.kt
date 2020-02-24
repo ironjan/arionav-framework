@@ -13,10 +13,17 @@ abstract class PositionProviderBaseImplementation(private val context: Context,
     : LifecycleObserver, IPositionProvider {
 
     private var _lastPosition: Coordinate? = null
-
     override var lastKnownPosition : Coordinate?
       get() = _lastPosition
-    protected set(value) { _lastPosition = value }
+    protected set(value) {
+        _lastPosition = value
+        lastUpdate = System.currentTimeMillis()
+    }
+
+    private var _lastUpdate = 0L
+    override var lastUpdate: Long
+        get() = _lastUpdate
+    protected set(value) {_lastUpdate = value}
 
 
     companion object {
@@ -27,10 +34,10 @@ abstract class PositionProviderBaseImplementation(private val context: Context,
     private var enabled = false
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    abstract fun start()
+    abstract override fun start()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    abstract fun stop()
+    abstract override fun stop()
 
     internal val observers: MutableList<IPositionObserver> = mutableListOf()
 

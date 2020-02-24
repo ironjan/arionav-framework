@@ -69,7 +69,6 @@ open class GpsPositionProvider(
                 // FIXME level...
                 val lLastKnownPosition = locationToCoordinate(location)
                 lastKnownPosition = lLastKnownPosition
-                notifyObservers()
                 listenerLogger.debug("Updated current best location and invoked callback.")
             }
             listenerLogger.debug("onLocationChanged($location) finished.")
@@ -142,7 +141,6 @@ open class GpsPositionProvider(
         locationManager.requestLocationUpdates(locationProvider, 0L, 0f, locationListener)
         val lastKnownLocation: Location = locationManager.getLastKnownLocation(locationProvider) ?: return
         lastKnownPosition = locationToCoordinate(lastKnownLocation)
-        notifyObservers()
         logger.debug("start() done.")
     }
 

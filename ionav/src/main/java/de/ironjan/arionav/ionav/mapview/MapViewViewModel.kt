@@ -8,6 +8,7 @@ import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
+import de.ironjan.arionav.ionav.positioning.IPositionProvider
 import de.ironjan.arionav.ionav.positioning.LevelDependentPositionProviderBaseImplementation
 import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -17,7 +18,7 @@ import java.lang.Exception
 
 class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCustomViewModel<MapViewState> {
     // FIXME should be IPositionObserver instead
-    private var positionProvider: LevelDependentPositionProviderBaseImplementation?= null
+    private var positionProvider: IPositionProvider ?= null
 
     private val nextInstruction: MutableLiveData<Instruction?> = MutableLiveData()
     fun getNextInstructionLiveData(): LiveData<Instruction?> = nextInstruction
@@ -80,7 +81,6 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     private val remainingRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
     fun getRemainingRouteLiveData(): LiveData<PathWrapper?> {
         // FIXME better: cache route
-        computeRoute()
         return remainingRoute
     }
 
@@ -100,7 +100,11 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
     private val showRemainingRoute: MutableLiveData<Boolean> = MutableLiveData(false)
     fun toggleShowRemainingRoute() {
-        showRemainingRoute.value = showRemainingRoute.value?.not()
+        val value1 = showRemainingRoute.value
+        val not = value1?.not()
+        val value = not ?: false
+        showRemainingRoute.value = value
+        if(value) recomputeRemainingRoute()
     }
 
     fun getShowRemainingRouteLiveData(): LiveData<Boolean> = showRemainingRoute
@@ -114,7 +118,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     fun selectLevelListPosition(pos: Int) {
         selectedLevelListPosition.value = pos
         val lLevelList = levelList.value ?: return
-        positionProvider?.currentLevel = lLevelList[pos]
+        (positionProvider as LevelDependentPositionProviderBaseImplementation)?.currentLevel = lLevelList[pos]
     }
     fun getSelectedLevel(): LiveData<Double> = MutableLiveData(levelList.value?.get(selectedLevelListPosition.value?:4))
 
@@ -170,8 +174,26 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         }
     }
 
-    fun setUserPositionProvider(positionProvider: LevelDependentPositionProviderBaseImplementation) {
+    fun setUserPositionProvider(positionProvider: IPositionProvider) {
         positionProvider.registerObserver(iPositionObserver)
         this.positionProvider = positionProvider
+        userPosition.value = positionProvider.lastKnownPosition
+    }
+
+    fun setStartCoordinateToUserPos() {
+        setStartCoordinate(userPosition.value?: return)
+    }
+
+
+
+    private val mapCenter: MutableLiveData<Coordinate?> = MutableLiveData(null)
+    fun getMapCenterLiveData(): LiveData<Coordinate?> = mapCenter
+    fun setMapCenter(c: Coordinate) {
+        mapCenter.value = c
+    }
+
+    fun centerOnUserPos() {
+        val coordinate = positionProvider?.lastKnownPosition ?: return
+        setMapCenter(coordinate)
     }
 }

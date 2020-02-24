@@ -12,10 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav.ionav.PermissionHelper
+import de.ironjan.arionav.ionav.positioning.IPositionProvider
+import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.arionav.sample.util.Mailer
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
@@ -25,12 +26,19 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
     PermissionHelper.PermissionHelperCallback {
+    private lateinit var _positionProvider: IPositionProvider
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
     val logger = LoggerFactory.getLogger("MainActivity")
     private val cameraRequestCode: Int = 1
 
     private val locationRequestCode: Int = 2
+
+    var positionProvider: IPositionProvider
+        get() = _positionProvider
+        private set(value) {
+            _positionProvider = value
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +55,12 @@ class MainActivity :
         nav_view.setupWithNavController(navController)
 
         nav_view.setNavigationItemSelectedListener { navigateOnMenuItem(it) }
+
+
+        positionProvider = GpsPositionProvider(this, lifecycle)
+
+        positionProvider.start()
+
     }
 
     val navController

@@ -26,10 +26,6 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
     private val listOfVisibleBtDevices: MutableLiveData<List<ScanResult>> = MutableLiveData(listOf())
     fun getVisibleBluetoothDevices(): LiveData<List<ScanResult>> = listOfVisibleBtDevices
 
-    override var lastKnownPosition: Coordinate? = null
-
-    private var lastUpdate = 0L
-
     private val tmpIdToCoordinate: Map<String, Coordinate> = mapOf()
 
     private lateinit var wifiManager: WifiManager
@@ -93,8 +89,6 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
             .map { SignalStrength(it.BSSID, tmpIdToCoordinate[it.BSSID]!!, it.level) }
 
         lastKnownPosition = naiveTrilateration(signalStrengths)
-
-        notifyObservers()
     }
 
     private fun scanFailure() {
