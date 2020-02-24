@@ -20,13 +20,13 @@ open class OsmReader<T>(private val wayFilter: (Way)->Boolean ,
         val start = System.currentTimeMillis()
 
         val ways = parseWays(osmFile, wayFilter)
-        logger.info("Read ${ways.count()} relevant ways...")
         val waysDone = System.currentTimeMillis()
+        logger.info("Read ${ways.count()} relevant ways in ${waysDone-start}ms...")
 
 
         val nodes = parseNodes(osmFile, nodeFilter)
-        logger.info("Read ${nodes.count()} relevant nodes...")
         val nodesDone = System.currentTimeMillis()
+        logger.info("Read ${nodes.count()} relevant nodes in ${nodesDone-waysDone}ms...")
 
 
         val converted = converter(nodes, ways)

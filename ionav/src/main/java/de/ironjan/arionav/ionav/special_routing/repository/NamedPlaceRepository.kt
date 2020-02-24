@@ -24,8 +24,8 @@ class NamedPlaceRepository private constructor(
             places = MutableLiveData()
             inMemoryCache[osmFile] = places
 
-            NamedPlacesAsyncLoadTask(places, osmFile, poiReader).execute()
-            NamedPlacesAsyncLoadTask(places, osmFile, roomReader).execute()
+            NamedPlacesAsyncLoadTask(places, osmFile, poiReader).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            NamedPlacesAsyncLoadTask(places, osmFile, roomReader).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 
         }
         return places
@@ -39,14 +39,17 @@ class NamedPlaceRepository private constructor(
         private val logger = LoggerFactory.getLogger(NamedPlacesAsyncLoadTask::class.java.simpleName)
 
         override fun doInBackground(vararg p0: Void?): Map<String, NamedPlace> {
-            logger.info("Starting to load places with $reader...")
+            logger.info("Starting to load places with $reader... (OsmReader)")
+            val start = System.currentTimeMillis()
+
             val loaded =
                 reader
                     .parseOsmFile(osmFile)
                     .map { Pair(it.name, it) }
                     .toMap()
 
-            logger.info("Loading complete.")
+            val duration =System.currentTimeMillis() - start
+            logger.info("Loading complete after ${duration}ms... $reader... (OsmReader)")
 
             return loaded
         }
