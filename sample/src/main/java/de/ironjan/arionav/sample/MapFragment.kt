@@ -15,11 +15,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav.ionav.GhzExtractor
-import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
-import de.ironjan.arionav.ionav.special_routing.model.Poi
-import de.ironjan.arionav.ionav.special_routing.model.Room
-import de.ironjan.arionav.ionav.special_routing.repository.PoiRepository
-import de.ironjan.arionav.ionav.special_routing.repository.RoomRepository
+import de.ironjan.arionav.ionav.special_routing.model.NamedPlace
+import de.ironjan.arionav.ionav.special_routing.repository.NamedPlaceRepository
 import de.ironjan.arionav.sample.util.InstructionHelper
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -46,9 +43,7 @@ class MapFragment : Fragment() {
         ghzExtractor = GhzExtractor(lContext.applicationContext, ghzResId, mapName)
 
 
-
-
-}
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,7 +53,7 @@ class MapFragment : Fragment() {
         model.setMapViewViewModel(mapView.viewModel)
 
         buttonCenterOnPos.setOnClickListener {
-            val tmp= viewModel.getFollowUserPositionLiveData().value?:false
+            val tmp = viewModel.getFollowUserPositionLiveData().value ?: false
             viewModel.setFollowUserPosition(true)
             viewModel.centerOnUserPos()
             viewModel.setFollowUserPosition(tmp)
@@ -77,7 +72,7 @@ class MapFragment : Fragment() {
         buttonRemainingRoute.setOnClickListener { mapView.viewModel.toggleShowRemainingRoute() }
 
         val selectedPoi = arguments?.getString("selectedPoiCoordinate")
-        if(selectedPoi != null) {
+        if (selectedPoi != null) {
             logger.info("Selected poi from bundle: $selectedPoi")
             val coordinate = Coordinate.fromString(selectedPoi)
             mapView.viewModel.setEndCoordinate(coordinate)
@@ -91,9 +86,9 @@ class MapFragment : Fragment() {
         registerLiveDataObservers(lifecycleOwner)
         prepareRoomAndPoiHandling(lifecycleOwner)
 
-        if(!mapView.viewModel.hasBothCoordinates) {
-            mapView.viewModel.setStartCoordinate(Coordinate(51.718060,8.748366,0.0))
-            mapView.viewModel.setEndCoordinate(Coordinate(51.718631,8.749061,0.0))
+        if (!mapView.viewModel.hasBothCoordinates) {
+            mapView.viewModel.setStartCoordinate(Coordinate(51.718060, 8.748366, 0.0))
+            mapView.viewModel.setEndCoordinate(Coordinate(51.718631, 8.749061, 0.0))
 
         }
     }
@@ -108,12 +103,10 @@ class MapFragment : Fragment() {
         super.onPause()
     }
 
-    private lateinit var roomLiveData: LiveData<Map<String, Room>>
+    private lateinit var placesLiveData: LiveData<Map<String, NamedPlace>>
 
-    private lateinit var poiLiveData: LiveData<Map<String, Poi>>
     private val suggestionsList = mutableListOf<String>()
-    private val roomList = mutableSetOf<String>()
-    private val poiList = mutableSetOf<String>()
+    private val placesList = mutableSetOf<String>()
     private lateinit var endSuggestionsAdapter: ArrayAdapter<String>
     private lateinit var startSuggestionsAdapter: ArrayAdapter<String>
 
@@ -124,64 +117,61 @@ class MapFragment : Fragment() {
         endSuggestionsAdapter = ArrayAdapter(lContext, android.R.layout.simple_dropdown_item_1line, suggestionsList)
         edit_end_coordinates.setAdapter(endSuggestionsAdapter)
 
-        roomLiveData = RoomRepository().getRooms(ghzExtractor.osmFilePath)
-        poiLiveData = PoiRepository().getPois(ghzExtractor.osmFilePath)
+        placesLiveData = NamedPlaceRepository.instance
+            .getPlaces(ghzExtractor.osmFilePath)
+        placesLiveData.observe(lifecycleOwner, Observer {
+            placesList.apply {
+                clear()
+                addAll(it.keys)
+            }
+            updateSuggestionsList(startSuggestionsAdapter)
+            updateSuggestionsList(endSuggestionsAdapter)
+        })
 
-        roomLiveData.observe(lifecycleOwner, Observer {
-            replaceListContentWith(roomList, it.keys)
-        })
-        poiLiveData.observe(lifecycleOwner, Observer {
-            replaceListContentWith(poiList, it.keys)
-        })
 
         edit_end_coordinates.doOnTextChanged { text, _, _, _ ->
-            logger.info("Text is $text.")
-            val textAsString = text.toString()
-
-            val room = roomLiveData.value?.get(textAsString)
-            val poi = poiLiveData.value?.get(textAsString)
-
-            val targetCoordinate = when {
-                room != null -> {
-                    logger.info("Got room: $room.")
-
-                    room.coordinate
-
-                }
-                poi != null -> {
-                    logger.info("Got POI: $poi")
-
-                    poi.coordinate
-
-                }
-                else -> null
-            }
-            if (targetCoordinate != null) {
-                viewModel.setEndCoordinate(targetCoordinate)
-
-                val lContext = context ?: return@doOnTextChanged
-                Toast.makeText(lContext, "Found a place with name $text. Replacing end coordinate with $targetCoordinate.", Toast.LENGTH_LONG).show()
-            }
+            setCoordinateFromTextInput(text, false)
         }
-
+        edit_start_coordinates.doOnTextChanged { text, _, _, _ ->
+            setCoordinateFromTextInput(text, true)
+        }
 
 
     }
 
-    private fun replaceListContentWith(list: MutableSet<String>, newContents: Set<String>) {
-        list.apply {
-            clear()
-            addAll(newContents)
+    private fun setCoordinateFromTextInput(text: CharSequence?, isStart: Boolean) {
+        logger.info("Text is $text.")
+        val textAsString = text.toString()
+
+        val place = placesLiveData.value?.get(textAsString)
+
+        val coordinate = when {
+            place != null -> {
+                logger.info("Got place: $place.")
+
+                place.coordinate
+
+            }
+            else -> null
         }
-        updateSuggestionsList(startSuggestionsAdapter)
-        updateSuggestionsList(endSuggestionsAdapter)
+        if (coordinate == null) {
+            return
+        }
+
+        if (isStart) {
+            viewModel.setStartCoordinate(coordinate)
+        } else {
+            viewModel.setEndCoordinate(coordinate)
+        }
+
+        val lContext = context ?: return
+        Toast.makeText(lContext, "Found a place with name $text. Replacing end coordinate with $coordinate.", Toast.LENGTH_LONG).show()
     }
 
     private fun updateSuggestionsList(adapter: ArrayAdapter<String>) {
         adapter.apply {
             clear()
-            addAll(poiList)
-            addAll(roomList)
+            addAll(placesList)
         }
     }
 

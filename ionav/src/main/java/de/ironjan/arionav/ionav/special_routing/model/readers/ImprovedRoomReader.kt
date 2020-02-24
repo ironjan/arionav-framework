@@ -1,25 +1,25 @@
 package de.ironjan.arionav.ionav.special_routing.model.readers
 
+import dagger.Module
 import de.ironjan.arionav.ionav.special_routing.model.NamedPlace
 import de.ironjan.arionav.ionav.special_routing.model.Room
 import de.ironjan.arionav.ionav.special_routing.model.osm.Node
 import de.ironjan.arionav.ionav.special_routing.model.osm.Way
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 
-/**
- * Utility class to read an .osm file and retrieve a list of rooms contained in that file.
- */
-class RoomOsmReader : OsmReader<Room>(
+@Module
+class ImprovedRoomReader  @Inject constructor() : OsmReader<NamedPlace>(
     isNamedRoomFilter,
     allNodeFilter,
     osmToRoomConverter
 ) {
 
-
     companion object {
-        internal val allNodeFilter = { n: Node -> true }
-        internal val isNamedRoomFilter = { w: Way ->
+        private val logger = LoggerFactory.getLogger(ImprovedPoiReader::class.java.simpleName)
+        private val allNodeFilter = { n: Node -> true }
+        private val isNamedRoomFilter = { w: Way ->
             val isRoom =
                 w.tags.containsKey("indoor")
                         && w.tags["indoor"] == "room"
@@ -28,9 +28,8 @@ class RoomOsmReader : OsmReader<Room>(
                         && w.tags["name"]?.isNotBlank() ?: false
             isRoom && hasName
         }
-        private val logger = LoggerFactory.getLogger(RoomOsmReader::class.java.simpleName)
 
-        internal val osmToRoomConverter: (List<Node>, List<Way>) -> List<Room> =
+        private val osmToRoomConverter: (List<Node>, List<Way>) -> List<Room> =
             { nodes: List<Node>, ways: List<Way> ->
 
                 val nodeMap = nodes.map { Pair(it.id, it) }.toMap()
@@ -64,7 +63,5 @@ class RoomOsmReader : OsmReader<Room>(
 
                 rooms
             }
-
-
     }
 }

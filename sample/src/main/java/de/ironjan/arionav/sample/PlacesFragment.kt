@@ -21,10 +21,17 @@ import de.ironjan.arionav.sample.viewmodel.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 
 class PlacesFragment : Fragment() {
+    val namedPlaceRepo: NamedPlaceRepository = NamedPlaceRepository.instance
+
     private var places: List<NamedPlace> = emptyList()
     lateinit var dataAdapter: NamedPlacesAdapter
 
     val logger = LoggerFactory.getLogger(PlacesFragment::class.java.name)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_nearby_wifi_aps, container, false)
@@ -59,7 +66,9 @@ class PlacesFragment : Fragment() {
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
 
         val ghzExtractor = GhzExtractor(lContext.applicationContext, ghzResId, mapName)
-        NamedPlaceRepository().getPlaces(ghzExtractor.osmFilePath).observe(lifecycleOwner, Observer {
+
+
+        namedPlaceRepo.getPlaces(ghzExtractor.osmFilePath).observe(lifecycleOwner, Observer {
             places = it.values.toList()
             updateAdapter()
         })
