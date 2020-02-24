@@ -92,7 +92,9 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     private val followUserPosition: MutableLiveData<Boolean> = MutableLiveData(false)
     fun getFollowUserPositionLiveData(): LiveData<Boolean> = followUserPosition
     fun toggleFollowUserPosition() {
-        followUserPosition.value = followUserPosition.value?.not()
+        val value = followUserPosition.value?: false
+        val not = value.not()
+        followUserPosition.value = not
     }
     fun setFollowUserPosition(b : Boolean) {
         followUserPosition.value = b
@@ -118,7 +120,12 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     fun selectLevelListPosition(pos: Int) {
         selectedLevelListPosition.value = pos
         val lLevelList = levelList.value ?: return
-        (positionProvider as LevelDependentPositionProviderBaseImplementation)?.currentLevel = lLevelList[pos]
+
+        val lPositionProvider = positionProvider
+        // todo remove this workaround
+        if(lPositionProvider is LevelDependentPositionProviderBaseImplementation){
+            lPositionProvider?.currentLevel = lLevelList[pos]
+        }
     }
     fun getSelectedLevel(): LiveData<Double> = MutableLiveData(levelList.value?.get(selectedLevelListPosition.value?:4))
 

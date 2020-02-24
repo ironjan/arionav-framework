@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
-abstract class MergedPositionProvider(
+class MergedPositionProvider(
     context: Context,
     lc: Lifecycle)
     : PositionProviderBaseImplementation(context, lc) {
@@ -12,23 +12,18 @@ abstract class MergedPositionProvider(
 
     private val observer: IPositionObserverV2 = object : IPositionObserverV2 {
         override fun onPositionChange(c: Coordinate?) {
-            // TODO use only the other method
-            updatePosition(c, null)
+            notifyObservers()
         }
 
         override fun onPositionChange(c: Coordinate?, provider: IPositionProvider) {
-            updatePosition(c, provider)
+            notifyObservers()
         }
 
     }
 
-    private fun updatePosition(c: Coordinate?, provider: IPositionProvider?) {
-        if(c==null) return
-
-        // Just use the most recently added provider
-        // TODO , *unless* its update is older than 30s (arbitrarily chosen)
-        lastKnownPosition = providers.last().lastKnownPosition
-    }
+    override var lastKnownPosition: Coordinate?
+        get() = providers.filter { it.lastKnownPosition != null }.last().lastKnownPosition
+        set(value) {/* readonly */}
 
     fun addProvider(provider: IPositionProvider) {
         providers.add(provider)
@@ -40,6 +35,14 @@ abstract class MergedPositionProvider(
         providers.remove(provider)
 
         provider.removeObserver(observer)
+    }
+
+    override fun start() {
+        providers.map { it.start() }
+    }
+
+    override fun stop() {
+        providers.map { it.stop() }
     }
 
 

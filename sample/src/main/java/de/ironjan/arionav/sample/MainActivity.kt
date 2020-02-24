@@ -16,7 +16,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav.ionav.PermissionHelper
 import de.ironjan.arionav.ionav.positioning.IPositionProvider
+import de.ironjan.arionav.ionav.positioning.MergedPositionProvider
+import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothProviderImplementation
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
+import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProvider
 import de.ironjan.arionav.sample.util.Mailer
 import kotlinx.android.synthetic.main.activity_main.*
 import org.slf4j.LoggerFactory
@@ -57,7 +60,12 @@ class MainActivity :
         nav_view.setNavigationItemSelectedListener { navigateOnMenuItem(it) }
 
 
-        positionProvider = GpsPositionProvider(this, lifecycle)
+        val mergedPositionProvider = MergedPositionProvider(this, lifecycle)
+        mergedPositionProvider.addProvider(GpsPositionProvider(this, lifecycle))
+        mergedPositionProvider.addProvider(WifiPositioningProvider(this, lifecycle))
+        mergedPositionProvider.addProvider(BluetoothProviderImplementation(this, lifecycle))
+
+        positionProvider = mergedPositionProvider
 
         positionProvider.start()
 

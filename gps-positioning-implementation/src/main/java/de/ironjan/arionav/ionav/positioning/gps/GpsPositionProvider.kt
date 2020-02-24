@@ -26,23 +26,6 @@ open class GpsPositionProvider(
 ) : LevelDependentPositionProviderBaseImplementation(context, lifecycle) {
     private val observers: MutableList<IPositionObserver> = mutableListOf()
 
-    override fun registerObserver(observer: IPositionObserver) {
-        if (observers.contains(observer)) return
-
-        observers.add(observer)
-    }
-
-    override fun removeObserver(observer: IPositionObserver) {
-        observers.remove(observer)
-    }
-
-    override fun notifyObservers() {
-        observers.forEach { o ->
-            val position = lastKnownPosition ?: return
-            o.onPositionChange(position)
-        }
-    }
-
     private val logger = LoggerFactory.getLogger(TAG)
 
     init {
