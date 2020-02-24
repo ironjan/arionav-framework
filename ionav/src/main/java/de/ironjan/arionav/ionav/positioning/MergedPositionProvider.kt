@@ -3,11 +3,16 @@ package de.ironjan.arionav.ionav.positioning
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import de.ironjan.graphhopper.extensions_core.Coordinate
+import org.slf4j.LoggerFactory
 
 class MergedPositionProvider(
     context: Context,
     lc: Lifecycle)
     : PositionProviderBaseImplementation(context, lc) {
+    override val name: String = MergedPositionProvider::class.java.simpleName
+
+    private val logger = LoggerFactory.getLogger(name)
+
     private var providers: MutableList<IPositionProvider> = mutableListOf()
 
     private val observer: IPositionObserverV2 = object : IPositionObserverV2 {
@@ -18,11 +23,14 @@ class MergedPositionProvider(
         override fun onPositionChange(c: Coordinate?, provider: IPositionProvider) {
             notifyObservers()
         }
-
     }
 
     override var lastKnownPosition: Coordinate?
-        get() = providers.filter { it.lastKnownPosition != null }.last().lastKnownPosition
+        get() = providers.lastOrNull { val newEnough = System.currentTimeMillis() - it.lastUpdate < 30000
+            val positionKnown = it.lastKnownPosition != null
+            logger.debug("Position from ${it.name} is... known = $positionKnown; newEnough = $newEnough ")
+            positionKnown && newEnough
+        }?.lastKnownPosition
         set(value) {/* readonly */}
 
     fun addProvider(provider: IPositionProvider) {

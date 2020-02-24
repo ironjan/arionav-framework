@@ -26,6 +26,7 @@ bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
  */
 class BluetoothProviderImplementation(private val context: Context, private val lifecycle: Lifecycle)
     : PositionProviderBaseImplementation(context, lifecycle) {
+    override val name: String = BluetoothProviderImplementation::class.java.simpleName
 
     private val devices: MutableMap<String, ScanResult> = mutableMapOf()
     private val listOfVisibleBtDevices: MutableLiveData<List<ScanResult>> = MutableLiveData(listOf())
@@ -82,9 +83,6 @@ class BluetoothProviderImplementation(private val context: Context, private val 
         if (currentTime - lastUpdate < minTimeBetweenUpdatesInMillis)
             return
 
-        lastUpdate = currentTime
-
-
         val bestBtDevices = listOfVisibleBtDevices.value!!
 
         val bestDevicesAsString = bestBtDevices.joinToString("; ", prefix = "Best BTs: ") {
@@ -98,7 +96,25 @@ class BluetoothProviderImplementation(private val context: Context, private val 
         val signalStrengths = knownCoordinateDevices
             .map { SignalStrength(it.device.address, tmpIdToCoordinate[it.device.address]!!, it.rssi) }
 
-        lastKnownPosition = naiveTrilateration(signalStrengths)
+        val naiveTrilateration = naiveTrilateration(signalStrengths)
+        if(differentEnough(lastKnownPosition, naiveTrilateration)) {
+            lastKnownPosition = naiveTrilateration
+        }
+    }
+
+    private fun differentEnough(lastKnownPosition: Coordinate?, newPosition: Coordinate): Boolean {
+        if(lastKnownPosition == null) return true
+
+        val FiveMetersPrecision = 0.00001
+
+        val latDifferentEnough = lastKnownPosition.lat - newPosition.lat > FiveMetersPrecision
+        val lonDifferentEnough  = lastKnownPosition.lon - newPosition.lon > FiveMetersPrecision
+        val horizontalPositionDifferentEnough = latDifferentEnough || lonDifferentEnough
+
+        val lvlDifferent = lastKnownPosition.lvl != newPosition.lvl
+
+        return horizontalPositionDifferentEnough || lvlDifferent
+
     }
 
     private fun naiveTrilateration(devices: List<SignalStrength>): Coordinate {

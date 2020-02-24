@@ -6,6 +6,8 @@ interface IPositionProvider {
     val lastKnownPosition : Coordinate?
     val lastUpdate : Long
 
+    val name: String
+
     fun registerObserver(observer: IPositionObserver)
     fun removeObserver(observer: IPositionObserver)
     fun notifyObservers()

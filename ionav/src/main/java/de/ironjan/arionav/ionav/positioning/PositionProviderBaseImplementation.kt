@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
+import kotlin.math.log
 
 // Based on https://developer.android.com/topic/libraries/architecture/lifecycle#use-cases
 abstract class PositionProviderBaseImplementation(private val context: Context,
@@ -18,6 +19,7 @@ abstract class PositionProviderBaseImplementation(private val context: Context,
     protected set(value) {
         _lastPosition = value
         lastUpdate = System.currentTimeMillis()
+        notifyObservers()
     }
 
     private var _lastUpdate = 0L
@@ -53,6 +55,7 @@ abstract class PositionProviderBaseImplementation(private val context: Context,
     }
 
     override fun notifyObservers() {
+        logger.debug("$name notifying observers.")
         observers.forEach { o ->
             val position = lastKnownPosition ?: return
             o.onPositionChange(position)

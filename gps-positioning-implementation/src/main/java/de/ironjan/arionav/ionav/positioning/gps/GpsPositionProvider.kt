@@ -24,6 +24,8 @@ open class GpsPositionProvider(
     private val context: Context,
     private val lifecycle: Lifecycle
 ) : LevelDependentPositionProviderBaseImplementation(context, lifecycle) {
+    override val name: String = GpsPositionProvider::class.java.simpleName
+
     private val observers: MutableList<IPositionObserver> = mutableListOf()
 
     private val logger = LoggerFactory.getLogger(TAG)

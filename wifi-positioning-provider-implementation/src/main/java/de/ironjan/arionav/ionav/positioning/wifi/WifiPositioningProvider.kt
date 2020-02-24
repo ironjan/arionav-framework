@@ -17,6 +17,7 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
 class WifiPositioningProvider(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
+    override val name: String = WifiPositioningProvider::class.java.simpleName
 
     private val logger = LoggerFactory.getLogger(WifiPositioningProvider::class.java.simpleName)
 
