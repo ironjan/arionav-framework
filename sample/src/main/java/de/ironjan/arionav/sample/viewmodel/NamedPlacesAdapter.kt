@@ -4,10 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.Either
-import de.ironjan.arionav.ionav.special_routing.model.NamedPlace
-import de.ironjan.arionav.ionav.special_routing.model.Poi
-import de.ironjan.arionav.ionav.special_routing.model.Room
+import de.ironjan.arionav.ionav.routing.model.NamedPlace
 import de.ironjan.arionav.sample.R
 
 

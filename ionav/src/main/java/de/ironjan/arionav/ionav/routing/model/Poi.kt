@@ -1,16 +1,14 @@
-package de.ironjan.arionav.ionav.special_routing.model
+package de.ironjan.arionav.ionav.routing.model
 
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
 /**
- * Represents a simple room.
+ * Represents a "Point of Interest".
  * @param name The room's name
  * @param coordinate Coordinate of the room's center point
- * @param doors The coordinates of the room's doors
  * @param tags The original osm tags
  */
-data class Room(
+data class Poi(
     override val name: String,
     override val coordinate: Coordinate,
-    override val tags: Map<String, String>,
-    val doors: List<Coordinate>): NamedPlace
+    override val tags: Map<String, String>): NamedPlace

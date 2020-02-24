@@ -2,7 +2,7 @@ package de.ironjan.arionav.sample
 
 import android.app.Application
 import de.ironjan.arionav.ionav.GhzExtractor
-import de.ironjan.arionav.ionav.special_routing.repository.NamedPlaceRepository
+import de.ironjan.arionav.ionav.routing.repository.NamedPlaceRepository
 import org.slf4j.impl.HandroidLoggerAdapter
 
 class ArionavSampleApplication : Application() {

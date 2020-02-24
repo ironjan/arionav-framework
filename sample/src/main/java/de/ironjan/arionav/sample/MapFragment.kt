@@ -15,8 +15,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav.ionav.GhzExtractor
-import de.ironjan.arionav.ionav.special_routing.model.NamedPlace
-import de.ironjan.arionav.ionav.special_routing.repository.NamedPlaceRepository
+import de.ironjan.arionav.ionav.routing.model.NamedPlace
+import de.ironjan.arionav.ionav.routing.repository.NamedPlaceRepository
 import de.ironjan.arionav.sample.util.InstructionHelper
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
 import de.ironjan.graphhopper.extensions_core.Coordinate

@@ -1,4 +1,4 @@
-package de.ironjan.arionav.ionav.special_routing.model
+package de.ironjan.arionav.ionav.routing.model
 
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
