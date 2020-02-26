@@ -96,14 +96,15 @@ class BluetoothProviderImplementation(private val context: Context, private val 
         val signalStrengths = knownCoordinateDevices
             .map { SignalStrength(it.device.address, tmpIdToCoordinate[it.device.address]!!, it.rssi) }
 
-        val naiveTrilateration = naiveTrilateration(signalStrengths)
+        val naiveTrilateration = Trilateraion.naiveTrilateration(signalStrengths)
         if(differentEnough(lastKnownPosition, naiveTrilateration)) {
             lastKnownPosition = naiveTrilateration
         }
     }
 
-    private fun differentEnough(lastKnownPosition: Coordinate?, newPosition: Coordinate): Boolean {
+    private fun differentEnough(lastKnownPosition: Coordinate?, newPosition: Coordinate?): Boolean {
         if(lastKnownPosition == null) return true
+        if(newPosition == null) return true // we're too far from senders..
 
         val FiveMetersPrecision = 0.00001
 
@@ -115,10 +116,6 @@ class BluetoothProviderImplementation(private val context: Context, private val 
 
         return horizontalPositionDifferentEnough || lvlDifferent
 
-    }
-
-    private fun naiveTrilateration(devices: List<SignalStrength>): Coordinate {
-        return Trilateraion.naiveTrilateration(devices)
     }
 
     override fun stop() {
