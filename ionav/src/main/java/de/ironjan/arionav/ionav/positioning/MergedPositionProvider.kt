@@ -16,16 +16,16 @@ class MergedPositionProvider(
     private var providers: MutableList<IPositionProvider> = mutableListOf()
 
     private val observer: IPositionObserverV2 = object : IPositionObserverV2 {
-        override fun onPositionChange(c: Coordinate?) {
+        override fun onPositionChange(c: IonavLocation?) {
             notifyObservers()
         }
 
-        override fun onPositionChange(c: Coordinate?, provider: IPositionProvider) {
+        override fun onPositionChange(c: IonavLocation?, provider: IPositionProvider) {
             notifyObservers()
         }
     }
 
-    override var lastKnownPosition: Coordinate?
+    override var lastKnownPosition: IonavLocation?
         get() = providers.lastOrNull { val newEnough = System.currentTimeMillis() - it.lastUpdate < 30000
             val positionKnown = it.lastKnownPosition != null
             logger.debug("Position from ${it.name} is... known = $positionKnown; newEnough = $newEnough ")

@@ -7,6 +7,7 @@ import android.net.wifi.WifiManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
 import de.ironjan.arionav.ionav.positioning.SignalStrength
 import de.ironjan.arionav.ionav.positioning.Trilateraion
@@ -97,22 +98,23 @@ class BluetoothProviderImplementation(private val context: Context, private val 
             .map { SignalStrength(it.device.address, tmpIdToCoordinate[it.device.address]!!, it.rssi) }
 
         val naiveTrilateration = Trilateraion.naiveTrilateration(signalStrengths)
-        if(differentEnough(lastKnownPosition, naiveTrilateration)) {
-            lastKnownPosition = naiveTrilateration
+        val newPosition = if(naiveTrilateration == null) null else IonavLocation(name, naiveTrilateration)
+        if(differentEnough(lastKnownPosition, newPosition)) {
+            lastKnownPosition = newPosition
         }
     }
 
-    private fun differentEnough(lastKnownPosition: Coordinate?, newPosition: Coordinate?): Boolean {
+    private fun differentEnough(lastKnownPosition: IonavLocation?, newPosition: IonavLocation?): Boolean {
         if(lastKnownPosition == null) return true
         if(newPosition == null) return true // we're too far from senders..
 
         val FiveMetersPrecision = 0.00001
 
-        val latDifferentEnough = lastKnownPosition.lat - newPosition.lat > FiveMetersPrecision
-        val lonDifferentEnough  = lastKnownPosition.lon - newPosition.lon > FiveMetersPrecision
+        val latDifferentEnough = lastKnownPosition.latL - newPosition.latL > FiveMetersPrecision
+        val lonDifferentEnough  = lastKnownPosition.lonL - newPosition.lonL > FiveMetersPrecision
         val horizontalPositionDifferentEnough = latDifferentEnough || lonDifferentEnough
 
-        val lvlDifferent = lastKnownPosition.lvl != newPosition.lvl
+        val lvlDifferent = lastKnownPosition.lvlL != newPosition.lvlL
 
         return horizontalPositionDifferentEnough || lvlDifferent
 

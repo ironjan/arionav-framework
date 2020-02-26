@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
+import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProvider
 import de.ironjan.arionav.ionav.positioning.wifi.model.SignalStrengthResult
 import de.ironjan.arionav.sample.viewmodel.NearbyAccessPointsViewModel
@@ -21,7 +22,7 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
 
 
     private val observer: IPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: Coordinate?) {
+        override fun onPositionChange(c: IonavLocation?) {
             Toast.makeText(context ?: return, "BT Position: $c", Toast.LENGTH_SHORT).show()
         }
     }

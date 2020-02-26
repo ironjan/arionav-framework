@@ -13,8 +13,8 @@ abstract class PositionProviderBaseImplementation(private val context: Context,
                                                   private val lifecycle: Lifecycle)
     : LifecycleObserver, IPositionProvider {
 
-    private var _lastPosition: Coordinate? = null
-    override var lastKnownPosition : Coordinate?
+    private var _lastPosition: IonavLocation? = null
+    override var lastKnownPosition : IonavLocation?
       get() = _lastPosition
     protected set(value) {
         _lastPosition = value

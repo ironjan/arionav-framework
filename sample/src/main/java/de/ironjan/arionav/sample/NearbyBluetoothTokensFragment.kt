@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
+import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothProviderImplementation
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
@@ -19,7 +20,7 @@ class NearbyBluetoothTokensFragment : CustomListFragment<ScanResult>(scanResultT
     private val devices = emptyMap<String, String>().toMutableMap()
 
     private val observer: IPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: Coordinate?) {
+        override fun onPositionChange(c: IonavLocation?) {
             Toast.makeText(context ?: return, "BT Position: $c", Toast.LENGTH_SHORT).show()
         }
     }

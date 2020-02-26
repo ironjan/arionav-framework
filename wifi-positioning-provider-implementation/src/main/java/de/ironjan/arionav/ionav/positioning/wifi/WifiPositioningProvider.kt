@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager.calculateSignalLevel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
 import de.ironjan.arionav.ionav.positioning.SignalStrength
 import de.ironjan.arionav.ionav.positioning.Trilateraion.naiveTrilateration
@@ -89,7 +90,8 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
         val signalStrengths = knownCoordinateDevices
             .map { SignalStrength(it.BSSID, tmpIdToCoordinate[it.BSSID]!!, it.level) }
 
-        lastKnownPosition = naiveTrilateration(signalStrengths)
+        val coordinate = naiveTrilateration(signalStrengths)
+        lastKnownPosition = if(coordinate == null) null else IonavLocation(name, coordinate)
     }
 
     private fun scanFailure() {

@@ -7,10 +7,7 @@ import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomViewModel
-import de.ironjan.arionav.ionav.positioning.IPositionObserver
-import de.ironjan.arionav.ionav.positioning.IPositionProvider
-import de.ironjan.arionav.ionav.positioning.LevelDependentPositionProviderBaseImplementation
-import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
+import de.ironjan.arionav.ionav.positioning.*
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
@@ -133,7 +130,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
 
     private val iPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: Coordinate?) {
+        override fun onPositionChange(c: IonavLocation?) {
             userPosition.value = c
             if (hasRoute) {
                 recomputeRemainingRoute()
