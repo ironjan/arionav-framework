@@ -28,7 +28,7 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
     private val listOfVisibleBtDevices: MutableLiveData<List<ScanResult>> = MutableLiveData(listOf())
     fun getVisibleBluetoothDevices(): LiveData<List<ScanResult>> = listOfVisibleBtDevices
 
-    private val tmpIdToCoordinate: Map<String, Coordinate> = mapOf()
+    private val tmpIdToCoordinate: Map<String, Coordinate> = WifiPositioningProviderHardCodedValues().macsToCoordinates
 
     private lateinit var wifiManager: WifiManager
     private lateinit var wifiScanReceiver: BroadcastReceiver

@@ -54,11 +54,15 @@ class ImprovedRoomReader  @Inject constructor() : OsmReader<NamedPlace>(
                     val lat = roomWayNodeRefs.map { it.lat }.sum() / n
                     val lon = roomWayNodeRefs.map { it.lon }.sum() / n
 
-                    val center = Coordinate(lat, lon, 0.0)
+                    val center = Coordinate(lat, lon, level)
 
                     val room = Room(name, center, w.tags, doorCoordinates)
                     logger.debug("Conversion result: $room")
                     room
+                }
+
+                rooms.forEach{
+                    logger.warn("ROOM ${it.name}: ${it.coordinate.lat} ${it.coordinate.lon} ${it.coordinate.lvl}")
                 }
 
                 rooms
