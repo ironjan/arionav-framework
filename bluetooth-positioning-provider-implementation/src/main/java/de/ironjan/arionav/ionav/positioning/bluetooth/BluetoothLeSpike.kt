@@ -27,10 +27,10 @@ class BluetoothLeSpike(private val context: Context,
         when (enable) {
             true -> {
                 // Stops scanning after a pre-defined scan period.
-                Handler(Looper.getMainLooper()).postDelayed({
-                    mScanning = false
-                    bluetoothAdapter?.stopScan(leScanCallback)
-                }, SCAN_PERIOD)
+//                Handler(Looper.getMainLooper()).postDelayed({
+//                    mScanning = false
+//                    bluetoothAdapter?.stopScan(leScanCallback)
+//                }, SCAN_PERIOD)
                 mScanning = true
                 bluetoothAdapter?.startScan(leScanCallback)
             }
