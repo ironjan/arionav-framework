@@ -4,18 +4,22 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav.sample.R
-import kotlin.math.round
 
-object InstructionHelper {
-    fun toText(instruction: Instruction): String {
-        val distance = round(instruction.distance * 100) / 100
-        val instructionText = InstructionHelper.getTextFor(instruction.sign)
-        val timeInSeconds = instruction.time / 1000
+class InstructionHelper(private val context: Context) {
+    fun toText(currentInstruction: Instruction, nextInstruction: Instruction): String {
+        val instructionText = getTextFor(nextInstruction.sign)
+
+        val timeInSeconds = currentInstruction.time / 1000
         val timeInMinutes = timeInSeconds / 60
-        return "$instructionText ${instruction.name}, ${distance}m, ${timeInMinutes}min"
+
+        val distance = " %.2f".format(currentInstruction.distance)
+
+        val optionalLessThan = if(timeInMinutes>0) "" else "<"
+        return "$instructionText in ${distance}m ($optionalLessThan${timeInMinutes}min)\n${nextInstruction.name}"
     }
 
     private fun getTextFor(sign: Int): String {
+        // TODO improve
         return when (sign) {
             -99 -> "UNKNOWN"
             -98 -> "U_TURN_UNKNOWN"
@@ -42,7 +46,7 @@ object InstructionHelper {
         }
     }
 
-    fun getInstructionImageFor(sign: Int, context: Context): Drawable? {
+    fun getInstructionImageFor(sign: Int): Drawable? {
         // TODO add the others too? they were retrieved from graphhopper/./web/target/classes/assets/img/
         val resId = when (sign) {
             -99 -> R.mipmap.ic_launcher

@@ -62,8 +62,8 @@ class MainActivity :
 
         val mergedPositionProvider = MergedPositionProvider(this, lifecycle)
         mergedPositionProvider.addProvider(GpsPositionProvider(this, lifecycle))
-        mergedPositionProvider.addProvider(WifiPositioningProvider(this, lifecycle))
-        mergedPositionProvider.addProvider(BluetoothProviderImplementation(this, lifecycle))
+//        mergedPositionProvider.addProvider(WifiPositioningProvider(this, lifecycle))
+//        mergedPositionProvider.addProvider(BluetoothProviderImplementation(this, lifecycle))
 
         positionProvider = mergedPositionProvider
 

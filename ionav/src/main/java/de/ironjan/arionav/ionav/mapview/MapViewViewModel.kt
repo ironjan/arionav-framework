@@ -17,9 +17,6 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     // FIXME should be IPositionObserver instead
     private var positionProvider: IPositionProvider ?= null
 
-    private val nextInstruction: MutableLiveData<Instruction?> = MutableLiveData()
-    fun getNextInstructionLiveData(): LiveData<Instruction?> = nextInstruction
-
     override var state: MapViewState = MapViewState()
 
     private val startCoordinate: MutableLiveData<Coordinate?> = MutableLiveData()
@@ -165,7 +162,6 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
         val computedRoute = computeRouteFromTo(lUserPosition, lEndCoordinate)
         remainingRoute.value = computedRoute
-        nextInstruction.value =computedRoute?.instructions?.first()
     }
 
     private fun computeRouteFromTo(lStartCoordinate: Coordinate, lEndCoordinate: Coordinate): PathWrapper? {

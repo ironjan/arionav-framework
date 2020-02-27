@@ -28,6 +28,7 @@ import java.lang.IllegalArgumentException
 
 
 class MapFragment : Fragment() {
+    private lateinit var instructionHelper: InstructionHelper
     private lateinit var indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport
 
     private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
@@ -43,9 +44,10 @@ class MapFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // todo move to VM or below
-        val lContext = context ?: return
-        ghzExtractor = GhzExtractor(lContext.applicationContext, ghzResId, mapName)
+        val context = context ?: return
+        ghzExtractor = GhzExtractor(context.applicationContext, ghzResId, mapName)
 
+        instructionHelper = InstructionHelper(context)
 
     }
 
@@ -197,18 +199,24 @@ class MapFragment : Fragment() {
         viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
             buttonRemainingRoute.isChecked = it
         })
+        viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+            if(viewModel.getShowRemainingRouteCurrentValue()) {
+                val instructions = it?.instructions?.take(2) ?: return@Observer
+
+                val currentInstruction = instructions.first()
+                val nextInstruction = instructions.last()
+
+                val text = instructionHelper.toText(currentInstruction, nextInstruction)
+
+                txtCurrentInstruction.setText(text)
+            }
+        })
         viewModel.getLevelListLiveData().observe(lifecycleOwner, Observer {
             val lContext = context ?: return@Observer
             spinnerLevel.adapter = ArrayAdapter(lContext, android.R.layout.simple_spinner_dropdown_item, it)
         })
         viewModel.getSelectedLevelListPosition().observe(lifecycleOwner, Observer {
             spinnerLevel.setSelection(it)
-        })
-        viewModel.getNextInstructionLiveData().observe(lifecycleOwner, Observer {
-            if (it == null) return@Observer
-            if (viewModel.getShowRemainingRouteCurrentValue()) {
-                txtCurrentInstruction.setText(InstructionHelper.toText(it))
-            }
         })
 
         spinnerLevel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

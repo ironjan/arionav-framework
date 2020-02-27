@@ -40,11 +40,15 @@ class ArViewFragment : Fragment() {
 
     private val model: SharedViewModel by activityViewModels()
 
+    private lateinit var instructionHelper: InstructionHelper
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_ar_view, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycle.addObserver(ar_scene_view!!)
+
+        instructionHelper = InstructionHelper(context ?: return)
 
         loadRenderables()
         addUpdateListenerToSceneView()
@@ -233,7 +237,7 @@ class ArViewFragment : Fragment() {
 
                 txtName.text = instruction.name
                 txtDistance.text = "${instruction.distance}m"
-                instructionImage.setImageDrawable(InstructionHelper.getInstructionImageFor(instruction.sign, context))
+                instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(instruction.sign))
 
                 val base = Node()
                 base.renderable = renderable
