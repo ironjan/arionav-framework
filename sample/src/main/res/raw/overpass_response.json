@@ -1,0 +1,1345 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-ide",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2020-02-27T16:02:02Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "relation/8955925",
+        "building": "yes",
+        "building:levels": "2",
+        "building:material": "glass",
+        "note": "Zentrales Erschließungselement",
+        "type": "multipolygon"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7489028,
+              51.7175702
+            ],
+            [
+              8.7489188,
+              51.7175177
+            ],
+            [
+              8.7489352,
+              51.7174639
+            ],
+            [
+              8.7490268,
+              51.7174746
+            ],
+            [
+              8.7489944,
+              51.7175809
+            ],
+            [
+              8.7489028,
+              51.7175702
+            ]
+          ],
+          [
+            [
+              8.7489678,
+              51.7175699
+            ],
+            [
+              8.7489792,
+              51.7175374
+            ],
+            [
+              8.748926,
+              51.7175302
+            ],
+            [
+              8.7489146,
+              51.7175628
+            ],
+            [
+              8.7489678,
+              51.7175699
+            ]
+          ]
+        ]
+      },
+      "id": "relation/8955925"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/115668752",
+        "addr:city": "Paderborn",
+        "addr:country": "DE",
+        "addr:housename": "Galeria Karstadt Kaufhof",
+        "addr:housenumber": "26",
+        "addr:postcode": "33098",
+        "addr:street": "Westernstraße",
+        "baby_feeding": "room",
+        "building": "retail",
+        "changing_table": "yes",
+        "changing_table:location": "dedicated_room",
+        "elevator": "yes",
+        "internet_access": "wlan",
+        "name": "Galeria Karstadt Kaufhof",
+        "opening_hours": "Mo-Fr 09:00-19:00; Sa 09:00-19:00; PH off",
+        "payment:american_express": "yes",
+        "payment:cash": "yes",
+        "payment:diners_club": "yes",
+        "payment:girocard": "yes",
+        "payment:jcb": "yes",
+        "payment:maestro": "yes",
+        "payment:mastercard": "yes",
+        "payment:v_pay": "yes",
+        "payment:visa": "yes",
+        "phone": "+49 5251 103 0",
+        "shop": "department_store",
+        "stroller": "yes",
+        "toilets": "yes",
+        "website": "https://www.galeria-kaufhof.de/filialen/paderborn/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7488184,
+              51.7169454
+            ],
+            [
+              8.7484502,
+              51.7168142
+            ],
+            [
+              8.7484317,
+              51.7168076
+            ],
+            [
+              8.7484301,
+              51.7168095
+            ],
+            [
+              8.7484262,
+              51.7168082
+            ],
+            [
+              8.7484516,
+              51.7167811
+            ],
+            [
+              8.7482545,
+              51.7167114
+            ],
+            [
+              8.7482844,
+              51.7166696
+            ],
+            [
+              8.7482758,
+              51.7166677
+            ],
+            [
+              8.7482825,
+              51.7166568
+            ],
+            [
+              8.7482866,
+              51.7166576
+            ],
+            [
+              8.7483338,
+              51.716584
+            ],
+            [
+              8.7483426,
+              51.7165862
+            ],
+            [
+              8.7483822,
+              51.7165256
+            ],
+            [
+              8.7483708,
+              51.7165226
+            ],
+            [
+              8.7483854,
+              51.716503
+            ],
+            [
+              8.7483955,
+              51.7165055
+            ],
+            [
+              8.7484012,
+              51.716497
+            ],
+            [
+              8.7484711,
+              51.7165218
+            ],
+            [
+              8.7485543,
+              51.7165516
+            ],
+            [
+              8.7486339,
+              51.7165799
+            ],
+            [
+              8.748714,
+              51.7164915
+            ],
+            [
+              8.7487399,
+              51.7164628
+            ],
+            [
+              8.7487778,
+              51.7164757
+            ],
+            [
+              8.7488223,
+              51.7164233
+            ],
+            [
+              8.7488939,
+              51.7163395
+            ],
+            [
+              8.7492757,
+              51.7164556
+            ],
+            [
+              8.7488669,
+              51.7168935
+            ],
+            [
+              8.7488184,
+              51.7169454
+            ]
+          ]
+        ]
+      },
+      "id": "way/115668752"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/140381582",
+        "access": "customers",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "cuisine": "burger",
+        "indoor": "room",
+        "level": "1",
+        "name": "McDonald's",
+        "opening_hours": "Mo-Sa 09:00-23:00; Su,PH 11:00-23:00",
+        "room": "restaurant",
+        "takeaway": "yes",
+        "website": "https://mcdonalds-heiderich.de/",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7409116,
+              51.7133542
+            ],
+            [
+              8.7408651,
+              51.7133426
+            ],
+            [
+              8.7408271,
+              51.7133331
+            ],
+            [
+              8.7408691,
+              51.7132686
+            ],
+            [
+              8.7408921,
+              51.7132743
+            ],
+            [
+              8.7409135,
+              51.7132797
+            ],
+            [
+              8.741016,
+              51.7133053
+            ],
+            [
+              8.740974,
+              51.7133698
+            ],
+            [
+              8.740925,
+              51.7133575
+            ],
+            [
+              8.7409116,
+              51.7133542
+            ]
+          ]
+        ]
+      },
+      "id": "way/140381582"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/211119623",
+        "addr:city": "Paderborn",
+        "addr:housename": "Arosa",
+        "addr:housenumber": "38",
+        "addr:postcode": "33098",
+        "addr:street": "Westernmauer",
+        "brand": "Best western",
+        "building:levels": "11",
+        "building:part": "yes",
+        "contact:phone": "+49 5251 1280",
+        "contact:website": "http://www.arosa-paderborn.de",
+        "internet_access": "wlan",
+        "internet_access:fee": "no",
+        "name": "Arosa",
+        "rooms": "121",
+        "sauna": "yes",
+        "stars": "4",
+        "tourism": "hotel",
+        "wellness": "yes",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7480242,
+              51.7185029
+            ],
+            [
+              8.7478098,
+              51.7185228
+            ],
+            [
+              8.7477232,
+              51.7182223
+            ],
+            [
+              8.7479367,
+              51.7182012
+            ],
+            [
+              8.7480242,
+              51.7185029
+            ]
+          ]
+        ]
+      },
+      "id": "way/211119623"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/231891893",
+        "addr:city": "Paderborn",
+        "addr:country": "DE",
+        "addr:housenumber": "7",
+        "addr:postcode": "33102",
+        "addr:street": "Friedrichstraße",
+        "building": "yes",
+        "email": "info@modellbau-sester.de",
+        "name": "Modellbahn und Modellbau Sester",
+        "note": "Ausverkauf",
+        "opening_hours": "Mo, We-Fr 10:00-13:00, 15:00-18:00; Sa 10:00-13:00; Su, Tu off",
+        "phone": "+49 5251 184752",
+        "shop": "model",
+        "website": "http://www.modellbau-sester.de/"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7458251,
+              51.7165088
+            ],
+            [
+              8.7458361,
+              51.7163798
+            ],
+            [
+              8.7459901,
+              51.7163817
+            ],
+            [
+              8.7459858,
+              51.7164263
+            ],
+            [
+              8.7459663,
+              51.7164256
+            ],
+            [
+              8.745959,
+              51.7165142
+            ],
+            [
+              8.7458251,
+              51.7165088
+            ]
+          ]
+        ]
+      },
+      "id": "way/231891893"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/232308292",
+        "addr:city": "Paderborn",
+        "addr:country": "DE",
+        "addr:housenumber": "1",
+        "addr:postcode": "33098",
+        "addr:street": "Bachstraße",
+        "bar": "yes",
+        "brand": "Familiengeführt",
+        "building": "yes",
+        "building:levels": "3",
+        "description": "Kleines familiengeführtes Hotel mit 11 individuell eingerichteten Zimmern in einem denkmalgeschützen Haus aus 1563; 3-Sterne-Superior, mit eigenem Restaurant/Café und kleiner Sauna mit Ruheraum; im ganzen Haus finden sich farbintensive Gemälde",
+        "email": "info@galerie-hotel.de",
+        "fax": "+49 (0) 5251 122419",
+        "internet_access": "wlan",
+        "internet_access:fee": "no",
+        "internet_access:ssid": "Galerie-Hotel",
+        "level": "1-2",
+        "name": "Galerie-Hotel",
+        "operator": "Familie Ewers",
+        "payment:american_express": "yes",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:girocard": "yes",
+        "payment:maestro": "yes",
+        "payment:mastercard": "yes",
+        "payment:visa": "yes",
+        "phone": "+49 (0)5251 12240",
+        "reservation": "recommended",
+        "rooms": "11",
+        "smoking": "outside",
+        "source": "local knowledge",
+        "stars": "3S",
+        "start_date": "1956",
+        "toilets:wheelchair": "no",
+        "tourism": "hotel",
+        "website": "http://www.galerie-hotel.de/",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7508783,
+              51.7182843
+            ],
+            [
+              8.7507997,
+              51.7182023
+            ],
+            [
+              8.7508234,
+              51.7181947
+            ],
+            [
+              8.7509654,
+              51.7181508
+            ],
+            [
+              8.7509966,
+              51.7181938
+            ],
+            [
+              8.7510643,
+              51.7181764
+            ],
+            [
+              8.7510877,
+              51.7181814
+            ],
+            [
+              8.7511121,
+              51.7182158
+            ],
+            [
+              8.7508783,
+              51.7182843
+            ]
+          ]
+        ]
+      },
+      "id": "way/232308292"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/256888497",
+        "addr:city": "Paderborn",
+        "addr:country": "DE",
+        "addr:housenumber": "22, 24",
+        "addr:postcode": "33098",
+        "addr:street": "Westernstraße",
+        "baby_feeding": "room",
+        "building": "retail",
+        "building:colour": "white",
+        "building:levels": "4",
+        "building:material": "plaster",
+        "contact:email": "textilhaus.paderborn@klingenthal.com",
+        "contact:phone": "+49 5251 2860",
+        "name": "Klingenthal",
+        "opening_hours": "Mo-Sa 9:00-19:00",
+        "roof:colour": "grey",
+        "roof:shape": "flat",
+        "shop": "clothes",
+        "source": "NRW Atlas DOP 40",
+        "stroller": "yes",
+        "toilets:wheelchair": "yes",
+        "website": "https://www.klingenthal.com/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7500442,
+              51.7173614
+            ],
+            [
+              8.7500287,
+              51.7173648
+            ],
+            [
+              8.7499951,
+              51.7173694
+            ],
+            [
+              8.7499954,
+              51.71737
+            ],
+            [
+              8.749845,
+              51.7173906
+            ],
+            [
+              8.7498444,
+              51.7173923
+            ],
+            [
+              8.7496405,
+              51.7173669
+            ],
+            [
+              8.7496549,
+              51.7173231
+            ],
+            [
+              8.7491839,
+              51.7171644
+            ],
+            [
+              8.7491843,
+              51.7171637
+            ],
+            [
+              8.7491515,
+              51.7171527
+            ],
+            [
+              8.7491344,
+              51.7171449
+            ],
+            [
+              8.7491229,
+              51.717138
+            ],
+            [
+              8.7491123,
+              51.7171277
+            ],
+            [
+              8.7491097,
+              51.7171225
+            ],
+            [
+              8.7491091,
+              51.7171215
+            ],
+            [
+              8.7491064,
+              51.7171161
+            ],
+            [
+              8.7491051,
+              51.717106
+            ],
+            [
+              8.7491066,
+              51.7170921
+            ],
+            [
+              8.749114,
+              51.7170695
+            ],
+            [
+              8.7491127,
+              51.7170692
+            ],
+            [
+              8.7491356,
+              51.716997
+            ],
+            [
+              8.7491234,
+              51.7169954
+            ],
+            [
+              8.749181,
+              51.716818
+            ],
+            [
+              8.7491941,
+              51.7168199
+            ],
+            [
+              8.7492052,
+              51.7167861
+            ],
+            [
+              8.7491845,
+              51.7167784
+            ],
+            [
+              8.7494354,
+              51.7165067
+            ],
+            [
+              8.7494463,
+              51.7164996
+            ],
+            [
+              8.7494569,
+              51.7164956
+            ],
+            [
+              8.7494623,
+              51.7164944
+            ],
+            [
+              8.7494675,
+              51.7164932
+            ],
+            [
+              8.7494808,
+              51.716492
+            ],
+            [
+              8.7494951,
+              51.716493
+            ],
+            [
+              8.7495939,
+              51.7165167
+            ],
+            [
+              8.7495944,
+              51.716516
+            ],
+            [
+              8.7497684,
+              51.7165561
+            ],
+            [
+              8.7497676,
+              51.7165578
+            ],
+            [
+              8.749683,
+              51.7167046
+            ],
+            [
+              8.7496936,
+              51.716707
+            ],
+            [
+              8.7496863,
+              51.7167205
+            ],
+            [
+              8.7496967,
+              51.7167575
+            ],
+            [
+              8.7498173,
+              51.7167863
+            ],
+            [
+              8.7497331,
+              51.716957
+            ],
+            [
+              8.7499752,
+              51.7169871
+            ],
+            [
+              8.7500967,
+              51.7170023
+            ],
+            [
+              8.7500964,
+              51.7170034
+            ],
+            [
+              8.7501059,
+              51.7170045
+            ],
+            [
+              8.7500993,
+              51.7170254
+            ],
+            [
+              8.750091,
+              51.7170518
+            ],
+            [
+              8.7501194,
+              51.7170624
+            ],
+            [
+              8.7501697,
+              51.7170811
+            ],
+            [
+              8.7500973,
+              51.7173054
+            ],
+            [
+              8.7500957,
+              51.7173054
+            ],
+            [
+              8.7500892,
+              51.7173263
+            ],
+            [
+              8.7500846,
+              51.7173356
+            ],
+            [
+              8.7500782,
+              51.7173435
+            ],
+            [
+              8.7500686,
+              51.7173511
+            ],
+            [
+              8.7500568,
+              51.7173572
+            ],
+            [
+              8.7500442,
+              51.7173614
+            ]
+          ]
+        ]
+      },
+      "id": "way/256888497"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/258834672",
+        "addr:city": "Paderborn",
+        "addr:housenumber": "32",
+        "addr:postcode": "33102",
+        "addr:street": "Riemekestraße",
+        "building": "residential",
+        "contact:phone": "+49 5251 8783015",
+        "name": "Mühlenbeck",
+        "shop": "locksmith",
+        "source": "NRW Atlas DOP40"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7419543,
+              51.716205
+            ],
+            [
+              8.7419523,
+              51.7162164
+            ],
+            [
+              8.7419523,
+              51.7162165
+            ],
+            [
+              8.7419513,
+              51.7162207
+            ],
+            [
+              8.7418916,
+              51.7162209
+            ],
+            [
+              8.7418911,
+              51.7162086
+            ],
+            [
+              8.7418862,
+              51.7161179
+            ],
+            [
+              8.7420765,
+              51.716114
+            ],
+            [
+              8.7420788,
+              51.7161129
+            ],
+            [
+              8.7421036,
+              51.7161319
+            ],
+            [
+              8.7421014,
+              51.7161331
+            ],
+            [
+              8.742091,
+              51.7161969
+            ],
+            [
+              8.742091,
+              51.7161971
+            ],
+            [
+              8.7419715,
+              51.7161985
+            ],
+            [
+              8.7419705,
+              51.7162042
+            ],
+            [
+              8.7419543,
+              51.716205
+            ]
+          ]
+        ]
+      },
+      "id": "way/258834672"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/402396714",
+        "building:part": "elevator",
+        "indoor": "yes",
+        "level": "-1;0;1"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7409104,
+              51.7130044
+            ],
+            [
+              8.7409209,
+              51.7129883
+            ],
+            [
+              8.7409614,
+              51.7129984
+            ],
+            [
+              8.7409562,
+              51.7130064
+            ],
+            [
+              8.7409509,
+              51.7130145
+            ],
+            [
+              8.7409104,
+              51.7130044
+            ]
+          ]
+        ]
+      },
+      "id": "way/402396714"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/402396733",
+        "building:part": "elevator",
+        "indoor": "yes",
+        "level": "-1;0;1"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7407426,
+              51.7131445
+            ],
+            [
+              8.740729,
+              51.7131412
+            ],
+            [
+              8.7407156,
+              51.7131379
+            ],
+            [
+              8.740732,
+              51.7131122
+            ],
+            [
+              8.7407386,
+              51.7131138
+            ],
+            [
+              8.7407515,
+              51.713117
+            ],
+            [
+              8.740759,
+              51.7131188
+            ],
+            [
+              8.7407426,
+              51.7131445
+            ]
+          ]
+        ]
+      },
+      "id": "way/402396733"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/402396736",
+        "indoor": "room",
+        "level": "0",
+        "name": "DB Reisezentrum",
+        "opening_hours": "Mo-Fr 07:00-19:00; Sa 08:00-17:00; Su 10:00-16:00",
+        "operator": "DB Vertrieb GmbH",
+        "public_transport": "service_center",
+        "shop": "travel_agency"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7405531,
+              51.7132346
+            ],
+            [
+              8.74048,
+              51.7132163
+            ],
+            [
+              8.7403829,
+              51.7131921
+            ],
+            [
+              8.7404318,
+              51.7131169
+            ],
+            [
+              8.7406021,
+              51.7131594
+            ],
+            [
+              8.740577,
+              51.7131978
+            ],
+            [
+              8.7405653,
+              51.7132158
+            ],
+            [
+              8.7405531,
+              51.7132346
+            ]
+          ]
+        ]
+      },
+      "id": "way/402396736"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/402396740",
+        "access": "customers",
+        "indoor": "room",
+        "level": "0",
+        "name": "Lange",
+        "opening_hours": "Mo-Fr 5:30-20:00; Sa 6:30-19:00; Su 7:30-19:00",
+        "room": "shop",
+        "shop": "bakery",
+        "website": "https://www.baeckerei-lange.de/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7406971,
+              51.7133387
+            ],
+            [
+              8.7407176,
+              51.7133074
+            ],
+            [
+              8.7407487,
+              51.7132595
+            ],
+            [
+              8.7407604,
+              51.7132415
+            ],
+            [
+              8.7408238,
+              51.7132573
+            ],
+            [
+              8.7408691,
+              51.7132686
+            ],
+            [
+              8.7408271,
+              51.7133331
+            ],
+            [
+              8.7407832,
+              51.713322
+            ],
+            [
+              8.7407619,
+              51.7133548
+            ],
+            [
+              8.7406971,
+              51.7133387
+            ]
+          ]
+        ]
+      },
+      "id": "way/402396740"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/402396741",
+        "access": "customers",
+        "addr:city": "Paderborn",
+        "addr:housenumber": "29",
+        "addr:postcode": "33102",
+        "addr:street": "Bahnhofstraße",
+        "indoor": "room",
+        "level": "0",
+        "name": "Relay",
+        "opening_hours": "Mo-Fr 06:00-20:00; Sa 07:00-19:00; Su 08:00-19:00",
+        "room": "shop",
+        "shop": "books"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7405699,
+              51.7133069
+            ],
+            [
+              8.7405543,
+              51.7133029
+            ],
+            [
+              8.7404419,
+              51.7132749
+            ],
+            [
+              8.74048,
+              51.7132163
+            ],
+            [
+              8.740608,
+              51.7132483
+            ],
+            [
+              8.7405915,
+              51.7132737
+            ],
+            [
+              8.7405699,
+              51.7133069
+            ]
+          ]
+        ]
+      },
+      "id": "way/402396741"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/402396742",
+        "indoor": "room",
+        "level": "0",
+        "name": "Schenke im Bahnhof",
+        "room": "shop",
+        "shop": "kiosk",
+        "website": "https://www.schenke-im-bahnhof.de/"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.7406459,
+              51.7131562
+            ],
+            [
+              8.7406393,
+              51.7131668
+            ],
+            [
+              8.7406374,
+              51.7132125
+            ],
+            [
+              8.740614,
+              51.7132068
+            ],
+            [
+              8.740577,
+              51.7131978
+            ],
+            [
+              8.7406286,
+              51.7131161
+            ],
+            [
+              8.7406654,
+              51.7131256
+            ],
+            [
+              8.740661,
+              51.7131325
+            ],
+            [
+              8.7406528,
+              51.7131454
+            ],
+            [
+              8.7406459,
+              51.7131562
+            ]
+          ]
+        ]
+      },
+      "id": "way/402396742"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/140387183",
+        "handrail": "both",
+        "highway": "steps",
+        "incline": "up",
+        "indoor": "yes",
+        "level": "-1;0",
+        "step_count": "13",
+        "tactile_paving": "yes",
+        "tunnel": "yes",
+        "width": "5"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            8.7407748,
+            51.7131526
+          ],
+          [
+            8.7407565,
+            51.7131826
+          ]
+        ]
+      },
+      "id": "way/140387183"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/140387205",
+        "highway": "footway",
+        "indoor": "yes",
+        "level": "-1",
+        "lit": "yes",
+        "tunnel": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            8.7407748,
+            51.7131526
+          ],
+          [
+            8.7407903,
+            51.7131266
+          ],
+          [
+            8.7408022,
+            51.7131079
+          ],
+          [
+            8.7408713,
+            51.7129998
+          ],
+          [
+            8.7408795,
+            51.7129872
+          ],
+          [
+            8.7408876,
+            51.7129748
+          ],
+          [
+            8.7409655,
+            51.7128555
+          ]
+        ]
+      },
+      "id": "way/140387205"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/140387207",
+        "highway": "footway",
+        "indoor": "yes",
+        "level": "-1",
+        "lit": "yes",
+        "tunnel": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            8.7408433,
+            51.7129783
+          ],
+          [
+            8.7408795,
+            51.7129872
+          ],
+          [
+            8.7409158,
+            51.7129962
+          ],
+          [
+            8.7409363,
+            51.7130012
+          ]
+        ]
+      },
+      "id": "way/140387207"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/200141947",
+        "highway": "footway",
+        "indoor": "yes",
+        "level": "-1",
+        "tunnel": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            8.7407375,
+            51.7131274
+          ],
+          [
+            8.7407515,
+            51.713117
+          ],
+          [
+            8.7407634,
+            51.7130986
+          ],
+          [
+            8.7408022,
+            51.7131079
+          ]
+        ]
+      },
+      "id": "way/200141947"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/402396758",
+        "highway": "footway",
+        "indoor": "yes",
+        "level": "-1",
+        "lit": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            8.7410018,
+            51.7128646
+          ],
+          [
+            8.7409655,
+            51.7128555
+          ],
+          [
+            8.740929,
+            51.7128464
+          ]
+        ]
+      },
+      "id": "way/402396758"
+    }
+  ]
+}

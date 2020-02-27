@@ -10,27 +10,35 @@ import com.graphhopper.PathWrapper
 import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav.ionav.mapview.MapViewState
 import de.ironjan.arionav.ionav.mapview.MapViewViewModel
+import de.ironjan.arionav.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSupport
 import de.ironjan.graphhopper.extensions_core.Coordinate
+import org.jeo.vector.VectorDataset
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics
+import org.oscim.backend.CanvasAdapter
+import org.oscim.backend.canvas.Color
 import org.oscim.core.GeoPoint
 import org.oscim.event.Gesture
 import org.oscim.event.GestureListener
 import org.oscim.event.MotionEvent
 import org.oscim.layers.Layer
+import org.oscim.layers.OSMIndoorLayer
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
 import org.oscim.layers.tile.buildings.BuildingLayer
 import org.oscim.layers.tile.vector.labeling.LabelLayer
 import org.oscim.layers.vector.geometries.Style
+import org.oscim.test.JeoTest
 import org.oscim.theme.VtmThemes
+import org.oscim.theme.styles.TextStyle
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
 class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     override val viewModel = MapViewViewModel()
+
 
     override fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner) {
         observeLiveData(lifecycleOwner)
@@ -58,12 +66,13 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         })
         viewModel.getMapCenterLiveData().observe(lifecycleOwner, Observer {
             if (viewModel.getFollowUserPositionLiveData().value == true
-                && it != null) {
+                && it != null
+            ) {
                 centerOn(it)
             }
         })
         viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
-            if(!it) return@Observer
+            if (!it) return@Observer
 
             viewModel.centerOnUserPos()
         })
@@ -167,6 +176,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         userPosLayer = ItemizedLayer(map(), null as MarkerSymbol?)
         map().layers().add(userPosLayer)
         logger.debug("Added user position layer")
+
 
         // Map position
         centerMap()
@@ -309,13 +319,63 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         return pathLayer
     }
 
-    private fun redrawMap() = map().updateMap(true)
-
+    fun redrawMap() = map().updateMap(true)
 
 
     fun centerOn(coordinate: Coordinate) {
         val scale = map().mapPosition.scale
         map().setMapPosition(coordinate.lat, coordinate.lon, scale)
         redrawMap()
+    }
+
+    fun createIndoorLayer(data: VectorDataset): OSMIndoorLayerWithLevelMinusOneSupport {
+
+        val style = JeoTest.getStyle()
+
+        val textStyle = TextStyle.builder()
+            .isCaption(true)
+            .fontSize(16 * CanvasAdapter.getScale()).color(Color.BLACK)
+            .strokeWidth(2.2f * CanvasAdapter.getScale()).strokeColor(Color.WHITE)
+            .build()
+        val indoorLayer = OSMIndoorLayerWithLevelMinusOneSupport(map(), data, style, textStyle)
+//        val activeLevels = indoorLayer.activeLevels
+//        indoorLayer.activeLevels = activeLevels.map { true }.toBooleanArray()
+
+//        map().layers().clear()
+        map().layers().add(indoorLayer)
+
+        redrawMap()
+        indoorLayer.activeLevels[0] = true
+        shift(indoorLayer)
+
+        return indoorLayer
+    }
+
+    private fun shift(indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport) {
+  val context = context ?: return
+        map().postDelayed({
+            var al = -1
+            var nl = -1
+
+            for (i in 0..9) {
+                if (indoorLayer.activeLevels[i]) {
+                    al=i
+                    indoorLayer.activeLevels[i] = false
+                    nl = (i + 1) % 10
+                    indoorLayer.activeLevels[nl] = true
+                    indoorLayer.update()
+                    redrawMap()
+                    break
+                }
+            }
+            val millis = System.currentTimeMillis() % 1000
+            Toast.makeText(context, "Shifted active layer from $al to $nl. $millis", Toast.LENGTH_SHORT).show()
+            shift(indoorLayer)
+        }, 5000)
+
+    }
+
+    fun removeIndoorLayer(osmIndoorLayer: OSMIndoorLayer) {
+        map().layers().remove(osmIndoorLayer)
     }
 }

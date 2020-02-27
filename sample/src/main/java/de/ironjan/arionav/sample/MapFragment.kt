@@ -15,17 +15,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav.ionav.GhzExtractor
+import de.ironjan.arionav.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSupport
 import de.ironjan.arionav.ionav.routing.model.NamedPlace
 import de.ironjan.arionav.ionav.routing.repository.NamedPlaceRepository
 import de.ironjan.arionav.sample.util.InstructionHelper
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
+import org.oscim.test.JeoTest
 import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
 
 
 class MapFragment : Fragment() {
+    private lateinit var indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport
+
     private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
 
     private val ghzResId = ArionavSampleApplication.ghzResId
@@ -91,6 +95,8 @@ class MapFragment : Fragment() {
             mapView.viewModel.setEndCoordinate(Coordinate(51.718631, 8.749061, 0.0))
 
         }
+
+        loadAndShowIndoorData()
     }
 
     override fun onResume() {
@@ -106,10 +112,10 @@ class MapFragment : Fragment() {
     private lateinit var placesLiveData: LiveData<Map<String, NamedPlace>>
 
     private val suggestionsList = mutableListOf<String>()
+
     private val placesList = mutableSetOf<String>()
     private lateinit var endSuggestionsAdapter: ArrayAdapter<String>
     private lateinit var startSuggestionsAdapter: ArrayAdapter<String>
-
     private fun prepareRoomAndPoiHandling(lifecycleOwner: LifecycleOwner) {
         val lContext = context ?: return
         startSuggestionsAdapter = ArrayAdapter(lContext, android.R.layout.simple_dropdown_item_1line, suggestionsList)
@@ -237,6 +243,33 @@ class MapFragment : Fragment() {
 
         logger.info("Switching to AR view.")
         findNavController().navigate(R.id.action_to_arViewFragment)
+    }
+
+
+    private fun loadAndShowIndoorData() {
+        val queryTemplate = """[out:json][timeout:25][bbox:{{bbox}}];
+(
+  way["indoor"]["indoor"!="yes"];
+  relation["indoor"]["indoor"!="yes"];
+  way["buildingpart"~"room|verticalpassage|corridor"];
+  relation["buildingpart"~"room|verticalpassage|corridor"];
+  //node[~"door|entrance"~"."];
+  //way[~"amenity|shop|railway|highway|building:levels"~"."];
+  way[~"building:levels"~"."];
+  relation[~"amenity|shop|railway|highway|building:levels"~"."];);
+out body;>;out skel qt;
+"""
+        val bbox = "51.7029,8.7212,51.7332,8.7755" // fixme replace with currently displayed area or so
+        val query = queryTemplate.replace("{{bbox}}", bbox)
+
+
+        // Created via http://overpass-turbo.eu/s/R7R
+        context?.resources?.openRawResource(R.raw.overpass_response).use {
+            val data = JeoTest.readGeoJson(it)
+            indoorLayer = mapView.createIndoorLayer(data)
+
+            mapView.redrawMap()
+        }
     }
 
 
