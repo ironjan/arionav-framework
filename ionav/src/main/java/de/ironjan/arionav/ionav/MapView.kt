@@ -4,6 +4,7 @@ import android.app.Instrumentation
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.graphhopper.GraphHopper
@@ -347,20 +348,25 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
         redrawMap()
         indoorLayer.activeLevels[0] = true
-        shift(indoorLayer)
+
+        // FIXME to find the correct layers again
+//        shift(indoorLayer)
 
         return indoorLayer
     }
 
     private fun shift(indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport) {
-  val context = context ?: return
+        val context = context ?: return
+        if(!isVisible) {
+            return
+        }
         map().postDelayed({
             var al = -1
             var nl = -1
 
             for (i in 0..9) {
                 if (indoorLayer.activeLevels[i]) {
-                    al=i
+                    al = i
                     indoorLayer.activeLevels[i] = false
                     nl = (i + 1) % 10
                     indoorLayer.activeLevels[nl] = true
@@ -371,7 +377,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             }
             val millis = System.currentTimeMillis() % 1000
             Toast.makeText(context, "Shifted active layer from $al to $nl. $millis", Toast.LENGTH_SHORT).show()
-            shift(indoorLayer)
         }, 5000)
 
     }
