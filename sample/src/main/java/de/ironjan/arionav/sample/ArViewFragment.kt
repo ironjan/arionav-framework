@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.util.Instruction
+import de.ironjan.arionav.sample.util.InstructionHelper
 import de.ironjan.arionav.sample.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.fragment_ar_view.ar_scene_view
 import org.slf4j.LoggerFactory
@@ -204,13 +206,14 @@ class ArViewFragment : Fragment() {
 
         val route = model.getRemainingRouteLiveData().value
 
-        route
+        val instruction = route
             ?.instructions
             ?.take(2)
-            ?.forEach { instr ->
-                val wp = instr.points.last()
-                addPoi(wp.lat, wp.lon, instr)
-            }
+            ?.last() ?: return
+
+        val wp = instruction.points.last()
+        addPoi(wp.lat, wp.lon, instruction)
+
         locationSceneIsSetUp = true
     }
 
@@ -219,16 +222,18 @@ class ArViewFragment : Fragment() {
 
     private fun addPoi(lat: Double, lon: Double, instruction: Instruction) {
         logger.info("Added marker for '$instruction' at $lat,$lon.")
-        val lContext = context ?: return
+        val context = context ?: return
         ViewRenderable.builder()
-            .setView(lContext, R.layout.view_basic_instruction)
+            .setView(context, R.layout.view_basic_instruction)
             .build()
             .thenAccept { renderable ->
                 val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
                 val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
+                val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
 
                 txtName.text = instruction.name
                 txtDistance.text = "${instruction.distance}m"
+                instructionImage.setImageDrawable(InstructionHelper.getInstructionImageFor(instruction.sign, context))
 
                 val base = Node()
                 base.renderable = renderable
