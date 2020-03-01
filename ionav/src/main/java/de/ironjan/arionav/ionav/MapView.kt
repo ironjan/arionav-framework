@@ -38,11 +38,14 @@ import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
 class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
+    private lateinit var indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport
     override val viewModel = MapViewViewModel()
+    private lateinit var lifecycleOwner: LifecycleOwner
 
 
     override fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner) {
         observeLiveData(lifecycleOwner)
+        this.lifecycleOwner=lifecycleOwner
     }
 
     private val endCoordinateMarker = R.drawable.marker_icon_red
@@ -92,6 +95,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
             showRemainingRoute(null)
         })
+
     }
 
     private fun updateMarkerLayer(layer: ItemizedLayer<MarkerItem>?, it: Coordinate?, marker: Int) {
@@ -164,8 +168,9 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         map().layers().add(BuildingLayer(map(), l))
         logger.debug("Added building layer")
 
-        map().layers().add(LabelLayer(map(), l))
-        logger.debug("Added label layer")
+//        val labelLayer = LabelLayer(map(), l)
+//        map().layers().add(labelLayer)
+//        logger.debug("Added label layer")
 
         startMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
         endMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
@@ -180,7 +185,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
 
         // Map start position
-        val mapCenter = GeoPoint(51.731938,8.734518)
+        val mapCenter = GeoPoint(51.731938, 8.734518)
         val zoom = (1 shl 19).toDouble()
         map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
         logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
@@ -240,7 +245,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         if (viewModel.hasBothCoordinates) {
             viewModel.clearStartAndEndCoordinates()
         }
-        val selectedLevel = viewModel.getSelectedLevel().value!!
+        val selectedLevel = viewModel.getSelectedLevel()
 
         if (!viewModel.hasStartCoordinate) {
             viewModel.setStartCoordinate(Coordinate(p.latitude, p.longitude, selectedLevel))
@@ -335,7 +340,12 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             .fontSize(16 * CanvasAdapter.getScale()).color(Color.BLACK)
             .strokeWidth(2.2f * CanvasAdapter.getScale()).strokeColor(Color.WHITE)
             .build()
-        val indoorLayer = OSMIndoorLayerWithLevelMinusOneSupport(map(), data, style, textStyle)
+        indoorLayer = OSMIndoorLayerWithLevelMinusOneSupport(map(), data, style, textStyle)
+
+        viewModel.getSelectedLevelListPosition().observe( lifecycleOwner, Observer {
+            indoorLayer.activeLevel=viewModel.getSelectedLevel().toInt()
+            indoorLayer.update()
+        })
 //        val activeLevels = indoorLayer.activeLevels
 //        indoorLayer.activeLevels = activeLevels.map { true }.toBooleanArray()
 
@@ -343,40 +353,28 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         map().layers().add(indoorLayer)
 
         redrawMap()
-        indoorLayer.activeLevels[0] = true
-
-        // FIXME to find the correct layers again
-        shift(indoorLayer)
+        logger.info("Added indoor layer")
 
         return indoorLayer
     }
 
     private fun shift(indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport) {
         val context = context ?: return
-        if(!isVisible) {
+        if (!isVisible) {
             return
         }
         map().postDelayed({
-            var al = -1
-            var nl = -1
-
-            for (i in 0..9) {
-                if (indoorLayer.activeLevels[i]) {
-                    al = i
-                    indoorLayer.activeLevels[i] = false
-                    nl = (i + 1) % 10
-                    indoorLayer.activeLevels[nl] = true
-                    indoorLayer.update()
-                    redrawMap()
-                    break
-                }
-            }
+            val al = indoorLayer.activeLevel
+            val nl = al + 1
+            indoorLayer.activeLevel = nl
+            indoorLayer.update()
+            redrawMap()
             val millis = System.currentTimeMillis() % 1000
             val msg = "Shifted active layer from $al to $nl. $millis"
             logger.warn(msg)
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             shift(indoorLayer)
-        }, 4000)
+        }, 3000)
 
     }
 

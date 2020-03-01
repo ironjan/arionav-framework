@@ -70,6 +70,7 @@ class MapFragment : Fragment() {
         }
 
 
+
         val mainActivity = context as MainActivity
         val positionProvider = mainActivity.positionProvider
         mapView.viewModel.setUserPositionProvider(positionProvider)
@@ -255,23 +256,6 @@ class MapFragment : Fragment() {
 
 
     private fun loadAndShowIndoorData() {
-        val queryTemplate = """[out:json][timeout:25][bbox:{{bbox}}];
-(
-  way["indoor"]["indoor"!="yes"];
-  relation["indoor"]["indoor"!="yes"];
-  way["buildingpart"~"room|verticalpassage|corridor"];
-  relation["buildingpart"~"room|verticalpassage|corridor"];
-  //node[~"door|entrance"~"."];
-  //way[~"amenity|shop|railway|highway|building:levels"~"."];
-  way[~"building:levels"~"."];
-  relation[~"amenity|shop|railway|highway|building:levels"~"."];);
-out body;>;out skel qt;
-"""
-        val bbox = "51.7029,8.7212,51.7332,8.7755" // fixme replace with currently displayed area or so
-        val query = queryTemplate.replace("{{bbox}}", bbox)
-
-
-        // Created via http://overpass-turbo.eu/s/R7R
         context?.resources?.openRawResource(R.raw.overpass_response).use {
             val data = JeoTest.readGeoJson(it)
             indoorLayer = mapView.createIndoorLayer(data)

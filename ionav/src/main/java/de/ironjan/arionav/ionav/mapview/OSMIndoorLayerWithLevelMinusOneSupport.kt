@@ -28,7 +28,7 @@ import java.util.*
  */
 open class OSMIndoorLayerWithLevelMinusOneSupport(map: Map, data: VectorDataset, style: Style, private val textStyle: TextStyle) : JeoVectorLayer(map, data, style) {
 
-    protected var mTextLayer: TextBucket= TextBucket()
+    protected var mTextLayer: TextBucket = TextBucket()
     protected var mText: TextStyle = textStyle
 
     var activeLevels = BooleanArray(10)
@@ -148,8 +148,26 @@ open class OSMIndoorLayerWithLevelMinusOneSupport(map: Map, data: VectorDataset,
         val rawLevel = if (o is String) {
             o.toDoubleOrNull()?.toInt() ?: 0
         } else 0
-        return rawLevel + 1 // level bug fix
+        return rawLevel - minLevel // level bug fix. minLevel is <0
 
     }
 
+
+    //region my extensions
+    private var _activeLevel = 0
+    var activeLevel: Int
+        get() {
+            return _activeLevel
+        }
+        set(value) {
+            // 8 max
+            _activeLevel = value
+            activeLevels = activeLevels.map { false }.toBooleanArray()
+            val shift = 1 - minLevel
+            activeLevels[value + shift] = true
+        }
+    val minLevel = -1
+    val maxLevel = activeLevels.size - 2
+
+    //endregion
 }

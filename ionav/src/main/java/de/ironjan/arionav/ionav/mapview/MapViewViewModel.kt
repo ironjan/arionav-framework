@@ -106,8 +106,9 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     fun getShowRemainingRouteLiveData(): LiveData<Boolean> = showRemainingRoute
     fun getShowRemainingRouteCurrentValue(): Boolean = showRemainingRoute.value ?: false
 
-    private val  levelList = MutableLiveData(listOf(-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0))
-    private val selectedLevelListPosition = MutableLiveData(4)
+    private val  levelList = MutableLiveData(listOf(-1.0, 0.0, 1.0, 2.0))
+    val initalLevelListPosition = 1
+    private val selectedLevelListPosition = MutableLiveData(initalLevelListPosition)
 
     fun getLevelListLiveData(): LiveData<List<Double>> = levelList
     fun getSelectedLevelListPosition(): LiveData<Int> = selectedLevelListPosition
@@ -118,10 +119,12 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         val lPositionProvider = positionProvider
         // todo remove this workaround
         if(lPositionProvider is LevelDependentPositionProviderBaseImplementation){
-            lPositionProvider?.currentLevel = lLevelList[pos]
+            lPositionProvider.currentLevel = lLevelList[pos]
         }
     }
-    fun getSelectedLevel(): LiveData<Double> = MutableLiveData(levelList.value?.get(selectedLevelListPosition.value?:4))
+    fun getSelectedLevel(): Double {
+        return levelList.value?.get(selectedLevelListPosition.value ?: initalLevelListPosition) ?: 0.0
+    }
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
