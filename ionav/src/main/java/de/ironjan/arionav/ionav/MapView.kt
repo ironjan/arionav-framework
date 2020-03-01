@@ -1,6 +1,5 @@
 package de.ironjan.arionav.ionav
 
-import android.app.Instrumentation
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
@@ -180,14 +179,11 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         logger.debug("Added user position layer")
 
 
-        // Map position
-        centerMap()
-    }
-
-    private fun centerMap() {
-        val mapCenter = getCenterFromOsm(ghzExtractor.osmFilePath)
-        map().setMapPosition(mapCenter.latitude, mapCenter.longitude, (1 shl 18).toDouble())
-        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude}")
+        // Map start position
+        val mapCenter = GeoPoint(51.731938,8.734518)
+        val zoom = (1 shl 19).toDouble()
+        map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
+        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
@@ -350,7 +346,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         indoorLayer.activeLevels[0] = true
 
         // FIXME to find the correct layers again
-//        shift(indoorLayer)
+        shift(indoorLayer)
 
         return indoorLayer
     }
@@ -376,8 +372,11 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
                 }
             }
             val millis = System.currentTimeMillis() % 1000
-            Toast.makeText(context, "Shifted active layer from $al to $nl. $millis", Toast.LENGTH_SHORT).show()
-        }, 5000)
+            val msg = "Shifted active layer from $al to $nl. $millis"
+            logger.warn(msg)
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            shift(indoorLayer)
+        }, 4000)
 
     }
 
