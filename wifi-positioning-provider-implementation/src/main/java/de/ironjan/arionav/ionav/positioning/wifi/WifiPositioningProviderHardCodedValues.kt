@@ -2,7 +2,7 @@ package de.ironjan.arionav.ionav.positioning.wifi
 
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
-class WifiPositioningProviderHardCodedValues {
+object WifiPositioningProviderHardCodedValues {
     val macsToRooms: Map<String, String> = mapOf(
         "00:b7:71:35:92:80" to "FU-aussen",
         "10:05:ca:56:9d:a0" to "FU.106-Flur",
