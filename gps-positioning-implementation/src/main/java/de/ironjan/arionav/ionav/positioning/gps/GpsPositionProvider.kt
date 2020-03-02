@@ -124,6 +124,7 @@ open class GpsPositionProvider(
 
     override fun start() {
         logger.debug("start() called.")
+        super.start()
         locationManager.requestLocationUpdates(locationProvider, 0L, 0f, locationListener)
         val lastKnownLocation: Location = locationManager.getLastKnownLocation(locationProvider) ?: return
         lastKnownPosition = locationToIonavLocation(lastKnownLocation)
@@ -132,6 +133,7 @@ open class GpsPositionProvider(
 
     override fun stop() {
         logger.debug("stop() called.")
+        super.stop()
         locationManager.removeUpdates(locationListener)
         logger.debug("stop() done.")
     }

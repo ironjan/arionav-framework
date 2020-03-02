@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mapFragment">
+    app:startDestination="@id/providerConfig">
 
     <fragment
         android:id="@+id/mapFragment"
@@ -24,6 +24,8 @@
         <action android:id="@+id/action_to_poiListFragment"
             app:destination="@+id/poiListFragment" />
 
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
 
 
         <action
@@ -52,6 +54,9 @@
 
         <action android:id="@+id/action_to_poiListFragment"
             app:destination="@+id/poiListFragment" />
+
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
     </fragment>
 
     <fragment android:id="@+id/nearbyWifiAps"
@@ -70,6 +75,9 @@
 
         <action android:id="@+id/action_to_poiListFragment"
             app:destination="@+id/poiListFragment" />
+
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
     </fragment>
     <fragment
         android:id="@+id/nearbyBluetoothTokensFragment"
@@ -88,6 +96,9 @@
 
         <action android:id="@+id/action_to_poiListFragment"
             app:destination="@+id/poiListFragment" />
+
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
     </fragment>
 
     <fragment android:id="@+id/poiListFragment"
@@ -106,5 +117,30 @@
 
         <action android:id="@+id/action_to_poiListFragment"
             app:destination="@+id/poiListFragment" />
+
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
+    </fragment>
+
+    <fragment android:id="@+id/providerConfig"
+        android:name="de.ironjan.arionav.ionav.positioning.config.ProviderConfigFragment"
+        android:label="ProviderConfigFragment" >
+
+
+        <action
+            android:id="@+id/action_to_mapFragment"
+            app:destination="@id/mapFragment" />
+
+        <action android:id="@+id/action_to_nearbyWifiApsFragment"
+            app:destination="@+id/nearbyWifiAps" />
+
+        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
+            app:destination="@+id/nearbyBluetoothTokensFragment" />
+
+        <action android:id="@+id/action_to_poiListFragment"
+            app:destination="@+id/poiListFragment" />
+
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
     </fragment>
 </navigation>

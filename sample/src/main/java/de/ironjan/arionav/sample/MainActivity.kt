@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav.ionav.PermissionHelper
+import de.ironjan.arionav.ionav.positioning.ProviderRegistry
 import de.ironjan.arionav.ionav.positioning.IPositionProvider
 import de.ironjan.arionav.ionav.positioning.MergedPositionProvider
 import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothProviderImplementation
@@ -29,6 +30,7 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
     PermissionHelper.PermissionHelperCallback {
+    private lateinit var mergedPositionProvider: MergedPositionProvider
     private lateinit var _positionProvider: IPositionProvider
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
@@ -60,10 +62,20 @@ class MainActivity :
         nav_view.setNavigationItemSelectedListener { navigateOnMenuItem(it) }
 
 
-        val mergedPositionProvider = MergedPositionProvider(this, lifecycle)
-        mergedPositionProvider.addProvider(GpsPositionProvider(this, lifecycle))
-//        mergedPositionProvider.addProvider(WifiPositioningProvider(this, lifecycle))
-//        mergedPositionProvider.addProvider(BluetoothProviderImplementation(this, lifecycle))
+        val providerRegistry = ProviderRegistry.Instance
+
+        val gpsPositionProvider = GpsPositionProvider(this, lifecycle)
+        val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
+        val bluetoothProviderImplementation = BluetoothProviderImplementation(this, lifecycle)
+        mergedPositionProvider = MergedPositionProvider(this, lifecycle)
+
+        providerRegistry.registerProvider(gpsPositionProvider)
+        providerRegistry.registerProvider(wifiPositioningProvider)
+        providerRegistry.registerProvider(bluetoothProviderImplementation)
+
+        mergedPositionProvider.addProvider(gpsPositionProvider)
+        mergedPositionProvider.addProvider(wifiPositioningProvider)
+        mergedPositionProvider.addProvider(bluetoothProviderImplementation)
 
         positionProvider = mergedPositionProvider
 
@@ -162,5 +174,13 @@ class MainActivity :
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mergedPositionProvider.start()
+    }
+    override fun onPause() {
+        super.onPause()
+        mergedPositionProvider.stop()
+    }
 
 }

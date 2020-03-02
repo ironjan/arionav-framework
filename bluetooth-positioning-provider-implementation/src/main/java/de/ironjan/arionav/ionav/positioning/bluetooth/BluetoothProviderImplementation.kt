@@ -45,7 +45,7 @@ class BluetoothProviderImplementation(private val context: Context, private val 
 
 
     override fun start() {
-
+        super.start()
         val cb = object : ScanCallback() {
 
             override fun onScanResult(callbackType: Int, result: ScanResult?) {
@@ -121,6 +121,7 @@ class BluetoothProviderImplementation(private val context: Context, private val 
     }
 
     override fun stop() {
+        super.stop()
         bluetoothLeSpike.scanLeDevice(false)
     }
 

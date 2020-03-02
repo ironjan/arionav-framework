@@ -42,5 +42,15 @@ class MyAdapter<T>(private var myDataset: List<T>, private val toStringConverter
         myDataset = it
         notifyDataSetChanged()
     }
+
+    fun swap(pos1: Int, pos2: Int) {
+        val tmpCopyDataset = myDataset.toMutableList()
+
+        val tmp = tmpCopyDataset[pos1]
+        tmpCopyDataset[pos1] = tmpCopyDataset[pos2]
+        tmpCopyDataset[pos2] = tmp
+
+        replaceData(tmpCopyDataset)
+    }
 }
 

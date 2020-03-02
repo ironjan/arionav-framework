@@ -42,6 +42,7 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
     private lateinit var wifiScanReceiver: BroadcastReceiver
 
     override fun start() {
+        super.start()
         wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         wifiScanReceiver = object : BroadcastReceiver() {
 
@@ -124,6 +125,7 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
     }
 
     override fun stop() {
+        super.stop()
         context.unregisterReceiver(wifiScanReceiver)
     }
 

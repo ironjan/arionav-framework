@@ -9,37 +9,45 @@ import org.slf4j.LoggerFactory
 import kotlin.math.log
 
 // Based on https://developer.android.com/topic/libraries/architecture/lifecycle#use-cases
-abstract class PositionProviderBaseImplementation(private val context: Context,
-                                                  private val lifecycle: Lifecycle)
-    : LifecycleObserver, IPositionProvider {
+abstract class PositionProviderBaseImplementation(
+    private val context: Context,
+    private val lifecycle: Lifecycle
+) : LifecycleObserver, IPositionProvider {
 
     private var _lastPosition: IonavLocation? = null
-    override var lastKnownPosition : IonavLocation?
-      get() = _lastPosition
-    protected set(value) {
-        _lastPosition = value
-        lastUpdate = System.currentTimeMillis()
-        notifyObservers()
-    }
+    override var lastKnownPosition: IonavLocation?
+        get() = _lastPosition
+        protected set(value) {
+            _lastPosition = value
+            lastUpdate = System.currentTimeMillis()
+            notifyObservers()
+        }
 
     private var _lastUpdate = 0L
     override var lastUpdate: Long
         get() = _lastUpdate
-    protected set(value) {_lastUpdate = value}
+        protected set(value) {
+            _lastUpdate = value
+        }
 
 
     companion object {
         const val TAG = "LocationListener"
     }
+
     private val logger = LoggerFactory.getLogger(TAG)
 
-    private var enabled = false
+    override var enabled = false
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    abstract override fun start()
+    override fun start() {
+        enabled = true
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    abstract override fun stop()
+    override fun stop() {
+        enabled = false
+    }
 
     internal val observers: MutableList<IPositionObserver> = mutableListOf()
 
