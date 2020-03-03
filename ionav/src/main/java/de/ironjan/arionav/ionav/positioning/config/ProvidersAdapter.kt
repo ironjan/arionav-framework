@@ -3,20 +3,18 @@ package de.ironjan.arionav.ionav.positioning.config
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav.ionav.R
 import de.ironjan.arionav.ionav.positioning.IPositionProvider
-import de.ironjan.arionav.ionav.positioning.ProviderRegistry
+import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
 import kotlinx.android.synthetic.main.view_fragment_config_list_item.view.*
 
 class ProvidersAdapter(private val lifecycleOwner: LifecycleOwner):
     RecyclerView.Adapter<ProvidersAdapter.MyViewHolder>()  {
     private var displayedData: List<IPositionProvider> = listOf()
-    private val providerRegistry = ProviderRegistry.Instance
+    private val providerRegistry = PositioningProviderRegistry.Instance
 
     init {
         providerRegistry.providers.observe(lifecycleOwner, Observer {

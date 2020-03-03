@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.slf4j.LoggerFactory
 
-class ProviderRegistry private constructor() {
-    private val logger = LoggerFactory.getLogger(ProviderRegistry::class.java.simpleName)
+class PositioningProviderRegistry private constructor() {
+    private val logger = LoggerFactory.getLogger(PositioningProviderRegistry::class.java.simpleName)
 
     private val _providers: MutableList<IPositionProvider> = mutableListOf()
     private val _providerLiveData = MutableLiveData<List<IPositionProvider>>(_providers)
@@ -63,6 +63,6 @@ class ProviderRegistry private constructor() {
     }
 
     companion object {
-        val Instance = ProviderRegistry()
+        val Instance = PositioningProviderRegistry()
     }
 }

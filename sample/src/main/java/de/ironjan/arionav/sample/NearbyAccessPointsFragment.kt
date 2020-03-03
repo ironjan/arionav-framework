@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
 import de.ironjan.arionav.ionav.positioning.IonavLocation
-import de.ironjan.arionav.ionav.positioning.ProviderRegistry
+import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
 import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProvider
 import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProviderHardCodedValues
 import kotlinx.android.synthetic.main.fragment_custom_list.*
@@ -31,7 +31,7 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        wifiPositioningProvider = ProviderRegistry.Instance.getProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER) as WifiPositioningProvider
+        wifiPositioningProvider = PositioningProviderRegistry.Instance.getProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER) as WifiPositioningProvider
         wifiPositioningProvider.registerObserver(observer)
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")

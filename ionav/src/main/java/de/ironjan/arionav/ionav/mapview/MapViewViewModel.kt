@@ -9,7 +9,7 @@ import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav.ionav.positioning.IPositionProvider
 import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.LevelDependentPositionProviderBaseImplementation
-import de.ironjan.arionav.ionav.positioning.ProviderRegistry
+import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
@@ -53,7 +53,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
     fun clearEndCoordinate() = setEndCoordinate(null)
 
-    fun getUserPositionLiveData(): LiveData<IonavLocation?> = ProviderRegistry.Instance.lastKnownLocation
+    fun getUserPositionLiveData(): LiveData<IonavLocation?> = PositioningProviderRegistry.Instance.lastKnownLocation
 
 
     private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()

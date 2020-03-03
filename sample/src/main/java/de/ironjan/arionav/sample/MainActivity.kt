@@ -21,7 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav.ionav.PermissionHelper
 import de.ironjan.arionav.ionav.positioning.IPositionProvider
 import de.ironjan.arionav.ionav.positioning.MergedPositionProvider
-import de.ironjan.arionav.ionav.positioning.ProviderRegistry
+import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
 import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProvider
@@ -67,7 +67,7 @@ class MainActivity :
         nav_view.setNavigationItemSelectedListener { navigateOnMenuItem(it) }
 
 
-        val providerRegistry = ProviderRegistry.Instance
+        val providerRegistry = PositioningProviderRegistry.Instance
 
         val gpsPositionProvider = GpsPositionProvider(this, lifecycle)
         val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)

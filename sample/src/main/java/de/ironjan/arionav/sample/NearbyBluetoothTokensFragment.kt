@@ -7,7 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
 import de.ironjan.arionav.ionav.positioning.IonavLocation
-import de.ironjan.arionav.ionav.positioning.ProviderRegistry
+import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
 import de.ironjan.arionav.ionav.positioning.SignalStrength
 import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
 import kotlinx.android.synthetic.main.fragment_custom_list.*
@@ -25,7 +25,7 @@ class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val providerImplementation = ProviderRegistry.Instance.getProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME) as BluetoothPositioningProviderImplementation
+        val providerImplementation = PositioningProviderRegistry.Instance.getProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME) as BluetoothPositioningProviderImplementation
         bluetoothPositioningProviderImplementation = providerImplementation
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
