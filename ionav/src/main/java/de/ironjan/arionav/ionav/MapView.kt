@@ -139,7 +139,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         val loadGraphTask = LoadGraphTask(ghzExtractor.mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
-                viewModel.hopper = graphHopper
                 // FIXME workaround!
                 viewModel.computeRoute()
                 isInitialized = true

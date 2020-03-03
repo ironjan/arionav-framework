@@ -3,18 +3,17 @@ package de.ironjan.arionav.ionav.mapview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav.ionav.positioning.IPositionProvider
 import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.LevelDependentPositionProviderBaseImplementation
 import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
+import de.ironjan.arionav.ionav.routing.RoutingService
 import de.ironjan.graphhopper.extensions_core.Coordinate
-import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
 
-class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCustomViewModel<MapViewState> {
+class MapViewViewModel() : ViewModel(), MvvmCustomViewModel<MapViewState> {
     // FIXME should be IPositionObserver instead
     private var positionProvider: IPositionProvider ?= null
 
@@ -80,7 +79,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     }
 
     private val canComputeRoute: Boolean
-        get() = hopper != null
+        get() = RoutingService.initialized
                 && state.startCoordinate != null
                 && state.endCoordinate != null
 
@@ -161,7 +160,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
     private fun computeRouteFromTo(lStartCoordinate: Coordinate, lEndCoordinate: Coordinate): PathWrapper? {
         return try {
-            Routing(hopper).route(lStartCoordinate, lEndCoordinate)
+            RoutingService.route(lStartCoordinate, lEndCoordinate)
         } catch (e: Exception) {
             e.printStackTrace()
 

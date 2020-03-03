@@ -2,6 +2,7 @@ package de.ironjan.arionav.sample
 
 import android.app.Application
 import de.ironjan.arionav.ionav.GhzExtractor
+import de.ironjan.arionav.ionav.routing.RoutingService
 import de.ironjan.arionav.ionav.routing.repository.NamedPlaceRepository
 import org.slf4j.impl.HandroidLoggerAdapter
 
@@ -16,6 +17,8 @@ class ArionavSampleApplication : Application() {
 
         // try to pre-fill places
         NamedPlaceRepository.instance.getPlaces(ghzExtractor.osmFilePath)
+
+        RoutingService.init(ghzExtractor)
     }
 
 
