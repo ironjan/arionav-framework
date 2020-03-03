@@ -2,6 +2,9 @@ package de.ironjan.arionav.sample
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +14,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
@@ -23,7 +27,6 @@ import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProvider
 import de.ironjan.arionav.sample.util.Mailer
 import kotlinx.android.synthetic.main.activity_main.*
-import org.slf4j.LoggerFactory
 
 // todo initialize spinner with level data
 class MainActivity :
@@ -34,10 +37,11 @@ class MainActivity :
     private lateinit var _positionProvider: IPositionProvider
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
-    val logger = LoggerFactory.getLogger("MainActivity")
     private val cameraRequestCode: Int = 1
 
     private val locationRequestCode: Int = 2
+
+    private val bluetoothRequestCode: Int = 3
 
     var positionProvider: IPositionProvider
         get() = _positionProvider
@@ -50,6 +54,7 @@ class MainActivity :
         setContentView(R.layout.activity_main)
 
         requestPermissions()
+        activateBluetoothIfMissing()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
@@ -80,6 +85,18 @@ class MainActivity :
         positionProvider = mergedPositionProvider
 
         positionProvider.start()
+
+    }
+
+    private val bluetoothAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val bluetoothManager = ContextCompat.getSystemService(this, BluetoothManager::class.java)
+        bluetoothManager?.adapter
+    }
+    private fun activateBluetoothIfMissing() {
+        bluetoothAdapter?.takeIf { !it.isEnabled }?.apply {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(enableBtIntent, bluetoothRequestCode)
+        }
 
     }
 
