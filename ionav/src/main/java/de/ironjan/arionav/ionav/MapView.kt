@@ -331,8 +331,10 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     }
 
     fun createIndoorLayer(data: VectorDataset): OSMIndoorLayerWithLevelMinusOneSupport {
+        val style = Carto.parse("""
+                |#way {  line-width: 2;  line-color: #000;  polygon-fill: #88777777;  }
+                |#states {  line-width: 2.2;  line-color: #000;  polygon-fill: #880000FF;  }""".trimMargin());
 
-        val style = JeoTest.getStyle()
 
         val textStyle = TextStyle.builder()
             .isCaption(true)
