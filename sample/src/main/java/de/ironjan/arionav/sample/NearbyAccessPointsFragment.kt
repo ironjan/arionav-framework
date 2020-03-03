@@ -23,16 +23,10 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
 
     private lateinit var wifiPositioningProvider: WifiPositioningProvider
 
-    private val observer: IPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: IonavLocation?) {
-            Toast.makeText(context ?: return, "BT Position: $c", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         wifiPositioningProvider = PositioningProviderRegistry.Instance.getProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER) as WifiPositioningProvider
-        wifiPositioningProvider.registerObserver(observer)
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
 
@@ -46,9 +40,5 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        wifiPositioningProvider.stop()
-    }
 
 }

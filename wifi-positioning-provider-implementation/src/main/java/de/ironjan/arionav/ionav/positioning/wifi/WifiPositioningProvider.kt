@@ -15,9 +15,11 @@ import androidx.lifecycle.MutableLiveData
 import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.PositionProviderBaseImplementation
 import de.ironjan.arionav.ionav.positioning.SignalStrength
-import de.ironjan.arionav.ionav.positioning.Trilateraion.naiveTrilateration
+import de.ironjan.arionav.ionav.positioning.Trilateraion.naiveNN
+import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProviderHardCodedValues.macsToRooms
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -58,17 +60,21 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+
         context.registerReceiver(wifiScanReceiver, intentFilter)
 
         triggerScan()
     }
 
-    private fun triggerScan() {
-        val success = wifiManager.startScan()
-        if (!success) {
-            // scan failure handling
-            scanFailure()
-        }
+    private fun triggerScan(delay: Long = 0) {
+        val mainHandler = Handler(Looper.getMainLooper())
+        mainHandler.postDelayed({
+            val success = wifiManager.startScan()
+            if (!success) {
+                // scan failure handling
+                scanFailure()
+            }
+        }, delay)
     }
 
 
@@ -81,8 +87,7 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
 
         updatePositionEstimate()
 
-        val mainHandler = Handler(Looper.getMainLooper())
-        mainHandler.postDelayed({ triggerScan() }, 10000)
+        triggerScan(30000)
     }
 
     private fun updateLastScan() {
@@ -104,7 +109,7 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
 
         val bestBtDevices = listOfVisibleDevices.value!!
 
-        val bestDevicesAsString = bestBtDevices.joinToString("; ", prefix = "Best BTs: ") {
+        val bestDevicesAsString = bestBtDevices.joinToString("; ", prefix = "Best APs: ") {
             val device = it
             val calculateSignalLevel = calculateSignalLevel(it.level, 10)
             "${device.BSSID} ${device.SSID} ${it.level} $calculateSignalLevel"
@@ -114,19 +119,20 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
 
         val knownCoordinateDevices = bestBtDevices.filter { tmpIdToCoordinate.containsKey(it.BSSID) }
         val signalStrengths = knownCoordinateDevices
-            .map { SignalStrength(it.BSSID, tmpIdToCoordinate[it.BSSID]!!, it.level) }
+            .map { SignalStrength(it.BSSID, macsToRooms[it.BSSID], tmpIdToCoordinate[it.BSSID]!!, it.level) }
 
-        val coordinate = naiveTrilateration(signalStrengths)
+        val coordinate = naiveNN(signalStrengths)
         lastKnownPosition = if (coordinate == null) null else IonavLocation(name, coordinate)
     }
 
     private fun scanFailure() {
-        // todo
+        logger.warn("ScanFailure in WifiPositioning provider. Scheduling new scan in 30s.")
+        triggerScan(30000)
     }
 
     override fun stop() {
         super.stop()
-        context.unregisterReceiver(wifiScanReceiver)
+        try{context.unregisterReceiver(wifiScanReceiver)}catch (_: IllegalArgumentException) {/*not registered */}
     }
 
     companion object {

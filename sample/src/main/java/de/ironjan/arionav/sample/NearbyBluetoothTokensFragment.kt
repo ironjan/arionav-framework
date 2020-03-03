@@ -16,11 +16,6 @@ import kotlinx.android.synthetic.main.fragment_custom_list.*
 class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalStrengthToString) {
     private var bluetoothPositioningProviderImplementation: BluetoothPositioningProviderImplementation? = null
 
-    private val observer: IPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: IonavLocation?) {
-            Toast.makeText(context ?: return, "BT Position: $c", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,10 +31,6 @@ class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalS
         providerImplementation.getLastScan().observe(lifecycleOwner, Observer { additionalInfo.text = it })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        bluetoothPositioningProviderImplementation?.removeObserver(observer)
-    }
 
     companion object {
         private val signalStrengthToString: (SignalStrength) -> String = {

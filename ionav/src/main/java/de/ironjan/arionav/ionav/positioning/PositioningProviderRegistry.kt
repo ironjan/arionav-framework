@@ -15,6 +15,9 @@ class PositioningProviderRegistry private constructor() {
     private val _lastKnownLocation: MutableLiveData<IonavLocation?> = MutableLiveData(null)
     val lastKnownLocation: LiveData<IonavLocation?> = _lastKnownLocation
 
+    private val _locationHistory = mutableListOf<IonavLocation>()
+    private val _locationHistoryLiveData = MutableLiveData(_locationHistory.toList())
+    val locationHistory: LiveData<List<IonavLocation>> = _locationHistoryLiveData
 
     private val observer: IPositionObserver = object : IPositionObserver {
         override fun onPositionChange(c: IonavLocation?) {
@@ -33,19 +36,35 @@ class PositioningProviderRegistry private constructor() {
         }?.lastKnownPosition
 
         _lastKnownLocation.value = newLocation
+
+        appendToLocationHistory(newLocation)
+    }
+
+    private fun appendToLocationHistory(location: IonavLocation?){
+        val location = location ?: return
+
+        _locationHistory.apply {
+            val newHistory = _locationHistory.take(100) + location
+            clear()
+            addAll(newHistory)
+        }
+        _locationHistoryLiveData.value = _locationHistory
+
     }
 
 
-    fun registerProvider(provider: IPositionProvider) {
+    fun registerProvider(provider: IPositionProvider, start: Boolean = false) {
         _providers.add(provider)
         _providerLiveData.value = _providers
         provider.registerObserver(observer)
+        if(start){provider.start()}
     }
 
     fun unregisterProvider(provider: IPositionProvider) {
         _providers.remove(provider)
         _providerLiveData.value = _providers
         provider.removeObserver(observer)
+        if(provider.enabled) {provider.stop()}
     }
 
     fun swapPriorities(pos1: Int, pos2: Int) {

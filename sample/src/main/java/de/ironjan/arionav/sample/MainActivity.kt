@@ -20,7 +20,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav.ionav.PermissionHelper
 import de.ironjan.arionav.ionav.positioning.IPositionProvider
-import de.ironjan.arionav.ionav.positioning.MergedPositionProvider
 import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
 import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
@@ -33,8 +32,6 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
     PermissionHelper.PermissionHelperCallback {
-    private lateinit var mergedPositionProvider: MergedPositionProvider
-    private lateinit var _positionProvider: IPositionProvider
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
     private val cameraRequestCode: Int = 1
@@ -42,12 +39,6 @@ class MainActivity :
     private val locationRequestCode: Int = 2
 
     private val bluetoothRequestCode: Int = 3
-
-    var positionProvider: IPositionProvider
-        get() = _positionProvider
-        private set(value) {
-            _positionProvider = value
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,19 +63,13 @@ class MainActivity :
         val gpsPositionProvider = GpsPositionProvider(this, lifecycle)
         val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
         val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
-        mergedPositionProvider = MergedPositionProvider(this, lifecycle)
 
         providerRegistry.registerProvider(gpsPositionProvider)
-        providerRegistry.registerProvider(wifiPositioningProvider)
+        providerRegistry.registerProvider(wifiPositioningProvider, true)
         providerRegistry.registerProvider(bluetoothProviderImplementation)
 
-        mergedPositionProvider.addProvider(gpsPositionProvider)
-        mergedPositionProvider.addProvider(wifiPositioningProvider)
-        mergedPositionProvider.addProvider(bluetoothProviderImplementation)
 
-        positionProvider = mergedPositionProvider
 
-        positionProvider.start()
 
     }
 
@@ -144,6 +129,10 @@ class MainActivity :
                 navController.navigate(R.id.action_to_providerConfig)
                 true
             }
+            R.id.mnuLocationHistory -> {
+                navController.navigate(R.id.action_to_locationHistory)
+                true
+            }
             R.id.mnuFeedback -> {
                 Mailer.sendFeedback(this)
                 true
@@ -195,13 +184,5 @@ class MainActivity :
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        mergedPositionProvider.start()
-    }
-    override fun onPause() {
-        super.onPause()
-        mergedPositionProvider.stop()
-    }
 
 }

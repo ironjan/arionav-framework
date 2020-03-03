@@ -85,7 +85,7 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
                     val address = device.address
                     val coordinate = tmpIdToCoordinate[address]
 
-                    actualDevices[address] = SignalStrength(address, coordinate, rssi)
+                    actualDevices[address] = SignalStrength(address, name, coordinate, rssi)
 
                     val bestBtDevices = actualDevices.values
                         .sortedBy { -it.rssi }
@@ -143,10 +143,10 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
         val signalStrengths = knownCoordinateDevices
             .map {
                 val coordinate = tmpIdToCoordinate[it.deviceId] ?: return@map null
-                SignalStrength(it.deviceId, coordinate, it.rssi)
+                SignalStrength(it.deviceId, it.name, coordinate, it.rssi)
             }.filterNotNull()
 
-        val naiveTrilateration = Trilateraion.naiveTrilateration(signalStrengths)
+        val naiveTrilateration = Trilateraion.naiveNN(signalStrengths)
         val newPosition = if (naiveTrilateration == null) null else IonavLocation(name, naiveTrilateration)
         if (differentEnough(lastKnownPosition, newPosition)) {
             lastKnownPosition = newPosition

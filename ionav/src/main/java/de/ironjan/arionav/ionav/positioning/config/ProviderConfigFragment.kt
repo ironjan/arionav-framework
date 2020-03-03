@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav.ionav.R
 import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
-import kotlinx.android.synthetic.main.fragment_provider_configuration.*
+import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
 
 class ProviderConfigFragment : Fragment() {
 
     private lateinit var providersAdapter: ProvidersAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_provider_configuration, container, false)
+        return inflater.inflate(R.layout.fragment_with_recycler_view, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,7 +31,7 @@ class ProviderConfigFragment : Fragment() {
 
 
         val context = context ?: return
-        providerRecyclerView.apply {
+        recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter=providersAdapter
@@ -50,7 +50,7 @@ class ProviderConfigFragment : Fragment() {
                 return true
             }
         })
-        itemTouchHelper.attachToRecyclerView(providerRecyclerView)
+        itemTouchHelper.attachToRecyclerView(recycler_view)
 
 
     }

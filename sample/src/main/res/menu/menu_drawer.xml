@@ -20,6 +20,8 @@
     <group android:id="@+id/mnuSettings">
         <item android:id="@+id/mnuProviderConfig"
             android:title="Positioning Config" />
+        <item android:id="@+id/mnuLocationHistory"
+            android:title="Location History"/>
     </group>
     <group android:id="@+id/mnuGrpMisc">
         <item
