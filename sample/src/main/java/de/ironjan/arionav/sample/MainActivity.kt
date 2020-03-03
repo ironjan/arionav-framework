@@ -64,9 +64,13 @@ class MainActivity :
         val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
         val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
 
-        providerRegistry.registerProvider(gpsPositionProvider)
+        providerRegistry.removeProvider(GpsPositionProvider.GPS_PROVIDER_NAME)
+        providerRegistry.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
+        providerRegistry.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
+
+        providerRegistry.registerProvider(bluetoothProviderImplementation, true)
         providerRegistry.registerProvider(wifiPositioningProvider, true)
-        providerRegistry.registerProvider(bluetoothProviderImplementation)
+        providerRegistry.registerProvider(gpsPositionProvider)
 
 
 

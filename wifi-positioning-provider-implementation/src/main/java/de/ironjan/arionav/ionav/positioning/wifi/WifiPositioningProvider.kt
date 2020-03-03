@@ -44,7 +44,10 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
     private lateinit var wifiScanReceiver: BroadcastReceiver
 
     override fun start() {
+        if(enabled) return
+
         super.start()
+
         wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         wifiScanReceiver = object : BroadcastReceiver() {
 
@@ -122,16 +125,24 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
             .map { SignalStrength(it.BSSID, macsToRooms[it.BSSID], tmpIdToCoordinate[it.BSSID]!!, it.level) }
 
         val coordinate = naiveNN(signalStrengths)
-        lastKnownPosition = if (coordinate == null) null else IonavLocation(name, coordinate)
+
+        val newLocation = if (coordinate == null) null else IonavLocation(name, coordinate)
+
+        logger.info("Updating last known location to $newLocation")
+
+        lastKnownPosition = newLocation
     }
 
     private fun scanFailure() {
-        logger.warn("ScanFailure in WifiPositioning provider. Scheduling new scan in 30s.")
-        triggerScan(30000)
+        logger.warn("ScanFailure in WifiPositioning provider. Scheduling new scan in 1m.")
+        triggerScan(60000)
     }
 
     override fun stop() {
+        if(!enabled) return
+
         super.stop()
+
         try{context.unregisterReceiver(wifiScanReceiver)}catch (_: IllegalArgumentException) {/*not registered */}
     }
 

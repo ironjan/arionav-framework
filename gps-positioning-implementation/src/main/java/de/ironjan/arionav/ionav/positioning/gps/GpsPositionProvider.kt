@@ -123,6 +123,8 @@ open class GpsPositionProvider(
     private val locationProvider = LocationManager.GPS_PROVIDER
 
     override fun start() {
+        if(enabled) return
+
         logger.debug("start() called.")
         super.start()
         locationManager.requestLocationUpdates(locationProvider, 0L, 0f, locationListener)
@@ -132,6 +134,8 @@ open class GpsPositionProvider(
     }
 
     override fun stop() {
+        if(!enabled) return
+
         logger.debug("stop() called.")
         super.stop()
         locationManager.removeUpdates(locationListener)
@@ -142,5 +146,6 @@ open class GpsPositionProvider(
 
     companion object {
         const val TAG = "GpsPositionProvider"
+        val GPS_PROVIDER_NAME = GpsPositionProvider::class.java.simpleName
     }
 }

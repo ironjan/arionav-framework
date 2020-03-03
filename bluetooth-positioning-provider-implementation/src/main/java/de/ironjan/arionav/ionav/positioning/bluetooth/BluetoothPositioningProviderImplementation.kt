@@ -22,6 +22,7 @@ import de.ironjan.arionav.ionav.positioning.SignalStrength
 import de.ironjan.arionav.ionav.positioning.Trilateraion
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,8 +52,8 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
 
 
     private val tmpIdToCoordinate: Map<String, Coordinate> = mapOf(
-        "00:CD:FF:00:37:40" to Coordinate(100.0, 0.0, 0.0), // BR512856
-        "00:CD:FF:00:34:D7" to Coordinate(0.0, 100.0, 0.0), // BR513883
+        "00:CD:FF:00:37:40" to Coordinate(51.731695, 8.734756, 1.0), // BR512856
+        "00:CD:FF:00:34:D7" to Coordinate(51.731843, 8.734929, 1.0), // BR513883
         "EC:CD:47:40:AD:DC" to Coordinate(0.0, 0.0, 100.0) // Miband
     )
 
@@ -69,10 +70,12 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
                     updateLastScan()
                 }
                 ACTION_DISCOVERY_FINISHED -> {
-                    logger.info("Finished BT discovery. Scheduling new scan in 15s.")
+                    logger.info("Finished BT discovery. Updating position estimate and scheduling new scan in ${minTimeBetweenUpdatesInMillis}s.")
+
+                    updatePositionEstimate()
 
                     val mainHandler = Handler(Looper.getMainLooper())
-                    mainHandler.postDelayed({ triggerScan() }, 15000)
+                    mainHandler.postDelayed({ triggerScan() }, minTimeBetweenUpdatesInMillis)
 
                 }
                 ACTION_FOUND -> {
@@ -81,7 +84,7 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
                     val rssi = intent.extras?.getShort(EXTRA_RSSI)?.toInt() ?: return
 
                     val bt = this@BluetoothPositioningProviderImplementation
-                    logger.info("Discovered device $device ($name) ${rssi}db with $bt")
+                    logger.debug("Discovered device $device ($name) ${rssi}db with $bt")
                     val address = device.address
                     val coordinate = tmpIdToCoordinate[address]
 
@@ -91,7 +94,6 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
                         .sortedBy { -it.rssi }
 
                     actualDevicesLiveData.value = bestBtDevices
-
                     updatePositionEstimate()
                 }
             }
@@ -100,6 +102,8 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
     }
 
     override fun start() {
+        if (enabled) return
+
         super.start()
 
         val intf = IntentFilter().apply {
@@ -127,8 +131,10 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
 
     private fun updatePositionEstimate() {
         val currentTime = System.currentTimeMillis()
-        if (currentTime - lastUpdate < minTimeBetweenUpdatesInMillis)
+        if (currentTime - lastUpdate < minTimeBetweenUpdatesInMillis){
+            logger.debug("Last update is too close.")
             return
+        }
 
         val bestBtDevices = actualDevices.values
 
@@ -146,11 +152,11 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
                 SignalStrength(it.deviceId, it.name, coordinate, it.rssi)
             }.filterNotNull()
 
-        val naiveTrilateration = Trilateraion.naiveNN(signalStrengths)
-        val newPosition = if (naiveTrilateration == null) null else IonavLocation(name, naiveTrilateration)
-        if (differentEnough(lastKnownPosition, newPosition)) {
-            lastKnownPosition = newPosition
-        }
+        val nn = Trilateraion.naiveNN(signalStrengths)
+        val newPosition = if (nn == null) null else IonavLocation(name, nn)
+
+        logger.info("Updating last known position to $newPosition")
+         lastKnownPosition = newPosition
     }
 
     private fun differentEnough(lastKnownPosition: IonavLocation?, newPosition: IonavLocation?): Boolean {
@@ -170,16 +176,22 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
     }
 
     override fun stop() {
+        if (!enabled) return
+
         super.stop()
+
         bluetoothAdapter?.cancelDiscovery()
-        context.unregisterReceiver(bcr)
+        try {
+            context.unregisterReceiver(bcr)
+        } catch (_: IllegalArgumentException) {/*not registered */
+        }
     }
 
 
     companion object {
         const val numLevels = 10
 
-        const val minTimeBetweenUpdatesInMillis = 1000
+        const val minTimeBetweenUpdatesInMillis = 5000L
 
         /**
          * Calculates the level of the signal. This should be used any time a signal

@@ -26,16 +26,19 @@ class PositioningProviderRegistry private constructor() {
     }
 
     private fun updateLastLocation(c: IonavLocation?) {
-        val newLocation = _providers.lastOrNull {
+        logger.warn("Received update: $c")
+        val newLocation = _providers.firstOrNull {
             // FIXME use better algorithm
             val isEnabled = it.enabled
             val newEnough = System.currentTimeMillis() - it.lastUpdate < 30000
             val positionKnown = it.lastKnownPosition != null
-            logger.debug("Position from ${it.name} is... known = $positionKnown; newEnough = $newEnough ")
+            logger.info("Location update by ${it.name}: $isEnabled, $newEnough,  $positionKnown..")
            isEnabled &&  positionKnown && newEnough
         }?.lastKnownPosition
 
+        logger.warn("c: $c, newLocation: $newLocation")
         _lastKnownLocation.value = newLocation
+        logger.warn("Updated location to $newLocation")
 
         appendToLocationHistory(newLocation)
     }
@@ -54,17 +57,28 @@ class PositioningProviderRegistry private constructor() {
 
 
     fun registerProvider(provider: IPositionProvider, start: Boolean = false) {
+        logger.info("Registering $provider. AutoStart = $start")
+
+        if(isRegistered(provider)) return
+
         _providers.add(provider)
         _providerLiveData.value = _providers
         provider.registerObserver(observer)
         if(start){provider.start()}
     }
 
+    private fun isRegistered(provider: IPositionProvider): Boolean = _providers.map { it.name }.contains(provider.name)
+
     fun unregisterProvider(provider: IPositionProvider) {
+        logger.info("Unregistering $provider")
         _providers.remove(provider)
         _providerLiveData.value = _providers
         provider.removeObserver(observer)
         if(provider.enabled) {provider.stop()}
+    }
+    fun removeProvider(name: String)  {
+        _providers.filter { it.name == name }
+            .forEach { unregisterProvider(it) }
     }
 
     fun swapPriorities(pos1: Int, pos2: Int) {

@@ -11,8 +11,8 @@ import de.ironjan.arionav.ionav.positioning.IPositionProvider
 import de.ironjan.arionav.ionav.positioning.PositioningProviderRegistry
 import kotlinx.android.synthetic.main.view_fragment_config_list_item.view.*
 
-class ProvidersAdapter(private val lifecycleOwner: LifecycleOwner):
-    RecyclerView.Adapter<ProvidersAdapter.MyViewHolder>()  {
+class ProvidersAdapter(private val lifecycleOwner: LifecycleOwner) :
+    RecyclerView.Adapter<ProvidersAdapter.MyViewHolder>() {
     private var displayedData: List<IPositionProvider> = listOf()
     private val providerRegistry = PositioningProviderRegistry.Instance
 
@@ -42,9 +42,14 @@ class ProvidersAdapter(private val lifecycleOwner: LifecycleOwner):
         val checkboxEnabled = holder.view.checkbox_enabled
         checkboxEnabled.isChecked = iPositionProvider.enabled
         checkboxEnabled.setOnClickListener {
-            if(it.isEnabled) {
-            iPositionProvider.stop() } else {
-                iPositionProvider.start() }}
+            if (it.isEnabled) {
+                if(!iPositionProvider.enabled) {
+                    iPositionProvider.start()
+                }
+            } else if(iPositionProvider.enabled) {
+                    iPositionProvider.stop()
+            }
+        }
     }
 
 }
