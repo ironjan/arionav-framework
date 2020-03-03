@@ -1,6 +1,5 @@
 package de.ironjan.arionav.sample
 
-import android.bluetooth.le.ScanResult
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -8,16 +7,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
 import de.ironjan.arionav.ionav.positioning.IonavLocation
-import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothProviderImplementation
-import de.ironjan.graphhopper.extensions_core.Coordinate
-import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
+import de.ironjan.arionav.ionav.positioning.ProviderRegistry
+import de.ironjan.arionav.ionav.positioning.SignalStrength
+import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
 
 
-class NearbyBluetoothTokensFragment : CustomListFragment<ScanResult>(scanResultToString) {
-    private lateinit var bluetoothProviderImplementation: BluetoothProviderImplementation
-    private val logger = LoggerFactory.getLogger(NearbyBluetoothTokensFragment::class.java.simpleName)
-    private val devices = emptyMap<String, String>().toMutableMap()
+class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalStrengthToString) {
+    private var bluetoothPositioningProviderImplementation: BluetoothPositioningProviderImplementation? = null
 
     private val observer: IPositionObserver = object : IPositionObserver {
         override fun onPositionChange(c: IonavLocation?) {
@@ -28,30 +24,32 @@ class NearbyBluetoothTokensFragment : CustomListFragment<ScanResult>(scanResultT
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bluetoothProviderImplementation = BluetoothProviderImplementation(context ?: return, lifecycle)
-        bluetoothProviderImplementation.registerObserver(observer)
-        bluetoothProviderImplementation.start()
+        val providerImplementation = ProviderRegistry.Instance.getProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME) as BluetoothPositioningProviderImplementation
+        bluetoothPositioningProviderImplementation = providerImplementation
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-        bluetoothProviderImplementation.getVisibleBluetoothDevices().observe(lifecycleOwner, Observer {
+        providerImplementation.getDevices().observe(lifecycleOwner, Observer {
             dataAdapter.replaceData(it)
         })
+        providerImplementation.start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        bluetoothProviderImplementation.removeObserver(observer)
+        bluetoothPositioningProviderImplementation?.removeObserver(observer)
     }
 
     companion object {
-        private val scanResultToString: (ScanResult) -> String = {
+        private val signalStrengthToString: (SignalStrength) -> String = {
 
-            val device = it.device
-            val address = device.address
+            val address = it.deviceId
             val rssi = it.rssi
 
-            val strength = BluetoothProviderImplementation.calculateSignalLevel(rssi, BluetoothProviderImplementation.numLevels)
-            val s = "$address ${device.name} $rssi , $strength/${BluetoothProviderImplementation.numLevels}"
+            val strength = BluetoothPositioningProviderImplementation.calculateSignalLevel(rssi, BluetoothPositioningProviderImplementation.numLevels)
+
+            val c = it.coordinate?.asString()
+
+            val s = "$address $rssi , $strength/${BluetoothPositioningProviderImplementation.numLevels}: $c"
             s
         }
     }

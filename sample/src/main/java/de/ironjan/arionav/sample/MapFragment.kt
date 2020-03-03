@@ -24,7 +24,6 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.oscim.test.JeoTest
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
 
 
 class MapFragment : Fragment() {
@@ -70,10 +69,6 @@ class MapFragment : Fragment() {
         }
 
 
-
-        val mainActivity = context as MainActivity
-        val positionProvider = mainActivity.positionProvider
-        mapView.viewModel.setUserPositionProvider(positionProvider)
 
         buttonMapFollowLocation.setOnClickListener { mapView.viewModel.toggleFollowUserPosition() }
         buttonRemainingRoute.setOnClickListener { mapView.viewModel.toggleShowRemainingRoute() }

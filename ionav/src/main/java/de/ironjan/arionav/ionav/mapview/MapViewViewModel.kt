@@ -5,17 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
-import com.graphhopper.util.Instruction
 import de.ironjan.arionav.ionav.custom_view_mvvm.MvvmCustomViewModel
-import de.ironjan.arionav.ionav.positioning.*
+import de.ironjan.arionav.ionav.positioning.IPositionProvider
+import de.ironjan.arionav.ionav.positioning.IonavLocation
+import de.ironjan.arionav.ionav.positioning.LevelDependentPositionProviderBaseImplementation
+import de.ironjan.arionav.ionav.positioning.ProviderRegistry
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 
 class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCustomViewModel<MapViewState> {
     // FIXME should be IPositionObserver instead
     private var positionProvider: IPositionProvider ?= null
+
 
     override var state: MapViewState = MapViewState()
 
@@ -51,8 +53,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
 
     fun clearEndCoordinate() = setEndCoordinate(null)
 
-    private val userPosition: MutableLiveData<Coordinate?> = MutableLiveData()
-    fun getUserPositionLiveData(): LiveData<Coordinate?> = userPosition
+    fun getUserPositionLiveData(): LiveData<IonavLocation?> = ProviderRegistry.Instance.lastKnownLocation
 
 
     private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
@@ -129,15 +130,6 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
 
-    private val iPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: IonavLocation?) {
-            userPosition.value = c
-            if (hasRoute) {
-                recomputeRemainingRoute()
-            }
-        }
-    }
-
 
     internal fun computeRoute() {
         if (!canComputeRoute) {
@@ -156,7 +148,7 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
     }
 
     private fun recomputeRemainingRoute() {
-        val lUserPosition = userPosition.value
+        val lUserPosition = getUserPositionLiveData().value
         val lEndCoordinate = state.endCoordinate
         if (lUserPosition == null || lEndCoordinate == null) {
             logger.info("recomputeRemainingRoute was called with null for either start coordinate or end coordinate (start: $lEndCoordinate, end: $lUserPosition).")
@@ -177,26 +169,20 @@ class MapViewViewModel(var hopper: GraphHopper? = null) : ViewModel(), MvvmCusto
         }
     }
 
-    fun setUserPositionProvider(positionProvider: IPositionProvider) {
-        positionProvider.registerObserver(iPositionObserver)
-        this.positionProvider = positionProvider
-        userPosition.value = positionProvider.lastKnownPosition
-    }
 
     fun setStartCoordinateToUserPos() {
-        setStartCoordinate(userPosition.value?: return)
+        setStartCoordinate(getUserPositionLiveData().value?: return)
     }
 
 
 
     private val mapCenter: MutableLiveData<Coordinate?> = MutableLiveData(null)
     fun getMapCenterLiveData(): LiveData<Coordinate?> = mapCenter
-    fun setMapCenter(c: Coordinate) {
+    fun setMapCenter(c: IonavLocation) {
         mapCenter.value = c
     }
 
     fun centerOnUserPos() {
-        val coordinate = positionProvider?.lastKnownPosition ?: return
-        setMapCenter(coordinate)
+        setMapCenter(getUserPositionLiveData().value ?: return)
     }
 }

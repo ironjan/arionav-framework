@@ -15,10 +15,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav.ionav.PermissionHelper
-import de.ironjan.arionav.ionav.positioning.ProviderRegistry
 import de.ironjan.arionav.ionav.positioning.IPositionProvider
 import de.ironjan.arionav.ionav.positioning.MergedPositionProvider
-import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothProviderImplementation
+import de.ironjan.arionav.ionav.positioning.ProviderRegistry
+import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
 import de.ironjan.arionav.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProvider
 import de.ironjan.arionav.sample.util.Mailer
@@ -66,7 +66,7 @@ class MainActivity :
 
         val gpsPositionProvider = GpsPositionProvider(this, lifecycle)
         val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
-        val bluetoothProviderImplementation = BluetoothProviderImplementation(this, lifecycle)
+        val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
         mergedPositionProvider = MergedPositionProvider(this, lifecycle)
 
         providerRegistry.registerProvider(gpsPositionProvider)
@@ -121,6 +121,10 @@ class MainActivity :
             }
             R.id.mnuPoiList -> {
                 navController.navigate(R.id.action_to_poiListFragment)
+                true
+            }
+            R.id.mnuProviderConfig -> {
+                navController.navigate(R.id.action_to_providerConfig)
                 true
             }
             R.id.mnuFeedback -> {

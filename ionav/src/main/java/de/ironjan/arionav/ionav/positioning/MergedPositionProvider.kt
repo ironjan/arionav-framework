@@ -2,7 +2,6 @@ package de.ironjan.arionav.ionav.positioning
 
 import android.content.Context
 import androidx.lifecycle.Lifecycle
-import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
 class MergedPositionProvider(
@@ -15,12 +14,8 @@ class MergedPositionProvider(
 
     private var providers: MutableList<IPositionProvider> = mutableListOf()
 
-    private val observer: IPositionObserverV2 = object : IPositionObserverV2 {
+    private val observer: IPositionObserver = object : IPositionObserver {
         override fun onPositionChange(c: IonavLocation?) {
-            notifyObservers()
-        }
-
-        override fun onPositionChange(c: IonavLocation?, provider: IPositionProvider) {
             notifyObservers()
         }
     }

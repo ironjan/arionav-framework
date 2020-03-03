@@ -8,14 +8,16 @@ object Trilateraion {
     fun naiveTrilateration(devices: List<SignalStrength>, minLevel: Int = 5): Coordinate? {
         // Coordinate -> weight
         // todo probably better to not use calculateSignal from wifi manager
-        val map = devices.map { it.coordinate to calculateSignalLevel(it.rssi, 10) / 10.0 }
+        val map =
+            devices
+                .map { it.coordinate to calculateSignalLevel(it.rssi, 10) / 10.0 }
         val coordToRssi =
-            map
+            map.filter { it.first != null }
                 .filter { it.second >= minLevel/10.0 }
 
-        val latSum = coordToRssi.map { it.first.lat * it.second }.sum()
-        val lonSum = coordToRssi.map { it.first.lon * it.second }.sum()
-        val lvlSum = coordToRssi.map { it.first.lvl * it.second }.sum()
+        val latSum = coordToRssi.map { it.first!!.lat * it.second }.sum()
+        val lonSum = coordToRssi.map { it.first!!.lon * it.second }.sum()
+        val lvlSum = coordToRssi.map { it.first!!.lvl * it.second }.sum()
         val n = coordToRssi.map { it.second }.count()
 
         if (n==0) return null

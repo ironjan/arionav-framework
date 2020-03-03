@@ -17,6 +17,10 @@
         <item android:id="@+id/mnuBtBeacons"
             android:title="Nearby Bluetooth Beacons"/>
     </group>
+    <group android:id="@+id/mnuSettings">
+        <item android:id="@+id/mnuProviderConfig"
+            android:title="Positioning Config" />
+    </group>
     <group android:id="@+id/mnuGrpMisc">
         <item
             android:id="@+id/mnuFeedback"
