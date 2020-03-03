@@ -5,8 +5,6 @@ import android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothDevice.*
 import android.bluetooth.BluetoothManager
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -78,7 +76,6 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
 
                 }
                 ACTION_FOUND -> {
-//                        EXTRA_DEVICE and EXTRA_CLASS. Can contain the extra fields EXTRA_NAME and/or EXTRA_RSSI if t
                     val device = intent.extras?.get(EXTRA_DEVICE) as BluetoothDevice ?: return
                     val name = intent.extras?.getString(EXTRA_NAME)
                     val rssi = intent.extras?.getShort(EXTRA_RSSI)?.toInt() ?: return
@@ -113,31 +110,6 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
 
         context.registerReceiver(bcr, intf)
         triggerScan()
-
-
-        val cb = object : ScanCallback() {
-
-            override fun onScanResult(callbackType: Int, result: ScanResult?) {
-                super.onScanResult(callbackType, result)
-
-                if (result == null) return
-
-                val device = result.device
-                val address = device.address
-                val rssi = result.rssi
-
-                val strength = calculateSignalLevel(rssi, numLevels)
-                val s = "$address ${device.name} $rssi , $strength/$numLevels"
-
-                logger.debug("$s ... onScanResult($callbackType, $result)")
-
-
-
-                updatePositionEstimate()
-            }
-        }
-
-
     }
 
     private fun triggerScan() {

@@ -4,7 +4,6 @@ import android.net.wifi.ScanResult
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav.ionav.positioning.IPositionObserver
@@ -12,7 +11,6 @@ import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.ProviderRegistry
 import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProvider
 import de.ironjan.arionav.ionav.positioning.wifi.WifiPositioningProviderHardCodedValues
-import de.ironjan.arionav.sample.viewmodel.NearbyAccessPointsViewModel
 import kotlinx.android.synthetic.main.fragment_custom_list.*
 
 
@@ -24,8 +22,6 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
 ) {
 
     private lateinit var wifiPositioningProvider: WifiPositioningProvider
-    private val model: NearbyAccessPointsViewModel by activityViewModels()
-
 
     private val observer: IPositionObserver = object : IPositionObserver {
         override fun onPositionChange(c: IonavLocation?) {

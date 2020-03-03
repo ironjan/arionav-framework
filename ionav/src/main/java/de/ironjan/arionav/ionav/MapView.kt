@@ -13,6 +13,7 @@ import de.ironjan.arionav.ionav.mapview.MapViewState
 import de.ironjan.arionav.ionav.mapview.MapViewViewModel
 import de.ironjan.arionav.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSupport
 import de.ironjan.graphhopper.extensions_core.Coordinate
+import org.jeo.carto.Carto
 import org.jeo.vector.VectorDataset
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics
@@ -28,14 +29,12 @@ import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
 import org.oscim.layers.tile.buildings.BuildingLayer
-import org.oscim.layers.tile.vector.labeling.LabelLayer
 import org.oscim.layers.vector.geometries.Style
-import org.oscim.test.JeoTest
 import org.oscim.theme.VtmThemes
 import org.oscim.theme.styles.TextStyle
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
-import java.util.ArrayList
+import java.util.*
 
 class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private lateinit var indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport
@@ -346,10 +345,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             indoorLayer.activeLevel=viewModel.getSelectedLevel().toInt()
             indoorLayer.update()
         })
-//        val activeLevels = indoorLayer.activeLevels
-//        indoorLayer.activeLevels = activeLevels.map { true }.toBooleanArray()
-
-//        map().layers().clear()
         map().layers().add(indoorLayer)
 
         redrawMap()
