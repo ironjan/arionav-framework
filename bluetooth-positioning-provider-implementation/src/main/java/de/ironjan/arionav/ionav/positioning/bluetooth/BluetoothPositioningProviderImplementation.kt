@@ -24,6 +24,8 @@ import de.ironjan.arionav.ionav.positioning.SignalStrength
 import de.ironjan.arionav.ionav.positioning.Trilateraion
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /*
@@ -39,8 +41,9 @@ bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
 class BluetoothPositioningProviderImplementation(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
     override val name = BLUETOOTH_PROVIDER_NAME
 
-    private val devices: MutableMap<String, ScanResult> = mutableMapOf()
-    private val listOfVisibleBtDevices: MutableLiveData<List<ScanResult>> = MutableLiveData(listOf())
+
+    private val lastScan: MutableLiveData<String> = MutableLiveData("")
+    fun getLastScan(): LiveData<String> = lastScan
 
     private val actualDevices = mutableMapOf<String, SignalStrength>()
     private val actualDevicesLiveData = MutableLiveData(listOf<SignalStrength>())
@@ -65,7 +68,7 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
             when (intent?.action) {
                 ACTION_DISCOVERY_STARTED -> {
                     logger.info("Started BT discovery. Clearing known devices...")
-
+                    updateLastScan()
                 }
                 ACTION_DISCOVERY_FINISHED -> {
                     logger.info("Finished BT discovery. Scheduling new scan in 15s.")
@@ -139,6 +142,15 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
 
     private fun triggerScan() {
         bluetoothAdapter?.startDiscovery()
+    }
+
+
+    private fun updateLastScan() {
+        val tz = TimeZone.getTimeZone("UTC")
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'") // Quoted "Z" to indicate UTC, no timezone offset
+        df.setTimeZone(tz)
+        val nowAsISO = df.format(Date())
+        lastScan.value = nowAsISO
     }
 
     private fun updatePositionEstimate() {

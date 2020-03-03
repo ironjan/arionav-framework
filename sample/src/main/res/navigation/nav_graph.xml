@@ -61,7 +61,7 @@
 
     <fragment android:id="@+id/nearbyWifiAps"
         android:name="de.ironjan.arionav.sample.NearbyAccessPointsFragment"
-        tools:layout="@layout/fragment_nearby_wifi_aps"
+        tools:layout="@layout/fragment_custom_list"
         android:label="NearbyAccessPointsFragment">
         <action
             android:id="@+id/action_to_mapFragment"

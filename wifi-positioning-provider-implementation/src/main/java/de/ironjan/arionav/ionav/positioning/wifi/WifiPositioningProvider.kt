@@ -25,7 +25,7 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
     private val lastScan: MutableLiveData<String> = MutableLiveData("")
     fun getLastScan(): LiveData<String> = lastScan
 
-    override val name: String = WifiPositioningProvider::class.java.simpleName
+    override val name: String = WIFI_POSITIONING_PROVIDER
 
     private val logger = LoggerFactory.getLogger(WifiPositioningProvider::class.java.simpleName)
 
@@ -87,7 +87,7 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
 
     private fun updateLastScan() {
         val tz = TimeZone.getTimeZone("UTC")
-        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'") // Quoted "Z" to indicate UTC, no timezone offset
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'") // Quoted "Z" to indicate UTC, no timezone offset
         df.setTimeZone(tz)
         val nowAsISO = df.format(Date())
         lastScan.value = nowAsISO
@@ -134,5 +134,6 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
 
         const val minTimeBetweenUpdatesInMillis = 1000
 
+        val WIFI_POSITIONING_PROVIDER = WifiPositioningProvider::class.java.simpleName
     }
 }

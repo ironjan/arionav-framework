@@ -10,6 +10,7 @@ import de.ironjan.arionav.ionav.positioning.IonavLocation
 import de.ironjan.arionav.ionav.positioning.ProviderRegistry
 import de.ironjan.arionav.ionav.positioning.SignalStrength
 import de.ironjan.arionav.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
+import kotlinx.android.synthetic.main.fragment_custom_list.*
 
 
 class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalStrengthToString) {
@@ -31,7 +32,8 @@ class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalS
         providerImplementation.getDevices().observe(lifecycleOwner, Observer {
             dataAdapter.replaceData(it)
         })
-        providerImplementation.start()
+        additionalInfo.visibility=View.VISIBLE
+        providerImplementation.getLastScan().observe(lifecycleOwner, Observer { additionalInfo.text = it })
     }
 
     override fun onDestroy() {
