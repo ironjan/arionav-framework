@@ -313,6 +313,14 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
             .build()
         val pathLayer = org.oscim.layers.vector.PathLayer(map(), style)
         val geoPoints = ArrayList<GeoPoint>()
+
+        if(route.hasErrors()){
+            val errorString = route.errors.map{it.message}.joinToString(", ")
+            logger.warn("Route $route has errors and cannot be shown: $errorString")
+            Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show()
+            return pathLayer
+        }
+
         val pointList = route.points
         for (i in 0 until pointList.size)
             geoPoints.add(GeoPoint(pointList.getLatitude(i), pointList.getLongitude(i)))
