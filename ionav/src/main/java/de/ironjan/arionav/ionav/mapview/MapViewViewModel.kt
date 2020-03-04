@@ -75,6 +75,7 @@ class MapViewViewModel() : ViewModel(), MvvmCustomViewModel<MapViewState> {
     private val remainingRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
     fun getRemainingRouteLiveData(): LiveData<PathWrapper?> {
         // FIXME better: cache route
+        recomputeRemainingRoute()
         return remainingRoute
     }
 
