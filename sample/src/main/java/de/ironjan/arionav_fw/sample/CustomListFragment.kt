@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav_fw.sample.viewmodel.MyAdapter
+import de.ironjan.arionav_fw.sample.viewmodel.ListBasedRecyclerViewAdapter
 
 abstract class CustomListFragment<T>(private val toStringConverter: (T) -> String) : Fragment() {
-    lateinit var dataAdapter: MyAdapter<T>
+    lateinit var dataAdapter: ListBasedRecyclerViewAdapter<T>
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -18,7 +18,7 @@ abstract class CustomListFragment<T>(private val toStringConverter: (T) -> Strin
         val lContext = context ?: return view
 
         val viewManager = LinearLayoutManager(lContext)
-        dataAdapter = MyAdapter(emptyList()) { toStringConverter(it) }
+        dataAdapter = ListBasedRecyclerViewAdapter(emptyList()) { toStringConverter(it) }
 
         view.findViewById<RecyclerView>(R.id.my_recycler_view).apply {
             setHasFixedSize(true)

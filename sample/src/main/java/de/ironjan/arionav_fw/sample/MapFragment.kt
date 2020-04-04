@@ -19,7 +19,7 @@ import de.ironjan.arionav_fw.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSuppor
 import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
 import de.ironjan.arionav_fw.ionav.routing.repository.NamedPlaceRepository
 import de.ironjan.arionav_fw.sample.util.InstructionHelper
-import de.ironjan.arionav_fw.sample.viewmodel.SharedViewModel
+import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.oscim.test.JeoTest
@@ -36,7 +36,7 @@ class MapFragment : Fragment() {
 
     private val mapName = ArionavSampleApplication.mapName
     private lateinit var ghzExtractor: GhzExtractor
-    private val model: SharedViewModel by activityViewModels()
+    private val model: ArExtensionViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_map, container, false)
 
