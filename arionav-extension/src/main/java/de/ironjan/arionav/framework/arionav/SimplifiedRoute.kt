@@ -1,4 +1,4 @@
-package de.ironjan.arionav.framework
+package de.ironjan.arionav.framework.arionav
 
 import com.graphhopper.util.Instruction
 import com.graphhopper.util.PointList
