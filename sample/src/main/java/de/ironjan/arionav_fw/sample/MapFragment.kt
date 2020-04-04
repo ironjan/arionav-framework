@@ -20,6 +20,7 @@ import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
 import de.ironjan.arionav_fw.ionav.routing.repository.NamedPlaceRepository
 import de.ironjan.arionav_fw.sample.util.InstructionHelper
 import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
+import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.oscim.test.JeoTest
@@ -52,7 +53,7 @@ class MapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mapView.initialize(ghzExtractor)
+        mapView.initialize(ghzExtractor, (activity?.application as IonavContainerHolder).ionavContainer)
 
 
         model.setMapViewViewModel(mapView.viewModel)

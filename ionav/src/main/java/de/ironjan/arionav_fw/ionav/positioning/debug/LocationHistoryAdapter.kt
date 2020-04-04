@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.positioning.PositioningProviderRegistry
+import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,7 +17,7 @@ class LocationHistoryAdapter(private val lifecycleOwner: LifecycleOwner)
 
     class LocationHistoryViewHolder(val view: View): RecyclerView.ViewHolder(view)
 
-    private val providerRegistry = PositioningProviderRegistry.Instance
+    private val providerRegistry = PositioningService.Instance
     private var displayedData = listOf<IonavLocation>()
 
     init {

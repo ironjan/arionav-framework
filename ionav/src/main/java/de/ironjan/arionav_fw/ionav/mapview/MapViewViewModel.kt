@@ -4,16 +4,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graphhopper.PathWrapper
+import de.ironjan.arionav_fw.ionav.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.positioning.LevelDependentPositionProviderBaseImplementation
-import de.ironjan.arionav_fw.ionav.positioning.PositioningProviderRegistry
+import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-class MapViewViewModel() : ViewModel(), MvvmCustomViewModel<MapViewState> {
+class MapViewViewModel : ViewModel(), MvvmCustomViewModel<MapViewState> {
+    var routingService: RoutingService = RoutingService()
+
+    fun initialize(ionavContainer: IonavContainer){
+        routingService = ionavContainer.routingService
+    }
+
     // FIXME should be IPositionObserver instead
     private var positionProvider: IPositionProvider ?= null
 
@@ -52,7 +59,7 @@ class MapViewViewModel() : ViewModel(), MvvmCustomViewModel<MapViewState> {
 
     fun clearEndCoordinate() = setEndCoordinate(null)
 
-    fun getUserPositionLiveData(): LiveData<IonavLocation?> = PositioningProviderRegistry.Instance.lastKnownLocation
+    fun getUserPositionLiveData(): LiveData<IonavLocation?> = PositioningService.Instance.lastKnownLocation
 
 
     private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
@@ -79,8 +86,9 @@ class MapViewViewModel() : ViewModel(), MvvmCustomViewModel<MapViewState> {
         return remainingRoute
     }
 
+
     private val canComputeRoute: Boolean
-        get() = RoutingService.initialized
+        get() = routingService.initialized
                 && state.startCoordinate != null
                 && state.endCoordinate != null
 
@@ -161,7 +169,7 @@ class MapViewViewModel() : ViewModel(), MvvmCustomViewModel<MapViewState> {
 
     private fun computeRouteFromTo(lStartCoordinate: Coordinate, lEndCoordinate: Coordinate): PathWrapper? {
         return try {
-            RoutingService.route(lStartCoordinate, lEndCoordinate)
+            routingService.route(lStartCoordinate, lEndCoordinate)
         } catch (e: Exception) {
             e.printStackTrace()
 

@@ -9,18 +9,26 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
 
-class RoutingService private constructor() {
+class RoutingService {
     private val logger = LoggerFactory.getLogger(RoutingService::class.java.simpleName)
 
     private var routing: Routing = UninitializedRouting()
-    private var initialized = false
+
+    var initialized = false
+        private set
+
+    fun route(from: Coordinate?, to: Coordinate?): PathWrapper?
+            = routing.route(from, to)
+
+    fun route(fromLat: Double, fromLon: Double, fromLvl: Double, toLat: Double, toLon: Double, toLvl: Double): PathWrapper?
+            =  routing.route(fromLat, fromLon, fromLvl, toLat, toLon, toLvl)
 
     fun init(ghzExtractor: GhzExtractor) {
         val loadGraphTask = LoadGraphTask(ghzExtractor.mapFolder, object : LoadGraphTask.Callback {
-            override fun onSuccess(hopper: GraphHopper) {
+            override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
 
-                routing = Routing(hopper)
+                routing = Routing(graphHopper)
                 initialized = true
             }
 
@@ -33,16 +41,6 @@ class RoutingService private constructor() {
         loadGraphTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
-    companion object {
-        private val Instance = RoutingService()
-
-        val initialized: Boolean
-            get() = Instance.initialized
-
-        fun init(ghzExtractor: GhzExtractor) = Instance.init(ghzExtractor)
-        fun route(from: Coordinate, to: Coordinate): PathWrapper? = Instance.routing.route(from, to)
-    }
-
     /** Used as routing backend as long as the service is not initialized. Returns null-routes. */
     class UninitializedRouting : Routing(null) {
         override fun route(from: Coordinate?, to: Coordinate?): PathWrapper? {
@@ -53,4 +51,5 @@ class RoutingService private constructor() {
             return null
         }
     }
+
 }

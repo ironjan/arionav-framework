@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.R
-import de.ironjan.arionav_fw.ionav.positioning.PositioningProviderRegistry
+import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
 
 class ProviderConfigFragment : Fragment() {
@@ -24,7 +24,7 @@ class ProviderConfigFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val registry = PositioningProviderRegistry.Instance
+        val registry = PositioningService.Instance
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
         providersAdapter = ProvidersAdapter(lifecycleOwner)

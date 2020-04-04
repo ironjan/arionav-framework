@@ -37,8 +37,12 @@ import org.slf4j.LoggerFactory
 import java.util.*
 
 class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
+    private lateinit var ionavContainer: IonavContainer
+
     private lateinit var indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport
+
     override val viewModel = MapViewViewModel()
+
     private lateinit var lifecycleOwner: LifecycleOwner
 
 
@@ -127,8 +131,10 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private val logger = LoggerFactory.getLogger(TAG)
 
-    fun initialize(ghzExtractor: GhzExtractor) {
+    fun initialize(ghzExtractor: GhzExtractor, ionavContainer: IonavContainer) {
         this.ghzExtractor = ghzExtractor
+        this.ionavContainer = ionavContainer
+        viewModel.routingService = ionavContainer.routingService
         loadMap()
         loadGraphStorage()
     }
