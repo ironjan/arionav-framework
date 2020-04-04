@@ -9,7 +9,7 @@ import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedRoomReader
 import de.ironjan.arionav_fw.ionav.routing.model.readers.OsmReader
 import org.slf4j.LoggerFactory
 
-class NamedPlaceRepository private constructor(
+class NamedPlaceRepository(
     val roomReader: ImprovedRoomReader,
     val poiReader: ImprovedPoiReader
 ) {

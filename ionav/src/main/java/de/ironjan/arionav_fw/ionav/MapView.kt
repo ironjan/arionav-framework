@@ -120,8 +120,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         get() = !isInitialized
 
 
-    private lateinit var ghzExtractor: GhzExtractor
-
     private var routeLayer: org.oscim.layers.vector.PathLayer? = null
     private var remainingRouteLayer: org.oscim.layers.vector.PathLayer? = null
 
@@ -131,8 +129,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private val logger = LoggerFactory.getLogger(TAG)
 
-    fun initialize(ghzExtractor: GhzExtractor, ionavContainer: IonavContainer) {
-        this.ghzExtractor = ghzExtractor
+    fun initialize(ionavContainer: IonavContainer) {
         this.ionavContainer = ionavContainer
         viewModel.routingService = ionavContainer.routingService
         loadMap()
@@ -142,7 +139,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private fun loadGraphStorage() {
         logger.debug("loading graphstorage..")
-        val loadGraphTask = LoadGraphTask(ghzExtractor.mapFolder, object : LoadGraphTask.Callback {
+        val loadGraphTask = LoadGraphTask(ionavContainer.mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
                 // FIXME workaround!
@@ -165,8 +162,9 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
         // Map file source
         val tileSource = MapFileTileSource()
-        tileSource.setMapFile(ghzExtractor.mapFilePath)
-        logger.debug("Set tile source to ${ghzExtractor.mapFilePath}")
+        val mapFilePath = ionavContainer.mapFilePath
+        tileSource.setMapFile(mapFilePath)
+        logger.debug("Set tile source to $mapFilePath")
         val l = map().setBaseMap(tileSource)
         map().setTheme(VtmThemes.DEFAULT)
         map().layers().add(BuildingLayer(map(), l))

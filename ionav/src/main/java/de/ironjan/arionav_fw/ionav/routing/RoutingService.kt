@@ -3,7 +3,6 @@ package de.ironjan.arionav_fw.ionav.routing
 import android.os.AsyncTask
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
-import de.ironjan.arionav_fw.ionav.GhzExtractor
 import de.ironjan.arionav_fw.ionav.LoadGraphTask
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
@@ -23,8 +22,8 @@ class RoutingService {
     fun route(fromLat: Double, fromLon: Double, fromLvl: Double, toLat: Double, toLon: Double, toLvl: Double): PathWrapper?
             =  routing.route(fromLat, fromLon, fromLvl, toLat, toLon, toLvl)
 
-    fun init(ghzExtractor: GhzExtractor) {
-        val loadGraphTask = LoadGraphTask(ghzExtractor.mapFolder, object : LoadGraphTask.Callback {
+    fun init(mapFolder: String) {
+        val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
 

@@ -6,16 +6,11 @@ import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
-class GhzExtractor(private val context: Context, private val resId: Int,private val  mapName: String) {
-    private val ghzResId = resId
-    val mapFolder
-        get() = File(context.filesDir, mapName).absolutePath
-    val mapFilePath
-        get() = File(mapFolder, "$mapName.map").absolutePath
-    val osmFilePath
-        get() = File(mapFolder, "$mapName.osm").absolutePath
+class GhzExtractor {
+    fun unzipGhzToStorage(context: Context, ionavContainer: IonavContainer) {
+        val mapFolder = ionavContainer.mapFolder
+        val resId = ionavContainer.resId
 
-    fun unzipGhzToStorage() {
         val targetFolder = File(mapFolder)
         targetFolder.mkdirs()
 

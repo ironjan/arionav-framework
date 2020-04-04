@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav_fw.ionav.GhzExtractor
 import de.ironjan.arionav_fw.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSupport
 import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
-import de.ironjan.arionav_fw.ionav.routing.repository.NamedPlaceRepository
 import de.ironjan.arionav_fw.sample.util.InstructionHelper
 import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
@@ -45,7 +44,7 @@ class MapFragment : Fragment() {
         super.onCreate(savedInstanceState)
         // todo move to VM or below
         val context = context ?: return
-        ghzExtractor = GhzExtractor(context.applicationContext, ghzResId, mapName)
+        ghzExtractor = GhzExtractor()
 
         instructionHelper = InstructionHelper(context)
 
@@ -53,7 +52,7 @@ class MapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mapView.initialize(ghzExtractor, (activity?.application as IonavContainerHolder).ionavContainer)
+        mapView.initialize((activity?.application as IonavContainerHolder).ionavContainer)
 
 
         model.setMapViewViewModel(mapView.viewModel)
@@ -116,22 +115,27 @@ class MapFragment : Fragment() {
     private lateinit var endSuggestionsAdapter: ArrayAdapter<String>
     private lateinit var startSuggestionsAdapter: ArrayAdapter<String>
     private fun prepareRoomAndPoiHandling(lifecycleOwner: LifecycleOwner) {
-        val lContext = context ?: return
-        startSuggestionsAdapter = ArrayAdapter(lContext, android.R.layout.simple_dropdown_item_1line, suggestionsList)
+        val context = context ?: return
+        startSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, suggestionsList)
         edit_start_coordinates.setAdapter(startSuggestionsAdapter)
-        endSuggestionsAdapter = ArrayAdapter(lContext, android.R.layout.simple_dropdown_item_1line, suggestionsList)
+        endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, suggestionsList)
         edit_end_coordinates.setAdapter(endSuggestionsAdapter)
 
-        placesLiveData = NamedPlaceRepository.instance
-            .getPlaces(ghzExtractor.osmFilePath)
-        placesLiveData.observe(lifecycleOwner, Observer {
-            placesList.apply {
-                clear()
-                addAll(it.keys)
+        when(val application = activity?.application) {
+            is ArionavSampleApplication -> {
+                placesLiveData = application.sampleAppContainer.namedPlaceRepository
+                    .getPlaces(application.ionavContainer.osmFilePath)
+                placesLiveData.observe(lifecycleOwner, Observer {
+                    placesList.apply {
+                        clear()
+                        addAll(it.keys)
+                    }
+                    updateSuggestionsList(startSuggestionsAdapter)
+                    updateSuggestionsList(endSuggestionsAdapter)
+                })
             }
-            updateSuggestionsList(startSuggestionsAdapter)
-            updateSuggestionsList(endSuggestionsAdapter)
-        })
+        }
+
 
 
         edit_end_coordinates.doOnTextChanged { text, _, _, _ ->

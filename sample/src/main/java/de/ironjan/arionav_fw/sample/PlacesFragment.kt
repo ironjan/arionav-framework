@@ -21,7 +21,6 @@ import de.ironjan.arionav_fw.sample.viewmodel.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 
 class PlacesFragment : Fragment() {
-    val namedPlaceRepo: NamedPlaceRepository = NamedPlaceRepository.instance
 
     private var places: List<NamedPlace> = emptyList()
     lateinit var dataAdapter: NamedPlacesAdapter
@@ -65,13 +64,15 @@ class PlacesFragment : Fragment() {
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
 
-        val ghzExtractor = GhzExtractor(lContext.applicationContext, ghzResId, mapName)
+        val ghzExtractor = GhzExtractor()
 
 
-        namedPlaceRepo.getPlaces(ghzExtractor.osmFilePath).observe(lifecycleOwner, Observer {
-            places = it.values.toList()
-            updateAdapter()
-        })
+        when (val application = activity?.application) {
+            is ArionavSampleApplication -> NamedPlaceRepository.instance.getPlaces(application.ionavContainer.osmFilePath).observe(lifecycleOwner, Observer {
+                places = it.values.toList()
+                updateAdapter()
+            })
+        }
         updateAdapter()
     }
 
