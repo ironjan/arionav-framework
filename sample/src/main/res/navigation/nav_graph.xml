@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="de.ironjan.arionav.sample.MapFragment"
+        android:name="de.ironjan.arionav_fw.sample.MapFragment"
         tools:layout="@layout/fragment_map"
         android:label="MapFragment" >
 
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/arViewFragment"
-        android:name="de.ironjan.arionav.sample.ArViewFragment"
+        android:name="de.ironjan.arionav_fw.sample.ArViewFragment"
         tools:layout="@layout/fragment_ar_view"
         android:label="ArViewFragment" >
         <action
@@ -66,7 +66,7 @@
     </fragment>
 
     <fragment android:id="@+id/nearbyWifiAps"
-        android:name="de.ironjan.arionav.sample.NearbyAccessPointsFragment"
+        android:name="de.ironjan.arionav_fw.sample.NearbyAccessPointsFragment"
         tools:layout="@layout/fragment_custom_list"
         android:label="NearbyAccessPointsFragment">
         <action
@@ -90,7 +90,7 @@
     </fragment>
     <fragment
         android:id="@+id/nearbyBluetoothTokensFragment"
-        android:name="de.ironjan.arionav.sample.NearbyBluetoothTokensFragment"
+        android:name="de.ironjan.arionav_fw.sample.NearbyBluetoothTokensFragment"
         android:label="NearbyBluetoothTokensFragment">
 
         <action
@@ -114,7 +114,7 @@
     </fragment>
 
     <fragment android:id="@+id/poiListFragment"
-        android:name="de.ironjan.arionav.sample.PlacesFragment"
+        android:name="de.ironjan.arionav_fw.sample.PlacesFragment"
         android:label="PoiListFragment" >
 
         <action
@@ -138,7 +138,7 @@
     </fragment>
 
     <fragment android:id="@+id/providerConfig"
-        android:name="de.ironjan.arionav.ionav.positioning.config.ProviderConfigFragment"
+        android:name="de.ironjan.arionav_fw.ionav.positioning.config.ProviderConfigFragment"
         android:label="ProviderConfigFragment" >
 
 
@@ -163,7 +163,7 @@
     </fragment>
 
     <fragment android:id="@+id/locationHistory"
-        android:name="de.ironjan.arionav.ionav.positioning.debug.LocationHistoryFragment"
+        android:name="de.ironjan.arionav_fw.ionav.positioning.debug.LocationHistoryFragment"
         android:label="LocationHistoryFragment">
 
         <action

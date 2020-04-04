@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.ironjan.arionav.ionav">
+    package="de.ironjan.arionav_fw.ionav">
     <!-- Required for positioning -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>

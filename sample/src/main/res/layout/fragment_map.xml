@@ -37,7 +37,7 @@
         android:id="@+id/edit_end_coordinates"
         android:hint="End Coordinates (lat,lon,lvl)" />
 
-    <de.ironjan.arionav.ionav.MapView
+    <de.ironjan.arionav_fw.ionav.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
