@@ -1,11 +1,16 @@
-package de.ironjan.arionav_fw.sample.viewmodel
+package de.ironjan.arionav_fw.framework.arionav.viewmodel
 
 import androidx.lifecycle.ViewModel
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
 
-class SharedViewModel: ViewModel() {
+/**
+ * Serves as a wrapper around {@see MapViewViewModel} and provides access to relevant fields. Used in Activities that
+ * provide both map-based and AR navigation.
+ *
+ * This approach does not follow best practices (view models should access a shared data source, not each other)
+ */
+class ArExtensionViewModel: ViewModel() {
     fun getRemainingRouteLiveData() = mapViewViewModel.getRemainingRouteLiveData()
-    fun getCurrentRouteLiveData() = mapViewViewModel.getCurrentRouteLiveData()
 
     private lateinit var mapViewViewModel: MapViewViewModel
 
