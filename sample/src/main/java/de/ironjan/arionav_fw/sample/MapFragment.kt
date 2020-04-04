@@ -32,9 +32,9 @@ class MapFragment : Fragment() {
 
     private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
 
-    private val ghzResId = ArionavSampleApplication.ghzResId
+    private val ghzResId = R.raw.uni_paderborn
 
-    private val mapName = ArionavSampleApplication.mapName
+    private val mapName = "uni_paderborn"
     private lateinit var ghzExtractor: GhzExtractor
     private val model: ArExtensionViewModel by activityViewModels()
 

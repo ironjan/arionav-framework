@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.GhzExtractor
 import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
 import de.ironjan.arionav_fw.ionav.routing.repository.NamedPlaceRepository
-import de.ironjan.arionav_fw.sample.ArionavSampleApplication.Companion.ghzResId
-import de.ironjan.arionav_fw.sample.ArionavSampleApplication.Companion.mapName
 import de.ironjan.arionav_fw.sample.viewmodel.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 
