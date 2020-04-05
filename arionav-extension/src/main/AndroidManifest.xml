@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.ironjan.arionav_fw.framework">
+    package="de.ironjan.arionav_fw.arionav">
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- Indicates that the app requires ARCore ("AR Required"). Ensures the app is

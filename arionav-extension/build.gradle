@@ -40,14 +40,16 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
+    implementation 'com.google.android.material:material:1.1.0'
 
     api "com.google.dagger:dagger:$dagger_version"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
 
     api project(path: ':ionav')
 
-    implementation 'com.google.ar:core:1.13.0'
-    api 'com.google.ar.sceneform.ux:sceneform-ux:1.13.0'
+    implementation 'com.google.ar:core:1.16.0'
+    api 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
     api 'com.github.appoly:ARCore-Location:1.2'
 
     testImplementation "junit:junit:$junit_version"

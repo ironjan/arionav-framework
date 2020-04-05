@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/locationHistory">
+    app:startDestination="@id/mapFragment">
 
     <fragment
         android:id="@+id/mapFragment"
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/arViewFragment"
-        android:name="de.ironjan.arionav_fw.sample.ArViewFragment"
+        android:name="de.ironjan.arionav_fw.arionav.ArViewFragment"
         tools:layout="@layout/fragment_ar_view"
         android:label="ArViewFragment" >
         <action

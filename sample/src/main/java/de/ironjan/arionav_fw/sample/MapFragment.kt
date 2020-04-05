@@ -14,12 +14,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
 import de.ironjan.arionav_fw.ionav.GhzExtractor
+import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSupport
 import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
-import de.ironjan.arionav_fw.sample.util.InstructionHelper
-import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
-import de.ironjan.arionav_fw.ionav.IonavContainerHolder
+import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.oscim.test.JeoTest

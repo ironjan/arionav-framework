@@ -1,9 +1,9 @@
-package de.ironjan.arionav_fw.sample.util
+package de.ironjan.arionav_fw.ionav.util
 
 import android.content.Context
 import android.graphics.drawable.Drawable
 import com.graphhopper.util.Instruction
-import de.ironjan.arionav_fw.sample.R
+import de.ironjan.arionav_fw.ionav.R
 
 class InstructionHelper(private val context: Context) {
     fun toText(currentInstruction: Instruction, nextInstruction: Instruction): String {

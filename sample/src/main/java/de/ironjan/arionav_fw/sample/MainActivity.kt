@@ -67,9 +67,9 @@ class MainActivity :
         providerRegistry.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
         providerRegistry.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
 
-        providerRegistry.registerProvider(bluetoothProviderImplementation, true)
-        providerRegistry.registerProvider(wifiPositioningProvider, true)
-        providerRegistry.registerProvider(gpsPositionProvider)
+        providerRegistry.registerProvider(bluetoothProviderImplementation, false)
+        providerRegistry.registerProvider(wifiPositioningProvider, false)
+        providerRegistry.registerProvider(gpsPositionProvider, true)
 
 
 

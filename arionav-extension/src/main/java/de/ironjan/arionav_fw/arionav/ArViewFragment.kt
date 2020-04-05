@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample
+package de.ironjan.arionav_fw.arionav
 
 import android.app.Activity
 import android.os.Bundle
@@ -19,16 +19,16 @@ import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.util.Instruction
-import de.ironjan.arionav_fw.sample.util.InstructionHelper
 import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
-import kotlinx.android.synthetic.main.fragment_ar_view.ar_scene_view
+import de.ironjan.arionav_fw.ionav.util.InstructionHelper
+import kotlinx.android.synthetic.main.fragment_ar_view.*
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
-import java.lang.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
+
 
 class ArViewFragment : Fragment() {
     private var locationSceneIsSetUp: Boolean = false
