@@ -4,7 +4,31 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.slf4j.LoggerFactory
 
-class PositioningService {
+class PositioningService : IPositionObservable {
+    override var lastKnownPosition: IonavLocation? = null
+        private set
+
+    override var lastUpdate: Long = -1L
+        private set
+
+    private val observers: MutableList<IPositionObserver> = mutableListOf()
+    override fun registerObserver(observer: IPositionObserver) {
+        if (observers.contains(observer)) return
+        observers.add(observer)
+    }
+
+    override fun removeObserver(observer: IPositionObserver) {
+        observers.remove(observer)
+    }
+
+    override fun notifyObservers() {
+        logger.debug("PositioningService notifying observers.")
+        observers.forEach { o ->
+            val position = lastKnownPosition ?: return
+            o.onPositionChange(position)
+        }
+    }
+
     private val logger = LoggerFactory.getLogger(PositioningService::class.java.simpleName)
 
     private val _providers: MutableList<IPositionProvider> = mutableListOf()
@@ -33,17 +57,20 @@ class PositioningService {
             val newEnough = System.currentTimeMillis() - it.lastUpdate < 30000
             val positionKnown = it.lastKnownPosition != null
             logger.info("Location update by ${it.name}: $isEnabled, $newEnough,  $positionKnown..")
-           isEnabled &&  positionKnown && newEnough
+            isEnabled && positionKnown && newEnough
         }?.lastKnownPosition
 
         logger.warn("c: $c, newLocation: $newLocation")
         _lastKnownLocation.value = newLocation
+        lastKnownPosition = newLocation
+        lastUpdate = newLocation?.timestamp ?: lastUpdate
+        notifyObservers()
         logger.warn("Updated location to $newLocation")
 
         appendToLocationHistory(newLocation)
     }
 
-    private fun appendToLocationHistory(location: IonavLocation?){
+    private fun appendToLocationHistory(location: IonavLocation?) {
         val location = location ?: return
 
         _locationHistory.apply {
@@ -59,12 +86,14 @@ class PositioningService {
     fun registerProvider(provider: IPositionProvider, start: Boolean = false) {
         logger.info("Registering $provider. AutoStart = $start")
 
-        if(isRegistered(provider)) return
+        if (isRegistered(provider)) return
 
         _providers.add(provider)
         _providerLiveData.value = _providers
         provider.registerObserver(observer)
-        if(start){provider.start()}
+        if (start) {
+            provider.start()
+        }
     }
 
     private fun isRegistered(provider: IPositionProvider): Boolean = _providers.map { it.name }.contains(provider.name)
@@ -74,9 +103,12 @@ class PositioningService {
         _providers.remove(provider)
         _providerLiveData.value = _providers
         provider.removeObserver(observer)
-        if(provider.enabled) {provider.stop()}
+        if (provider.enabled) {
+            provider.stop()
+        }
     }
-    fun removeProvider(name: String)  {
+
+    fun removeProvider(name: String) {
         _providers.filter { it.name == name }
             .forEach { unregisterProvider(it) }
     }
@@ -97,5 +129,6 @@ class PositioningService {
 
     companion object {
         val Instance = PositioningService()
+        val TAG = "PositioningService"
     }
 }
