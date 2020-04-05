@@ -7,16 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
 import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
 
 class LocationHistoryFragment: Fragment() {
 
-
-    private val locationHistoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-        LocationHistoryAdapter(lifecycleOwner)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_with_recycler_view, container,  false)
@@ -26,6 +22,14 @@ class LocationHistoryFragment: Fragment() {
 
         val context = context ?: return
 
+        val positioningService = when(val ionavContainerHolder = activity?.application) {
+            is IonavContainerHolder -> ionavContainerHolder.ionavContainer.positioningService
+            else -> null
+        } ?: return
+
+        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+
+        val locationHistoryAdapter = LocationHistoryAdapter(lifecycleOwner, positioningService)
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)

@@ -16,11 +16,19 @@ class RoutingService {
     var initialized = false
         private set
 
-    fun route(from: Coordinate?, to: Coordinate?): PathWrapper?
-            = routing.route(from, to)
+    fun route(from: Coordinate?, to: Coordinate?): PathWrapper? = try {
+        routing.route(from, to)
+    } catch (e: java.lang.Exception) {
+        logger.error("Could not compute route.", e)
+        null
+    }
 
-    fun route(fromLat: Double, fromLon: Double, fromLvl: Double, toLat: Double, toLon: Double, toLvl: Double): PathWrapper?
-            =  routing.route(fromLat, fromLon, fromLvl, toLat, toLon, toLvl)
+    fun route(fromLat: Double, fromLon: Double, fromLvl: Double, toLat: Double, toLon: Double, toLvl: Double): PathWrapper? = try {
+        routing.route(fromLat, fromLon, fromLvl, toLat, toLon, toLvl)
+    } catch (e: java.lang.Exception) {
+        logger.error("Could not compute route.", e)
+        null
+    }
 
     fun init(mapFolder: String) {
         val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {

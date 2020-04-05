@@ -128,7 +128,6 @@ class PositioningService : IPositionObservable {
     }
 
     companion object {
-        val Instance = PositioningService()
         val TAG = "PositioningService"
     }
 }

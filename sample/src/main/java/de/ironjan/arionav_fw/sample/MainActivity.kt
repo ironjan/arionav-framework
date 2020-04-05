@@ -19,7 +19,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.PermissionHelper
-import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProvider
@@ -57,19 +56,19 @@ class MainActivity :
         nav_view.setNavigationItemSelectedListener { navigateOnMenuItem(it) }
 
 
-        val providerRegistry = PositioningService.Instance
+        val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
 
         val gpsPositionProvider = GpsPositionProvider(this, lifecycle)
         val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
         val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
 
-        providerRegistry.removeProvider(GpsPositionProvider.GPS_PROVIDER_NAME)
-        providerRegistry.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
-        providerRegistry.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
+        positioningService.removeProvider(GpsPositionProvider.GPS_PROVIDER_NAME)
+        positioningService.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
+        positioningService.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
 
-        providerRegistry.registerProvider(bluetoothProviderImplementation, false)
-        providerRegistry.registerProvider(wifiPositioningProvider, false)
-        providerRegistry.registerProvider(gpsPositionProvider, true)
+        positioningService.registerProvider(bluetoothProviderImplementation, false)
+        positioningService.registerProvider(wifiPositioningProvider, false)
+        positioningService.registerProvider(gpsPositionProvider, true)
 
 
 

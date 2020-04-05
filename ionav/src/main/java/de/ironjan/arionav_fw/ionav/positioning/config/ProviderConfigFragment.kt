@@ -9,8 +9,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
-import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
 
 class ProviderConfigFragment : Fragment() {
@@ -24,17 +24,20 @@ class ProviderConfigFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val registry = PositioningService.Instance
+        val positioningService = when (val ionavHolder = activity?.application) {
+            is IonavContainerHolder -> ionavHolder.ionavContainer.positioningService
+            else -> null
+        } ?: return
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-        providersAdapter = ProvidersAdapter(lifecycleOwner)
+        providersAdapter = ProvidersAdapter(lifecycleOwner, positioningService)
 
 
         val context = context ?: return
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter=providersAdapter
+            adapter = providersAdapter
         }
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
@@ -46,7 +49,7 @@ class ProviderConfigFragment : Fragment() {
             }
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                registry.swapPriorities(viewHolder.adapterPosition, target.adapterPosition)
+                positioningService.swapPriorities(viewHolder.adapterPosition, target.adapterPosition)
                 return true
             }
         })

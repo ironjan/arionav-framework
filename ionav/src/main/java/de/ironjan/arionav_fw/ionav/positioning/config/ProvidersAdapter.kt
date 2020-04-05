@@ -11,13 +11,13 @@ import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import kotlinx.android.synthetic.main.view_fragment_config_list_item.view.*
 
-class ProvidersAdapter(private val lifecycleOwner: LifecycleOwner) :
+class ProvidersAdapter(private val lifecycleOwner: LifecycleOwner,
+                       private val positioningService: PositioningService) :
     RecyclerView.Adapter<ProvidersAdapter.MyViewHolder>() {
     private var displayedData: List<IPositionProvider> = listOf()
-    private val providerRegistry = PositioningService.Instance
 
     init {
-        providerRegistry.providers.observe(lifecycleOwner, Observer {
+        positioningService.providers.observe(lifecycleOwner, Observer {
             displayedData = it
             notifyDataSetChanged()
         })

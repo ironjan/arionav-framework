@@ -12,16 +12,16 @@ import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LocationHistoryAdapter(private val lifecycleOwner: LifecycleOwner)
+class LocationHistoryAdapter(private val lifecycleOwner: LifecycleOwner,
+                             private val positioningService: PositioningService)
     : RecyclerView.Adapter<LocationHistoryAdapter.LocationHistoryViewHolder>(){
 
     class LocationHistoryViewHolder(val view: View): RecyclerView.ViewHolder(view)
 
-    private val providerRegistry = PositioningService.Instance
     private var displayedData = listOf<IonavLocation>()
 
     init {
-        providerRegistry.locationHistory.observe(lifecycleOwner, Observer {
+        positioningService.locationHistory.observe(lifecycleOwner, Observer {
             displayedData = it
             notifyDataSetChanged()
         })

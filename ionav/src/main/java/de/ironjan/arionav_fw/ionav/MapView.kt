@@ -131,7 +131,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     fun initialize(ionavContainer: IonavContainer) {
         this.ionavContainer = ionavContainer
-        viewModel.routingService = ionavContainer.routingService
+        viewModel.initialize(ionavContainer)
         loadMap()
         loadGraphStorage()
     }
