@@ -26,12 +26,16 @@ class NavigationService(
         get() = _destination
         set(value) {
             _destination = value
+
+            if (value != null) {
+                positioningService.registerObserver(positionObserver)
+            } else {
+                positioningService.removeObserver(positionObserver)
+            }
+
             recomputeRemainingRoute()
         }
 
-    fun clearDestination() {
-        destination = null
-    }
 
     var remainingRoute: PathWrapper? = null
         private set
@@ -52,6 +56,7 @@ class NavigationService(
             return
         }
 
+
         remainingRoute = routingService.route(lastKnownPositionCoordinates, destination)
         notifyObservers()
     }
@@ -62,19 +67,19 @@ class NavigationService(
      * Registers a new observer. Will do nothing if the observer is already registered.
      * @param observer the new observer
      */
-    fun registerObserver(observer: RemainingRouteObserver){
-        if(_observers.contains(observer)) return
+    fun registerObserver(observer: RemainingRouteObserver) {
+        if (_observers.contains(observer)) return
         _observers.add(observer)
     }
 
     /**
      * Removes a currently known observer. Will do nothing if the observer is not registered.
      */
-    fun removeObserver(observer: RemainingRouteObserver){
+    fun removeObserver(observer: RemainingRouteObserver) {
         _observers.remove(observer)
     }
 
-    fun notifyObservers(){
+    fun notifyObservers() {
         _observers.forEach { it.update(remainingRoute) }
     }
 
