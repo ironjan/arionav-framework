@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("de.ironjan.arionav.sample", appContext.packageName)
+        assertEquals("de.ironjan.arionav_fw.sample", appContext.packageName)
     }
 }

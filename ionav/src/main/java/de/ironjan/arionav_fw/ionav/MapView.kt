@@ -209,7 +209,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
 
     companion object {
-        const val TAG = "de.ironjan.arionav.ionav.MapView"
+        const val TAG = "IonavMapView" // FIXME rename class
     }
 
 
