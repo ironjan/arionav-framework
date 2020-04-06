@@ -168,18 +168,6 @@ class MapViewViewModel : ViewModel(), MvvmCustomViewModel<MapViewState> {
         currentRoute.value = routingService.route(lStartCoordinate, lEndCoordinate)
     }
 
-    private fun recomputeRemainingRoute() {
-        val lUserPosition = getUserPositionLiveData().value
-        val lEndCoordinate = state.endCoordinate
-        if (lUserPosition == null || lEndCoordinate == null) {
-            logger.info("recomputeRemainingRoute was called with null for either start coordinate or end coordinate (start: $lEndCoordinate, end: $lUserPosition).")
-            return
-        }
-
-    }
-
-    private fun computeRouteFromTo(lStartCoordinate: Coordinate, lEndCoordinate: Coordinate): PathWrapper? = routingService.route(lStartCoordinate, lEndCoordinate)
-
 
     fun setStartCoordinateToUserPos() {
         setStartCoordinate(getUserPositionLiveData().value?: return)
