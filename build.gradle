@@ -28,10 +28,11 @@ buildscript {
 
 allprojects {
     repositories {
+
+        mavenLocal()
         maven { url 'https://repo.boundlessgeo.com/main/' }
         google()
         jcenter()
-        mavenLocal()
         maven { url 'https://jitpack.io' }
         maven { url "https://dl.bintray.com/arrow-kt/arrow-kt/" }
     }
