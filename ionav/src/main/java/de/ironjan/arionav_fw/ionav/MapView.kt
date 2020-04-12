@@ -3,35 +3,28 @@ package de.ironjan.arionav_fw.ionav
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
+import de.ironjan.arionav_fw.ionav.mapview.IonavIndoorLayer
 import de.ironjan.arionav_fw.ionav.mapview.MapViewState
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
-import de.ironjan.arionav_fw.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSupport
 import de.ironjan.graphhopper.extensions_core.Coordinate
-import org.jeo.carto.Carto
-import org.jeo.vector.VectorDataset
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics
-import org.oscim.backend.CanvasAdapter
-import org.oscim.backend.canvas.Color
 import org.oscim.core.GeoPoint
 import org.oscim.event.Gesture
 import org.oscim.event.GestureListener
 import org.oscim.event.MotionEvent
 import org.oscim.layers.Layer
-import org.oscim.layers.OSMIndoorLayer
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
 import org.oscim.layers.tile.buildings.BuildingLayer
 import org.oscim.layers.vector.geometries.Style
 import org.oscim.theme.VtmThemes
-import org.oscim.theme.styles.TextStyle
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -39,7 +32,7 @@ import java.util.*
 class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private lateinit var ionavContainer: IonavContainer
 
-    private lateinit var indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport
+    private lateinit var indoorLayer: IonavIndoorLayer
 
     override val viewModel = MapViewViewModel()
 
@@ -341,23 +334,8 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         redrawMap()
     }
 
-    fun createIndoorLayer(data: VectorDataset): OSMIndoorLayerWithLevelMinusOneSupport {
-        val style = Carto.parse("""
-                |#way {  line-width: 2;  line-color: #000;  polygon-fill: #88777777;  }
-                |#states {  line-width: 2.2;  line-color: #000;  polygon-fill: #880000FF;  }""".trimMargin());
-
-
-        val textStyle = TextStyle.builder()
-            .isCaption(true)
-            .fontSize(16 * CanvasAdapter.getScale()).color(Color.BLACK)
-            .strokeWidth(2.2f * CanvasAdapter.getScale()).strokeColor(Color.WHITE)
-            .build()
-        indoorLayer = OSMIndoorLayerWithLevelMinusOneSupport(map(), data, style, textStyle)
-
-        viewModel.getSelectedLevelListPosition().observe( lifecycleOwner, Observer {
-            indoorLayer.activeLevel=viewModel.getSelectedLevel().toInt()
-            indoorLayer.update()
-        })
+    fun createIndoorLayer(): IonavIndoorLayer {
+        indoorLayer  = IonavIndoorLayer(map())
         map().layers().add(indoorLayer)
 
         redrawMap()
@@ -366,27 +344,4 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         return indoorLayer
     }
 
-    private fun shift(indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport) {
-        val context = context ?: return
-        if (!isVisible) {
-            return
-        }
-        map().postDelayed({
-            val al = indoorLayer.activeLevel
-            val nl = al + 1
-            indoorLayer.activeLevel = nl
-            indoorLayer.update()
-            redrawMap()
-            val millis = System.currentTimeMillis() % 1000
-            val msg = "Shifted active layer from $al to $nl. $millis"
-            logger.warn(msg)
-            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-            shift(indoorLayer)
-        }, 3000)
-
-    }
-
-    fun removeIndoorLayer(osmIndoorLayer: OSMIndoorLayer) {
-        map().layers().remove(osmIndoorLayer)
-    }
 }

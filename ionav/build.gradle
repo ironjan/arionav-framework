@@ -59,20 +59,21 @@ dependencies {
     implementation 'com.caverock:androidsvg:1.4'
     
     // indoor maps
-    api "org.mapsforge:vtm-jeo:$vtm_version"
-    implementation "org.mapsforge:vtm-jeo:$vtm_version"
-    implementation('org.jeo:jeo:0-SNAPSHOT') {
-        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
-    }
-    implementation('org.jeo:jeo-carto:0-SNAPSHOT') {
-        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
-    }
-    implementation('org.jeo:jeo-render:0-SNAPSHOT') {
-        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
-    }
-    implementation 'org.osgeo:proj4j:0.1.0:jeo'
-    implementation 'com.metaweb:lessen:1.0'
-    implementation 'com.vividsolutions:jts:1.13'
+// maven repository currently broken...
+//    api "org.mapsforge:vtm-jeo:$vtm_version"
+//    implementation "org.mapsforge:vtm-jeo:$vtm_version"
+//    implementation('org.jeo:jeo:0-SNAPSHOT') {
+//        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+//    }
+//    implementation('org.jeo:jeo-carto:0-SNAPSHOT') {
+//        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+//    }
+//    implementation('org.jeo:jeo-render:0-SNAPSHOT') {
+//        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+//    }
+//    implementation 'org.osgeo:proj4j:0.1.0:jeo'
+//    implementation 'com.metaweb:lessen:1.0'
+//    implementation 'com.vividsolutions:jts:1.13'
 
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha02"

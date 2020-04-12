@@ -13,9 +13,11 @@ import org.oscim.backend.canvas.Color
 import org.oscim.jeo.JeoUtils
 import org.oscim.layers.JeoVectorLayer
 import org.oscim.layers.vector.AbstractVectorLayer
+import org.oscim.layers.vector.geometries.Style
 import org.oscim.map.Map
 import org.oscim.renderer.bucket.TextBucket
 import org.oscim.renderer.bucket.TextItem
+import org.oscim.theme.rule.Rule
 import org.oscim.theme.styles.AreaStyle
 import org.oscim.theme.styles.LineStyle
 import org.oscim.theme.styles.TextStyle
