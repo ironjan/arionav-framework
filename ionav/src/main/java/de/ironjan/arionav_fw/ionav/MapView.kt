@@ -11,6 +11,7 @@ import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav_fw.ionav.mapview.IonavIndoorLayer
 import de.ironjan.arionav_fw.ionav.mapview.MapViewState
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
+import de.ironjan.arionav_fw.ionav.mapview.UserPositionLayer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics
@@ -46,7 +47,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private val endCoordinateMarker = R.drawable.marker_icon_red
     private val startCoordinateMarker = R.drawable.marker_icon_green
-    private val currentUserPositionMarker = R.drawable.marker_icon_blue
 
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
         viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, Observer {
@@ -62,7 +62,11 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         })
 
         viewModel.getUserPositionLiveData().observe(lifecycleOwner, Observer {
-            updateMarkerLayer(userPosLayer, it, currentUserPositionMarker)
+            if(it == null) {
+                map().layers().remove(userPositionLayer)
+            } else {
+                userPositionLayer?.setPosition(it.lat, it.lon, 1f)
+            }
         })
         viewModel.getMapCenterLiveData().observe(lifecycleOwner, Observer {
             if (viewModel.getFollowUserPositionLiveData().value == true
@@ -118,7 +122,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     private var startMarkerLayer: ItemizedLayer<MarkerItem>? = null
     private var endMarkerLayer: ItemizedLayer<MarkerItem>? = null
-    private var userPosLayer: ItemizedLayer<MarkerItem>? = null
+    private var userPositionLayer: UserPositionLayer? = null
 
     private val logger = LoggerFactory.getLogger(TAG)
 
@@ -174,8 +178,9 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         logger.debug("Added marker layer")
 
 
-        userPosLayer = ItemizedLayer(map(), null as MarkerSymbol?)
-        map().layers().add(userPosLayer)
+
+        userPositionLayer = UserPositionLayer(map())
+        map().layers().add(userPositionLayer)
         logger.debug("Added user position layer")
 
 
@@ -334,14 +339,6 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         redrawMap()
     }
 
-    fun createIndoorLayer(): IonavIndoorLayer {
-        indoorLayer  = IonavIndoorLayer(map())
-        map().layers().add(indoorLayer)
 
-        redrawMap()
-        logger.info("Added indoor layer")
-
-        return indoorLayer
-    }
 
 }
