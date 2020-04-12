@@ -17,18 +17,17 @@ import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
 import de.ironjan.arionav_fw.ionav.GhzExtractor
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
-import de.ironjan.arionav_fw.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSupport
+import de.ironjan.arionav_fw.ionav.mapview.IonavIndoorLayer
 import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
 import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
-import org.oscim.test.JeoTest
 import org.slf4j.LoggerFactory
 
 
 class MapFragment : Fragment() {
     private lateinit var instructionHelper: InstructionHelper
-    private lateinit var indoorLayer: OSMIndoorLayerWithLevelMinusOneSupport
+    private lateinit var indoorLayer: IonavIndoorLayer
 
     private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
 
@@ -256,12 +255,7 @@ class MapFragment : Fragment() {
 
 
     private fun loadAndShowIndoorData() {
-        context?.resources?.openRawResource(R.raw.overpass_response).use {
-            val data = JeoTest.readGeoJson(it)
-            indoorLayer = mapView.createIndoorLayer(data)
 
-            mapView.redrawMap()
-        }
     }
 
 

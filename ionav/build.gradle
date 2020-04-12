@@ -10,7 +10,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -59,27 +59,21 @@ dependencies {
     implementation 'com.caverock:androidsvg:1.4'
     
     // indoor maps
-    // my own fixes via jitpack:
-    api( 'com.github.ironjan.vtm:vtm-jeo:0.13.0-fix-vtm-jeo4')
-    implementation ('com.github.ironjan.vtm:vtm-jeo:0.13.0-fix-vtm-jeo4')
-//    broken maven repo:
+// maven repository currently broken...
 //    api "org.mapsforge:vtm-jeo:$vtm_version"
 //    implementation "org.mapsforge:vtm-jeo:$vtm_version"
-
-    // dependencies of the above
-
-//    implementation('com.github.ironjan.jeo:jeo:3b53c73cb9') {
+//    implementation('org.jeo:jeo:0-SNAPSHOT') {
 //        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
 //    }
-    implementation('com.github.ironjan.jeo:jeo-carto:3b53c73cb9') {
-        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
-    }
-//    implementation('com.github.ironjan.jeo:jeo-render:3b53c73cb9') {
+//    implementation('org.jeo:jeo-carto:0-SNAPSHOT') {
 //        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
 //    }
-    implementation 'org.osgeo:proj4j:0.1.0'
-    implementation 'com.metaweb:lessen:1.0'
-    implementation 'com.vividsolutions:jts:1.13'
+//    implementation('org.jeo:jeo-render:0-SNAPSHOT') {
+//        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+//    }
+//    implementation 'org.osgeo:proj4j:0.1.0:jeo'
+//    implementation 'com.metaweb:lessen:1.0'
+//    implementation 'com.vividsolutions:jts:1.13'
 
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha02"
