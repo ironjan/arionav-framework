@@ -10,4 +10,6 @@ class IndoorNode(
     val tags: Map<String, String>
 ) {
     fun toGeoPoint(): GeoPoint = GeoPoint(lat, lon)
+
+    val name = tags["name"] ?: ""
 }
