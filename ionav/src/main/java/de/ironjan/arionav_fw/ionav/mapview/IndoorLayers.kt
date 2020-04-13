@@ -1,6 +1,7 @@
 package de.ironjan.arionav_fw.ionav.mapview
 
 import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
+import org.oscim.layers.tile.vector.labeling.LabelLayer
 import org.oscim.layers.vector.VectorLayer
 import org.oscim.layers.vector.geometries.PolygonDrawable
 import org.oscim.layers.vector.geometries.RectangleDrawable
@@ -16,37 +17,21 @@ class IndoorLayers(private val map: Map, private val density: Float) {
     var indoorData = IndoorData(emptyMap(), emptyMap())
         set(value) {
             field = value
-            val prepareLayers = prepareLayers(value)
-            levelsToLayers = prepareLayers
+            val prepareDrawableLayers = prepareDrawableLayers(value)
+            levelsToDrawableLayers = prepareDrawableLayers
             replaceMapLayers(selectedLevel, selectedLevel)
         }
 
-    private var levelsToLayers: kotlin.collections.Map<Double, VectorLayer> = prepareLayers(indoorData)
+    private var levelsToDrawableLayers = prepareDrawableLayers(indoorData)
+    private var levelsToLabelLayers = prepareLabelLayers(indoorData)
 
-    private fun prepareLayers(id: IndoorData): kotlin.collections.Map<Double, VectorLayer> {
+    private fun prepareDrawableLayers(id: IndoorData): kotlin.collections.Map<Double, VectorLayer> {
         return id.levels.map {
-            Pair(it, prepareLayer(id, it))
+            Pair(it, prepareDrawableLayer(id, it))
         }.toMap()
     }
 
-    var selectedLevel: Double = 0.0
-        set(value) {
-            if (value == field) return
-
-            replaceMapLayers(field, value)
-
-            field = value
-        }
-
-    private fun replaceMapLayers(oldLevel: Double, newLevel: Double) {
-        val oldLayer = levelsToLayers[oldLevel]
-        val newLayer = levelsToLayers[newLevel]
-
-        map.layers().remove(oldLayer)
-        map.layers().add(newLayer)
-    }
-
-    private fun prepareLayer(id: IndoorData, level: Double): VectorLayer {
+    private fun prepareDrawableLayer(id: IndoorData, level: Double): VectorLayer {
         val nodeDrawables = id.getNodes(level).map {
             RectangleDrawable(it.toGeoPoint(), it.toGeoPoint())
         }
@@ -82,6 +67,34 @@ class IndoorLayers(private val map: Map, private val density: Float) {
         drawables.map { levelLayer.add(it) }
 
         return levelLayer
+    }
+
+    private fun prepareLabelLayers(id: IndoorData): kotlin.collections.Map<Double, LabelLayer?> {
+        return id.levels.map {
+          Pair(it,  prepareLabelLayer(id, it))
+        }.toMap()
+    }
+
+    private fun prepareLabelLayer(id: IndoorData, level: Double): LabelLayer? {
+// FIXME
+        return null
+    }
+
+    var selectedLevel: Double = 0.0
+        set(value) {
+            if (value == field) return
+
+            replaceMapLayers(field, value)
+
+            field = value
+        }
+
+    private fun replaceMapLayers(oldLevel: Double, newLevel: Double) {
+        val oldLayer = levelsToDrawableLayers[oldLevel]
+        val newLayer = levelsToDrawableLayers[newLevel]
+
+        map.layers().remove(oldLayer)
+        map.layers().add(newLayer)
     }
 
 
