@@ -1,6 +1,5 @@
 package de.ironjan.arionav_fw.sample
 
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,10 +17,7 @@ import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
 import de.ironjan.arionav_fw.ionav.GhzExtractor
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
-import de.ironjan.arionav_fw.ionav.mapview.IndoorLayer
 import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
-import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
-import de.ironjan.arionav_fw.ionav.routing.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -92,7 +88,6 @@ class MapFragment : Fragment() {
 
         }
 
-        loadAndShowIndoorData()
     }
 
     override fun onResume() {
@@ -253,34 +248,7 @@ class MapFragment : Fragment() {
     }
 
 
-    private fun loadAndShowIndoorData() {
 
-        val osmFilePath = when (val ionavHolder = activity?.application) {
-            is IonavContainerHolder -> ionavHolder.ionavContainer.osmFilePath
-            else -> null
-        } ?: return
-
-
-        val callback = object : IndoorMapDataLoadingTask.OnIndoorMapDataLoaded {
-            override fun loadCompleted(indoorData: IndoorData) {
-                showIndoorMapData(indoorData)
-            }
-
-        }
-
-        IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-
-
-    }
-
-    private fun showIndoorMapData(indoorData: IndoorData) {
-        logger.info("Completed loading of indoor map data: ${indoorData.indoorWays.count()} ways and ${indoorData.indoorNodes.count()} nodes.")
-        val map = mapView.map()
-        val selectedLevel = viewModel.getSelectedLevel()
-        val indoorLayer = IndoorLayer(map, indoorData, selectedLevel, resources.displayMetrics.density)
-        map.layers().add(indoorLayer)
-
-    }
 
 
 }

@@ -1,6 +1,7 @@
 package de.ironjan.arionav_fw.ionav
 
 import android.content.Context
+import android.os.AsyncTask
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
@@ -12,6 +13,8 @@ import de.ironjan.arionav_fw.ionav.mapview.IndoorLayer
 import de.ironjan.arionav_fw.ionav.mapview.MapViewState
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
 import de.ironjan.arionav_fw.ionav.mapview.UserPositionLayer
+import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
+import de.ironjan.arionav_fw.ionav.routing.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics
@@ -44,6 +47,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         observeLiveData(lifecycleOwner)
         this.lifecycleOwner=lifecycleOwner
     }
+
 
     private val endCoordinateMarker = R.drawable.marker_icon_red
     private val startCoordinateMarker = R.drawable.marker_icon_green
@@ -131,27 +135,9 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         viewModel.initialize(ionavContainer)
         loadMap()
         loadGraphStorage()
+        loadAndShowIndoorData()
     }
 
-
-    private fun loadGraphStorage() {
-        logger.debug("loading graphstorage..")
-        val loadGraphTask = LoadGraphTask(ionavContainer.mapFolder, object : LoadGraphTask.Callback {
-            override fun onSuccess(graphHopper: GraphHopper) {
-                logger.debug("Completed loading graph.")
-                // FIXME workaround!
-                viewModel.computeRoute()
-                isInitialized = true
-            }
-
-            override fun onError(exception: Exception) {
-                logger.error("Error when loading graph: $exception")
-                // FIXME show error
-            }
-
-        })
-        loadGraphTask.execute()
-    }
 
     private fun loadMap() {
         logger.debug("Loading map for map view")
@@ -189,6 +175,46 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         val zoom = (1 shl 19).toDouble()
         map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
         logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
+    }
+
+    private fun loadGraphStorage() {
+        logger.debug("loading graphstorage..")
+        val loadGraphTask = LoadGraphTask(ionavContainer.mapFolder, object : LoadGraphTask.Callback {
+            override fun onSuccess(graphHopper: GraphHopper) {
+                logger.debug("Completed loading graph.")
+                // FIXME workaround!
+                viewModel.computeRoute()
+                isInitialized = true
+            }
+
+            override fun onError(exception: Exception) {
+                logger.error("Error when loading graph: $exception")
+                // FIXME show error
+            }
+
+        })
+        loadGraphTask.execute()
+    }
+
+    private fun loadAndShowIndoorData() {
+        val callback = object : IndoorMapDataLoadingTask.OnIndoorMapDataLoaded {
+            override fun loadCompleted(indoorData: IndoorData) {
+                showIndoorMapData(indoorData)
+            }
+
+        }
+
+        IndoorMapDataLoadingTask(ionavContainer.osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+
+
+    }
+
+    private fun showIndoorMapData(indoorData: IndoorData) {
+        logger.info("Completed loading of indoor map data: ${indoorData.indoorWays.count()} ways and ${indoorData.indoorNodes.count()} nodes.")
+        val map = map()
+        val selectedLevel = viewModel.getSelectedLevel()
+        val indoorLayer = IndoorLayer(map, indoorData, selectedLevel, resources.displayMetrics.density)
+        map.layers().add(indoorLayer)
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
