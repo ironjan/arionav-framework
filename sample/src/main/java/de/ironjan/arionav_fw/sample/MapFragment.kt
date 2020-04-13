@@ -25,9 +25,6 @@ import de.ironjan.arionav_fw.ionav.routing.model.readers.IndoorMapDataLoadingTas
 import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
-import org.oscim.layers.vector.geometries.PolygonDrawable
-import org.oscim.layers.vector.geometries.RectangleDrawable
-import org.oscim.layers.vector.geometries.Style
 import org.slf4j.LoggerFactory
 
 
@@ -205,7 +202,7 @@ class MapFragment : Fragment() {
             buttonRemainingRoute.isChecked = it
         })
         viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
-            if(viewModel.getShowRemainingRouteCurrentValue()) {
+            if (viewModel.getShowRemainingRouteCurrentValue()) {
                 val instructions = it?.instructions?.take(2) ?: return@Observer
 
                 val currentInstruction = instructions.first()
@@ -283,41 +280,8 @@ class MapFragment : Fragment() {
         logger.info("Completed loading of indoor map data: ${indoorData.indoorWays.count()} ways and ${indoorData.indoorNodes.count()} nodes.")
         val map = mapView.map()
         val selectedLevel = viewModel.getSelectedLevel()
-        val indoorLayer = IndoorLayer(map, indoorData, selectedLevel)
+        val indoorLayer = IndoorLayer(map, indoorData, selectedLevel, resources.displayMetrics.density)
         map.layers().add(indoorLayer)
-
-        indoorData.getNodes(selectedLevel).map {
-            val geometry = RectangleDrawable(it.toGeoPoint(), it.toGeoPoint())
-            indoorLayer.add(geometry)
-        }
-
-        val roomStyle = Style.builder()
-            .fixed(true)
-            .generalization(Style.GENERALIZATION_SMALL)
-            .strokeColor(-0x660033ff)
-            .fillColor(-0x660033ff)
-            .strokeWidth(1 * resources.displayMetrics.density)
-            .build()
-        val otherStyle = Style.builder()
-            .fixed(true)
-            .generalization(Style.GENERALIZATION_SMALL)
-            .strokeColor(-0x66ff33ff)
-            .fillColor(-0x22ff33ff)
-            .strokeWidth(1 * resources.displayMetrics.density)
-            .build()
-        indoorData.getWays(selectedLevel).map { iw ->
-            try {
-                val map1 = iw.nodeRefs.map { it.toGeoPoint() }
-                val geometry = PolygonDrawable(map1)
-                geometry.style = when (iw.type) {
-                    "room" -> roomStyle
-                    else -> otherStyle
-                }
-                indoorLayer.add(geometry)
-            } catch (e: Exception) {
-                val y = e
-            }
-        }
 
     }
 
