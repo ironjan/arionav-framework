@@ -72,6 +72,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
                 userPositionLayer?.setPosition(it.lat, it.lon, 1f)
             }
         })
+
         viewModel.getMapCenterLiveData().observe(lifecycleOwner, Observer {
             if (viewModel.getFollowUserPositionLiveData().value == true
                 && it != null
@@ -79,6 +80,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
                 centerOn(it)
             }
         })
+
         viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
             if (!it) return@Observer
 
@@ -213,8 +215,13 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         logger.info("Completed loading of indoor map data: ${indoorData.indoorWays.count()} ways and ${indoorData.indoorNodes.count()} nodes.")
         val map = map()
         val selectedLevel = viewModel.getSelectedLevel()
-        val indoorLayer = IndoorLayer(map, indoorData, selectedLevel, resources.displayMetrics.density)
+        indoorLayer = IndoorLayer(map, indoorData, selectedLevel, resources.displayMetrics.density)
         map.layers().add(indoorLayer)
+
+        // start observing after initialization
+        viewModel.getSelectedLevelListPosition().observe(lifecycleOwner, Observer {
+            indoorLayer.selectedLevel = viewModel.getSelectedLevel()
+        })
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {

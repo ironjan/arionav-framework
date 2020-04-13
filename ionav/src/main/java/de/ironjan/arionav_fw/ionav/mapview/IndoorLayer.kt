@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
 /** Inspired by <a href="https://github.com/mapsforge/vtm/blob/master/vtm-jeo/src/org/oscim/layers/OSMIndoorLayer.java">OSMIndoorLayer</a>
  * in mapsforge:vtm-jeo
  */
-class IndoorLayer(private val map: Map, private val indoorData: IndoorData, private val initialLevel: Double, private val density: Float) : VectorLayer(map) {
+class IndoorLayer(private val map: Map, private var indoorData: IndoorData, private val initialLevel: Double, private val density: Float) : VectorLayer(map) {
 
     private var mCurrentDrawables: MutableList<JtsDrawable> = mutableListOf()
 
