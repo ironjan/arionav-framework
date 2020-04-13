@@ -9,7 +9,7 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import javax.inject.Inject
 
 @Module
-class ImprovedPoiReader @Inject constructor()  : OsmReader<NamedPlace>(
+class ImprovedPoiConverter @Inject constructor()  : OsmConverter<NamedPlace>(
     noWaysFilter,
     poiNodeFilter,
     converter

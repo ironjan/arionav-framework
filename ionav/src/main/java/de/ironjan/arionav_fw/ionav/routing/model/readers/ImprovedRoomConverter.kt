@@ -10,14 +10,14 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 @Module
-class ImprovedRoomReader  @Inject constructor() : OsmReader<NamedPlace>(
+class ImprovedRoomConverter  @Inject constructor() : OsmConverter<NamedPlace>(
     isNamedRoomFilter,
     allNodeFilter,
     osmToRoomConverter
 ) {
 
     companion object {
-        private val logger = LoggerFactory.getLogger(ImprovedPoiReader::class.java.simpleName)
+        private val logger = LoggerFactory.getLogger(ImprovedPoiConverter::class.java.simpleName)
         private val allNodeFilter = { n: Node -> true }
         private val isNamedRoomFilter = { w: Way ->
             val isRoom =
