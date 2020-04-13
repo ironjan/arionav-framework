@@ -62,11 +62,13 @@ class IndoorDataReader : OsmReader() {
         val indoorWaysByLevel = ways.map {
             val lvl = it.tags["level"]?.toDoubleOrNull() ?: 0.0
             val nodeRefs = it.nodeRefs.map { nr -> indoorNodes.find { n -> n.id == nr } }.filterNotNull()
-            val type = it.tags["indoor"] ?: ""
-            IndoorWay(it.id, lvl, type, nodeRefs, it.tags)
+            IndoorWay(it.id, lvl, nodeRefs, it.tags)
         }.groupBy { it.lvl }
 
         val indoorNodesByLevel = indoorNodes.groupBy { it.lvl }
+
+        val indoorWaysByLevelCount = indoorNodesByLevel.map { Pair(it.key ,it.value.count()) }.sortedBy { it.first }.joinToString( ", ")
+        logger.info("Ways per level: $indoorWaysByLevelCount")
 
         return IndoorData(indoorWaysByLevel, indoorNodesByLevel)
     }
