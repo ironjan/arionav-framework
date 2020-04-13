@@ -10,7 +10,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -49,28 +49,35 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
 
 
-    api "org.mapsforge:vtm-android:$vtm_version"
-    api "org.mapsforge:vtm-android:$vtm_version:natives-armeabi-v7a"
-    api "org.mapsforge:vtm-android:$vtm_version:natives-arm64-v8a"
-    api "org.mapsforge:vtm-android:$vtm_version:natives-x86"
-    api "org.mapsforge:vtm-android:$vtm_version:natives-x86_64"
-    api "org.mapsforge:vtm-jts:$vtm_version"
-    api "org.mapsforge:vtm-themes:$vtm_version"
+    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4"
+    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4:natives-armeabi-v7a"
+    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4:natives-arm64-v8a"
+    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4:natives-x86"
+    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4:natives-x86_64"
+    api "com.github.ironjan.vtm:vtm-jts:0.13.0-fix-vtm-jeo4"
+    api "com.github.ironjan.vtm:vtm-themes:0.13.0-fix-vtm-jeo4"
     implementation 'com.caverock:androidsvg:1.4'
     
     // indoor maps
-    api "org.mapsforge:vtm-jeo:$vtm_version"
-    implementation "org.mapsforge:vtm-jeo:$vtm_version"
-    implementation('org.jeo:jeo:0-SNAPSHOT') {
+    // my own fixes via jitpack:
+    api( 'com.github.ironjan.vtm:vtm-jeo:0.13.0-fix-vtm-jeo4')
+    implementation ('com.github.ironjan.vtm:vtm-jeo:0.13.0-fix-vtm-jeo4')
+//    broken maven repo:
+//    api "org.mapsforge:vtm-jeo:$vtm_version"
+//    implementation "org.mapsforge:vtm-jeo:$vtm_version"
+
+    // dependencies of the above
+
+//    implementation('com.github.ironjan.jeo:jeo:3b53c73cb9') {
+//        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+//    }
+    implementation('com.github.ironjan.jeo:jeo-carto:3b53c73cb9') {
         exclude group: 'org.slf4j', module: 'slf4j-jdk14'
     }
-    implementation('org.jeo:jeo-carto:0-SNAPSHOT') {
-        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
-    }
-    implementation('org.jeo:jeo-render:0-SNAPSHOT') {
-        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
-    }
-    implementation 'org.osgeo:proj4j:0.1.0:jeo'
+//    implementation('com.github.ironjan.jeo:jeo-render:3b53c73cb9') {
+//        exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+//    }
+    implementation 'org.osgeo:proj4j:0.1.0'
     implementation 'com.metaweb:lessen:1.0'
     implementation 'com.vividsolutions:jts:1.13'
 

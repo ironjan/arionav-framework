@@ -28,12 +28,12 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url 'https://repo.boundlessgeo.com/main/' }
         google()
+        maven { url 'https://repo.osgeo.org/repository/release/' }
         jcenter()
-        mavenLocal()
-        maven { url 'https://jitpack.io' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url "https://dl.bintray.com/arrow-kt/arrow-kt/" }
+        maven { url 'https://jitpack.io' }
     }
 
     configurations.all {
