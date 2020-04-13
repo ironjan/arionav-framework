@@ -1,5 +1,6 @@
 package de.ironjan.arionav_fw.sample
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,17 +18,21 @@ import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
 import de.ironjan.arionav_fw.ionav.GhzExtractor
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
-import de.ironjan.arionav_fw.ionav.mapview.IonavIndoorLayer
+import de.ironjan.arionav_fw.ionav.mapview.IndoorLayer
 import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
+import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
+import de.ironjan.arionav_fw.ionav.routing.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
+import org.oscim.layers.vector.geometries.PolygonDrawable
+import org.oscim.layers.vector.geometries.RectangleDrawable
+import org.oscim.layers.vector.geometries.Style
 import org.slf4j.LoggerFactory
 
 
 class MapFragment : Fragment() {
     private lateinit var instructionHelper: InstructionHelper
-    private lateinit var indoorLayer: IonavIndoorLayer
 
     private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
 
@@ -120,7 +125,7 @@ class MapFragment : Fragment() {
         endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, suggestionsList)
         edit_end_coordinates.setAdapter(endSuggestionsAdapter)
 
-        when(val application = activity?.application) {
+        when (val application = activity?.application) {
             is ArionavSampleApplication -> {
                 placesLiveData = application.sampleAppContainer.namedPlaceRepository
                     .getPlaces(application.ionavContainer.osmFilePath)
@@ -255,6 +260,64 @@ class MapFragment : Fragment() {
 
 
     private fun loadAndShowIndoorData() {
+
+        val osmFilePath = when (val ionavHolder = activity?.application) {
+            is IonavContainerHolder -> ionavHolder.ionavContainer.osmFilePath
+            else -> null
+        } ?: return
+
+
+        val callback = object : IndoorMapDataLoadingTask.OnIndoorMapDataLoaded {
+            override fun loadCompleted(indoorData: IndoorData) {
+                showIndoorMapData(indoorData)
+            }
+
+        }
+
+        IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+
+
+    }
+
+    private fun showIndoorMapData(indoorData: IndoorData) {
+        logger.info("Completed loading of indoor map data: ${indoorData.indoorWays.count()} ways and ${indoorData.indoorNodes.count()} nodes.")
+        val map = mapView.map()
+        val selectedLevel = viewModel.getSelectedLevel()
+        val indoorLayer = IndoorLayer(map, indoorData, selectedLevel)
+        map.layers().add(indoorLayer)
+
+        indoorData.getNodes(selectedLevel).map {
+            val geometry = RectangleDrawable(it.toGeoPoint(), it.toGeoPoint())
+            indoorLayer.add(geometry)
+        }
+
+        val roomStyle = Style.builder()
+            .fixed(true)
+            .generalization(Style.GENERALIZATION_SMALL)
+            .strokeColor(-0x660033ff)
+            .fillColor(-0x660033ff)
+            .strokeWidth(1 * resources.displayMetrics.density)
+            .build()
+        val otherStyle = Style.builder()
+            .fixed(true)
+            .generalization(Style.GENERALIZATION_SMALL)
+            .strokeColor(-0x66ff33ff)
+            .fillColor(-0x22ff33ff)
+            .strokeWidth(1 * resources.displayMetrics.density)
+            .build()
+        indoorData.getWays(selectedLevel).map { iw ->
+            try {
+                val map1 = iw.nodeRefs.map { it.toGeoPoint() }
+                val geometry = PolygonDrawable(map1)
+                geometry.style = when (iw.type) {
+                    "room" -> roomStyle
+                    else -> otherStyle
+                }
+                indoorLayer.add(geometry)
+            } catch (e: Exception) {
+                val y = e
+            }
+        }
 
     }
 

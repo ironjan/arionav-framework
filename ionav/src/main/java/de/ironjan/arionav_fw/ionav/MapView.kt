@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
-import de.ironjan.arionav_fw.ionav.mapview.IonavIndoorLayer
+import de.ironjan.arionav_fw.ionav.mapview.IndoorLayer
 import de.ironjan.arionav_fw.ionav.mapview.MapViewState
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
 import de.ironjan.arionav_fw.ionav.mapview.UserPositionLayer
@@ -33,7 +33,7 @@ import java.util.*
 class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private lateinit var ionavContainer: IonavContainer
 
-    private lateinit var indoorLayer: IonavIndoorLayer
+    private lateinit var indoorLayer: IndoorLayer
 
     override val viewModel = MapViewViewModel()
 
