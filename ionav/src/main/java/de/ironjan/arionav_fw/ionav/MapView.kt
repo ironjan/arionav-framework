@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
-import de.ironjan.arionav_fw.ionav.mapview.IndoorLayer
+import de.ironjan.arionav_fw.ionav.mapview.IndoorLayers
 import de.ironjan.arionav_fw.ionav.mapview.MapViewState
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
 import de.ironjan.arionav_fw.ionav.mapview.UserPositionLayer
@@ -36,7 +36,7 @@ import java.util.*
 class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private lateinit var ionavContainer: IonavContainer
 
-    private lateinit var indoorLayer: IndoorLayer
+    private lateinit var indoorLayers: IndoorLayers
 
     override val viewModel = MapViewViewModel()
 
@@ -100,6 +100,10 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         })
         viewModel.getShowRemainingRouteLiveData().observe(lifecycleOwner, Observer {
             showRemainingRoute(null)
+        })
+
+        viewModel.getSelectedLevelListPosition().observe(lifecycleOwner, Observer {
+            indoorLayers.selectedLevel = viewModel.getSelectedLevel()
         })
 
     }
@@ -171,6 +175,9 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         map().layers().add(userPositionLayer)
         logger.debug("Added user position layer")
 
+        val map = map()
+        indoorLayers = IndoorLayers(map, resources.displayMetrics.density)
+
 
         // Map start position
         val mapCenter = GeoPoint(51.731938, 8.734518)
@@ -208,20 +215,14 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
         IndoorMapDataLoadingTask(ionavContainer.osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 
-
+        logger.info("Started loading of indoor map data.")
     }
 
     private fun showIndoorMapData(indoorData: IndoorData) {
-        logger.info("Completed loading of indoor map data: ${indoorData.indoorWays.count()} ways and ${indoorData.indoorNodes.count()} nodes.")
-        val map = map()
-        val selectedLevel = viewModel.getSelectedLevel()
-        indoorLayer = IndoorLayer(map, indoorData, selectedLevel, resources.displayMetrics.density)
-        map.layers().add(indoorLayer)
+        logger.info("Completed loading of indoor map.")
 
-        // start observing after initialization
-        viewModel.getSelectedLevelListPosition().observe(lifecycleOwner, Observer {
-            indoorLayer.selectedLevel = viewModel.getSelectedLevel()
-        })
+        indoorLayers.indoorData = indoorData
+        indoorLayers.selectedLevel = viewModel.getSelectedLevel()
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
