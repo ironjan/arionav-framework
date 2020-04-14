@@ -13,8 +13,8 @@ import de.ironjan.arionav_fw.ionav.mapview.MapViewState
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
 import de.ironjan.arionav_fw.ionav.mapview.OSMIndoorLayerWithLevelMinusOneSupport
 import de.ironjan.graphhopper.extensions_core.Coordinate
-import org.jeo.carto.Carto
-import org.jeo.vector.VectorDataset
+import io.jeo.carto.Carto
+import io.jeo.vector.VectorDataset
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics
 import org.oscim.backend.CanvasAdapter
