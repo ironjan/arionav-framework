@@ -7,6 +7,9 @@ data class IndoorWay(
     val tags: Map<String, String>
 ) {
 
+    val centerLat: Double = nodeRefs.map { it.lat }.sum() / nodeRefs.count()
+    val centerLon: Double = nodeRefs.map { it.lon }.sum() / nodeRefs.count()
+
     val type: String = tags["indoor"] ?: ""
     val name: String = tags["name"] ?: ""
 
