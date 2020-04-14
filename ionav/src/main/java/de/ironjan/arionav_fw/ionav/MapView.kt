@@ -55,12 +55,12 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
         viewModel.getStartCoordinateLifeData().observe(lifecycleOwner, Observer {
 
-            updateMarkerLayer(startMarkerLayer, it, startCoordinateMarker)
+            updateMarkerLayer(startMarkerLayer, it, startCoordinateMarker, "start")
             logger.info("Updated start coordinate in view to $it.")
         })
 
         viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
-            updateMarkerLayer(endMarkerLayer, it, endCoordinateMarker)
+            updateMarkerLayer(endMarkerLayer, it, endCoordinateMarker, "destination")
 
             logger.debug("Updated end coordinate in view to $it.")
         })
@@ -108,13 +108,18 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
     }
 
-    private fun updateMarkerLayer(layer: ItemizedLayer<MarkerItem>?, it: Coordinate?, marker: Int) {
+    private fun updateMarkerLayer(
+        layer: ItemizedLayer<MarkerItem>?,
+        it: Coordinate?,
+        marker: Int,
+        title: String = ""
+    ) {
         layer?.removeAllItems()
         redrawMap()
 
         if (it == null) return
 
-        layer?.addItem(createMarkerItem(it, marker))
+        layer?.addItem(createMarkerItem(it, marker, title))
         redrawMap()
     }
 
@@ -154,14 +159,10 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         val mapFilePath = ionavContainer.mapFilePath
         tileSource.setMapFile(mapFilePath)
         logger.debug("Set tile source to $mapFilePath")
-        val l = map().setBaseMap(tileSource)
+        val tileLayer = map().setBaseMap(tileSource)
         map().setTheme(VtmThemes.DEFAULT)
-        map().layers().add(BuildingLayer(map(), l))
+        map().layers().add(BuildingLayer(map(), tileLayer))
         logger.debug("Added building layer")
-
-//        val labelLayer = LabelLayer(map(), l)
-//        map().layers().add(labelLayer)
-//        logger.debug("Added label layer")
 
         startMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
         endMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
@@ -176,8 +177,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         logger.debug("Added user position layer")
 
         val map = map()
-        indoorLayers = IndoorLayers(map, resources.displayMetrics.density)
-
+        indoorLayers = IndoorLayers(map, tileLayer, resources.displayMetrics.density)
 
         // Map start position
         val mapCenter = GeoPoint(51.731938, 8.734518)
@@ -295,14 +295,15 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     }
 
 
-    private fun createMarkerItem(coordinate: Coordinate, resource: Int) = createMarkerItem(GeoPoint(coordinate.lat, coordinate.lon), resource)
-
-    private fun createMarkerItem(p: GeoPoint?, resource: Int): MarkerItem {
+    private fun createMarkerItem(coordinate: Coordinate, resource: Int, title: String = ""): MarkerItem {
         val drawable = resources.getDrawable(resource)
         val bitmap = AndroidGraphics.drawableToBitmap(drawable)
         val markerSymbol = MarkerSymbol(bitmap, 0.5f, 1f)
-        val markerItem = MarkerItem("", "", p)
+
+        val markerItem = MarkerItem(title, "description test", GeoPoint(coordinate.lat, coordinate.lon))
         markerItem.marker = markerSymbol
+
+
         return markerItem
     }
 
