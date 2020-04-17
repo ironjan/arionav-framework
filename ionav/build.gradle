@@ -49,13 +49,14 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
 
 
-    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4"
-    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4:natives-armeabi-v7a"
-    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4:natives-arm64-v8a"
-    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4:natives-x86"
-    api "com.github.ironjan.vtm:vtm-android:0.13.0-fix-vtm-jeo4:natives-x86_64"
-    api "com.github.ironjan.vtm:vtm-jts:0.13.0-fix-vtm-jeo4"
-    api "com.github.ironjan.vtm:vtm-themes:0.13.0-fix-vtm-jeo4"
+
+    api "org.mapsforge:vtm-android:$vtm_version"
+    api "org.mapsforge:vtm-android:$vtm_version:natives-armeabi-v7a"
+    api "org.mapsforge:vtm-android:$vtm_version:natives-arm64-v8a"
+    api "org.mapsforge:vtm-android:$vtm_version:natives-x86"
+    api "org.mapsforge:vtm-android:$vtm_version:natives-x86_64"
+    api "org.mapsforge:vtm-jts:$vtm_version"
+    api "org.mapsforge:vtm-themes:$vtm_version"
     implementation 'com.caverock:androidsvg:1.4'
     
     // indoor maps
