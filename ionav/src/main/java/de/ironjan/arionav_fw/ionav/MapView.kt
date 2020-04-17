@@ -223,6 +223,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
 
         indoorLayers.indoorData = indoorData
         indoorLayers.selectedLevel = viewModel.getSelectedLevel()
+        map().updateMap()
     }
 
     private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
