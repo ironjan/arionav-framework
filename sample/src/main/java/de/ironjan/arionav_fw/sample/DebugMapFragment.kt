@@ -15,7 +15,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
-import de.ironjan.arionav_fw.ionav.GhzExtractor
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
 import de.ironjan.arionav_fw.ionav.util.InstructionHelper
@@ -29,7 +28,6 @@ class DebugMapFragment : Fragment() {
 
     private val logger = LoggerFactory.getLogger(DebugMapFragment::class.java.simpleName)
 
-    private lateinit var ghzExtractor: GhzExtractor
     private val model: ArExtensionViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_map, container, false)
@@ -38,7 +36,7 @@ class DebugMapFragment : Fragment() {
         super.onCreate(savedInstanceState)
         // todo move to VM or below
         val context = context ?: return
-        ghzExtractor = GhzExtractor()
+
 
         instructionHelper = InstructionHelper(context)
 
