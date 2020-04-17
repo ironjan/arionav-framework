@@ -54,25 +54,6 @@ class MainActivity :
         nav_view.setupWithNavController(navController)
 
         nav_view.setNavigationItemSelectedListener { navigateOnMenuItem(it) }
-
-
-        val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
-
-        val gpsPositionProvider = GpsPositionProvider(this, lifecycle)
-        val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
-        val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
-
-        positioningService.removeProvider(GpsPositionProvider.GPS_PROVIDER_NAME)
-        positioningService.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
-        positioningService.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
-
-        positioningService.registerProvider(bluetoothProviderImplementation, false)
-        positioningService.registerProvider(wifiPositioningProvider, false)
-        positioningService.registerProvider(gpsPositionProvider, true)
-
-
-
-
     }
 
     private val bluetoothAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -110,8 +91,13 @@ class MainActivity :
     private fun navigateOnMenuItem(item: MenuItem): Boolean {
         main_drawer_layout.closeDrawers();
         // FIXME optimize: navigate only if destination!=location
+
         return when (item.itemId) {
-            R.id.mnuMap -> {
+            R.id.mnuSimpleMap -> {
+                navController.navigate(R.id.action_to_simple_map_nav_fragment)
+                true
+            }
+            R.id.mnuDebugMap -> {
                 navController.navigate(R.id.action_to_mapFragment)
                 true
             }
@@ -186,5 +172,26 @@ class MainActivity :
         }
     }
 
+    override fun permissionAlreadyGranted(requestCode: Int) {
+        super.permissionAlreadyGranted(requestCode)
+        when(requestCode) {
+            locationRequestCode -> initializePositioningService()
+        }
+    }
 
+    private fun initializePositioningService() {
+        val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
+
+        val gpsPositionProvider = GpsPositionProvider(this, lifecycle)
+        val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
+        val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
+
+        positioningService.removeProvider(GpsPositionProvider.GPS_PROVIDER_NAME)
+        positioningService.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
+        positioningService.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
+
+        positioningService.registerProvider(bluetoothProviderImplementation, false)
+        positioningService.registerProvider(wifiPositioningProvider, false)
+        positioningService.registerProvider(gpsPositionProvider, true)
+    }
 }

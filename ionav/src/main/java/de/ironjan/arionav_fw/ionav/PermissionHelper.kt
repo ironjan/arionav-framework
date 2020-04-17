@@ -37,7 +37,8 @@ class PermissionHelper private constructor() {
     }
 
     interface PermissionHelperCallback {
-        fun showRationale(requestCode: Int)
+        fun showRationale(requestCode: Int): Unit
+        fun permissionAlreadyGranted(requestCode: Int) {}
     }
 
 
