@@ -24,10 +24,10 @@ import kotlinx.android.synthetic.main.fragment_map.*
 import org.slf4j.LoggerFactory
 
 
-class MapFragment : Fragment() {
+class DebugMapFragment : Fragment() {
     private lateinit var instructionHelper: InstructionHelper
 
-    private val logger = LoggerFactory.getLogger(MapFragment::class.java.simpleName)
+    private val logger = LoggerFactory.getLogger(DebugMapFragment::class.java.simpleName)
 
     private lateinit var ghzExtractor: GhzExtractor
     private val model: ArExtensionViewModel by activityViewModels()

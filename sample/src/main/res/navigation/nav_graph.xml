@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="de.ironjan.arionav_fw.sample.MapFragment"
+        android:name="de.ironjan.arionav_fw.sample.DebugMapFragment"
         tools:layout="@layout/fragment_map"
         android:label="MapFragment" >
 
