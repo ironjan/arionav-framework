@@ -6,10 +6,14 @@
 <!--    <item android:id="@+id/settings"-->
 <!--        android:title="Settings"/>-->
     <group android:id="@+id/mnuGrpGeneral">
-        <item android:id="@+id/mnuMap"
-            android:title="Map View"/>
+        <item android:id="@+id/mnuSimpleMap"
+            android:title="Simple Map" />
         <item android:id="@+id/mnuPoiList"
             android:title="POIs/Rooms" />
+    </group>
+    <group android:id="@+id/mnuGrpGeneralDebug">
+        <item android:id="@+id/mnuDebugMap"
+            android:title="Debug Map View"/>
     </group>
     <group android:id="@+id/mnuGrpProviderDebug">
         <item android:id="@+id/mnuWifiAps"
