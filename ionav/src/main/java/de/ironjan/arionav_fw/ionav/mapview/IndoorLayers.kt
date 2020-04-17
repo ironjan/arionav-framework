@@ -15,6 +15,7 @@ import org.oscim.layers.vector.geometries.PolygonDrawable
 import org.oscim.layers.vector.geometries.RectangleDrawable
 import org.oscim.layers.vector.geometries.Style
 import org.oscim.map.Map
+import org.slf4j.LoggerFactory
 
 /**
  * Inspired by <a href="https://github.com/mapsforge/vtm/blob/master/vtm-jeo/src/org/oscim/layers/OSMIndoorLayer.java">OSMIndoorLayer</a>
@@ -96,16 +97,17 @@ class IndoorLayers(private val map: Map, private val tileLayer: VectorTileLayer,
         val nodeMarkers = id.getNodes(level).map {
             if(it.name.isNullOrEmpty()) return@map  null
 
-            val bitmap = CanvasAdapter.newBitmap((40 * CanvasAdapter.getScale()).toInt(), (40 * CanvasAdapter.getScale()).toInt(), 0)
+            val bitmap = CanvasAdapter.newBitmap((42 * CanvasAdapter.getScale()).toInt(), (42 * CanvasAdapter.getScale()).toInt(), 0)
             canvas.setBitmap(bitmap)
-            canvas.fillColor(Color.GREEN)
+            canvas.fillColor(Color.TRANSPARENT)
 
             canvas.drawText(it.name, 3 * CanvasAdapter.getScale(), 17 * CanvasAdapter.getScale(), paint)
 //            canvas.drawText(java.lang.Double.toString(lon), 3 * CanvasAdapter.getScale(), 35 * CanvasAdapter.getScale(), paint)
 
             val markerItem = MarkerItem(it.name, "description test", GeoPoint(it.lat, it.lon))
-            val markerSymbol = MarkerSymbol(bitmap, 0.5f, 1f)
+            val markerSymbol = MarkerSymbol(bitmap, 0f, 1f)
             markerItem.marker = markerSymbol
+
 
             markerItem
         }
@@ -115,7 +117,7 @@ class IndoorLayers(private val map: Map, private val tileLayer: VectorTileLayer,
 
             val bitmap = CanvasAdapter.newBitmap((42 * CanvasAdapter.getScale()).toInt(), (20 * CanvasAdapter.getScale()).toInt(), 0)
             canvas.setBitmap(bitmap)
-            canvas.fillColor(Color.TRANSPARENT)
+            canvas.fillColor(Color.GREEN)
 
             canvas.drawText(it.name, 3 * CanvasAdapter.getScale(), 17 * CanvasAdapter.getScale(), paint)
 
@@ -131,6 +133,24 @@ class IndoorLayers(private val map: Map, private val tileLayer: VectorTileLayer,
 
 
         labelLayer.addItems(markers)
+
+
+        val listener = object : ItemizedLayer.OnItemGestureListener<MarkerItem> {
+            override fun onItemLongPress(index: Int, item: MarkerItem?): Boolean {
+                if(item == null) return true
+                LoggerFactory.getLogger(IndoorLayers::class.simpleName).info("long press on ${item.title}")
+                return true
+            }
+
+            override fun onItemSingleTapUp(index: Int, item: MarkerItem?): Boolean {
+                if(item == null) return true
+                LoggerFactory.getLogger(IndoorLayers::class.simpleName).info("single tap on ${item.title}")
+                return true
+            }
+
+        }
+        labelLayer.setOnItemGestureListener(listener)
+
 
         return labelLayer
     }
