@@ -16,6 +16,7 @@ class PermissionHelper private constructor() {
                 where T : Activity, T : PermissionHelperCallback {
             if (isPermissionGranted(activity,permission)) {
                 logger.debug("Location permissions are already granted.")
+                activity.permissionAlreadyGranted(requestCode)
             } else {
                 if (shouldShowRequestPermissionRationale(activity,permission)) {
                     logger.info("Displaying fine location permission rationale to provide additional context.")

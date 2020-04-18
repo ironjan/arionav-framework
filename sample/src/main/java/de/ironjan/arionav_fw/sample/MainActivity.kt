@@ -168,6 +168,7 @@ class MainActivity :
                 if (grantResults.any { it == PERMISSION_DENIED }) {
                     showPermissionRational(R.string.permission_fine_location_rationale, ACCESS_FINE_LOCATION, locationRequestCode)
                 }
+                initializePositioningService()
             }
         }
     }

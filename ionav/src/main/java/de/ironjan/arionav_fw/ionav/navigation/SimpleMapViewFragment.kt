@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
@@ -27,14 +28,8 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
             Snackbar.LENGTH_LONG
         ).show()
 
-        btnCenterOnUser.setOnClickListener {
-
-            Snackbar.make(
-                btnCenterOnUser,
-                "Searching Pla2ne",
-                Snackbar.LENGTH_LONG
-            ).show()
-        }
+        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+        mapView.onLifecycleOwnerAttached(lifecycleOwner)
         mapView.initialize((activity?.application as IonavContainerHolder).ionavContainer)
 
 

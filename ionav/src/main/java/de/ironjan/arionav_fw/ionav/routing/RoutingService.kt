@@ -23,13 +23,6 @@ class RoutingService {
         null
     }
 
-    fun route(fromLat: Double, fromLon: Double, fromLvl: Double, toLat: Double, toLon: Double, toLvl: Double): PathWrapper? = try {
-        routing.route(fromLat, fromLon, fromLvl, toLat, toLon, toLvl)
-    } catch (e: java.lang.Exception) {
-        logger.error("Could not compute route.", e)
-        null
-    }
-
     fun init(mapFolder: String) {
         val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
@@ -43,7 +36,6 @@ class RoutingService {
                 logger.error("Error when loading graph: $exception")
                 // FIXME show error
             }
-
         })
         loadGraphTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }

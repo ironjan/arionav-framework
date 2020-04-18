@@ -21,6 +21,9 @@ class NavigationService(
         }
     }
 
+    val initialized: Boolean
+        get() = routingService.initialized
+
     private var _destination: Coordinate? = null
     var destination
         get() = _destination

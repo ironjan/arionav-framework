@@ -128,7 +128,8 @@ class IndoorLayers(private val map: Map, private val tileLayer: VectorTileLayer,
             markerItem
         }
 
-        val markers = nodeMarkers.union(wayMarkers)
+        val markers = wayMarkers
+//            .union(nodeMarkers)
             .filterNotNull()
 
 

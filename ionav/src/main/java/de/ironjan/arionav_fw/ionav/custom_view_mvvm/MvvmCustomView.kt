@@ -8,3 +8,4 @@ interface MvvmCustomView<V: MvvmCustomViewState, T: MvvmCustomViewModel<V>> {
 
     fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner)
 }
+
