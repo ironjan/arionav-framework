@@ -280,7 +280,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         logger.warn("Updated displayed route to $points")
     }
 
-    fun redrawMap() = map().updateMap(true)
+    private fun redrawMap() = map().updateMap(true)
 
 
     fun centerOn(coordinate: Coordinate) {
