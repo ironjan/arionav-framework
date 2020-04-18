@@ -24,7 +24,9 @@ class MapViewViewModel : ViewModel(), MvvmCustomViewModel<MapViewState> {
         routingService = ionavContainer.routingService
         positioningService = ionavContainer.positioningService
         navigationService = ionavContainer.navigationService
-        navigationService.registerObserver(object:NavigationService.RemainingRouteObserver{
+        navigationService.registerObserver(object:NavigationService.NavigationServiceObserver{
+            override fun update(destination: Coordinate?) = setEndCoordinate(destination)
+
             override fun update(remainingRoute: PathWrapper?) {
                 if(showRemainingRoute.value == true) {
                     this@MapViewViewModel.remainingRoute.value = remainingRoute

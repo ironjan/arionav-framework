@@ -4,6 +4,9 @@ import android.content.Context
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
+import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedPoiConverter
+import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedRoomConverter
+import de.ironjan.arionav_fw.ionav.routing.repository.NamedPlaceRepository
 import java.io.File
 
 /**
@@ -19,4 +22,9 @@ class IonavContainer(private val context: Context, val mapName: String, val resI
     val positioningService = PositioningService()
     val routingService = RoutingService()
     val navigationService = NavigationService(positioningService, routingService)
+
+
+    private val roomReader = ImprovedRoomConverter()
+    private val poiReader = ImprovedPoiConverter()
+    val namedPlaceRepository = NamedPlaceRepository(roomReader, poiReader)
 }

@@ -29,6 +29,7 @@ import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 
 class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapViewViewModel> {
+
     // region map layers
     private lateinit var indoorLayers: IndoorLayers
     private lateinit var buildingLayer: BuildingLayer
@@ -51,6 +52,11 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     }
     // endregion
 
+    var itemTapCallback: IndoorItemTapCallback
+        get() = if (::indoorLayers.isInitialized) indoorLayers.itemTapCallback else IndoorLayers.defaultTapCallback
+        set(value) {
+            indoorLayers.itemTapCallback = value
+        }
 
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
 
@@ -81,8 +87,8 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
             showRemainingRoute(it)
         })
 
-        viewModel.getSelectedLevelListPosition().observe(lifecycleOwner, Observer {
-            indoorLayers.selectedLevel = viewModel.getSelectedLevel()
+        viewModel.selectedLevel.observe(lifecycleOwner, Observer {
+            indoorLayers.selectedLevel = it.toDouble()
         })
 
     }
@@ -146,7 +152,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     }
 
     private fun createAndAddLayers(tileLayer: VectorTileLayer) {
-        indoorLayers = IndoorLayers(map(), tileLayer, resources.displayMetrics.density)
+        indoorLayers = IndoorLayers(map(), resources.displayMetrics.density)
 
 
         buildingLayer = BuildingLayer(map(), tileLayer)
@@ -181,7 +187,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         logger.info("Completed loading of indoor map.")
 
         indoorLayers.indoorData = indoorData
-        indoorLayers.selectedLevel = viewModel.getSelectedLevel()
+        indoorLayers.selectedLevel = (viewModel.selectedLevel.value ?: 0).toDouble()
         map().updateMap()
     }
 
@@ -232,7 +238,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         if (viewModel.isRoutingInitialized) {
             val selectedLevel = viewModel.getSelectedLevel()
 
-            viewModel.setDestination(Coordinate(p.latitude, p.longitude, selectedLevel))
+            viewModel.setDestination(Coordinate(p.latitude, p.longitude, selectedLevel.toDouble()))
             return true
         }
 
@@ -280,7 +286,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         logger.warn("Updated displayed route to $points")
     }
 
-    private fun redrawMap() = map().updateMap(true)
+    fun redrawMap() = map().updateMap(true)
 
 
     fun centerOn(coordinate: Coordinate) {

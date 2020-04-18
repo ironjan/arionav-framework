@@ -177,7 +177,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         logger.debug("Added user position layer")
 
         val map = map()
-        indoorLayers = IndoorLayers(map, tileLayer, resources.displayMetrics.density)
+        indoorLayers = IndoorLayers(map, resources.displayMetrics.density)
 
         // Map start position
         val mapCenter = GeoPoint(51.731938, 8.734518)

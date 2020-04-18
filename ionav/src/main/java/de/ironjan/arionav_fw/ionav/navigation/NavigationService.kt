@@ -36,6 +36,7 @@ class NavigationService(
                 positioningService.removeObserver(positionObserver)
             }
 
+            notifyObserversWithDestinationUpdate()
             recomputeRemainingRoute()
         }
 
@@ -61,16 +62,16 @@ class NavigationService(
 
 
         remainingRoute = routingService.route(lastKnownPositionCoordinates, destination)
-        notifyObservers()
+        notifyObserversWithRouteUpdate()
     }
 
-    private val _observers = mutableListOf<RemainingRouteObserver>()
+    private val _observers = mutableListOf<NavigationServiceObserver>()
 
     /**
      * Registers a new observer. Will do nothing if the observer is already registered.
      * @param observer the new observer
      */
-    fun registerObserver(observer: RemainingRouteObserver) {
+    fun registerObserver(observer: NavigationServiceObserver) {
         if (_observers.contains(observer)) return
         _observers.add(observer)
     }
@@ -78,12 +79,15 @@ class NavigationService(
     /**
      * Removes a currently known observer. Will do nothing if the observer is not registered.
      */
-    fun removeObserver(observer: RemainingRouteObserver) {
+    fun removeObserver(observer: NavigationServiceObserver) {
         _observers.remove(observer)
     }
 
-    fun notifyObservers() {
+    private fun notifyObserversWithRouteUpdate() {
         _observers.forEach { it.update(remainingRoute) }
+    }
+    private fun notifyObserversWithDestinationUpdate() {
+        _observers.forEach { it.update(destination) }
     }
 
     init {
@@ -94,7 +98,8 @@ class NavigationService(
         const val TAG = "NavigationService"
     }
 
-    interface RemainingRouteObserver {
+    interface NavigationServiceObserver {
         fun update(remainingRoute: PathWrapper?)
+        fun update(destination: Coordinate?)
     }
 }

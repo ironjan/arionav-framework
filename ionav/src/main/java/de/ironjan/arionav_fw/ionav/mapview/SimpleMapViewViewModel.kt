@@ -9,7 +9,6 @@ import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.positioning.LevelDependentPositionProviderBaseImplementation
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -24,7 +23,13 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
         routingService = ionavContainer.routingService
         positioningService = ionavContainer.positioningService
         navigationService = ionavContainer.navigationService
-        navigationService.registerObserver(object:NavigationService.RemainingRouteObserver{
+        navigationService.registerObserver(object:NavigationService.NavigationServiceObserver{
+            override fun update(value: Coordinate?) {
+                state.endCoordinate = value
+                endCoordinate.value = value
+                logger.info("Updated destination to $value in view model.")
+            }
+
             override fun update(remainingRoute: PathWrapper?) {
                     this@SimpleMapViewViewModel.remainingRoute.value = remainingRoute
             }
@@ -50,10 +55,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     fun getEndCoordinateLifeData(): LiveData<Coordinate?> = endCoordinate
 
     fun setDestination(value: Coordinate?) {
-        state.endCoordinate = value
-        endCoordinate.value = value
         navigationService.destination = value
-        logger.info("Updated destination to $value in view model.")
     }
 
 
@@ -82,26 +84,11 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
         followUserPosition.value = b
     }
 
-    private val showRemainingRoute: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val _selectedLevel = MutableLiveData(0)
+    val selectedLevel: LiveData<Int> = _selectedLevel
 
-    private val  levelList = MutableLiveData(listOf(-1.0, 0.0, 1.0, 2.0))
-    val initalLevelListPosition = 1
-    private val selectedLevelListPosition = MutableLiveData(initalLevelListPosition)
-
-    fun getLevelListLiveData(): LiveData<List<Double>> = levelList
-    fun getSelectedLevelListPosition(): LiveData<Int> = selectedLevelListPosition
-    fun selectLevelListPosition(pos: Int) {
-        selectedLevelListPosition.value = pos
-        val lLevelList = levelList.value ?: return
-
-        val lPositionProvider = positionProvider
-        // todo remove this workaround
-        if(lPositionProvider is LevelDependentPositionProviderBaseImplementation){
-            lPositionProvider.currentLevel = lLevelList[pos]
-        }
-    }
-    fun getSelectedLevel(): Double {
-        return levelList.value?.get(selectedLevelListPosition.value ?: initalLevelListPosition) ?: 0.0
+    fun getSelectedLevel(): Int {
+        return 0
     }
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
@@ -140,5 +127,17 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
     fun centerOnUserPos() {
         setMapCenter(getUserPositionLiveData().value ?: return)
+    }
+
+    fun increaseLevel() {
+        val oldValue = _selectedLevel.value ?: 0
+        val newValue = oldValue + 1
+        _selectedLevel.value = newValue
+    }
+
+    fun decreaseLevel() {
+        val oldValue = _selectedLevel.value ?: 0
+        val newValue = oldValue - 1
+        _selectedLevel.value = newValue
     }
 }
