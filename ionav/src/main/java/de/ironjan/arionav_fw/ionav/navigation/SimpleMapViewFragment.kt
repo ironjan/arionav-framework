@@ -30,9 +30,19 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
         mapView.onLifecycleOwnerAttached(lifecycleOwner)
-        mapView.initialize((activity?.application as IonavContainerHolder).ionavContainer)
+        val ionavContainer = (activity?.application as IonavContainerHolder).ionavContainer
+        mapView.initialize(ionavContainer)
 
+        btnCenterOnUser.setOnClickListener {
+            val coordinate =
+                ionavContainer.positioningService
+                    .lastKnownLocation
+                    .value
+                    ?.coordinate
+                    ?: return@setOnClickListener
 
+            mapView.centerOn(coordinate)
+        }
     }
 
 
