@@ -208,7 +208,7 @@
     </fragment>
     <fragment
         android:id="@+id/simpleMapNavFragment"
-        android:name="de.ironjan.arionav_fw.ionav.navigation.SimpleMapNavFragment"
+        android:name="de.ironjan.arionav_fw.ionav.navigation.SimpleMapViewFragment"
         android:label="fragment_simple_map_nav"
         tools:layout="@layout/fragment_simple_map_nav" >
 
