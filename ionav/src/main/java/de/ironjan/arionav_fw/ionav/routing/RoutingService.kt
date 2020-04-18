@@ -4,14 +4,37 @@ import android.os.AsyncTask
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.LoadGraphTask
+import de.ironjan.arionav_fw.ionav.util.Observable
+import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
 
-class RoutingService {
+class RoutingService : Observable<RoutingService.RoutingServiceStatusObserver, RoutingService.Status>{
+    override fun registerObserver(observer: RoutingServiceStatusObserver) {
+        if(_observers.contains(observer)) return
+        _observers.add(observer)
+    }
+
+    override fun removeObserver(observer:RoutingServiceStatusObserver) {
+        _observers.remove(observer)
+    }
+
+    override fun notifyObservers(v: Status) {
+        _observers.map { it.update(v) }
+    }
+
+    private val _observers = mutableListOf<Observer<Status>>()
+
     private val logger = LoggerFactory.getLogger(RoutingService::class.java.simpleName)
 
     private var routing: Routing = UninitializedRouting()
+
+    var status = Status.UNINITIALIZED
+        private set(value){
+            field = value
+            notifyObservers(value)
+        }
 
     var initialized = false
         private set
@@ -24,21 +47,26 @@ class RoutingService {
     }
 
     fun init(mapFolder: String) {
+        status = Status.LOADING
         val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
 
                 routing = Routing(graphHopper)
                 initialized = true
+                status = Status.READY
             }
 
             override fun onError(exception: Exception) {
                 logger.error("Error when loading graph: $exception")
                 // FIXME show error
+                status = Status.ERROR
             }
         })
         loadGraphTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
+
+
 
     /** Used as routing backend as long as the service is not initialized. Returns null-routes. */
     class UninitializedRouting : Routing(null) {
@@ -51,4 +79,9 @@ class RoutingService {
         }
     }
 
+    interface RoutingServiceStatusObserver: Observer<Status>
+
+    enum class Status {
+        UNINITIALIZED, LOADING, READY, ERROR
+    }
 }

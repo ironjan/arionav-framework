@@ -34,11 +34,16 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
                     this@SimpleMapViewViewModel.remainingRoute.value = remainingRoute
             }
         })
+
+        routingService.registerObserver(object : RoutingService.RoutingServiceStatusObserver {
+            override fun update(v: RoutingService.Status) {
+                _routingStatus.value = v
+            }
+        })
     }
 
-    val isRoutingInitialized: Boolean
-        get() = ::routingService.isInitialized
-                && routingService.initialized
+    private val _routingStatus: MutableLiveData<RoutingService.Status> = MutableLiveData(RoutingService.Status.UNINITIALIZED)
+    val routingStatus: LiveData<RoutingService.Status> = _routingStatus
 
     // FIXME should be IPositionObserver instead
     private var positionProvider: IPositionProvider ?= null

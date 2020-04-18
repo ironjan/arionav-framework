@@ -15,7 +15,7 @@ class NavigationService(
     private val logger = LoggerFactory.getLogger(NavigationService::class.java.simpleName)
 
     private val positionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: IonavLocation?) {
+        override fun update(c: IonavLocation?) {
             logger.info("$TAG received position change.")
             recomputeRemainingRoute()
         }

@@ -12,6 +12,7 @@ import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.mapview.IndoorItemTapCallback
 import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
+import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 
 class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
@@ -53,7 +54,7 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
             val destinationString = edit_destination.text.toString()
             val namedPlace = namedPlaces[destinationString]
             if (namedPlace == null) {
-                Snackbar.make(btnCenterOnUser, "Could not find $$destinationString.", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -78,6 +79,12 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
 
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {
         viewModel.selectedLevel.observe(lifecycleOwner, Observer { txtLevel.text = it.toString() })
+        viewModel.routingStatus.observe(lifecycleOwner, Observer {
+            when(it) {
+                RoutingService.Status.READY -> btnStartNavigation.isEnabled = true
+                else -> btnStartNavigation.isEnabled = false
+            }
+        })
     }
 
     private fun loadSuggestions(lifecycleOwner: LifecycleOwner) {

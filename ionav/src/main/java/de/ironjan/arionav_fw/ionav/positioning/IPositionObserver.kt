@@ -1,5 +1,7 @@
 package de.ironjan.arionav_fw.ionav.positioning
 
-interface IPositionObserver {
-  fun onPositionChange(c: IonavLocation?)
+import de.ironjan.arionav_fw.ionav.util.Observer
+
+interface IPositionObserver : Observer<IonavLocation?> {
+//  override fun update(c: IonavLocation?)
 }

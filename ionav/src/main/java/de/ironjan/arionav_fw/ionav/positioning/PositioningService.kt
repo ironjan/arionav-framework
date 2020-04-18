@@ -25,7 +25,7 @@ class PositioningService : IPositionObservable {
         logger.debug("PositioningService notifying observers.")
         observers.forEach { o ->
             val position = lastKnownPosition ?: return
-            o.onPositionChange(position)
+            o.update(position)
         }
     }
 
@@ -44,7 +44,7 @@ class PositioningService : IPositionObservable {
     val locationHistory: LiveData<List<IonavLocation>> = _locationHistoryLiveData
 
     private val observer: IPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: IonavLocation?) {
+        override fun update(c: IonavLocation?) {
             updateLastLocation(c)
         }
     }

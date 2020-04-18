@@ -6,9 +6,11 @@ import android.util.AttributeSet
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav_fw.ionav.mapview.*
+import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.routing.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -29,6 +31,8 @@ import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 
 class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapViewViewModel> {
+
+    private  var snackbar: Snackbar? = null
 
     // region map layers
     private lateinit var indoorLayers: IndoorLayers
@@ -235,7 +239,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     private fun onLongPress(p: GeoPoint): Boolean {
         logger.info("longpress at $p")
 
-        if (viewModel.isRoutingInitialized) {
+        if (viewModel.routingStatus.value == RoutingService.Status.READY) {
             val selectedLevel = viewModel.getSelectedLevel()
 
             viewModel.setDestination(Coordinate(p.latitude, p.longitude, selectedLevel.toDouble()))

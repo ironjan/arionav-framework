@@ -64,7 +64,7 @@ abstract class PositionProviderBaseImplementation(
         logger.debug("$name notifying observers.")
         observers.forEach { o ->
             val position = lastKnownPosition ?: return
-            o.onPositionChange(position)
+            o.update(position)
         }
     }
 }

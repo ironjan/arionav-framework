@@ -15,7 +15,7 @@ class MergedPositionProvider(
     private var providers: MutableList<IPositionProvider> = mutableListOf()
 
     private val observer: IPositionObserver = object : IPositionObserver {
-        override fun onPositionChange(c: IonavLocation?) {
+        override fun update(c: IonavLocation?) {
             notifyObservers()
         }
     }
