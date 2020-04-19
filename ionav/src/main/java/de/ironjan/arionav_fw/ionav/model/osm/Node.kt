@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.routing.model.osm
+package de.ironjan.arionav_fw.ionav.model.osm
 
 /**
  * Represents a simplified osm node.

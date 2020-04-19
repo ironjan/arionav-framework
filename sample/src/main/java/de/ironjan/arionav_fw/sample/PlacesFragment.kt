@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.GhzExtractor
-import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
-import de.ironjan.arionav_fw.ionav.routing.repository.NamedPlaceRepository
+import de.ironjan.arionav_fw.ionav.model.NamedPlace
+import de.ironjan.arionav_fw.ionav.repository.NamedPlaceRepository
 import de.ironjan.arionav_fw.sample.viewmodel.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 

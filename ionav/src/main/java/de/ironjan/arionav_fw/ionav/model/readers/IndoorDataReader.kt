@@ -1,11 +1,11 @@
-package de.ironjan.arionav_fw.ionav.routing.model.readers
+package de.ironjan.arionav_fw.ionav.model.readers
 
 import android.os.AsyncTask
-import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
-import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorNode
-import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorWay
-import de.ironjan.arionav_fw.ionav.routing.model.osm.Node
-import de.ironjan.arionav_fw.ionav.routing.model.osm.Way
+import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
+import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorNode
+import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorWay
+import de.ironjan.arionav_fw.ionav.model.osm.Node
+import de.ironjan.arionav_fw.ionav.model.osm.Way
 import org.slf4j.LoggerFactory
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException

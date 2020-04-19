@@ -1,12 +1,12 @@
 package de.ironjan.arionav_fw.ionav
 
 import android.content.Context
+import de.ironjan.arionav_fw.ionav.model.readers.ImprovedPoiConverter
+import de.ironjan.arionav_fw.ionav.model.readers.ImprovedRoomConverter
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
+import de.ironjan.arionav_fw.ionav.repository.NamedPlaceRepository
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
-import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedPoiConverter
-import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedRoomConverter
-import de.ironjan.arionav_fw.ionav.routing.repository.NamedPlaceRepository
 import java.io.File
 
 /**

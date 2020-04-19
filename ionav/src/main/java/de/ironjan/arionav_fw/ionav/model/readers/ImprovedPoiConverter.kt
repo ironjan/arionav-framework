@@ -1,10 +1,10 @@
-package de.ironjan.arionav_fw.ionav.routing.model.readers
+package de.ironjan.arionav_fw.ionav.model.readers
 
 import dagger.Module
-import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
-import de.ironjan.arionav_fw.ionav.routing.model.Poi
-import de.ironjan.arionav_fw.ionav.routing.model.osm.Node
-import de.ironjan.arionav_fw.ionav.routing.model.osm.Way
+import de.ironjan.arionav_fw.ionav.model.NamedPlace
+import de.ironjan.arionav_fw.ionav.model.Poi
+import de.ironjan.arionav_fw.ionav.model.osm.Node
+import de.ironjan.arionav_fw.ionav.model.osm.Way
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import javax.inject.Inject
 

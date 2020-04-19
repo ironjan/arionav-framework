@@ -10,9 +10,9 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav_fw.ionav.mapview.*
+import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
+import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
-import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
-import de.ironjan.arionav_fw.ionav.routing.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics

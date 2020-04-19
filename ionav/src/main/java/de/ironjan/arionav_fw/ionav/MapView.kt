@@ -13,8 +13,8 @@ import de.ironjan.arionav_fw.ionav.mapview.IndoorLayersManager
 import de.ironjan.arionav_fw.ionav.mapview.MapViewState
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
 import de.ironjan.arionav_fw.ionav.mapview.UserPositionLayer
-import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
-import de.ironjan.arionav_fw.ionav.routing.model.readers.IndoorMapDataLoadingTask
+import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
+import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView
 import org.oscim.android.canvas.AndroidGraphics

@@ -1,8 +1,8 @@
 package de.ironjan.arionav_fw.sample
 
-import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedPoiConverter
-import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedRoomConverter
-import de.ironjan.arionav_fw.ionav.routing.repository.NamedPlaceRepository
+import de.ironjan.arionav_fw.ionav.model.readers.ImprovedPoiConverter
+import de.ironjan.arionav_fw.ionav.model.readers.ImprovedRoomConverter
+import de.ironjan.arionav_fw.ionav.repository.NamedPlaceRepository
 
 
 /**

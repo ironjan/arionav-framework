@@ -1,12 +1,12 @@
-package de.ironjan.arionav_fw.ionav.routing.repository
+package de.ironjan.arionav_fw.ionav.repository
 
 import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
-import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedPoiConverter
-import de.ironjan.arionav_fw.ionav.routing.model.readers.ImprovedRoomConverter
-import de.ironjan.arionav_fw.ionav.routing.model.readers.OsmConverter
+import de.ironjan.arionav_fw.ionav.model.NamedPlace
+import de.ironjan.arionav_fw.ionav.model.readers.ImprovedPoiConverter
+import de.ironjan.arionav_fw.ionav.model.readers.ImprovedRoomConverter
+import de.ironjan.arionav_fw.ionav.model.readers.OsmConverter
 import org.slf4j.LoggerFactory
 
 class NamedPlaceRepository(

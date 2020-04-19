@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.routing.model.indoor_map
+package de.ironjan.arionav_fw.ionav.model.indoor_map
 
 class IndoorData(
     val indoorWays: Map<Double, List<IndoorWay>>,

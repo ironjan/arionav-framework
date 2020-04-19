@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
-import de.ironjan.arionav_fw.ionav.routing.model.NamedPlace
+import de.ironjan.arionav_fw.ionav.model.NamedPlace
 import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.*
