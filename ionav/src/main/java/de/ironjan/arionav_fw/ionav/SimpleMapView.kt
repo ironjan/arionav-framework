@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav_fw.ionav.mapview.*
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
@@ -88,7 +87,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
 
 
         viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
-            showRemainingRoute(it)
+            remainingRouteLayer.route = it
         })
 
         viewModel.selectedLevel.observe(lifecycleOwner, Observer {
@@ -265,30 +264,6 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         return markerItem
     }
 
-
-    private fun showRemainingRoute(remainingRoute: PathWrapper?) {
-        remainingRouteLayer.clearPath()
-        redrawMap()
-        logger.debug("Cleared the displayed route.")
-
-
-        if (remainingRoute == null) {
-            logger.debug("show remaining route was called with null route.")
-            return
-        }
-
-        if (remainingRoute.hasErrors()) {
-            val errorString = remainingRoute.errors.map { it.message }.joinToString(", ")
-            logger.warn("Route $remainingRoute has errors and cannot be shown: $errorString")
-            Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val points = remainingRoute.points.map { GeoPoint(it.lat, it.lon) }
-        remainingRouteLayer.setPoints(points)
-        redrawMap()
-        logger.warn("Updated displayed route to $points")
-    }
 
     fun redrawMap() = map().updateMap(true)
 
