@@ -1,8 +1,6 @@
 package de.ironjan.arionav_fw.ionav
 
 import android.content.Context
-import de.ironjan.arionav_fw.ionav.model.readers.ImprovedPoiConverter
-import de.ironjan.arionav_fw.ionav.model.readers.ImprovedRoomConverter
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.repository.NamedPlaceRepository
@@ -24,7 +22,5 @@ class IonavContainer(private val context: Context, val mapName: String, val resI
     val navigationService = NavigationService(positioningService, routingService)
 
 
-    private val roomReader = ImprovedRoomConverter()
-    private val poiReader = ImprovedPoiConverter()
-    val namedPlaceRepository = NamedPlaceRepository(roomReader, poiReader)
+    val namedPlaceRepository by lazy {  NamedPlaceRepository(osmFilePath) }
 }

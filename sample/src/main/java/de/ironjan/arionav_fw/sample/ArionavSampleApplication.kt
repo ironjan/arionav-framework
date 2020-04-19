@@ -13,7 +13,6 @@ class ArionavSampleApplication : Application(), IonavContainerHolder {
      */
     override val ionavContainer = IonavContainer(this, "uni_paderborn", R.raw.uni_paderborn)
 
-    val sampleAppContainer = SampleAppContainer()
 
     override fun onCreate() {
         super.onCreate()
@@ -22,9 +21,6 @@ class ArionavSampleApplication : Application(), IonavContainerHolder {
 
         GhzExtractor().unzipGhzToStorage(this, ionavContainer)
 
-        // try to pre-fill places
-        // todo useful?
-        sampleAppContainer.namedPlaceRepository.getPlaces(ionavContainer.osmFilePath)
 
         ionavContainer.routingService.init(ionavContainer.mapFolder)
     }

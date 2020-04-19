@@ -9,24 +9,24 @@ import de.ironjan.arionav_fw.ionav.model.readers.ImprovedRoomConverter
 import de.ironjan.arionav_fw.ionav.model.readers.OsmConverter
 import org.slf4j.LoggerFactory
 
-class NamedPlaceRepository(
-    private val roomConverter: ImprovedRoomConverter,
-    private val poiConverter: ImprovedPoiConverter
-) {
-    private val inMemoryCache = mutableMapOf<String, MutableLiveData<Map<String, NamedPlace>>>()
+class NamedPlaceRepository(private val osmFile: String) {
+    private val roomConverter = ImprovedRoomConverter()
+    private val poiConverter=  ImprovedPoiConverter()
+
+    private var inMemoryCache: MutableLiveData<Map<String, NamedPlace>>? = null
 
 
-    fun getPlaces(osmFile: String): LiveData<Map<String, NamedPlace>> {
-        var places = inMemoryCache[osmFile]
+    fun getPlaces(): LiveData<Map<String, NamedPlace>> {
+        var places = inMemoryCache
 
         if (places == null) {
-            places = MutableLiveData()
-            inMemoryCache[osmFile] = places
+            places = MutableLiveData(mutableMapOf())
+            inMemoryCache = places
 
             NamedPlacesAsyncLoadTask(places, osmFile, poiConverter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
             NamedPlacesAsyncLoadTask(places, osmFile, roomConverter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-
         }
+
         return places
     }
 
@@ -54,14 +54,14 @@ class NamedPlaceRepository(
         }
 
         override fun onPostExecute(result: Map<String, NamedPlace>) {
-            val mutableDate = places.value?.toMutableMap() ?: mutableMapOf()
-            result.forEach { mutableDate[it.key] = it.value }
-            places.value = mutableDate
+            val mutableMapOfPlaces = places.value?.toMutableMap() ?: mutableMapOf()
+
+            result.forEach { mutableMapOfPlaces[it.key] = it.value }
+
+            places.value = mutableMapOfPlaces
+
             logger.info("Updated live data with loaded POIs.")
         }
     }
 
-    companion object {
-        val instance: NamedPlaceRepository = NamedPlaceRepository(ImprovedRoomConverter(), ImprovedPoiConverter())
-    }
 }

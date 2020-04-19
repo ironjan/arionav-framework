@@ -1,16 +1,13 @@
 package de.ironjan.arionav_fw.ionav.model.readers
 
-import dagger.Module
 import de.ironjan.arionav_fw.ionav.model.NamedPlace
 import de.ironjan.arionav_fw.ionav.model.Room
 import de.ironjan.arionav_fw.ionav.model.osm.Node
 import de.ironjan.arionav_fw.ionav.model.osm.Way
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
-import javax.inject.Inject
 
-@Module
-class ImprovedRoomConverter  @Inject constructor() : OsmConverter<NamedPlace>(
+class ImprovedRoomConverter: OsmConverter<NamedPlace>(
     isNamedRoomFilter,
     allNodeFilter,
     osmToRoomConverter

@@ -49,7 +49,7 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
         }
 
         btnStartNavigation.setOnClickListener {
-            val namedPlaces = ionavContainer.namedPlaceRepository.getPlaces(ionavContainer.osmFilePath).value
+9            val namedPlaces = ionavContainer.namedPlaceRepository.getPlaces().value
                 ?: return@setOnClickListener
             val destinationString = edit_destination.text.toString()
             val namedPlace = namedPlaces[destinationString]
@@ -99,7 +99,7 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
         when (val application = activity?.application) {
             is IonavContainerHolder -> {
                 val placesLiveData = application.ionavContainer.namedPlaceRepository
-                    .getPlaces(application.ionavContainer.osmFilePath)
+                    .getPlaces()
                 placesLiveData.observe(lifecycleOwner, Observer {
                     endSuggestionsAdapter.apply {
                         clear()

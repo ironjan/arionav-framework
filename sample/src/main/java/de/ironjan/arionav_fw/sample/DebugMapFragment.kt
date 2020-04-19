@@ -114,8 +114,8 @@ class DebugMapFragment : Fragment() {
 
         when (val application = activity?.application) {
             is ArionavSampleApplication -> {
-                placesLiveData = application.sampleAppContainer.namedPlaceRepository
-                    .getPlaces(application.ionavContainer.osmFilePath)
+                placesLiveData = application.ionavContainer.namedPlaceRepository
+                    .getPlaces()
                 placesLiveData.observe(lifecycleOwner, Observer {
                     placesList.apply {
                         clear()
