@@ -10,11 +10,10 @@ import de.ironjan.arionav_fw.ionav.model.readers.OsmConverter
 import org.slf4j.LoggerFactory
 
 class NamedPlaceRepository(
-    val roomReader: ImprovedRoomConverter,
-    val poiReader: ImprovedPoiConverter
+    private val roomConverter: ImprovedRoomConverter,
+    private val poiConverter: ImprovedPoiConverter
 ) {
     private val inMemoryCache = mutableMapOf<String, MutableLiveData<Map<String, NamedPlace>>>()
-    private val logger = LoggerFactory.getLogger(NamedPlaceRepository::class.java.simpleName)
 
 
     fun getPlaces(osmFile: String): LiveData<Map<String, NamedPlace>> {
@@ -24,8 +23,8 @@ class NamedPlaceRepository(
             places = MutableLiveData()
             inMemoryCache[osmFile] = places
 
-            NamedPlacesAsyncLoadTask(places, osmFile, poiReader).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-            NamedPlacesAsyncLoadTask(places, osmFile, roomReader).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            NamedPlacesAsyncLoadTask(places, osmFile, poiConverter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            NamedPlacesAsyncLoadTask(places, osmFile, roomConverter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 
         }
         return places
