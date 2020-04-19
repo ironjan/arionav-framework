@@ -104,11 +104,11 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
     private val mapCenter: MutableLiveData<Coordinate?> = MutableLiveData(null)
     fun getMapCenterLiveData(): LiveData<Coordinate?> = mapCenter
-    fun setMapCenter(c: IonavLocation) {
+    private fun setMapCenter(c: IonavLocation) {
         mapCenter.value = c
     }
 
-    fun centerOnUserPos() {
+    private fun centerOnUserPos() {
         setMapCenter(getUserPositionLiveData().value ?: return)
     }
 
