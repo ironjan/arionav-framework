@@ -7,7 +7,6 @@ import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
-import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
@@ -67,10 +66,6 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     // endregion
 
 
-    // FIXME should be IPositionObserver instead
-    private var positionProvider: IPositionProvider? = null
-
-
     override var state: SimplifiedMapViewState = SimplifiedMapViewState()
 
 
@@ -86,21 +81,9 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     fun getUserPositionLiveData(): LiveData<IonavLocation?> = positioningService.lastKnownLocation
 
 
-    private val currentRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
-    fun getCurrentRouteLiveData(): LiveData<PathWrapper?> {
-        // FIXME better: cache route
-        computeRoute()
-        return currentRoute
-    }
-
-
     private val remainingRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
     fun getRemainingRouteLiveData(): LiveData<PathWrapper?> = remainingRoute
 
-
-    private val canComputeRoute: Boolean
-        get() = navigationService.initialized
-                && state.endCoordinate != null
 
     private val followUserPosition: MutableLiveData<Boolean> = MutableLiveData(false)
     fun getFollowUserPositionLiveData(): LiveData<Boolean> = followUserPosition
@@ -118,27 +101,6 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     }
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
-
-
-    private fun computeRoute() {
-        if (!canComputeRoute) {
-            // just ignore. Called on every start and end coordinate change
-            return
-        }
-
-        val lStartCoordinate = positioningService.lastKnownLocation.value?.coordinate
-        val lEndCoordinate = state.endCoordinate
-        if (lStartCoordinate == null) {
-            logger.info("computeRoute was called with null for start coordinate.")
-            return
-        }
-        if (lEndCoordinate == null) {
-            logger.info("computeRoute was called with null for end coordinate.")
-            return
-        }
-
-        currentRoute.value = routingService.route(lStartCoordinate, lEndCoordinate)
-    }
 
 
     private val mapCenter: MutableLiveData<Coordinate?> = MutableLiveData(null)
