@@ -49,7 +49,7 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
         }
 
         btnStartNavigation.setOnClickListener {
-9            val namedPlaces = ionavContainer.namedPlaceRepository.getPlaces().value
+            val namedPlaces = ionavContainer.namedPlaceRepository.getPlaces().value
                 ?: return@setOnClickListener
             val destinationString = edit_destination.text.toString()
             val namedPlace = namedPlaces[destinationString]
