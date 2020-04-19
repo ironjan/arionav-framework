@@ -114,13 +114,16 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
     fun increaseLevel() {
         val oldValue = _selectedLevel.value ?: 0
-        val newValue = oldValue + 1
-        _selectedLevel.value = newValue
+        setLevel(oldValue + 1)
     }
 
     fun decreaseLevel() {
         val oldValue = _selectedLevel.value ?: 0
-        val newValue = oldValue - 1
+        setLevel(oldValue - 1)
+    }
+
+    private fun setLevel(newValue: Int) {
         _selectedLevel.value = newValue
     }
+
 }
