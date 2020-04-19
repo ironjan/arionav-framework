@@ -3,8 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/simpleMapNavFragment">
+    app:startDestination="@id/arEnabledMapViewFragment">
 
+    <fragment android:id="@+id/arEnabledMapViewFragment"
+        android:name="de.ironjan.arionav_fw.arionav.ArEnabledMapViewFragment"
+        tools:layout="@layout/ar_enabled_map_view"
+        android:label="ArEnabledMapViewFragment">
+
+    </fragment>
     <fragment
         android:id="@+id/arViewFragment"
         android:name="de.ironjan.arionav_fw.arionav.ArViewFragment"
