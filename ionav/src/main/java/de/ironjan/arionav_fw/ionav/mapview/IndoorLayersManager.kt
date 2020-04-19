@@ -1,5 +1,7 @@
 package de.ironjan.arionav_fw.ionav.mapview
 
+import androidx.lifecycle.LifecycleOwner
+import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenMapExtension
 import de.ironjan.arionav_fw.ionav.routing.model.indoor_map.IndoorData
 import org.oscim.backend.CanvasAdapter
 import org.oscim.backend.canvas.Color
@@ -17,10 +19,15 @@ import org.oscim.map.Map
 import org.slf4j.LoggerFactory
 
 /**
- * Inspired by <a href="https://github.com/mapsforge/vtm/blob/master/vtm-jeo/src/org/oscim/layers/OSMIndoorLayer.java">OSMIndoorLayer</a>
- * in mapsforge:vtm-jeo
+ * Wrapper around multiple layers that will be added to {@param map}. Not an actual layer
  */
-class IndoorLayers(private val map: Map, private val density: Float) {
+class IndoorLayersManager(private val map: Map, private val density: Float) :
+    ModelDrivenMapExtension<SimplifiedMapViewState, SimpleMapViewViewModel>{
+
+    override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     var itemTapCallback = defaultTapCallback
 
     var indoorData = IndoorData(emptyMap(), emptyMap())
@@ -140,7 +147,7 @@ class IndoorLayers(private val map: Map, private val density: Float) {
             override fun onItemLongPress(index: Int, item: MarkerItem?): Boolean {
                 if (item == null) return true
 
-                LoggerFactory.getLogger(IndoorLayers::class.simpleName).info("long press on ${item.title}")
+                LoggerFactory.getLogger(IndoorLayersManager::class.simpleName).info("long press on ${item.title}")
                 itemTapCallback.longTap(item.title)
 
                 return true
@@ -149,7 +156,7 @@ class IndoorLayers(private val map: Map, private val density: Float) {
             override fun onItemSingleTapUp(index: Int, item: MarkerItem?): Boolean {
                 if (item == null) return true
 
-                LoggerFactory.getLogger(IndoorLayers::class.simpleName).info("single tap on ${item.title}")
+                LoggerFactory.getLogger(IndoorLayersManager::class.simpleName).info("single tap on ${item.title}")
                 itemTapCallback.singleTap(item.title)
 
                 return true

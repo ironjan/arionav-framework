@@ -35,7 +35,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     private var snackbar: Snackbar? = null
 
     // region map layers
-    private lateinit var indoorLayers: IndoorLayers
+    private lateinit var indoorLayers: IndoorLayersManager
     private lateinit var buildingLayer: BuildingLayer
 
     private lateinit var remainingRouteLayer: RouteLayer
@@ -57,7 +57,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     // endregion
 
     var itemTapCallback: IndoorItemTapCallback
-        get() = if (::indoorLayers.isInitialized) indoorLayers.itemTapCallback else IndoorLayers.defaultTapCallback
+        get() = if (::indoorLayers.isInitialized) indoorLayers.itemTapCallback else IndoorLayersManager.defaultTapCallback
         set(value) {
             indoorLayers.itemTapCallback = value
         }
@@ -144,7 +144,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     }
 
     private fun createAndAddLayers(tileLayer: VectorTileLayer) {
-        indoorLayers = IndoorLayers(map(), resources.displayMetrics.density)
+        indoorLayers = IndoorLayersManager(map(), resources.displayMetrics.density)
 
 
         buildingLayer = BuildingLayer(map(), tileLayer)

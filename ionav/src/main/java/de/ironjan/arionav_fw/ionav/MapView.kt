@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
-import de.ironjan.arionav_fw.ionav.mapview.IndoorLayers
+import de.ironjan.arionav_fw.ionav.mapview.IndoorLayersManager
 import de.ironjan.arionav_fw.ionav.mapview.MapViewState
 import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
 import de.ironjan.arionav_fw.ionav.mapview.UserPositionLayer
@@ -36,7 +36,7 @@ import java.util.*
 class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
     private lateinit var ionavContainer: IonavContainer
 
-    private lateinit var indoorLayers: IndoorLayers
+    private lateinit var indoorLayers: IndoorLayersManager
 
     override val viewModel = MapViewViewModel()
 
@@ -177,7 +177,7 @@ class MapView : MapView, MvvmCustomView<MapViewState, MapViewViewModel> {
         logger.debug("Added user position layer")
 
         val map = map()
-        indoorLayers = IndoorLayers(map, resources.displayMetrics.density)
+        indoorLayers = IndoorLayersManager(map, resources.displayMetrics.density)
 
         // Map start position
         val mapCenter = GeoPoint(51.731938, 8.734518)
