@@ -14,6 +14,7 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
 class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> {
+
     private lateinit var routingService: RoutingService
     private lateinit var navigationService: NavigationService
     private lateinit var positioningService: PositioningService
@@ -22,6 +23,8 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
         routingService = ionavContainer.routingService
         positioningService = ionavContainer.positioningService
         navigationService = ionavContainer.navigationService
+
+
 
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
             override fun update(value: Coordinate?) {
@@ -93,11 +96,6 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
         if (b) centerOnUserPos()
     }
 
-    private val _selectedLevel = MutableLiveData(0)
-    val selectedLevel: LiveData<Int> = _selectedLevel
-
-    fun getSelectedLevel(): Int = _selectedLevel.value ?: 0
-
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
@@ -112,6 +110,15 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
         setMapCenter(getUserPositionLiveData().value ?: return)
     }
 
+
+
+  // region level
+  private val _selectedLevel = MutableLiveData(0)
+    val selectedLevel: LiveData<Int> = _selectedLevel
+
+    fun getSelectedLevel(): Int = _selectedLevel.value ?: 0
+
+
     fun increaseLevel() {
         val oldValue = _selectedLevel.value ?: 0
         setLevel(oldValue + 1)
@@ -125,5 +132,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     private fun setLevel(newValue: Int) {
         _selectedLevel.value = newValue
     }
+    // endregion
+
 
 }
