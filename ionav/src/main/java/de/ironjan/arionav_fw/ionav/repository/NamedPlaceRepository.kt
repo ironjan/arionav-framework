@@ -11,27 +11,27 @@ import org.slf4j.LoggerFactory
 
 class NamedPlaceRepository(private val osmFile: String) {
     private val roomConverter = ImprovedRoomConverter()
-    private val poiConverter=  ImprovedPoiConverter()
+    private val poiConverter = ImprovedPoiConverter()
 
-    private var inMemoryCache: MutableLiveData<Map<String, NamedPlace>>? = null
+    private var inMemoryCache: MutableMap<String, NamedPlace> = mutableMapOf()
+
+    private val _places = MutableLiveData(mapOf<String, NamedPlace>())
 
 
-    fun getPlaces(): LiveData<Map<String, NamedPlace>> {
-        var places = inMemoryCache
-
-        if (places == null) {
-            places = MutableLiveData(mutableMapOf())
-            inMemoryCache = places
-
-            NamedPlacesAsyncLoadTask(places, osmFile, poiConverter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-            NamedPlacesAsyncLoadTask(places, osmFile, roomConverter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    init {
+        val cb = { m: Map<String, NamedPlace> ->
+            m.forEach { inMemoryCache[it.key] = it.value }
+            _places.value = mutableMapOf()
         }
 
-        return places
+        NamedPlacesAsyncLoadTask(cb, osmFile, poiConverter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        NamedPlacesAsyncLoadTask(cb, osmFile, roomConverter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
+    fun getPlaces(): LiveData<Map<String, NamedPlace>> = _places
+
     private class NamedPlacesAsyncLoadTask(
-        private val places: MutableLiveData<Map<String, NamedPlace>>,
+        private val callback: (Map<String, NamedPlace>) -> Unit,
         private val osmFile: String,
         val converter: OsmConverter<NamedPlace>
     ) : AsyncTask<Void, Void, Map<String, NamedPlace>>() {
@@ -47,21 +47,17 @@ class NamedPlaceRepository(private val osmFile: String) {
                     .map { Pair(it.name, it) }
                     .toMap()
 
-            val duration =System.currentTimeMillis() - start
+            val duration = System.currentTimeMillis() - start
             logger.info("Loading complete after ${duration}ms... $converter... (OsmReader)")
 
             return loaded
         }
 
         override fun onPostExecute(result: Map<String, NamedPlace>) {
-            val mutableMapOfPlaces = places.value?.toMutableMap() ?: mutableMapOf()
-
-            result.forEach { mutableMapOfPlaces[it.key] = it.value }
-
-            places.value = mutableMapOfPlaces
-
+            callback(result)
             logger.info("Updated live data with loaded POIs.")
         }
     }
+
 
 }
