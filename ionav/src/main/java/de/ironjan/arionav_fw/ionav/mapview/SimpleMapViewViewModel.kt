@@ -96,9 +96,8 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     private val _selectedLevel = MutableLiveData(0)
     val selectedLevel: LiveData<Int> = _selectedLevel
 
-    fun getSelectedLevel(): Int {
-        return 0
-    }
+    fun getSelectedLevel(): Int = _selectedLevel.value ?: 0
+
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
