@@ -183,16 +183,14 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
     private fun replaceMapLayers(oldLevel: Double, newLevel: Double) {
         val oldDrawableLayer = levelsToDrawableLayers[oldLevel]
-        val newDrawableLayer = levelsToDrawableLayers[newLevel]
-
         val oldLabelLayer = levelsToLabelLayers[oldLevel] ?: return
+        map.layers().remove(oldDrawableLayer)
+        map.layers().remove(oldLabelLayer)
+
+        val newDrawableLayer = levelsToDrawableLayers[newLevel] ?: return
         val newLabelLayer = levelsToLabelLayers[newLevel] ?: return
 
-
-        map.layers().remove(oldDrawableLayer)
         map.layers().add(newDrawableLayer)
-
-        map.layers().remove(oldLabelLayer)
         map.layers().add(newLabelLayer)
     }
 
