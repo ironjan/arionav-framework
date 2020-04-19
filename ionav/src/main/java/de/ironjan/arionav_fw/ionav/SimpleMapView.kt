@@ -1,6 +1,7 @@
 package de.ironjan.arionav_fw.ionav
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.util.AttributeSet
 import android.widget.Toast
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory
 
 class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapViewViewModel> {
 
-    private  var snackbar: Snackbar? = null
+    private var snackbar: Snackbar? = null
 
     // region map layers
     private lateinit var indoorLayers: IndoorLayers
@@ -39,8 +40,8 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
 
     private lateinit var remainingRouteLayer: RouteLayer
 
-    private var endMarkerLayer: ItemizedLayer<MarkerItem>? = null
-    private var userPositionLayer: UserPositionLayer? = null
+    private lateinit var endMarkerLayer: DestinationMarkerLayer
+    private lateinit var userPositionLayer: UserPositionLayer
 
 
     private val endCoordinateMarker = R.drawable.marker_icon_red
@@ -63,11 +64,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
 
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
 
-        viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
-            updateMarkerLayer(endMarkerLayer, it, endCoordinateMarker, "destination")
-
-            logger.debug("Updated end coordinate in view to $it.")
-        })
+        endMarkerLayer.observe(viewModel, lifecycleOwner)
 
         userPositionLayer?.observe(viewModel, lifecycleOwner)
 
@@ -151,7 +148,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
 
 
         buildingLayer = BuildingLayer(map(), tileLayer)
-        endMarkerLayer = ItemizedLayer(map(), null as MarkerSymbol?)
+        endMarkerLayer = DestinationMarkerLayer(map(), resources.getDrawable(R.drawable.marker_icon_red))
         userPositionLayer = UserPositionLayer(map())
 
 
@@ -245,7 +242,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
 
 
     private fun createMarkerItem(coordinate: Coordinate, resource: Int, title: String = ""): MarkerItem {
-        val drawable = resources.getDrawable(resource)
+        val drawable: Drawable = resources.getDrawable(resource)
         val bitmap = AndroidGraphics.drawableToBitmap(drawable)
         val markerSymbol = MarkerSymbol(bitmap, 0.5f, 1f)
 
