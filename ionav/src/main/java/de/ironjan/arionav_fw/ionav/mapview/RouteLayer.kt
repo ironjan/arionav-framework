@@ -12,8 +12,7 @@ import org.oscim.map.Map
 import org.slf4j.LoggerFactory
 
 
-class RouteLayer(private val map: Map, style: Style):
-    PathLayer(map, style),
+class RouteLayer(private val map: Map, style: Style) : PathLayer(map, style),
     ModelDrivenMapLayer<SimplifiedMapViewState, SimpleMapViewViewModel> {
     private val logger = LoggerFactory.getLogger(RouteLayer::class.simpleName)
 
@@ -22,6 +21,7 @@ class RouteLayer(private val map: Map, style: Style):
             route = it
         })
     }
+
     var route: PathWrapper? = null
         set(value) {
             field = value
@@ -54,10 +54,10 @@ class RouteLayer(private val map: Map, style: Style):
         logger.warn("Updated displayed route to $points")
     }
 
-    constructor(map: Map, density: Float, color: Int = Color.GREEN): this(map, defaultStyle(density, color))
+    constructor(map: Map, density: Float, color: Int = Color.GREEN) : this(map, defaultStyle(density, color))
 
     companion object {
-        fun defaultStyle(density: Float, color: Int): Style =  Style.builder()
+        fun defaultStyle(density: Float, color: Int): Style = Style.builder()
             .fixed(true)
             .generalization(Style.GENERALIZATION_SMALL)
             .strokeColor(color)
