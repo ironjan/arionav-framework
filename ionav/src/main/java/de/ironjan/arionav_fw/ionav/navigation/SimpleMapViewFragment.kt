@@ -14,9 +14,10 @@ import de.ironjan.arionav_fw.ionav.mapview.IndoorItemTapCallback
 import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
+import org.slf4j.LoggerFactory
 
 class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
-
+private val logger = LoggerFactory.getLogger(SimpleMapViewFragment::class.simpleName)
 
     private val viewModel: SimpleMapViewViewModel
         get() = mapView.viewModel
@@ -73,8 +74,8 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
                 edit_destination.setText(placeName)
                 btnStartNavigation.callOnClick()
             }
-
         }
+
     }
 
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {

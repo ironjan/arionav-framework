@@ -6,51 +6,10 @@
     app:startDestination="@id/simpleMapNavFragment">
 
     <fragment
-        android:id="@+id/mapFragment"
-        android:name="de.ironjan.arionav_fw.sample.DebugMapFragment"
-        tools:layout="@layout/fragment_map"
-        android:label="MapFragment" >
-
-        <action
-            android:id="@+id/action_to_mapFragment"
-            app:destination="@id/mapFragment" />
-
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-
-        <action
-            android:id="@+id/action_to_arViewFragment"
-            app:destination="@id/arViewFragment" />
-        <argument
-            android:name="selectedPoiCoordinate"
-            app:argType="string"
-            app:nullable="true" />
-
-        <action android:id="@+id/action_to_simple_map_nav_fragment"
-            app:destination="@+id/simpleMapNavFragment" />
-
-    </fragment>
-    <fragment
         android:id="@+id/arViewFragment"
         android:name="de.ironjan.arionav_fw.arionav.ArViewFragment"
         tools:layout="@layout/fragment_ar_view"
         android:label="ArViewFragment" >
-        <action
-            android:id="@+id/action_to_mapFragment"
-            app:destination="@id/mapFragment" />
 
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />
@@ -75,9 +34,6 @@
         android:name="de.ironjan.arionav_fw.sample.NearbyAccessPointsFragment"
         tools:layout="@layout/fragment_custom_list"
         android:label="NearbyAccessPointsFragment">
-        <action
-            android:id="@+id/action_to_mapFragment"
-            app:destination="@id/mapFragment" />
 
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />
@@ -102,10 +58,6 @@
         android:name="de.ironjan.arionav_fw.sample.NearbyBluetoothTokensFragment"
         android:label="NearbyBluetoothTokensFragment">
 
-        <action
-            android:id="@+id/action_to_mapFragment"
-            app:destination="@id/mapFragment" />
-
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />
 
@@ -128,10 +80,6 @@
     <fragment android:id="@+id/poiListFragment"
         android:name="de.ironjan.arionav_fw.sample.PlacesFragment"
         android:label="PoiListFragment" >
-
-        <action
-            android:id="@+id/action_to_mapFragment"
-            app:destination="@id/mapFragment" />
 
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />
@@ -156,11 +104,6 @@
         android:name="de.ironjan.arionav_fw.ionav.positioning.config.ProviderConfigFragment"
         android:label="ProviderConfigFragment" >
 
-
-        <action
-            android:id="@+id/action_to_mapFragment"
-            app:destination="@id/mapFragment" />
-
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />
 
@@ -183,10 +126,6 @@
     <fragment android:id="@+id/locationHistory"
         android:name="de.ironjan.arionav_fw.ionav.positioning.debug.LocationHistoryFragment"
         android:label="LocationHistoryFragment">
-
-        <action
-            android:id="@+id/action_to_mapFragment"
-            app:destination="@id/mapFragment" />
 
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />
@@ -211,10 +150,6 @@
         android:name="de.ironjan.arionav_fw.ionav.navigation.SimpleMapViewFragment"
         android:label="fragment_simple_map_nav"
         tools:layout="@layout/fragment_simple_map_nav" >
-
-        <action
-            android:id="@+id/action_to_mapFragment"
-            app:destination="@id/mapFragment" />
 
         <action android:id="@+id/action_to_nearbyWifiApsFragment"
             app:destination="@+id/nearbyWifiAps" />

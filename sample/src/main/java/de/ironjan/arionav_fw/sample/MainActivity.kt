@@ -97,10 +97,6 @@ class MainActivity :
                 navController.navigate(R.id.action_to_simple_map_nav_fragment)
                 true
             }
-            R.id.mnuDebugMap -> {
-                navController.navigate(R.id.action_to_mapFragment)
-                true
-            }
             R.id.mnuWifiAps -> {
                 navController.navigate(R.id.action_to_nearbyWifiApsFragment)
                 true

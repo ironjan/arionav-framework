@@ -61,7 +61,7 @@ class ArViewFragment : Fragment() {
     private val FiveSecondsInMillis = 5000
 
     private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
-        model.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+        model.remainingRoute.observe(lifecycleOwner, Observer {
             if(!locationSceneIsSetUp) return@Observer
 
             val currentTime = System.currentTimeMillis()
@@ -208,7 +208,7 @@ class ArViewFragment : Fragment() {
         locationScene = LocationScene(lActivity, ar_scene_view)
 
 
-        val route = model.getRemainingRouteLiveData().value
+        val route = model.remainingRoute.value
 
         val instruction = route
             ?.instructions

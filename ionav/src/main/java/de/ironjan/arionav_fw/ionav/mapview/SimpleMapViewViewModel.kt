@@ -1,11 +1,14 @@
 package de.ironjan.arionav_fw.ionav.mapview
 
+import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
+import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
+import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
@@ -17,13 +20,13 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
     private lateinit var routingService: RoutingService
     private lateinit var navigationService: NavigationService
+
     private lateinit var positioningService: PositioningService
 
     fun initialize(ionavContainer: IonavContainer) {
         routingService = ionavContainer.routingService
         positioningService = ionavContainer.positioningService
         navigationService = ionavContainer.navigationService
-
 
 
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
@@ -44,7 +47,11 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
                 updateInitializationStatus()
             }
         })
+
+
+        loadIndoorData(ionavContainer.osmFilePath)
     }
+
 
     // region initialization status
     private val _routingStatus: MutableLiveData<RoutingService.Status> = MutableLiveData(RoutingService.Status.UNINITIALIZED)
@@ -111,9 +118,8 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     }
 
 
-
-  // region level
-  private val _selectedLevel = MutableLiveData(0)
+    // region level
+    private val _selectedLevel = MutableLiveData(0)
     val selectedLevel: LiveData<Int> = _selectedLevel
 
     fun getSelectedLevel(): Int = _selectedLevel.value ?: 0
@@ -135,4 +141,22 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     // endregion
 
 
+    // region indoor data
+    val _indoorData = MutableLiveData<IndoorData>(IndoorData.empty())
+    val indoorData: LiveData<IndoorData> = _indoorData
+
+
+    private fun loadIndoorData(osmFilePath: String) {
+        val callback = object : IndoorMapDataLoadingTask.OnIndoorMapDataLoaded {
+            override fun loadCompleted(indoorData: IndoorData) {
+                _indoorData.value = indoorData
+                logger.info("Completed loading of indoor map data.")
+            }
+        }
+
+        IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+
+        logger.info("Started loading of indoor map data.")
+    }
+    // endregion
 }

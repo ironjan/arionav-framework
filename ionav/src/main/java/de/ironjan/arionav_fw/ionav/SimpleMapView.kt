@@ -2,7 +2,6 @@ package de.ironjan.arionav_fw.ionav
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.AsyncTask
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
@@ -10,8 +9,6 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav_fw.ionav.mapview.*
-import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
-import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView
@@ -83,6 +80,8 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
             indoorLayers.selectedLevel = it.toDouble()
         })
 
+        indoorLayers.observe(viewModel, lifecycleOwner)
+
     }
 
     private fun updateMarkerLayer(
@@ -114,8 +113,6 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         createAndAddLayers(tileLayer)
 
         goToMapStartPosition()
-
-        loadAndShowIndoorData(ionavContainer.osmFilePath)
 
         observeLiveData(lifecycleOwner)
     }
@@ -160,41 +157,6 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         map().layers().add(endMarkerLayer)
         map().layers().add(remainingRouteLayer)
         logger.debug("Added layers.")
-    }
-
-    private fun loadAndShowIndoorData(osmFilePath: String) {
-        val callback = object : IndoorMapDataLoadingTask.OnIndoorMapDataLoaded {
-            override fun loadCompleted(indoorData: IndoorData) {
-                showIndoorMapData(indoorData)
-            }
-
-        }
-
-        IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-
-        logger.info("Started loading of indoor map data.")
-    }
-
-    private fun showIndoorMapData(indoorData: IndoorData) {
-        logger.info("Completed loading of indoor map.")
-
-        indoorLayers.indoorData = indoorData
-        indoorLayers.selectedLevel = (viewModel.selectedLevel.value ?: 0).toDouble()
-        map().updateMap()
-    }
-
-    private fun getCenterFromOsm(osmFilePath: String): GeoPoint {
-        val readBoundsFromOsm: OsmBoundsExtractor.Bounds? = OsmBoundsExtractor.extractBoundsFromOsm(osmFilePath)
-
-        if (readBoundsFromOsm != null) {
-
-            val centerLat = (readBoundsFromOsm.minLat + readBoundsFromOsm.maxLat) / 2
-            val centerLon = (readBoundsFromOsm.minLon + readBoundsFromOsm.maxLon) / 2
-
-            return GeoPoint(centerLat, centerLon)
-        }
-
-        return GeoPoint(0, 0)
     }
 
 

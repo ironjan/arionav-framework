@@ -1,11 +1,14 @@
 package de.ironjan.arionav_fw.ionav.mapview
 
+import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
+import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
+import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
@@ -68,7 +71,6 @@ class MapViewViewModel : ViewModel(), MvvmCustomViewModel<MapViewState> {
     fun setEndCoordinate(value: Coordinate?) {
         state.endCoordinate = value
         endCoordinate.value = value
-        navigationService.destination = value
         logger.info("Updated end coordinate to $value in view model.")
         computeRoute()
     }
@@ -186,4 +188,25 @@ class MapViewViewModel : ViewModel(), MvvmCustomViewModel<MapViewState> {
     fun centerOnUserPos() {
         setMapCenter(getUserPositionLiveData().value ?: return)
     }
+
+
+
+    // region indoor data
+    val _indoorData = MutableLiveData<IndoorData>(IndoorData.empty())
+    val indoorData: LiveData<IndoorData> = _indoorData
+
+
+    private fun loadIndoorData(osmFilePath: String) {
+        val callback = object : IndoorMapDataLoadingTask.OnIndoorMapDataLoaded {
+            override fun loadCompleted(indoorData: IndoorData) {
+                _indoorData.value = indoorData
+                logger.info("Completed loading of indoor map data.")
+            }
+        }
+
+        IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+
+        logger.info("Started loading of indoor map data.")
+    }
+    // endregion
 }

@@ -12,4 +12,8 @@ class IndoorData(
     fun getWays(lvl: Double): List<IndoorWay> = indoorWays[lvl] ?: emptyList()
 
     fun getNodes(lvl: Double): List<IndoorNode> = indoorNodes[lvl] ?: emptyList()
+
+    companion object {
+        fun empty() = IndoorData(emptyMap(), emptyMap())
+    }
 }

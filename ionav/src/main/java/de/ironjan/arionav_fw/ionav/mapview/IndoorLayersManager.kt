@@ -1,6 +1,7 @@
 package de.ironjan.arionav_fw.ionav.mapview
 
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenMapExtension
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import org.oscim.backend.CanvasAdapter
@@ -25,7 +26,9 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
     ModelDrivenMapExtension<SimplifiedMapViewState, SimpleMapViewViewModel>{
 
     override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        viewModel.indoorData.observe(lifecycleOwner, Observer{
+            indoorData = it
+        })
     }
 
     var itemTapCallback = defaultTapCallback

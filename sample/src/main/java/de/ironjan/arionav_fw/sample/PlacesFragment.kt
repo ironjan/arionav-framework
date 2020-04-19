@@ -9,7 +9,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.model.NamedPlace
@@ -34,7 +33,9 @@ class PlacesFragment : Fragment() {
                 val coordinateStringOf = item.coordinate
                 var bundle = bundleOf("selectedPoiCoordinate" to coordinateStringOf)
                 logger.info("Clicked on $coordinateStringOf, i.e. $item")
-                findNavController().navigate(R.id.action_to_mapFragment, bundle)
+
+             // FIXME navigate to simple map view fragment
+                // findNavController().navigate(R.id.action_to_mapFragment, bundle)
             }
 
         }

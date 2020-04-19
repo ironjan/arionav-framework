@@ -1,7 +1,12 @@
 package de.ironjan.arionav_fw.framework.arionav.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
+import com.graphhopper.PathWrapper
+import de.ironjan.arionav_fw.ionav.IonavContainer
+import de.ironjan.arionav_fw.ionav.navigation.NavigationService
+import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 
 /**
  * Serves as a wrapper around {@see MapViewViewModel} and provides access to relevant fields. Used in Activities that
@@ -10,15 +15,18 @@ import de.ironjan.arionav_fw.ionav.mapview.MapViewViewModel
  * This approach does not follow best practices (view models should access a shared data source, not each other)
  */
 class ArExtensionViewModel: ViewModel() {
-    fun getRemainingRouteLiveData() = mapViewViewModel.getRemainingRouteLiveData()
 
-    private lateinit var mapViewViewModel: MapViewViewModel
+    private lateinit var navigationService: NavigationService
 
-    fun setMapViewViewModel(vm: MapViewViewModel) {
-        // FIXME this is a code smell!! layer arch says: shared source *below* VMs
-        if(!(::mapViewViewModel.isInitialized)) {
-            this.mapViewViewModel = vm
-        }
+    private lateinit var positioningService: PositioningService
+
+    fun initialize(ionavContainer: IonavContainer) {
+        positioningService = ionavContainer.positioningService
+        navigationService = ionavContainer.navigationService
     }
 
+
+
+    private val _remainingRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
+    val remainingRoute: LiveData<PathWrapper?> = _remainingRoute
 }
