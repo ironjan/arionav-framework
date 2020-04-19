@@ -79,16 +79,8 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
             }
         })
 
-        viewModel.getFollowUserPositionLiveData().observe(lifecycleOwner, Observer {
-            if (!it) return@Observer
 
-            viewModel.centerOnUserPos()
-        })
-
-
-        viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
-            remainingRouteLayer.route = it
-        })
+        remainingRouteLayer.observe(viewModel, lifecycleOwner)
 
         viewModel.selectedLevel.observe(lifecycleOwner, Observer {
             indoorLayers.selectedLevel = it.toDouble()

@@ -87,6 +87,8 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     fun getFollowUserPositionLiveData(): LiveData<Boolean> = followUserPosition
     fun setFollowUserPosition(b : Boolean) {
         followUserPosition.value = b
+
+        if(b) centerOnUserPos()
     }
 
     private val _selectedLevel = MutableLiveData(0)
