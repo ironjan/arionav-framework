@@ -1,10 +1,12 @@
 package de.ironjan.arionav_fw.ionav.navigation
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -18,14 +20,14 @@ import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 import org.slf4j.LoggerFactory
 
+
 open class SimpleMapViewFragment : Fragment() {
-private val logger = LoggerFactory.getLogger(SimpleMapViewFragment::class.simpleName)
+    private val logger = LoggerFactory.getLogger(SimpleMapViewFragment::class.simpleName)
 
     private val viewModel: SimpleMapViewViewModel
         get() = mapView.viewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
-            = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
 
     @SuppressLint("WrongConstant")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,6 +57,12 @@ private val logger = LoggerFactory.getLogger(SimpleMapViewFragment::class.simple
         }
 
         btnStartNavigation.setOnClickListener {
+            val activity = activity ?: return@setOnClickListener
+
+            val inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val currentFocus = activity.currentFocus
+            inputManager.hideSoftInputFromWindow(if (null == currentFocus) null else currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+
             val namedPlaces = ionavContainer.namedPlaceRepository.getPlaces().value
                 ?: return@setOnClickListener
             val destinationString = edit_destination.text.toString()
@@ -64,11 +72,12 @@ private val logger = LoggerFactory.getLogger(SimpleMapViewFragment::class.simple
                 return@setOnClickListener
             }
 
+
             ionavContainer.navigationService.destination = namedPlace.coordinate
         }
 
-        btnLevelPlus.setOnClickListener { viewModel.increaseLevel()}
-        btnLevelMinus.setOnClickListener { viewModel.decreaseLevel()}
+        btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
+        btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
 
         mapView.itemTapCallback = object : IndoorItemTapCallback {
             override fun singleTap(placeName: String) {
@@ -90,7 +99,7 @@ private val logger = LoggerFactory.getLogger(SimpleMapViewFragment::class.simple
         viewModel.initializationStatus.observe(lifecycleOwner, Observer {
             val isLoading = it != SimpleMapViewViewModel.InitializationStatus.INITIALIZED
 
-            progress.visibility = if(isLoading) View.VISIBLE else View.GONE
+            progress.visibility = if (isLoading) View.VISIBLE else View.GONE
 
             progress.isIndeterminate = isLoading
         })
