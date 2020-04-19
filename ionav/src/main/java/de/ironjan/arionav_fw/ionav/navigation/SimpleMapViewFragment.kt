@@ -79,11 +79,14 @@ class SimpleMapViewFragment : Fragment(R.layout.fragment_simple_map_nav) {
 
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {
         viewModel.selectedLevel.observe(lifecycleOwner, Observer { txtLevel.text = it.toString() })
-        viewModel.routingStatus.observe(lifecycleOwner, Observer {
-            when(it) {
-                RoutingService.Status.READY -> btnStartNavigation.isEnabled = true
-                else -> btnStartNavigation.isEnabled = false
-            }
+        viewModel.routingStatus.observe(lifecycleOwner, Observer { btnStartNavigation.isEnabled = (it == RoutingService.Status.READY) })
+
+        viewModel.initializationStatus.observe(lifecycleOwner, Observer {
+            val isLoading = it != SimpleMapViewViewModel.InitializationStatus.INITIALIZED
+
+            progress.visibility = if(isLoading) View.VISIBLE else View.GONE
+
+            progress.isIndeterminate = isLoading
         })
     }
 

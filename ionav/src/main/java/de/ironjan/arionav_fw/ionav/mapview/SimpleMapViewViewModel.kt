@@ -19,11 +19,12 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     private lateinit var navigationService: NavigationService
     private lateinit var positioningService: PositioningService
 
-    fun initialize(ionavContainer: IonavContainer){
+    fun initialize(ionavContainer: IonavContainer) {
         routingService = ionavContainer.routingService
         positioningService = ionavContainer.positioningService
         navigationService = ionavContainer.navigationService
-        navigationService.registerObserver(object:NavigationService.NavigationServiceObserver{
+
+        navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
             override fun update(value: Coordinate?) {
                 state.endCoordinate = value
                 endCoordinate.value = value
@@ -31,28 +32,46 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
             }
 
             override fun update(remainingRoute: PathWrapper?) {
-                    this@SimpleMapViewViewModel.remainingRoute.value = remainingRoute
+                this@SimpleMapViewViewModel.remainingRoute.value = remainingRoute
             }
         })
 
         routingService.registerObserver(object : RoutingService.RoutingServiceStatusObserver {
             override fun update(v: RoutingService.Status) {
                 _routingStatus.value = v
+                updateInitializationStatus()
             }
         })
     }
 
+    // region initialization status
     private val _routingStatus: MutableLiveData<RoutingService.Status> = MutableLiveData(RoutingService.Status.UNINITIALIZED)
     val routingStatus: LiveData<RoutingService.Status> = _routingStatus
 
+
+    private fun updateInitializationStatus() {
+        // FIXME initialized = indoor here, places loaded
+        val routingStatusReady = _routingStatus.value == RoutingService.Status.READY
+        _initializationStatus.value =
+            if (routingStatusReady) InitializationStatus.INITIALIZED
+            else InitializationStatus.UNINITIALIZED
+    }
+
+
+    private val _initializationStatus: MutableLiveData<InitializationStatus> = MutableLiveData(InitializationStatus.UNINITIALIZED)
+    val initializationStatus: LiveData<InitializationStatus> = _initializationStatus
+
+    enum class InitializationStatus {
+        UNINITIALIZED, INITIALIZED
+    }
+    // endregion
+
+
     // FIXME should be IPositionObserver instead
-    private var positionProvider: IPositionProvider ?= null
+    private var positionProvider: IPositionProvider? = null
 
 
     override var state: SimplifiedMapViewState = SimplifiedMapViewState()
-
-
-
 
 
     private val endCoordinate: MutableLiveData<Coordinate?> = MutableLiveData()
@@ -85,10 +104,10 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
     private val followUserPosition: MutableLiveData<Boolean> = MutableLiveData(false)
     fun getFollowUserPositionLiveData(): LiveData<Boolean> = followUserPosition
-    fun setFollowUserPosition(b : Boolean) {
+    fun setFollowUserPosition(b: Boolean) {
         followUserPosition.value = b
 
-        if(b) centerOnUserPos()
+        if (b) centerOnUserPos()
     }
 
     private val _selectedLevel = MutableLiveData(0)
@@ -99,7 +118,6 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     }
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
-
 
 
     private fun computeRoute() {
@@ -121,9 +139,6 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
         currentRoute.value = routingService.route(lStartCoordinate, lEndCoordinate)
     }
-
-
-
 
 
     private val mapCenter: MutableLiveData<Coordinate?> = MutableLiveData(null)
