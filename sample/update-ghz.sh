@@ -1,4 +1,4 @@
-MAP_FOLDER="$HOME/projects/mapping"
+MAP_FOLDER="$HOME/projects/maps"
 NAME="uni_paderborn"
 OSM="$MAP_FOLDER/${NAME}.osm"
 GH_FOLDER="$MAP_FOLDER/${NAME}-gh/"
