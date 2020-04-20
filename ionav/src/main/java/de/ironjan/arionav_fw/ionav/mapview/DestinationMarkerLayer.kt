@@ -20,7 +20,7 @@ class DestinationMarkerLayer(private val map: Map, private val markerDrawable: D
 
 
     override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
-        viewModel.getEndCoordinateLifeData().observe(lifecycleOwner, Observer {
+        viewModel.destination.observe(lifecycleOwner, Observer {
             updateMarkerLayer(it, "destination")
 
             logger.debug("Updated end coordinate in view to $it.")

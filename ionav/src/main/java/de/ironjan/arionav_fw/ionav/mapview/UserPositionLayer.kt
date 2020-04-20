@@ -11,7 +11,7 @@ class UserPositionLayer(private val map: Map)
 
 
     override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner){
-        viewModel.getUserPositionLiveData().observe(lifecycleOwner, Observer {
+        viewModel.userLocation.observe(lifecycleOwner, Observer {
             if(it == null) {
                 map.layers().remove(this)
             }else {

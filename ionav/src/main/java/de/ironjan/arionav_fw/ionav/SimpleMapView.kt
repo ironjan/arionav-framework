@@ -65,7 +65,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
 
         userPositionLayer?.observe(viewModel, lifecycleOwner)
 
-        viewModel.getMapCenterLiveData().observe(lifecycleOwner, Observer {
+        viewModel.mapCenter.observe(lifecycleOwner, Observer {
             if (viewModel.getFollowUserPositionLiveData().value == true
                 && it != null
             ) {

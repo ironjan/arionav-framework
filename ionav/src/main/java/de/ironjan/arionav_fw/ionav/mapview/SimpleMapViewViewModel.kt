@@ -10,6 +10,7 @@ import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
+import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
@@ -18,10 +19,19 @@ import org.slf4j.LoggerFactory
 
 class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> {
 
+    private val logger = LoggerFactory.getLogger("MapViewViewModel")
+
+    // region backing services
     private lateinit var routingService: RoutingService
     private lateinit var navigationService: NavigationService
-
     private lateinit var positioningService: PositioningService
+    //endregion
+
+    // region backing state
+    override var state: SimplifiedMapViewState = SimplifiedMapViewState()
+    // endregion
+
+    // region initialization
 
     fun initialize(ionavContainer: IonavContainer) {
         routingService = ionavContainer.routingService
@@ -32,12 +42,12 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
             override fun update(value: Coordinate?) {
                 state.endCoordinate = value
-                endCoordinate.value = value
+                _destination.value = value
                 logger.info("Updated destination to $value in view model.")
             }
 
             override fun update(remainingRoute: PathWrapper?) {
-                this@SimpleMapViewViewModel.remainingRoute.value = remainingRoute
+                this@SimpleMapViewViewModel._route.value = remainingRoute
             }
         })
 
@@ -48,21 +58,31 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
             }
         })
 
+        positioningService.registerObserver(object : IPositionObserver {
+            override fun update(t: IonavLocation?) {
+                _userLocationLiveData.value = t
+                _userLocation = t
+            }
+        })
+
 
         loadIndoorData(ionavContainer.osmFilePath)
     }
 
 
-    // region initialization status
     private val _routingStatus: MutableLiveData<RoutingService.Status> = MutableLiveData(RoutingService.Status.UNINITIALIZED)
     val routingStatus: LiveData<RoutingService.Status> = _routingStatus
 
 
     private fun updateInitializationStatus() {
-        // FIXME initialized = indoor here, places loaded
+        // FIXME initialized = places loaded
         val routingStatusReady = _routingStatus.value == RoutingService.Status.READY
+
+        val allReady = routingStatusReady
+                && _isIndoorDataLoaded
+
         _initializationStatus.value =
-            if (routingStatusReady) InitializationStatus.INITIALIZED
+            if (allReady) InitializationStatus.INITIALIZED
             else InitializationStatus.UNINITIALIZED
     }
 
@@ -76,24 +96,21 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     // endregion
 
 
-    override var state: SimplifiedMapViewState = SimplifiedMapViewState()
+    // region destination
+    private val _destination: MutableLiveData<Coordinate?> = MutableLiveData()
 
-
-    private val endCoordinate: MutableLiveData<Coordinate?> = MutableLiveData()
-
-    fun getEndCoordinateLifeData(): LiveData<Coordinate?> = endCoordinate
+    val destination: LiveData<Coordinate?> = _destination
 
     fun setDestination(value: Coordinate?) {
         navigationService.destination = value
     }
 
+    // endregion
 
-    fun getUserPositionLiveData(): LiveData<IonavLocation?> = positioningService.lastKnownLocation
-
-
-    private val remainingRoute: MutableLiveData<PathWrapper?> = MutableLiveData()
-    fun getRemainingRouteLiveData(): LiveData<PathWrapper?> = remainingRoute
-
+    // region user location
+    private var _userLocation: IonavLocation? = null
+    private val _userLocationLiveData: MutableLiveData<IonavLocation?> = MutableLiveData()
+    val userLocation: LiveData<IonavLocation?> = _userLocationLiveData
 
     private val followUserPosition: MutableLiveData<Boolean> = MutableLiveData(false)
     fun getFollowUserPositionLiveData(): LiveData<Boolean> = followUserPosition
@@ -102,20 +119,26 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
         if (b) centerOnUserPos()
     }
+    // endregion
 
-
-    private val logger = LoggerFactory.getLogger("MapViewViewModel")
-
-
-    private val mapCenter: MutableLiveData<Coordinate?> = MutableLiveData(null)
-    fun getMapCenterLiveData(): LiveData<Coordinate?> = mapCenter
-    private fun setMapCenter(c: IonavLocation) {
-        mapCenter.value = c
-    }
-
+    // region map center
     private fun centerOnUserPos() {
-        setMapCenter(getUserPositionLiveData().value ?: return)
+        setMapCenter(_userLocation ?: return)
     }
+
+
+    private val _mapCenter: MutableLiveData<Coordinate?> = MutableLiveData(null)
+    val mapCenter = _mapCenter
+    private fun setMapCenter(c: IonavLocation) {
+        _mapCenter.value = c
+    }
+
+    // endregion
+
+    // region route
+    private val _route: MutableLiveData<PathWrapper?> = MutableLiveData()
+    val route: LiveData<PathWrapper?> = _route
+    // endregion
 
 
     // region level
@@ -142,14 +165,16 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
 
     // region indoor data
-    val _indoorData = MutableLiveData<IndoorData>(IndoorData.empty())
+    private val _indoorData = MutableLiveData<IndoorData>(IndoorData.empty())
     val indoorData: LiveData<IndoorData> = _indoorData
 
+    private var _isIndoorDataLoaded = false
 
     private fun loadIndoorData(osmFilePath: String) {
         val callback = object : IndoorMapDataLoadingTask.OnIndoorMapDataLoaded {
             override fun loadCompleted(indoorData: IndoorData) {
                 _indoorData.value = indoorData
+                _isIndoorDataLoaded = true
                 logger.info("Completed loading of indoor map data.")
             }
         }

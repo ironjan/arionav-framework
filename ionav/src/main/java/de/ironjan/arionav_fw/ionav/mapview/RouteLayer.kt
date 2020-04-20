@@ -17,7 +17,7 @@ class RouteLayer(private val map: Map, style: Style) : PathLayer(map, style),
     private val logger = LoggerFactory.getLogger(RouteLayer::class.simpleName)
 
     override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
-        viewModel.getRemainingRouteLiveData().observe(lifecycleOwner, Observer {
+        viewModel.route.observe(lifecycleOwner, Observer {
             route = it
         })
     }
