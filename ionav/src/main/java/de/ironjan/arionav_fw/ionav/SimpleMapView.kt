@@ -225,5 +225,10 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         redrawMap()
     }
 
+    fun centerOnUser() {
+        val coordinate = viewModel.userLocation.value ?: return
+        centerOn(coordinate)
+    }
+
 
 }

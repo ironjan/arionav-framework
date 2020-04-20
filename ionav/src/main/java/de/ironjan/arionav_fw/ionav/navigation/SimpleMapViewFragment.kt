@@ -39,21 +39,46 @@ open class SimpleMapViewFragment : Fragment() {
         val ionavContainer = (activity?.application as IonavContainerHolder).ionavContainer
         mapView.initialize(ionavContainer)
 
+        val navigationService = ionavContainer.navigationService
 
         observeViewModel(lifecycleOwner)
-
-
         bindSuggestions(lifecycleOwner)
 
-        btnCenterOnUser.setOnClickListener {
-            val coordinate =
-                ionavContainer.positioningService
-                    .lastKnownLocation
-                    .value
-                    ?.coordinate
-                    ?: return@setOnClickListener
+        bindOnClickListeners(navigationService)
 
-            mapView.centerOn(coordinate)
+        bindMapItemTapListener()
+    }
+
+    private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
+        val context = context ?: return
+
+        val endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
+        edit_destination.setAdapter(endSuggestionsAdapter)
+
+        viewModel.indoorData.observe(lifecycleOwner, Observer {
+            endSuggestionsAdapter.apply {
+                clear()
+                addAll(it.names)
+            }
+        })
+    }
+
+    private fun observeViewModel(lifecycleOwner: LifecycleOwner) {
+        viewModel.selectedLevel.observe(lifecycleOwner, Observer { txtLevel.text = it.toString() })
+        viewModel.routingStatus.observe(lifecycleOwner, Observer { btnStartNavigation.isEnabled = (it == RoutingService.Status.READY) })
+
+        viewModel.initializationStatus.observe(lifecycleOwner, Observer {
+            val isLoading = it != SimpleMapViewViewModel.InitializationStatus.INITIALIZED
+
+            progress.visibility = if (isLoading) View.VISIBLE else View.GONE
+
+            progress.isIndeterminate = isLoading
+        })
+    }
+
+    private fun bindOnClickListeners(navigationService: NavigationService) {
+        btnCenterOnUser.setOnClickListener {
+            mapView.centerOnUser()
         }
 
         btnStartNavigation.setOnClickListener {
@@ -73,12 +98,14 @@ open class SimpleMapViewFragment : Fragment() {
             }
 
 
-            ionavContainer.navigationService.destination = namedPlace.center
+            navigationService.destination = namedPlace.center
         }
 
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
+    }
 
+    private fun bindMapItemTapListener() {
         mapView.itemTapCallback = object : IndoorItemTapCallback {
             override fun singleTap(placeName: String) {
                 edit_destination.setText(placeName)
@@ -89,34 +116,6 @@ open class SimpleMapViewFragment : Fragment() {
                 btnStartNavigation.callOnClick()
             }
         }
-
-    }
-
-    private fun observeViewModel(lifecycleOwner: LifecycleOwner) {
-        viewModel.selectedLevel.observe(lifecycleOwner, Observer { txtLevel.text = it.toString() })
-        viewModel.routingStatus.observe(lifecycleOwner, Observer { btnStartNavigation.isEnabled = (it == RoutingService.Status.READY) })
-
-        viewModel.initializationStatus.observe(lifecycleOwner, Observer {
-            val isLoading = it != SimpleMapViewViewModel.InitializationStatus.INITIALIZED
-
-            progress.visibility = if (isLoading) View.VISIBLE else View.GONE
-
-            progress.isIndeterminate = isLoading
-        })
-    }
-
-    private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
-        val context = context ?: return
-
-        val endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
-        edit_destination.setAdapter(endSuggestionsAdapter)
-
-        viewModel.indoorData.observe(lifecycleOwner, Observer {
-            endSuggestionsAdapter.apply {
-                clear()
-                addAll(it.names)
-            }
-        })
     }
 
 
