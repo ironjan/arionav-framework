@@ -43,7 +43,7 @@ open class SimpleMapViewFragment : Fragment() {
         observeViewModel(lifecycleOwner)
 
 
-        loadSuggestions(lifecycleOwner)
+        bindSuggestions(lifecycleOwner)
 
         btnCenterOnUser.setOnClickListener {
             val coordinate =
@@ -105,27 +105,18 @@ open class SimpleMapViewFragment : Fragment() {
         })
     }
 
-    private fun loadSuggestions(lifecycleOwner: LifecycleOwner) {
+    private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
         val context = context ?: return
 
         val endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
         edit_destination.setAdapter(endSuggestionsAdapter)
 
-        when (val application = activity?.application) {
-            is IonavContainerHolder -> {
-                val placesLiveData = application.ionavContainer.namedPlaceRepository
-                    .getPlaces()
-                placesLiveData.observe(lifecycleOwner, Observer {
-                    endSuggestionsAdapter.apply {
-                        clear()
-                        addAll(it.keys)
-                    }
-                })
+        viewModel.indoorData.observe(lifecycleOwner, Observer {
+            endSuggestionsAdapter.apply {
+                clear()
+                addAll(it.names)
             }
-            else -> {
-            }
-        }
-
+        })
     }
 
 

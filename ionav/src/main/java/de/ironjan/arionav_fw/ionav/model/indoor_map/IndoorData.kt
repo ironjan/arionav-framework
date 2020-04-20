@@ -9,11 +9,11 @@ class IndoorData(
     private val nodes: List<Node>
 ) {
     private val logger = LoggerFactory.getLogger(IndoorData::class.simpleName)
-
     private val indoorNodes = nodes.map {
         val lvl = it.tags["level"]?.toDoubleOrNull() ?: 0.0
         IndoorNode(it.id, it.lat, it.lon, lvl, it.tags)
     }
+
     private val indoorWays = ways.map {
         val lvl = it.tags["level"]?.toDoubleOrNull() ?: 0.0
         val nodeRefs = it.nodeRefs.mapNotNull { nr ->
@@ -21,9 +21,13 @@ class IndoorData(
         }
         IndoorWay(it.id, lvl, nodeRefs, it.tags)
     }
-
     private val indoorWaysByLevel = indoorWays.groupBy { it.lvl }
+
     private val indoorNodesByLevel = indoorNodes.groupBy { it.lvl }
+
+
+    val names = indoorNodes.map { it.name }
+        .union(indoorWays.map { it.name })
 
 
 
