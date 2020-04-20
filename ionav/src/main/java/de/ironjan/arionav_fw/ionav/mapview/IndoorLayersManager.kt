@@ -127,7 +127,7 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
             val bitmap = CanvasAdapter.newBitmap((42 * CanvasAdapter.getScale()).toInt(), (20 * CanvasAdapter.getScale()).toInt(), 0)
             canvas.setBitmap(bitmap)
-            canvas.fillColor(Color.GREEN)
+            canvas.fillColor(Color.GRAY)
 
             canvas.drawText(it.name, 3 * CanvasAdapter.getScale(), 17 * CanvasAdapter.getScale(), paint)
 
