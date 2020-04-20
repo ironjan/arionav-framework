@@ -10,6 +10,24 @@
         tools:layout="@layout/ar_enabled_map_view"
         android:label="ArEnabledMapViewFragment">
 
+        
+        <action android:id="@+id/action_to_nearbyWifiApsFragment"
+            app:destination="@+id/nearbyWifiAps" />
+
+        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
+            app:destination="@+id/nearbyBluetoothTokensFragment" />
+
+        <action android:id="@+id/action_to_poiListFragment"
+            app:destination="@+id/poiListFragment" />
+
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
+
+        <action android:id="@+id/action_to_locationHistory"
+            app:destination="@+id/locationHistory" />
+
+        <action android:id="@+id/action_to_simple_map_nav_fragment"
+            app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/arViewFragment"
@@ -33,7 +51,7 @@
             app:destination="@+id/locationHistory" />
 
         <action android:id="@+id/action_to_simple_map_nav_fragment"
-            app:destination="@+id/simpleMapNavFragment" />
+            app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
 
     <fragment android:id="@+id/nearbyWifiAps"
@@ -57,7 +75,7 @@
             app:destination="@+id/locationHistory" />
 
         <action android:id="@+id/action_to_simple_map_nav_fragment"
-            app:destination="@+id/simpleMapNavFragment" />
+            app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/nearbyBluetoothTokensFragment"
@@ -80,7 +98,7 @@
             app:destination="@+id/locationHistory" />
 
         <action android:id="@+id/action_to_simple_map_nav_fragment"
-            app:destination="@+id/simpleMapNavFragment" />
+            app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
 
     <fragment android:id="@+id/poiListFragment"
@@ -103,7 +121,7 @@
             app:destination="@+id/locationHistory" />
 
         <action android:id="@+id/action_to_simple_map_nav_fragment"
-            app:destination="@+id/simpleMapNavFragment" />
+            app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
 
     <fragment android:id="@+id/providerConfig"
@@ -126,7 +144,7 @@
             app:destination="@+id/locationHistory" />
 
         <action android:id="@+id/action_to_simple_map_nav_fragment"
-            app:destination="@+id/simpleMapNavFragment" />
+            app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
 
     <fragment android:id="@+id/locationHistory"
@@ -149,10 +167,10 @@
             app:destination="@+id/locationHistory" />
 
         <action android:id="@+id/action_to_simple_map_nav_fragment"
-            app:destination="@+id/simpleMapNavFragment" />
+            app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
     <fragment
-        android:id="@+id/simpleMapNavFragment"
+        android:id="@+id/arEnabledMapViewFragment"
         android:name="de.ironjan.arionav_fw.ionav.navigation.SimpleMapViewFragment"
         android:label="fragment_simple_map_nav"
         tools:layout="@layout/fragment_simple_map_nav" >
@@ -173,6 +191,6 @@
             app:destination="@+id/locationHistory" />
 
         <action android:id="@+id/action_to_simple_map_nav_fragment"
-            app:destination="@+id/simpleMapNavFragment" />
+            app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
 </navigation>
