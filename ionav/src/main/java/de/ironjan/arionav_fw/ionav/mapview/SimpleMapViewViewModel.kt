@@ -51,6 +51,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
             }
         })
 
+        _routingStatus.value = routingService.status
         routingService.registerObserver(object : RoutingService.RoutingServiceStatusObserver {
             override fun update(v: RoutingService.Status) {
                 _routingStatus.value = v
@@ -75,7 +76,6 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
 
     private fun updateInitializationStatus() {
-        // FIXME initialized = places loaded
         val routingStatusReady = _routingStatus.value == RoutingService.Status.READY
 
         val allReady = routingStatusReady
