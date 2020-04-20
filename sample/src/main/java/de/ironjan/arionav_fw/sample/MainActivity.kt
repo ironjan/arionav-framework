@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
@@ -23,6 +24,7 @@ import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositioningPro
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProvider
 import de.ironjan.arionav_fw.sample.util.Mailer
+import de.ironjan.arionav_fw.sample.util.PreferenceKeys
 import kotlinx.android.synthetic.main.activity_main.*
 
 // todo initialize spinner with level data
@@ -176,6 +178,8 @@ class MainActivity :
         }
     }
 
+
+
     private fun initializePositioningService() {
         val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
 
@@ -187,8 +191,23 @@ class MainActivity :
         positioningService.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
         positioningService.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
 
-        positioningService.registerProvider(bluetoothProviderImplementation, false)
-        positioningService.registerProvider(wifiPositioningProvider, false)
-        positioningService.registerProvider(gpsPositionProvider, true)
+        val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+        val enabledBluetooth = sharedPref.getBoolean(PreferenceKeys.ENABLED_BLUETOOTH, false)
+        val enabledWifi = sharedPref.getBoolean(PreferenceKeys.ENABLED_WIFI,false)
+        val enabledGps = sharedPref.getBoolean(PreferenceKeys.ENABLED_GPS, true)
+
+
+        positioningService.registerProvider(bluetoothProviderImplementation, enabledBluetooth)
+        positioningService.registerProvider(wifiPositioningProvider, enabledWifi)
+        positioningService.registerProvider(gpsPositionProvider, enabledGps)
+
+
+        val prioBluetooth = sharedPref.getInt(PreferenceKeys.PRIORITY_BLUETOOTH,0)
+        val prioWifi = sharedPref.getInt(PreferenceKeys.PRIORITY_WIFI,1)
+        val prioGps = sharedPref.getInt(PreferenceKeys.PRIORITY_GPS,2)
+
+        positioningService.setPriority(prioBluetooth, bluetoothProviderImplementation)
+        positioningService.setPriority(prioWifi, wifiPositioningProvider)
+        positioningService.setPriority(prioGps, gpsPositionProvider)
     }
 }

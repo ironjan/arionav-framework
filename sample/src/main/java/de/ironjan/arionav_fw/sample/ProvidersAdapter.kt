@@ -1,18 +1,21 @@
-package de.ironjan.arionav_fw.ionav.positioning.config
+package de.ironjan.arionav_fw.sample
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import kotlinx.android.synthetic.main.view_fragment_config_list_item.view.*
 
-class ProvidersAdapter(private val lifecycleOwner: LifecycleOwner,
-                       private val positioningService: PositioningService) :
+class ProvidersAdapter(
+    lifecycleOwner: LifecycleOwner,
+    positioningService: PositioningService,
+    private val onCheckboxClickCallback: OnCheckboxClickCallback
+) :
     RecyclerView.Adapter<ProvidersAdapter.MyViewHolder>() {
     private var displayedData: List<IPositionProvider> = listOf()
 
@@ -42,14 +45,12 @@ class ProvidersAdapter(private val lifecycleOwner: LifecycleOwner,
         val checkboxEnabled = holder.view.checkbox_enabled
         checkboxEnabled.isChecked = iPositionProvider.enabled
         checkboxEnabled.setOnClickListener {
-            if (it.isEnabled) {
-                if(!iPositionProvider.enabled) {
-                    iPositionProvider.start()
-                }
-            } else if(iPositionProvider.enabled) {
-                    iPositionProvider.stop()
-            }
+            onCheckboxClickCallback.onClick(iPositionProvider, (it as CheckBox).isChecked)
         }
+    }
+
+    interface OnCheckboxClickCallback {
+        fun onClick(iPositionProvider: IPositionProvider, newState: Boolean)
     }
 
 }

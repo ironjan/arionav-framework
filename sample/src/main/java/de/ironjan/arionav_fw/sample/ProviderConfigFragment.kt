@@ -1,25 +1,22 @@
-package de.ironjan.arionav_fw.ionav.positioning.config
+package de.ironjan.arionav_fw.sample
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
-import de.ironjan.arionav_fw.ionav.R
-import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
+import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
+import de.ironjan.arionav_fw.sample.util.PreferenceKeys
+import kotlinx.android.synthetic.main.fragment_recycler_view.*
 
-class ProviderConfigFragment : Fragment() {
+class ProviderConfigFragment : Fragment(R.layout.fragment_recycler_view) {
 
     private lateinit var providersAdapter: ProvidersAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_with_recycler_view, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -30,7 +27,21 @@ class ProviderConfigFragment : Fragment() {
         } ?: return
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-        providersAdapter = ProvidersAdapter(lifecycleOwner, positioningService)
+
+        val sdg = object : ProvidersAdapter.OnCheckboxClickCallback {
+            override fun onClick(iPositionProvider: IPositionProvider, newState: Boolean) {
+                if(newState == iPositionProvider.enabled) return
+
+                if (newState) {
+                    iPositionProvider.start()
+                }else {
+                    iPositionProvider.stop()
+                }
+                updatePreferences()
+            }
+
+        }
+        providersAdapter = ProvidersAdapter(lifecycleOwner, positioningService, sdg)
 
 
         val context = context ?: return
@@ -50,12 +61,36 @@ class ProviderConfigFragment : Fragment() {
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 positioningService.swapPriorities(viewHolder.adapterPosition, target.adapterPosition)
+                updatePreferences()
                 return true
             }
         })
         itemTouchHelper.attachToRecyclerView(recycler_view)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        updatePreferences()
+    }
+
+    private fun updatePreferences() {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val edit = sharedPref.edit()
+
+        val positioningService = (activity?.application as ArionavSampleApplication).ionavContainer.positioningService ?: return
 
 
+        val providersList = positioningService.providers.value ?: return
+        providersList.mapIndexed { priority, provider ->
+            provider.name + provider.enabled
+            val enabledKey = PreferenceKeys.enabledKey(provider.name)
+            val priorityKey = PreferenceKeys.priorityKey(provider.name)
+
+            edit.putBoolean(enabledKey, provider.enabled)
+            edit.putInt(priorityKey, priority)
+        }
+        edit.apply()
     }
 }
 

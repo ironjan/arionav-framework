@@ -123,6 +123,11 @@ class PositioningService : IPositionObservable {
         _providers.forEach { logger.warn(it.name) }
     }
 
+    fun setPriority(prio: Int, provider: IPositionProvider) {
+        _providers.remove(provider)
+        _providers.add(prio, provider)
+    }
+
     fun getProvider(name: String): IPositionProvider? {
         return _providers.filter { it.name == name }.firstOrNull()
     }
