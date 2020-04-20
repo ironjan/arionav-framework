@@ -33,7 +33,7 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
     var itemTapCallback = defaultTapCallback
 
-    var indoorData = IndoorData(emptyMap(), emptyMap())
+    var indoorData = IndoorData.empty()
         set(value) {
             field = value
             levelsToDrawableLayers = prepareDrawableLayers(value)

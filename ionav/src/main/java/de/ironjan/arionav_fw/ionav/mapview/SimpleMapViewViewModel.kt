@@ -175,6 +175,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
             override fun loadCompleted(indoorData: IndoorData) {
                 _indoorData.value = indoorData
                 _isIndoorDataLoaded = true
+                updateInitializationStatus()
                 logger.info("Completed loading of indoor map data.")
             }
         }

@@ -2,8 +2,6 @@ package de.ironjan.arionav_fw.ionav.model.readers
 
 import android.os.AsyncTask
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
-import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorNode
-import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorWay
 import de.ironjan.arionav_fw.ionav.model.osm.Node
 import de.ironjan.arionav_fw.ionav.model.osm.Way
 import org.slf4j.LoggerFactory
@@ -54,23 +52,8 @@ class IndoorDataReader : OsmReader() {
         nodes: List<Node>
     ): IndoorData {
 
-        val indoorNodes = nodes.map {
-            val lvl = it.tags["level"]?.toDoubleOrNull() ?: 0.0
-            IndoorNode(it.id, it.lat, it.lon, lvl, it.tags)
-        }
 
-        val indoorWaysByLevel = ways.map {
-            val lvl = it.tags["level"]?.toDoubleOrNull() ?: 0.0
-            val nodeRefs = it.nodeRefs.map { nr -> indoorNodes.find { n -> n.id == nr } }.filterNotNull()
-            IndoorWay(it.id, lvl, nodeRefs, it.tags)
-        }.groupBy { it.lvl }
-
-        val indoorNodesByLevel = indoorNodes.groupBy { it.lvl }
-
-        val indoorWaysByLevelCount = indoorNodesByLevel.map { Pair(it.key ,it.value.count()) }.sortedBy { it.first }.joinToString( ", ")
-        logger.info("Ways per level: $indoorWaysByLevelCount")
-
-        return IndoorData(indoorWaysByLevel, indoorNodesByLevel)
+        return IndoorData(ways, nodes)
     }
 }
 

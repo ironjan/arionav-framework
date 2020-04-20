@@ -1,5 +1,7 @@
 package de.ironjan.arionav_fw.ionav.model.indoor_map
 
+import de.ironjan.graphhopper.extensions_core.Coordinate
+
 data class IndoorWay(
     val id: Long,
     val lvl: Double,
@@ -9,6 +11,7 @@ data class IndoorWay(
 
     val centerLat: Double = nodeRefs.map { it.lat }.sum() / nodeRefs.count()
     val centerLon: Double = nodeRefs.map { it.lon }.sum() / nodeRefs.count()
+    val center = Coordinate(centerLat, centerLon, lvl)
 
     val type: String = tags["indoor"] ?: ""
     val name: String = tags["name"] ?: ""

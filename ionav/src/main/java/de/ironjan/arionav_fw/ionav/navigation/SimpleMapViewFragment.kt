@@ -63,17 +63,17 @@ open class SimpleMapViewFragment : Fragment() {
             val currentFocus = activity.currentFocus
             inputManager.hideSoftInputFromWindow(if (null == currentFocus) null else currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
-            val namedPlaces = ionavContainer.namedPlaceRepository.getPlaces().value
+            val namedPlaces = viewModel.indoorData.value
                 ?: return@setOnClickListener
             val destinationString = edit_destination.text.toString()
-            val namedPlace = namedPlaces[destinationString]
+            val namedPlace = namedPlaces.getWayByName(destinationString)
             if (namedPlace == null) {
                 Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
 
-            ionavContainer.navigationService.destination = namedPlace.coordinate
+            ionavContainer.navigationService.destination = namedPlace.center
         }
 
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
