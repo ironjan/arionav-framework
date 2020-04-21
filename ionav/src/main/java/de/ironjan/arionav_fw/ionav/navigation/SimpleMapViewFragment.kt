@@ -32,12 +32,17 @@ open class SimpleMapViewFragment : Fragment() {
     @SuppressLint("WrongConstant")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mapView.viewModel = viewModel
+
+        val ionavContainer = (activity?.application as IonavContainerHolder).ionavContainer
+
+
+
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
         mapView.onLifecycleOwnerAttached(lifecycleOwner)
 
-        val ionavContainer = (activity?.application as IonavContainerHolder).ionavContainer
-        mapView.initialize(ionavContainer)
+            mapView.initialize(ionavContainer)
 
         val navigationService = ionavContainer.navigationService
 

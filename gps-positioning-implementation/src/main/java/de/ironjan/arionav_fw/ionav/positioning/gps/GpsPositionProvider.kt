@@ -50,6 +50,7 @@ open class GpsPositionProvider(
 
             location ?: return
 
+
             if (isBetterLocation(location, currentBestLocation)) {
                 currentBestLocation = location
                 // FIXME level...
@@ -91,6 +92,7 @@ open class GpsPositionProvider(
             val timeDelta: Long = location.time - currentBestLocation.time
             val isSignificantlyNewer: Boolean = timeDelta > TWO_MINUTES
             val isSignificantlyOlder: Boolean = timeDelta < -TWO_MINUTES
+
 
             when {
                 // If it's been more than two minutes since the current location, use the new location

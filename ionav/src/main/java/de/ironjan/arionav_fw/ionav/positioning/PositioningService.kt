@@ -51,6 +51,13 @@ class PositioningService : IPositionObservable {
 
     private fun updateLastLocation(c: IonavLocation?) {
         logger.warn("Received update: $c")
+
+//        if(c == null) return
+//        if(System.currentTimeMillis() - c.timestamp < 10000) {
+//            logger.debug("Update too soon. Ignored.")
+//            return
+//        }
+
         val newLocation = _providers.firstOrNull {
             // FIXME use better algorithm
             val isEnabled = it.enabled
@@ -59,6 +66,8 @@ class PositioningService : IPositionObservable {
             logger.info("Location update by ${it.name}: $isEnabled, $newEnough,  $positionKnown..")
             isEnabled && positionKnown && newEnough
         }?.lastKnownPosition
+
+
 
         logger.warn("c: $c, newLocation: $newLocation")
         _lastKnownLocation.value = newLocation

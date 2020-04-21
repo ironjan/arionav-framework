@@ -19,7 +19,7 @@ import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.util.Instruction
-import de.ironjan.arionav_fw.framework.arionav.viewmodel.ArExtensionViewModel
+import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
 import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 import org.slf4j.LoggerFactory
@@ -38,7 +38,7 @@ class ArViewFragment : Fragment() {
     private var poiLayoutRenderable: ViewRenderable? = null
     private var loadingMessageSnackbar: Snackbar? = null
 
-    private val model: ArExtensionViewModel by activityViewModels()
+    private val model: SimpleMapViewViewModel by activityViewModels()
 
     private lateinit var instructionHelper: InstructionHelper
 
@@ -61,7 +61,7 @@ class ArViewFragment : Fragment() {
     private val FiveSecondsInMillis = 5000
 
     private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
-        model.remainingRoute.observe(lifecycleOwner, Observer {
+        model.route.observe(lifecycleOwner, Observer {
             if(!locationSceneIsSetUp) return@Observer
 
             val currentTime = System.currentTimeMillis()
@@ -208,7 +208,7 @@ class ArViewFragment : Fragment() {
         locationScene = LocationScene(lActivity, ar_scene_view)
 
 
-        val route = model.remainingRoute.value
+        val route = model.route.value
 
         val instruction = route
             ?.instructions

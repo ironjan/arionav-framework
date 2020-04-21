@@ -108,7 +108,6 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
 
     fun initialize(ionavContainer: IonavContainer) {
         viewModel.initialize(ionavContainer)
-
         val tileLayer = loadMap(ionavContainer.mapFilePath)
         createAndAddLayers(tileLayer)
 
