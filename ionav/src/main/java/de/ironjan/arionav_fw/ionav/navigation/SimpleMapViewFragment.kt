@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -24,8 +25,7 @@ import org.slf4j.LoggerFactory
 open class SimpleMapViewFragment : Fragment() {
     private val logger = LoggerFactory.getLogger(SimpleMapViewFragment::class.simpleName)
 
-    private val viewModel: SimpleMapViewViewModel
-        get() = mapView.viewModel
+    private val viewModel: SimpleMapViewViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
 

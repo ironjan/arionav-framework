@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.wifi_positioning_provider_implementation
+package de.ironjan.arionav_fw.ionav.positioning.wifi
 
 import org.junit.Test
 

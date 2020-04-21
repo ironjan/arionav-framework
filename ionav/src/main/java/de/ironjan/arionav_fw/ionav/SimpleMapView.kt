@@ -45,7 +45,7 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     // endregion
 
     // region MVVM
-    override val viewModel = SimpleMapViewViewModel()
+    override var viewModel = SimpleMapViewViewModel()
     private lateinit var lifecycleOwner: LifecycleOwner
 
     override fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner) {
