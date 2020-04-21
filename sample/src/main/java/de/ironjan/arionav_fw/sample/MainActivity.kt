@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
+import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
 import de.ironjan.arionav_fw.ionav.PermissionHelper
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionProvider
@@ -31,7 +32,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
-    PermissionHelper.PermissionHelperCallback {
+    PermissionHelper.PermissionHelperCallback,
+    ArEnabledNavigationHost {
+
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
     private val cameraRequestCode: Int = 1
@@ -126,6 +129,11 @@ class MainActivity :
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun navigateToAr() {
+        navController.navigate(R.id.action_to_arViewFragment)
+    }
+
 
 
     private fun requestPermissions() {
