@@ -2,9 +2,11 @@ package de.ironjan.arionav_fw.ionav.mapview
 
 import android.os.AsyncTask
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graphhopper.PathWrapper
+import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.ionav.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
@@ -138,6 +140,21 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     // region route
     private val _route: MutableLiveData<PathWrapper?> = MutableLiveData()
     val route: LiveData<PathWrapper?> = _route
+
+    val currentInstruction by lazy {
+        val mediatorLiveData = MediatorLiveData<Instruction?>()
+        mediatorLiveData.addSource(_route) {
+            if (it == null){
+                mediatorLiveData.value = null
+                return@addSource
+            }
+
+            if(it.hasErrors()) mediatorLiveData.value = null
+
+            mediatorLiveData.value = it.instructions.firstOrNull()
+        }
+        mediatorLiveData
+    }
     // endregion
 
 
