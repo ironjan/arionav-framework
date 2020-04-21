@@ -205,7 +205,7 @@ class ArViewFragment : Fragment() {
         // If our locationScene object hasn't been setup yet, this is a good time to do it
         // We know that here, the AR components have been initiated.
         val lActivity = context as Activity ?: return
-        locationScene = LocationScene(lActivity, ar_scene_view)
+        locationScene = PositioningServiceLocationScene(lActivity, ar_scene_view)
 
 
         val route = model.route.value
