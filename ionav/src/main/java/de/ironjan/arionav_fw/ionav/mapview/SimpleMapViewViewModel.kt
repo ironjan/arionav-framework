@@ -14,8 +14,8 @@ import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
+import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
@@ -24,9 +24,11 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
     // region backing services
-    private lateinit var routingService: RoutingService
-    private lateinit var navigationService: NavigationService
-    private lateinit var positioningService: PositioningService
+    private lateinit var ionavContainer: IonavContainer
+
+    private val routingService by lazy {  ionavContainer.routingService }
+    private val navigationService by lazy { ionavContainer.navigationService }
+    private val positioningService  by lazy { ionavContainer.positioningService }
     //endregion
 
     // region backing state
@@ -36,10 +38,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     // region initialization
 
     fun initialize(ionavContainer: IonavContainer) {
-        routingService = ionavContainer.routingService
-        positioningService = ionavContainer.positioningService
-        navigationService = ionavContainer.navigationService
-
+        this.ionavContainer = ionavContainer
 
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
             override fun update(value: Coordinate?) {
@@ -144,14 +143,43 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     val currentInstruction by lazy {
         val mediatorLiveData = MediatorLiveData<Instruction?>()
         mediatorLiveData.addSource(_route) {
-            if (it == null){
+            if (it == null) {
                 mediatorLiveData.value = null
                 return@addSource
             }
 
-            if(it.hasErrors()) mediatorLiveData.value = null
+            if (it.hasErrors()) mediatorLiveData.value = null
 
             mediatorLiveData.value = it.instructions.firstOrNull()
+        }
+        mediatorLiveData
+    }
+    val nextInstruction by lazy {
+        val mediatorLiveData = MediatorLiveData<Instruction?>()
+        mediatorLiveData.addSource(_route) {
+            if (it == null) {
+                mediatorLiveData.value = null
+                return@addSource
+            }
+
+            if (it.hasErrors()) mediatorLiveData.value = null
+
+            mediatorLiveData.value = it.instructions.drop(1).firstOrNull()
+        }
+        mediatorLiveData
+    }
+
+    val instructionText by lazy {
+        val mediatorLiveData = MediatorLiveData<String?>()
+        mediatorLiveData.addSource(route) {
+            if (it == null || it.hasErrors()) {
+                mediatorLiveData.value = null
+            }
+
+            val current =  it!!.instructions.firstOrNull() ?: return@addSource
+            val next = it!!.instructions.drop(1).firstOrNull()
+
+            mediatorLiveData.value = InstructionHelper(ionavContainer.applicationContext).toText(current, next)
         }
         mediatorLiveData
     }

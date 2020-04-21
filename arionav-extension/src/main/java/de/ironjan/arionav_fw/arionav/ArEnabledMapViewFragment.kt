@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.navigation.SimpleMapViewFragment
 import kotlinx.android.synthetic.main.ar_enabled_map_view.*
 
@@ -16,8 +18,19 @@ class ArEnabledMapViewFragment : SimpleMapViewFragment() {
         btnArNav.setOnClickListener {
             when (val navHost = activity) {
                 is ArEnabledNavigationHost -> navHost.navigateToAr()
-                else -> {}
+                else -> {
+                }
             }
         }
+
+        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+        viewModel.instructionText.observe(lifecycleOwner, Observer {
+//            if(it == null) {
+//                instructionText.visibility = View.GONE
+//                return@Observer
+//            }
+//            instructionText.visibility = View.VISIBLE
+//            instructionText.text = it
+        })
     }
 }

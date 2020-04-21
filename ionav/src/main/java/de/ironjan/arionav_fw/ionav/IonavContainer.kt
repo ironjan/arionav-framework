@@ -13,6 +13,8 @@ import java.io.File
  * @see <a href="https://developer.android.com/training/dependency-injection/manual">https://developer.android.com/training/dependency-injection/manual</a>
  */
 class IonavContainer(private val context: Context, val mapName: String, val resId: Int) {
+    val applicationContext = context
+
     val mapFolder by lazy { File(context.filesDir, mapName).absolutePath }
     val mapFilePath by lazy { File(mapFolder, "$mapName.map").absolutePath }
     val osmFilePath by lazy { File(mapFolder, "$mapName.osm").absolutePath }
