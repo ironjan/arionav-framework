@@ -6,8 +6,9 @@ import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.ionav.R
 
 class InstructionHelper(private val context: Context) {
-    fun toText(currentInstruction: Instruction, nextInstruction: Instruction): String {
-        val instructionText = getTextFor(nextInstruction.sign)
+    fun toText(currentInstruction: Instruction) = toText(currentInstruction, null)
+    fun toText(currentInstruction: Instruction, nextInstruction: Instruction?): String {
+        val instructionText = if(nextInstruction==null) "" else getTextFor(nextInstruction.sign)
 
         val timeInSeconds = currentInstruction.time / 1000
         val timeInMinutes = timeInSeconds / 60
@@ -15,7 +16,7 @@ class InstructionHelper(private val context: Context) {
         val distance = " %.2f".format(currentInstruction.distance)
 
         val optionalLessThan = if(timeInMinutes>0) "" else "<"
-        return "$instructionText in ${distance}m ($optionalLessThan${timeInMinutes}min)\n${nextInstruction.name}"
+        return "$instructionText in ${distance}m ($optionalLessThan${timeInMinutes}min)\n${nextInstruction?.name}"
     }
 
     private fun getTextFor(sign: Int): String {
