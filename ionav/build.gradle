@@ -39,17 +39,10 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation "androidx.core:core-ktx:$core_ktx_version"
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    // routing
+    api 'com.github.ironjan.graphhopper:level-extension:1.0-pre20-gh-006'
 
-    api project(path: ':ionav-core')
-
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
-
-
+    // map visualization
     api "org.mapsforge:vtm-android:$vtm_version"
     api "org.mapsforge:vtm-android:$vtm_version:natives-armeabi-v7a"
     api "org.mapsforge:vtm-android:$vtm_version:natives-arm64-v8a"
@@ -58,13 +51,16 @@ dependencies {
     api "org.mapsforge:vtm-jts:$vtm_version"
     api "org.mapsforge:vtm-themes:$vtm_version"
     implementation 'com.caverock:androidsvg:1.4'
-    
-
+   
+    // other
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.core:core-ktx:$core_ktx_version"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha02"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha02"
-
-
-    api 'com.github.ironjan.graphhopper:level-extension:1.0-pre20-gh-006'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 
     testImplementation "junit:junit:$junit_version"
