@@ -7,13 +7,14 @@ import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import java.text.SimpleDateFormat
 import java.util.*
 
 class LocationHistoryAdapter(private val lifecycleOwner: LifecycleOwner,
-                             private val positioningService: PositioningService)
+                             private val viewModel: SimpleMapViewViewModel
+)
     : RecyclerView.Adapter<LocationHistoryAdapter.LocationHistoryViewHolder>(){
 
     class LocationHistoryViewHolder(val view: View): RecyclerView.ViewHolder(view)
@@ -21,7 +22,7 @@ class LocationHistoryAdapter(private val lifecycleOwner: LifecycleOwner,
     private var displayedData = listOf<IonavLocation>()
 
     init {
-        positioningService.locationHistory.observe(lifecycleOwner, Observer {
+        viewModel.locationHistory.observe(lifecycleOwner, Observer {
             displayedData = it
             notifyDataSetChanged()
         })

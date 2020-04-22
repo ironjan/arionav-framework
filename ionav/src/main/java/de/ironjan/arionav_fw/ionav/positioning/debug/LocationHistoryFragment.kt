@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
+import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
 import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
 
 class LocationHistoryFragment: Fragment() {
+    protected val viewModel: SimpleMapViewViewModel by activityViewModels()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,7 +32,7 @@ class LocationHistoryFragment: Fragment() {
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
 
-        val locationHistoryAdapter = LocationHistoryAdapter(lifecycleOwner, positioningService)
+        val locationHistoryAdapter = LocationHistoryAdapter(lifecycleOwner, viewModel)
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)

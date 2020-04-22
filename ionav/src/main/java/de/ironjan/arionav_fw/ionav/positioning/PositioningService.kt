@@ -36,12 +36,8 @@ class PositioningService : IPositionObservable {
     val providers: LiveData<List<IPositionProvider>> = _providerLiveData
 
 
-    private val _lastKnownLocation: MutableLiveData<IonavLocation?> = MutableLiveData(null)
-    val lastKnownLocation: LiveData<IonavLocation?> = _lastKnownLocation
-
     private val _locationHistory = mutableListOf<IonavLocation>()
-    private val _locationHistoryLiveData = MutableLiveData(_locationHistory.toList())
-    val locationHistory: LiveData<List<IonavLocation>> = _locationHistoryLiveData
+    val locationHistory: List<IonavLocation> = _locationHistory
 
     private val observer: IPositionObserver = object : IPositionObserver {
         override fun update(c: IonavLocation?) {
@@ -70,25 +66,21 @@ class PositioningService : IPositionObservable {
 
 
         logger.warn("c: $c, newLocation: $newLocation")
-        _lastKnownLocation.value = newLocation
         lastKnownPosition = newLocation
         lastUpdate = newLocation?.timestamp ?: lastUpdate
         notifyObservers()
         logger.warn("Updated location to $newLocation")
 
-        appendToLocationHistory(newLocation)
+        prependToLocationHistory(newLocation)
     }
 
-    private fun appendToLocationHistory(location: IonavLocation?) {
-        val location = location ?: return
+    private fun prependToLocationHistory(location: IonavLocation?) {
+        location ?: return
 
-        _locationHistory.apply {
-            val newHistory = _locationHistory.take(100) + location
-            clear()
-            addAll(newHistory)
+        _locationHistory.add(0, location)
+        while (_locationHistory.size > 100) {
+            _locationHistory.removeAt(100)
         }
-        _locationHistoryLiveData.value = _locationHistory
-
     }
 
 

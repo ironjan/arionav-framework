@@ -64,6 +64,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
             override fun update(t: IonavLocation?) {
                 _userLocationLiveData.value = t
                 _userLocation = t
+                _locationHistoryLiveData.value = positioningService.locationHistory
             }
         })
 
@@ -120,6 +121,12 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
         if (b) centerOnUserPos()
     }
+
+
+    private val _locationHistory = mutableListOf<IonavLocation>()
+    private val _locationHistoryLiveData = MutableLiveData(_locationHistory.toList())
+    val locationHistory: LiveData<List<IonavLocation>> = _locationHistoryLiveData
+
     // endregion
 
     // region map center
