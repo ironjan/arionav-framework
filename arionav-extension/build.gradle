@@ -10,6 +10,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
+        // arcore-location requires sdk >= 24
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
