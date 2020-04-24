@@ -10,6 +10,10 @@ interface IPositionProvider : IPositionObservable {
     /** <code>true</code> if the provider is currently tracking positions */
     val enabled: Boolean
 
+    /** <code>true</code> if the provider is currently stopped.  */
+    val disabled: Boolean
+        get() = !enabled
+
     /** Starts the provider */
     fun start()
 

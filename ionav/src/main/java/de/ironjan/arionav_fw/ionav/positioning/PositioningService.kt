@@ -83,7 +83,6 @@ class PositioningService : IPositionObservable {
         }
     }
 
-
     fun registerProvider(provider: IPositionProvider, start: Boolean = false) {
         logger.info("Registering $provider. AutoStart = $start")
 
@@ -114,6 +113,7 @@ class PositioningService : IPositionObservable {
             .forEach { unregisterProvider(it) }
     }
 
+
     fun swapPriorities(pos1: Int, pos2: Int) {
         val tmp = _providers[pos1]
         _providers[pos1] = _providers[pos2]
@@ -131,6 +131,26 @@ class PositioningService : IPositionObservable {
 
     fun getProvider(name: String): IPositionProvider? {
         return _providers.filter { it.name == name }.firstOrNull()
+    }
+
+    fun enableProvider(providerName: String) {
+        val provider = getProvider(providerName) ?: throw IllegalArgumentException("Provider with name $providerName not registered.")
+        enableProvider(provider)
+    }
+    fun enableProvider(provider: IPositionProvider) {
+        if(provider.enabled) return
+
+        provider.start()
+    }
+
+    fun disableProvider(providerName: String) {
+            val provider = getProvider(providerName) ?: throw IllegalArgumentException("Provider with name $providerName not registered.")
+            disableProvider(provider)
+    }
+    fun disableProvider(provider: IPositionProvider) {
+        if(provider.disabled) return
+
+        provider.stop()
     }
 
     companion object {

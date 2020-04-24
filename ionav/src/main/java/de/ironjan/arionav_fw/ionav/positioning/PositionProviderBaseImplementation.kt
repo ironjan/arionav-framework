@@ -47,7 +47,7 @@ abstract class PositionProviderBaseImplementation(
         enabled = false
     }
 
-    internal val observers: MutableList<IPositionObserver> = mutableListOf()
+    private val observers: MutableList<IPositionObserver> = mutableListOf()
 
 
     override fun registerObserver(observer: IPositionObserver) {
