@@ -46,7 +46,6 @@ class ArViewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycle.addObserver(ar_scene_view!!)
 
         instructionHelper = InstructionHelper(context ?: return)
 
