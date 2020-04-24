@@ -65,7 +65,6 @@ class ArViewFragment : Fragment() {
 
             val currentTime = System.currentTimeMillis()
             if(currentTime - lastUpdate > FiveSecondsInMillis){
-                // FIXME verify that AR is setup...
                 updateLocationScene()
                 lastUpdate = currentTime
             }
