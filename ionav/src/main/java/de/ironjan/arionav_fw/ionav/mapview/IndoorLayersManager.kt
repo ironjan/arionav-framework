@@ -29,6 +29,9 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         viewModel.indoorData.observe(lifecycleOwner, Observer{
             indoorData = it
         })
+        viewModel.selectedLevel.observe(lifecycleOwner, Observer {
+            selectedLevel = it.toDouble()
+        })
     }
 
     var itemTapCallback = defaultTapCallback

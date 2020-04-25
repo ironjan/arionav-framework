@@ -62,8 +62,9 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
 
         endMarkerLayer.observe(viewModel, lifecycleOwner)
-
-        userPositionLayer?.observe(viewModel, lifecycleOwner)
+        userPositionLayer.observe(viewModel, lifecycleOwner)
+        remainingRouteLayer.observe(viewModel, lifecycleOwner)
+        indoorLayers.observe(viewModel, lifecycleOwner)
 
         viewModel.mapCenter.observe(lifecycleOwner, Observer {
             if (viewModel.getFollowUserPositionLiveData().value == true
@@ -73,14 +74,6 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
             }
         })
 
-
-        remainingRouteLayer.observe(viewModel, lifecycleOwner)
-
-        viewModel.selectedLevel.observe(lifecycleOwner, Observer {
-            indoorLayers.selectedLevel = it.toDouble()
-        })
-
-        indoorLayers.observe(viewModel, lifecycleOwner)
 
     }
 
