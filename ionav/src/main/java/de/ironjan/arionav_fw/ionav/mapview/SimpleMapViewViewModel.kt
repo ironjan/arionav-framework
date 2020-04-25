@@ -11,11 +11,11 @@ import de.ironjan.arionav_fw.ionav.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
+import de.ironjan.arionav_fw.ionav.navigation.InstructionHelper
 import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
-import de.ironjan.arionav_fw.ionav.util.InstructionHelper
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 

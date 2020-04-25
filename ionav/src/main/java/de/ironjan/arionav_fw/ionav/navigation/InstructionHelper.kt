@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.util
+package de.ironjan.arionav_fw.ionav.navigation
 
 import android.content.Context
 import android.graphics.drawable.Drawable

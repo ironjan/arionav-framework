@@ -20,7 +20,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
-import de.ironjan.arionav_fw.ionav.util.InstructionHelper
+import de.ironjan.arionav_fw.ionav.navigation.InstructionHelper
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
