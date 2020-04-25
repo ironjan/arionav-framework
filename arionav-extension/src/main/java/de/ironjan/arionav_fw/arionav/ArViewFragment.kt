@@ -29,7 +29,7 @@ import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 
-
+// TODO move logic into view?
 class ArViewFragment : Fragment() {
     private var locationSceneIsSetUp: Boolean = false
 
