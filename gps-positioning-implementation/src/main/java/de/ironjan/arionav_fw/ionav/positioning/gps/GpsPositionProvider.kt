@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.positioning.LevelDependentPositionProviderBaseImplementation
+import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
@@ -23,8 +24,9 @@ import org.slf4j.LoggerFactory
 @SuppressLint("MissingPermission")
 open class GpsPositionProvider(
     private val context: Context,
-    private val lifecycle: Lifecycle
-) : LevelDependentPositionProviderBaseImplementation(context, lifecycle) {
+    private val lifecycle: Lifecycle,
+    private val positioningService: PositioningService
+) : LevelDependentPositionProviderBaseImplementation(context, lifecycle, positioningService) {
     override val name: String = GpsPositionProvider::class.java.simpleName
 
     private val observers: MutableList<IPositionObserver> = mutableListOf()
@@ -53,7 +55,6 @@ open class GpsPositionProvider(
 
             if (isBetterLocation(location, currentBestLocation)) {
                 currentBestLocation = location
-                // FIXME level...
                 val lLastKnownPosition = locationToIonavLocation(location)
                 lastKnownPosition = lLastKnownPosition
                 listenerLogger.debug("Updated current best location and invoked callback.")

@@ -211,6 +211,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     }
 
     private fun setLevel(newValue: Int) {
+        positioningService.userSelectedLevel = newValue.toDouble()
         _selectedLevel.value = newValue
     }
     // endregion

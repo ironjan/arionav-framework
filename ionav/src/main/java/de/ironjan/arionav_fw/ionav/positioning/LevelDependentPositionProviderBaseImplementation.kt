@@ -4,14 +4,21 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 
 abstract class LevelDependentPositionProviderBaseImplementation(
-    private val context: Context,
-    private val lifecycle: Lifecycle
+    context: Context,
+    lifecycle: Lifecycle,
+    positioningService: PositioningService
 ) : PositionProviderBaseImplementation(context, lifecycle) {
-    private var _currentLevel: Double = 0.0
 
-    var currentLevel: Double
-        get() = _currentLevel
-        set(value) {
-            _currentLevel = value
-        }
+    init {
+        positioningService.registerObserver(object: IPositioningServiceObserver{
+            override fun updateUserSelectedLevel(level: Double) {
+                currentLevel = level
+            }
+
+            override fun update(t: IonavLocation?) { /* ignored */ }
+        })
+    }
+
+    var currentLevel: Double = 0.0
+        private set
 }

@@ -191,31 +191,33 @@ class MainActivity :
     private fun initializePositioningService() {
         val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
 
-        val gpsPositionProvider = GpsPositionProvider(this, lifecycle)
-        val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
-        val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
-
         positioningService.removeProvider(GpsPositionProvider.GPS_PROVIDER_NAME)
         positioningService.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
         positioningService.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
 
+        val gpsPositionProvider = GpsPositionProvider(this, lifecycle, positioningService)
+        val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
+        val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
+
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+
         val enabledBluetooth = sharedPref.getBoolean(PreferenceKeys.ENABLED_BLUETOOTH, false)
-        val enabledWifi = sharedPref.getBoolean(PreferenceKeys.ENABLED_WIFI,false)
-        val enabledGps = sharedPref.getBoolean(PreferenceKeys.ENABLED_GPS, true)
-
-
         positioningService.registerProvider(bluetoothProviderImplementation, enabledBluetooth)
+
+        val enabledWifi = sharedPref.getBoolean(PreferenceKeys.ENABLED_WIFI,false)
         positioningService.registerProvider(wifiPositioningProvider, enabledWifi)
+
+        val enabledGps = sharedPref.getBoolean(PreferenceKeys.ENABLED_GPS, true)
         positioningService.registerProvider(gpsPositionProvider, enabledGps)
 
 
         val prioBluetooth = sharedPref.getInt(PreferenceKeys.PRIORITY_BLUETOOTH,0)
-        val prioWifi = sharedPref.getInt(PreferenceKeys.PRIORITY_WIFI,1)
-        val prioGps = sharedPref.getInt(PreferenceKeys.PRIORITY_GPS,2)
-
         positioningService.setPriority(prioBluetooth, bluetoothProviderImplementation)
+
+        val prioWifi = sharedPref.getInt(PreferenceKeys.PRIORITY_WIFI,1)
         positioningService.setPriority(prioWifi, wifiPositioningProvider)
+
+        val prioGps = sharedPref.getInt(PreferenceKeys.PRIORITY_GPS,2)
         positioningService.setPriority(prioGps, gpsPositionProvider)
     }
 }

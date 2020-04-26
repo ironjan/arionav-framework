@@ -4,30 +4,54 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.slf4j.LoggerFactory
 
-class PositioningService : IPositionObservable {
+class PositioningService : IPositioningServiceObservable {
+
+
     override var lastKnownPosition: IonavLocation? = null
         private set
 
     override var lastUpdate: Long = -1L
         private set
 
-    private val observers: MutableList<IPositionObserver> = mutableListOf()
+    var userSelectedLevel: Double = 0.0
+        set(value) {
+            field = value
+            notifyObservers()
+        }
+
+   // region observer handling
+   private val positionObservers: MutableList<IPositionObserver> = mutableListOf()
     override fun registerObserver(observer: IPositionObserver) {
-        if (observers.contains(observer)) return
-        observers.add(observer)
+        if (positionObservers.contains(observer)) return
+        positionObservers.add(observer)
     }
 
     override fun removeObserver(observer: IPositionObserver) {
-        observers.remove(observer)
+        positionObservers.remove(observer)
+    }
+    private val serviceObservers = mutableListOf<IPositioningServiceObserver>()
+    override fun registerObserver(observer: IPositioningServiceObserver) {
+        if(serviceObservers.contains(observer)) return
+            serviceObservers.add(observer)
     }
 
+    override fun removeObserver(observer: IPositioningServiceObserver) {
+        serviceObservers.remove(observer)
+    }
     override fun notifyObservers() {
         logger.debug("PositioningService notifying observers.")
-        observers.forEach { o ->
-            val position = lastKnownPosition ?: return
+        positionObservers.forEach { o ->
+            val position = lastKnownPosition ?: return@forEach
+            o.update(position)
+        }
+        serviceObservers.forEach { o ->
+            o.updateUserSelectedLevel(userSelectedLevel)
+
+            val position = lastKnownPosition ?: return@forEach
             o.update(position)
         }
     }
+    // endregion
 
     private val logger = LoggerFactory.getLogger(PositioningService::class.java.simpleName)
 
@@ -156,4 +180,6 @@ class PositioningService : IPositionObservable {
     companion object {
         val TAG = "PositioningService"
     }
+
+
 }
