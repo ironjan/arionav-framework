@@ -78,7 +78,9 @@ open class GpsPositionPositionProvider(
 
         private val TWO_MINUTES: Long = 1000 * 60 * 2
 
-        /** Determines whether one Location reading is better than the current Location fix. From https://developer.android.com/guide/topics/location/strategies
+        /** Determines whether one Location reading is better than the current Location fix.
+         * Originally from https://developer.android.com/guide/topics/location/strategies (defunct, removed in the newer documentation)
+         * A mirror of an older documentation is found at https://stuff.mit.edu/afs/sipb/project/android/docs/guide/topics/location/strategies.html#BestEstimate
          * @param location The new Location that you want to evaluate
          * @param currentBestLocation The current Location fix, to which you want to compare the new one
          */
