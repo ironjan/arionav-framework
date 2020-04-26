@@ -36,9 +36,11 @@ bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
 }
 
  */
-class BluetoothPositionProvider(private val context: Context,
-                                private val lifecycle: Lifecycle,
-                                private val deviceMap: Map<String, Coordinate> ) : PositionProviderBaseImplementation(context, lifecycle) {
+class BluetoothPositionProvider(
+    private val context: Context,
+    private val lifecycle: Lifecycle,
+    private val deviceMap: Map<String, Coordinate>
+) : PositionProviderBaseImplementation(context, lifecycle) {
     override val name = BLUETOOTH_PROVIDER_NAME
 
 
@@ -77,7 +79,8 @@ class BluetoothPositionProvider(private val context: Context,
                     val coordinate = deviceMap[address]
 
                     val signalStrength = SignalStrength(address, name, coordinate, rssi)
- addDevice(signalStrength)
+
+                    addDevice(signalStrength)
                 }
             }
         }
@@ -144,7 +147,7 @@ class BluetoothPositionProvider(private val context: Context,
 
     private fun updatePositionEstimate() {
         val currentTime = System.currentTimeMillis()
-        if (currentTime - lastUpdate < minTimeBetweenUpdatesInMillis){
+        if (currentTime - lastUpdate < minTimeBetweenUpdatesInMillis) {
             logger.debug("Last update is too close.")
             return
         }
@@ -169,7 +172,7 @@ class BluetoothPositionProvider(private val context: Context,
         val newPosition = if (nn == null) null else IonavLocation(name, nn)
 
         logger.info("Updating last known position to $newPosition")
-         lastKnownPosition = newPosition
+        lastKnownPosition = newPosition
     }
 
     private fun differentEnough(lastKnownPosition: IonavLocation?, newPosition: IonavLocation?): Boolean {
