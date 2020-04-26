@@ -69,7 +69,7 @@ class BluetoothPositionProvider(
                     scanFinished()
                 }
                 ACTION_FOUND -> {
-                    val device = intent.extras?.get(EXTRA_DEVICE) as BluetoothDevice ?: return
+                    val device = intent.extras?.get(EXTRA_DEVICE) as BluetoothDevice
                     val name = intent.extras?.getString(EXTRA_NAME)
                     val rssi = intent.extras?.getShort(EXTRA_RSSI)?.toInt() ?: return
 
