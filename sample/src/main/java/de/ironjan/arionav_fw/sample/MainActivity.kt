@@ -21,9 +21,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
 import de.ironjan.arionav_fw.ionav.PermissionHelper
-import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
-import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositioningProvider
-import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProvider
+import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
+import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
+import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
 import de.ironjan.arionav_fw.sample.util.Mailer
 import de.ironjan.arionav_fw.sample.util.PreferenceKeys
 import kotlinx.android.synthetic.main.activity_main.*
@@ -192,13 +192,13 @@ class MainActivity :
     private fun initializePositioningService() {
         val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
 
-        positioningService.removeProvider(GpsPositioningProvider.GPS_PROVIDER_NAME)
-        positioningService.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
-        positioningService.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
+        positioningService.removeProvider(GpsPositionPositionProvider.GPS_PROVIDER_NAME)
+        positioningService.removeProvider(WifiPositionProvider.WIFI_POSITIONING_PROVIDER)
+        positioningService.removeProvider(BluetoothPositionProvider.BLUETOOTH_PROVIDER_NAME)
 
-        val gpsPositionProvider = GpsPositioningProvider(this, lifecycle, positioningService)
-        val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
-        val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
+        val gpsPositionProvider = GpsPositionPositionProvider(this, lifecycle, positioningService)
+        val wifiPositioningProvider = WifiPositionProvider(this, lifecycle)
+        val bluetoothProviderImplementation = BluetoothPositionProvider(this, lifecycle)
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
 

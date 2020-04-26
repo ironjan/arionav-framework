@@ -3,7 +3,7 @@ package de.ironjan.arionav_fw.ionav.positioning
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 
-abstract class LevelDependentProviderBaseImplementation(
+abstract class LevelDependentPositionProviderBase(
     context: Context,
     lifecycle: Lifecycle,
     positioningService: PositioningService

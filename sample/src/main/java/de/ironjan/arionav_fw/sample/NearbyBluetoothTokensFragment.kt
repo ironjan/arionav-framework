@@ -6,12 +6,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.SignalStrength
-import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
+import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import kotlinx.android.synthetic.main.fragment_custom_list.*
 
 
 class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalStrengthToString) {
-    private var bluetoothPositioningProviderImplementation: BluetoothPositioningProviderImplementation? = null
+    private var bluetoothPositionProvider: BluetoothPositionProvider? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -22,8 +22,8 @@ class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalS
             else -> null
         } ?: return
 
-        val providerImplementation = positioningService.getProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME) as BluetoothPositioningProviderImplementation
-        bluetoothPositioningProviderImplementation = providerImplementation
+        val providerImplementation = positioningService.getProvider(BluetoothPositionProvider.BLUETOOTH_PROVIDER_NAME) as BluetoothPositionProvider
+        bluetoothPositionProvider = providerImplementation
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
         providerImplementation.getDevices().observe(lifecycleOwner, Observer {
@@ -40,11 +40,11 @@ class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalS
             val address = it.deviceId
             val rssi = it.rssi
 
-            val strength = BluetoothPositioningProviderImplementation.calculateSignalLevel(rssi, BluetoothPositioningProviderImplementation.numLevels)
+            val strength = BluetoothPositionProvider.calculateSignalLevel(rssi, BluetoothPositionProvider.numLevels)
 
             val c = it.coordinate?.asString()
 
-            val s = "$address $rssi , $strength/${BluetoothPositioningProviderImplementation.numLevels}: $c"
+            val s = "$address $rssi , $strength/${BluetoothPositionProvider.numLevels}: $c"
             s
         }
     }

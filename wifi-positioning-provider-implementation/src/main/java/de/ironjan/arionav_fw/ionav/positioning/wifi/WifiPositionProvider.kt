@@ -23,13 +23,13 @@ import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class WifiPositioningProvider(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
+class WifiPositionProvider(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
     private val lastScan: MutableLiveData<String> = MutableLiveData("")
     fun getLastScan(): LiveData<String> = lastScan
 
     override val name: String = WIFI_POSITIONING_PROVIDER
 
-    private val logger = LoggerFactory.getLogger(WifiPositioningProvider::class.java.simpleName)
+    private val logger = LoggerFactory.getLogger(WifiPositionProvider::class.java.simpleName)
 
     private val devices: MutableMap<String, ScanResult> = mutableMapOf()
 
@@ -151,6 +151,6 @@ class WifiPositioningProvider(private val context: Context, private val lifecycl
 
         const val minTimeBetweenUpdatesInMillis = 1000
 
-        val WIFI_POSITIONING_PROVIDER = WifiPositioningProvider::class.java.simpleName
+        val WIFI_POSITIONING_PROVIDER = WifiPositionProvider::class.java.simpleName
     }
 }

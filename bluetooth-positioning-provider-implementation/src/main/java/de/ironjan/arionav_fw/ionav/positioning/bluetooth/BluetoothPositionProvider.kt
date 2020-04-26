@@ -37,7 +37,7 @@ bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
 }
 
  */
-class BluetoothPositioningProviderImplementation(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
+class BluetoothPositionProvider(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
     override val name = BLUETOOTH_PROVIDER_NAME
 
 
@@ -48,7 +48,7 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
     private val actualDevicesLiveData = MutableLiveData(listOf<SignalStrength>())
     fun getDevices(): LiveData<List<SignalStrength>> = actualDevicesLiveData
 
-    private val logger = LoggerFactory.getLogger(BluetoothPositioningProviderImplementation::class.java.simpleName)
+    private val logger = LoggerFactory.getLogger(BluetoothPositionProvider::class.java.simpleName)
 
 
     private val tmpIdToCoordinate: Map<String, Coordinate> = mapOf(
@@ -83,7 +83,7 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
                     val name = intent.extras?.getString(EXTRA_NAME)
                     val rssi = intent.extras?.getShort(EXTRA_RSSI)?.toInt() ?: return
 
-                    val bt = this@BluetoothPositioningProviderImplementation
+                    val bt = this@BluetoothPositionProvider
                     logger.debug("Discovered device $device ($name) ${rssi}db with $bt")
                     val address = device.address
                     val coordinate = tmpIdToCoordinate[address]
@@ -203,10 +203,10 @@ class BluetoothPositioningProviderImplementation(private val context: Context, p
          * @return A level of the signal, given in the range of 0 to numLevels-1
          * (both inclusive).
          */
-        fun calculateSignalLevel(rssi: Int, numLevels: Int = BluetoothPositioningProviderImplementation.numLevels): Int {
+        fun calculateSignalLevel(rssi: Int, numLevels: Int = BluetoothPositionProvider.numLevels): Int {
             return WifiManager.calculateSignalLevel(rssi, numLevels)
         }
 
-        val BLUETOOTH_PROVIDER_NAME: String = BluetoothPositioningProviderImplementation::class.java.simpleName
+        val BLUETOOTH_PROVIDER_NAME: String = BluetoothPositionProvider::class.java.simpleName
     }
 }

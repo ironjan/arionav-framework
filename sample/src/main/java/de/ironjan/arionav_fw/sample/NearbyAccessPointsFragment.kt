@@ -6,7 +6,7 @@ import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
-import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProvider
+import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProviderHardCodedValues
 import kotlinx.android.synthetic.main.fragment_custom_list.*
 
@@ -18,7 +18,7 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
     "$name $mac ${scanResult.level} - $coord"}
 ) {
 
-    private lateinit var wifiPositioningProvider: WifiPositioningProvider
+    private lateinit var wifiPositionProvider: WifiPositionProvider
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -29,15 +29,15 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
             else -> null
         } ?: return
 
-        wifiPositioningProvider = positioningService.getProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER) as WifiPositioningProvider
+        wifiPositionProvider = positioningService.getProvider(WifiPositionProvider.WIFI_POSITIONING_PROVIDER) as WifiPositionProvider
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
 
-        wifiPositioningProvider.getVisibleDevices().observe(lifecycleOwner, Observer {
+        wifiPositionProvider.getVisibleDevices().observe(lifecycleOwner, Observer {
             dataAdapter.replaceData(it)
         })
         additionalInfo.visibility=View.VISIBLE
-        wifiPositioningProvider.getLastScan().observe(lifecycleOwner, Observer {
+        wifiPositionProvider.getLastScan().observe(lifecycleOwner, Observer {
             additionalInfo.text = it
         })
 
