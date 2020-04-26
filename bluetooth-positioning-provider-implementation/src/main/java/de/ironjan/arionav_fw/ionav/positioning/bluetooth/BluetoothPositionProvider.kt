@@ -36,7 +36,9 @@ bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
 }
 
  */
-class BluetoothPositionProvider(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
+class BluetoothPositionProvider(private val context: Context,
+                                private val lifecycle: Lifecycle,
+                                private val deviceMap: Map<String, Coordinate> ) : PositionProviderBaseImplementation(context, lifecycle) {
     override val name = BLUETOOTH_PROVIDER_NAME
 
 
@@ -49,12 +51,6 @@ class BluetoothPositionProvider(private val context: Context, private val lifecy
 
     private val logger = LoggerFactory.getLogger(BluetoothPositionProvider::class.java.simpleName)
 
-
-    private val tmpIdToCoordinate: Map<String, Coordinate> = mapOf(
-        "00:CD:FF:00:37:40" to Coordinate(51.731695, 8.734756, 1.0), // BR512856
-        "00:CD:FF:00:34:D7" to Coordinate(51.731843, 8.734929, 1.0), // BR513883
-        "EC:CD:47:40:AD:DC" to Coordinate(0.0, 0.0, 100.0) // Miband
-    )
 
     private val bluetoothAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val bluetoothManager = ContextCompat.getSystemService(context, BluetoothManager::class.java)
@@ -87,7 +83,7 @@ class BluetoothPositionProvider(private val context: Context, private val lifecy
                     val bt = this@BluetoothPositionProvider
                     logger.debug("Discovered device $device ($name) ${rssi}db with $bt")
                     val address = device.address
-                    val coordinate = tmpIdToCoordinate[address]
+                    val coordinate = deviceMap[address]
 
                     actualDevices[address] = SignalStrength(address, name, coordinate, rssi)
 
@@ -150,10 +146,10 @@ class BluetoothPositionProvider(private val context: Context, private val lifecy
 //        logger.info(bestDevicesAsString)
 
 
-        val knownCoordinateDevices = bestBtDevices.filter { tmpIdToCoordinate.containsKey(it.deviceId) }
+        val knownCoordinateDevices = bestBtDevices.filter { deviceMap.containsKey(it.deviceId) }
         val signalStrengths = knownCoordinateDevices
             .map {
-                val coordinate = tmpIdToCoordinate[it.deviceId] ?: return@map null
+                val coordinate = deviceMap[it.deviceId] ?: return@map null
                 SignalStrength(it.deviceId, it.name, coordinate, it.rssi)
             }.filterNotNull()
 

@@ -27,6 +27,7 @@ import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
 import de.ironjan.arionav_fw.sample.util.Mailer
 import de.ironjan.arionav_fw.sample.util.PreferenceKeys
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 
 // todo initialize spinner with level data
@@ -200,7 +201,7 @@ class MainActivity :
 
         val gpsPositionProvider = GpsPositionPositionProvider(this, lifecycle, positioningService)
         val wifiPositioningProvider = WifiPositionProvider(this, lifecycle)
-        val bluetoothProviderImplementation = BluetoothPositionProvider(this, lifecycle)
+        val bluetoothProviderImplementation = BluetoothPositionProvider(this, lifecycle, bluetoothDeviceMap)
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
 
@@ -222,5 +223,13 @@ class MainActivity :
 
         val prioGps = sharedPref.getInt(PreferenceKeys.PRIORITY_GPS,2)
         positioningService.setPriority(prioGps, gpsPositionProvider)
+    }
+
+    companion object {
+        val bluetoothDeviceMap = mapOf(
+            "00:CD:FF:00:37:40" to Coordinate(51.731695, 8.734756, 1.0), // BR512856
+            "00:CD:FF:00:34:D7" to Coordinate(51.731843, 8.734929, 1.0), // BR513883
+            "EC:CD:47:40:AD:DC" to Coordinate(0.0, 0.0, 100.0) // Miband
+        )
     }
 }
