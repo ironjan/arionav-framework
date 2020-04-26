@@ -16,6 +16,7 @@ import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
+import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
@@ -53,7 +54,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
         })
 
         _routingStatus.value = routingService.status
-        routingService.registerObserver(object : RoutingService.RoutingServiceStatusObserver {
+        routingService.registerObserver(object : Observer<RoutingService.Status> {
             override fun update(v: RoutingService.Status) {
                 _routingStatus.value = v
                 updateInitializationStatus()

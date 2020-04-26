@@ -10,13 +10,13 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
 
-class RoutingService : Observable<RoutingService.RoutingServiceStatusObserver, RoutingService.Status>{
-    override fun registerObserver(observer: RoutingServiceStatusObserver) {
+class RoutingService : Observable<RoutingService.Status>{
+    override fun registerObserver(observer: Observer<Status>) {
         if(_observers.contains(observer)) return
         _observers.add(observer)
     }
 
-    override fun removeObserver(observer:RoutingServiceStatusObserver) {
+    override fun removeObserver(observer:Observer<Status>) {
         _observers.remove(observer)
     }
 
@@ -79,7 +79,7 @@ class RoutingService : Observable<RoutingService.RoutingServiceStatusObserver, R
         }
     }
 
-    interface RoutingServiceStatusObserver: Observer<Status>
+    interface RoutingServiceStatusObserver
 
     enum class Status {
         UNINITIALIZED, LOADING, READY, ERROR
