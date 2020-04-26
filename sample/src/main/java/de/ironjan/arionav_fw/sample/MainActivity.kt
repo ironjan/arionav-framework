@@ -2,6 +2,7 @@ package de.ironjan.arionav_fw.sample
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
@@ -152,6 +153,7 @@ class MainActivity :
 
     private fun showCameraRationale() = showPermissionRational(R.string.permission_camera_rationale, CAMERA, cameraRequestCode)
 
+    @SuppressLint("WrongConstant")
     private fun showPermissionRational(rationaleResId: Int, permission: String, requestCode: Int) {
         Snackbar.make(main_drawer_layout, rationaleResId, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.ok) {

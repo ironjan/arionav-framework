@@ -1,5 +1,6 @@
 package de.ironjan.arionav_fw.arionav
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
@@ -265,6 +266,7 @@ class ArViewFragment : Fragment() {
     }
 
     //region loading message
+    @SuppressLint("WrongConstant")
     private fun showLoadingMessage() {
         if (loadingMessageSnackbar?.isShownOrQueued == true) {
             return
