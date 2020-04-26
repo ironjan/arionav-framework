@@ -57,6 +57,22 @@ allprojects {
     }
 }
 
+subprojects {
+    // based on https://stackoverflow.com/a/25149514
+    afterEvaluate {
+        if (getPlugins().hasPlugin('android') ||
+                getPlugins().hasPlugin('android-library')) {
+
+            println name // for debugging
+
+            configure(android.lintOptions) {
+                lintConfig file("./lint.xml")
+            }
+        }
+
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

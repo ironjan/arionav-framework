@@ -1,0 +1,6 @@
+<lint>
+    <issue id="InvalidPackage">
+        <ignore path="**/graphhopper-*.jar"/>
+        <ignore path="**/xmlgraphics-commons-*.jar"/>
+    </issue>
+</lint>
