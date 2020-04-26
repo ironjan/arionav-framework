@@ -61,19 +61,10 @@ class BluetoothPositionProvider(private val context: Context,
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 ACTION_DISCOVERY_STARTED -> {
-                    logger.info("Started BT discovery. Clearing known devices...")
-                    actualDevices.clear()
-                    updateLiveData()
-                    updateLastScan()
+                    scanStarted()
                 }
                 ACTION_DISCOVERY_FINISHED -> {
-                    logger.info("Finished BT discovery. Updating position estimate and scheduling new scan in ${minTimeBetweenUpdatesInMillis}s.")
-
-                    updatePositionEstimate()
-
-                    val mainHandler = Handler(Looper.getMainLooper())
-                    mainHandler.postDelayed({ triggerScan() }, minTimeBetweenUpdatesInMillis)
-
+                    scanFinished()
                 }
                 ACTION_FOUND -> {
                     val device = intent.extras?.get(EXTRA_DEVICE) as BluetoothDevice ?: return
@@ -85,21 +76,42 @@ class BluetoothPositionProvider(private val context: Context,
                     val address = device.address
                     val coordinate = deviceMap[address]
 
-                    actualDevices[address] = SignalStrength(address, name, coordinate, rssi)
-
-                    updateLiveData()
-                    updatePositionEstimate()
+                    val signalStrength = SignalStrength(address, name, coordinate, rssi)
+ addDevice(signalStrength)
                 }
             }
         }
 
-        private fun updateLiveData() {
-            val bestBtDevices = actualDevices.values
-                .sortedBy { -it.rssi }
+    }
 
-            actualDevicesLiveData.value = bestBtDevices
-        }
+    private fun scanFinished() {
+        logger.info("Finished BT discovery. Updating position estimate and scheduling new scan in ${minTimeBetweenUpdatesInMillis}s.")
 
+        updatePositionEstimate()
+
+        val mainHandler = Handler(Looper.getMainLooper())
+        mainHandler.postDelayed({ triggerScan() }, minTimeBetweenUpdatesInMillis)
+    }
+
+    private fun addDevice(signalStrength: SignalStrength) {
+        actualDevices[signalStrength.deviceId] = signalStrength
+
+        updateLiveData()
+        updatePositionEstimate()
+    }
+
+    private fun scanStarted() {
+        logger.info("Started BT discovery. Clearing known devices...")
+        actualDevices.clear()
+        updateLiveData()
+        updateLastScan()
+    }
+
+    private fun updateLiveData() {
+        val bestBtDevices = actualDevices.values
+            .sortedBy { -it.rssi }
+
+        actualDevicesLiveData.value = bestBtDevices
     }
 
     override fun start() {
