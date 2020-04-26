@@ -85,7 +85,7 @@ object WifiPositioningProviderHardCodedValues {
         "F2.425-Flur" to Coordinate(51.732071,8.7346519,2.0)
     )
 
-    val macsToCoordinates =
+    val deviceMap: Map<String, Coordinate> =
         macsToRooms
             .map { it.key to roomsToCoordinates[it.value] }
             .filterNot { it.second == null }

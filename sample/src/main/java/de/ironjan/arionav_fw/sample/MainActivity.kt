@@ -25,6 +25,7 @@ import de.ironjan.arionav_fw.ionav.PermissionHelper
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
+import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProviderHardCodedValues
 import de.ironjan.arionav_fw.sample.util.Mailer
 import de.ironjan.arionav_fw.sample.util.PreferenceKeys
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -200,7 +201,7 @@ class MainActivity :
         positioningService.removeProvider(BluetoothPositionProvider.BLUETOOTH_PROVIDER_NAME)
 
         val gpsPositionProvider = GpsPositionPositionProvider(this, lifecycle, positioningService)
-        val wifiPositioningProvider = WifiPositionProvider(this, lifecycle)
+        val wifiPositioningProvider = WifiPositionProvider(this, lifecycle, WifiPositioningProviderHardCodedValues.deviceMap)
         val bluetoothProviderImplementation = BluetoothPositionProvider(this, lifecycle, bluetoothDeviceMap)
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return

@@ -19,11 +19,12 @@ import de.ironjan.arionav_fw.ionav.positioning.Trilateraion.naiveNN
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProviderHardCodedValues.macsToRooms
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class WifiPositionProvider(private val context: Context, private val lifecycle: Lifecycle) : PositionProviderBaseImplementation(context, lifecycle) {
+class WifiPositionProvider(private val context: Context,
+                           private val lifecycle: Lifecycle,
+                           private val deviceMap: Map<String, Coordinate>) : PositionProviderBaseImplementation(context, lifecycle) {
     private val lastScan: MutableLiveData<String> = MutableLiveData("")
     fun getLastScan(): LiveData<String> = lastScan
 
@@ -37,8 +38,6 @@ class WifiPositionProvider(private val context: Context, private val lifecycle: 
     private val listOfVisibleDevices: MutableLiveData<List<ScanResult>> = MutableLiveData(listOf())
     fun getVisibleDevices(): LiveData<List<ScanResult>> = listOfVisibleDevices
 
-
-    private val tmpIdToCoordinate: Map<String, Coordinate> = WifiPositioningProviderHardCodedValues.macsToCoordinates
 
     private lateinit var wifiManager: WifiManager
     private lateinit var wifiScanReceiver: BroadcastReceiver
@@ -120,9 +119,9 @@ class WifiPositionProvider(private val context: Context, private val lifecycle: 
         logger.info(bestDevicesAsString)
 
 
-        val knownCoordinateDevices = bestBtDevices.filter { tmpIdToCoordinate.containsKey(it.BSSID) }
+        val knownCoordinateDevices = bestBtDevices.filter { deviceMap.containsKey(it.BSSID) }
         val signalStrengths = knownCoordinateDevices
-            .map { SignalStrength(it.BSSID, macsToRooms[it.BSSID], tmpIdToCoordinate[it.BSSID]!!, it.level) }
+            .map { SignalStrength(it.BSSID, macsToRooms[it.BSSID], deviceMap[it.BSSID]!!, it.level) }
 
         val coordinate = naiveNN(signalStrengths)
 
