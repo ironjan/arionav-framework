@@ -12,7 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.positioning.LevelDependentPositionProviderBaseImplementation
+import de.ironjan.arionav_fw.ionav.positioning.LevelDependentProviderBaseImplementation
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
@@ -22,12 +22,12 @@ import org.slf4j.LoggerFactory
  * MissingPermission is suppressed because the permission is verified when initializing the gps provider
  */
 @SuppressLint("MissingPermission")
-open class GpsPositionProvider(
+open class GpsPositioningProvider(
     private val context: Context,
     private val lifecycle: Lifecycle,
     private val positioningService: PositioningService
-) : LevelDependentPositionProviderBaseImplementation(context, lifecycle, positioningService) {
-    override val name: String = GpsPositionProvider::class.java.simpleName
+) : LevelDependentProviderBaseImplementation(context, lifecycle, positioningService) {
+    override val name: String = GpsPositioningProvider::class.java.simpleName
 
     private val observers: MutableList<IPositionObserver> = mutableListOf()
 
@@ -149,6 +149,6 @@ open class GpsPositionProvider(
 
     companion object {
         const val TAG = "GpsPositionProvider"
-        val GPS_PROVIDER_NAME = GpsPositionProvider::class.java.simpleName
+        val GPS_PROVIDER_NAME = GpsPositioningProvider::class.java.simpleName
     }
 }

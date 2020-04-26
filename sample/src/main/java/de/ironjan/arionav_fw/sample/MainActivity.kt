@@ -22,7 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
 import de.ironjan.arionav_fw.ionav.PermissionHelper
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositioningProviderImplementation
-import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionProvider
+import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositioningProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProvider
 import de.ironjan.arionav_fw.sample.util.Mailer
 import de.ironjan.arionav_fw.sample.util.PreferenceKeys
@@ -177,6 +177,7 @@ class MainActivity :
                 initializePositioningService()
             }
         }
+        requestPermissions()
     }
 
     override fun permissionAlreadyGranted(requestCode: Int) {
@@ -191,11 +192,11 @@ class MainActivity :
     private fun initializePositioningService() {
         val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
 
-        positioningService.removeProvider(GpsPositionProvider.GPS_PROVIDER_NAME)
+        positioningService.removeProvider(GpsPositioningProvider.GPS_PROVIDER_NAME)
         positioningService.removeProvider(WifiPositioningProvider.WIFI_POSITIONING_PROVIDER)
         positioningService.removeProvider(BluetoothPositioningProviderImplementation.BLUETOOTH_PROVIDER_NAME)
 
-        val gpsPositionProvider = GpsPositionProvider(this, lifecycle, positioningService)
+        val gpsPositionProvider = GpsPositioningProvider(this, lifecycle, positioningService)
         val wifiPositioningProvider = WifiPositioningProvider(this, lifecycle)
         val bluetoothProviderImplementation = BluetoothPositioningProviderImplementation(this, lifecycle)
 
