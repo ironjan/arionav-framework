@@ -7,14 +7,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
-import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositioningProviderHardCodedValues
+import de.ironjan.arionav_fw.sample.data.WifiPositioningProviderHardCodedValues
 import kotlinx.android.synthetic.main.fragment_custom_list.*
 
 
 class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult ->
     val mac = scanResult.BSSID
-    val name = WifiPositioningProviderHardCodedValues.macsToRooms[mac] ?: scanResult.SSID
-    val coord = WifiPositioningProviderHardCodedValues.roomsToCoordinates[name]
+    val name = WifiPositioningProviderHardCodedValues.deviceNameMap[mac] ?: scanResult.SSID
+    val coord = WifiPositioningProviderHardCodedValues.nameToCoordinatesMap[name]
     "$name $mac ${scanResult.level} - $coord"}
 ) {
 

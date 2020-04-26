@@ -5,7 +5,7 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 /**
  * Utility class for triangulation and to provide information for debug ui
  * @param deviceId the device's UUID
- * @param deviceId the device's name if it's a known evice
+ * @param deviceId the device's name if it's a known device
  * @param coordinate the device's coordinate if it's a known device
  * @param rssi the device's rssi value
  */

@@ -1,9 +1,9 @@
-package de.ironjan.arionav_fw.ionav.positioning.wifi
+package de.ironjan.arionav_fw.sample.data
 
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
 object WifiPositioningProviderHardCodedValues {
-    val macsToRooms: Map<String, String> = mapOf(
+    val deviceNameMap: Map<String, String> = mapOf(
         "00:b7:71:35:92:80" to "FU-aussen",
         "10:05:ca:56:9d:a0" to "FU.106-Flur",
         "f8:c2:88:92:29:10" to "FU.201.2-Flur",
@@ -45,7 +45,7 @@ object WifiPositioningProviderHardCodedValues {
     )
 
 
-    val roomsToCoordinates = mapOf(
+    val nameToCoordinatesMap = mapOf(
         "FU-aussen" to Coordinate(51.7319664,8.7346338,-1.0), //FIXME double-check
         "FU.106-Flur" to Coordinate(51.7319838,8.7342958,-1.0), //FIXME double-check
         "FU.201.2-Flur" to Coordinate(51.7317068,8.735199,-1.0),
@@ -86,8 +86,8 @@ object WifiPositioningProviderHardCodedValues {
     )
 
     val deviceMap: Map<String, Coordinate> =
-        macsToRooms
-            .map { it.key to roomsToCoordinates[it.value] }
+        deviceNameMap
+            .map { it.key to nameToCoordinatesMap[it.value] }
             .filterNot { it.second == null }
             .map { it.first to it.second!! }
             .toMap()
