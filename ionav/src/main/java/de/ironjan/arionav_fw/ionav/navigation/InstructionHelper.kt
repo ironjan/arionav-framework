@@ -2,6 +2,7 @@ package de.ironjan.arionav_fw.ionav.navigation
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.ionav.R
 
@@ -73,6 +74,12 @@ class InstructionHelper(private val context: Context) {
 //            103 -> "PT_END_TRIP"
             else -> R.mipmap.ic_launcher
         }
-        return context.resources.getDrawable(resId, context.theme)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            context.resources.getDrawable(resId, context.theme)
+        } else {
+            @Suppress("DEPRECATION")
+            context.resources.getDrawable(resId)
+        }
     }
+
 }
