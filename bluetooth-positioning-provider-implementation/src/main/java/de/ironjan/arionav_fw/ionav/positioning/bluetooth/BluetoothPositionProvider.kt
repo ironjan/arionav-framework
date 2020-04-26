@@ -22,7 +22,6 @@ import de.ironjan.arionav_fw.ionav.positioning.SignalStrength
 import de.ironjan.arionav_fw.ionav.positioning.Trilateraion
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -67,6 +66,8 @@ class BluetoothPositionProvider(private val context: Context, private val lifecy
             when (intent?.action) {
                 ACTION_DISCOVERY_STARTED -> {
                     logger.info("Started BT discovery. Clearing known devices...")
+                    actualDevices.clear()
+                    updateLiveData()
                     updateLastScan()
                 }
                 ACTION_DISCOVERY_FINISHED -> {
@@ -90,13 +91,17 @@ class BluetoothPositionProvider(private val context: Context, private val lifecy
 
                     actualDevices[address] = SignalStrength(address, name, coordinate, rssi)
 
-                    val bestBtDevices = actualDevices.values
-                        .sortedBy { -it.rssi }
-
-                    actualDevicesLiveData.value = bestBtDevices
+                    updateLiveData()
                     updatePositionEstimate()
                 }
             }
+        }
+
+        private fun updateLiveData() {
+            val bestBtDevices = actualDevices.values
+                .sortedBy { -it.rssi }
+
+            actualDevicesLiveData.value = bestBtDevices
         }
 
     }
