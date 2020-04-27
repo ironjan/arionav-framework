@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import de.ironjan.arionav_fw.ionav.navigation.SimpleMapViewFragment
+import de.ironjan.arionav_fw.ionav.views.SimpleMapViewFragment
 import kotlinx.android.synthetic.main.ar_enabled_map_view.*
 
 class ArEnabledMapViewFragment : SimpleMapViewFragment() {

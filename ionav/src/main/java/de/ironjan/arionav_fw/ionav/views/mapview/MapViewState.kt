@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.mapview
+package de.ironjan.arionav_fw.ionav.views.mapview
 
 import android.os.Parcel
 import android.os.Parcelable

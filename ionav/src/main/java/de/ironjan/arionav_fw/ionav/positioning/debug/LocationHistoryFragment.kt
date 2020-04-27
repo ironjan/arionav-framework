@@ -10,7 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
-import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
+import de.ironjan.arionav_fw.ionav.views.mapview.SimpleMapViewViewModel
 import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
 
 class LocationHistoryFragment: Fragment() {

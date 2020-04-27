@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.mapview
+package de.ironjan.arionav_fw.ionav.views.mapview
 
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.LifecycleOwner

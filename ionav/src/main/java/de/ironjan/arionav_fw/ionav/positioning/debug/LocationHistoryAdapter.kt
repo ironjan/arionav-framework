@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
+import de.ironjan.arionav_fw.ionav.views.mapview.SimpleMapViewViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 

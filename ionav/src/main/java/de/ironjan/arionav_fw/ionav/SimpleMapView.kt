@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
-import de.ironjan.arionav_fw.ionav.mapview.*
+import de.ironjan.arionav_fw.ionav.views.mapview.*
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView

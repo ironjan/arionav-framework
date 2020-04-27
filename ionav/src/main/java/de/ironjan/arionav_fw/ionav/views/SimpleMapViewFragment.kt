@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.navigation
+package de.ironjan.arionav_fw.ionav.views
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,8 +15,9 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
-import de.ironjan.arionav_fw.ionav.mapview.IndoorItemTapCallback
-import de.ironjan.arionav_fw.ionav.mapview.SimpleMapViewViewModel
+import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
+import de.ironjan.arionav_fw.ionav.views.mapview.SimpleMapViewViewModel
+import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 import org.slf4j.LoggerFactory
