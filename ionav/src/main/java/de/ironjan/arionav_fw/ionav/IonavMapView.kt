@@ -26,7 +26,7 @@ import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 
-class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapViewViewModel> {
+class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapViewViewModel> {
 
     private var snackbar: Snackbar? = null
 

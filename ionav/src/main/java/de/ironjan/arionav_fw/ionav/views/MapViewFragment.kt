@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 import org.slf4j.LoggerFactory
 
 
-open class SimpleMapViewFragment : Fragment() {
-    private val logger = LoggerFactory.getLogger(SimpleMapViewFragment::class.simpleName)
+open class MapViewFragment : Fragment() {
+    private val logger = LoggerFactory.getLogger(MapViewFragment::class.simpleName)
 
     protected val viewModel: SimpleMapViewViewModel by activityViewModels()
 
