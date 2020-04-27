@@ -25,11 +25,6 @@ class LocationHistoryFragment: Fragment() {
 
         val context = context ?: return
 
-        val positioningService = when(val ionavContainerHolder = activity?.application) {
-            is IonavContainerHolder -> ionavContainerHolder.ionavContainer.positioningService
-            else -> null
-        } ?: return
-
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
 
         val locationHistoryAdapter = LocationHistoryAdapter(lifecycleOwner, viewModel)
