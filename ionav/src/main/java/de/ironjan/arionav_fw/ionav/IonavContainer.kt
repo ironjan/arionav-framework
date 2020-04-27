@@ -14,9 +14,9 @@ import java.io.File
 class IonavContainer(private val context: Context, val mapName: String, val resId: Int) {
     val applicationContext = context
 
-    val mapFolder: String by lazy { File(context.filesDir, mapName).absolutePath }
-    val mapFilePath: String by lazy { File(mapFolder, "$mapName.map").absolutePath }
-    val osmFilePath: String by lazy { File(mapFolder, "$mapName.osm").absolutePath }
+    val mapFolderPath: String by lazy { File(context.filesDir, mapName).absolutePath }
+    val mapFilePath: String by lazy { File(mapFolderPath, "$mapName.map").absolutePath }
+    val osmFilePath: String by lazy { File(mapFolderPath, "$mapName.osm").absolutePath }
 
     val positioningService = PositioningService()
     val routingService = RoutingService()
