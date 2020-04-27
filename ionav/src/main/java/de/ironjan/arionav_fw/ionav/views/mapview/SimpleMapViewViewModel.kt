@@ -101,11 +101,27 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
     // region destination
     private val _destination: MutableLiveData<Coordinate?> = MutableLiveData()
-
     val destination: LiveData<Coordinate?> = _destination
+
+    private val _destinationString: MutableLiveData<String> = MutableLiveData("")
+    val destinationString: LiveData<String> = _destinationString
 
     fun setDestination(value: Coordinate?) {
         navigationService.destination = value
+
+        val oldDestinationString = _destinationString.value
+        _destinationString.value = value?.asString() ?: oldDestinationString
+    }
+
+    fun setDestinationString(value: String): Boolean {
+        _destinationString.value = value
+
+        val wayByName = _indoorData.value?.getWayByName(value)
+        val center = wayByName?.center
+        val coordinate = center ?: return false
+
+        navigationService.destination = coordinate
+        return true
     }
 
     // endregion
@@ -238,5 +254,6 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
 
         logger.info("Started loading of indoor map data.")
     }
+
     // endregion
 }

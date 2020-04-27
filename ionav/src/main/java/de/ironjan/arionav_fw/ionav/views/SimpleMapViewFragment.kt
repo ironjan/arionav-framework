@@ -80,6 +80,8 @@ open class SimpleMapViewFragment : Fragment() {
 
             progress.isIndeterminate = isLoading
         })
+
+        viewModel.destinationString.observe(lifecycleOwner, Observer { edit_destination.setText(it) })
     }
 
     private fun bindOnClickListeners(navigationService: NavigationService) {
@@ -94,17 +96,14 @@ open class SimpleMapViewFragment : Fragment() {
             val currentFocus = activity.currentFocus
             inputManager.hideSoftInputFromWindow(if (null == currentFocus) null else currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
-            val namedPlaces = viewModel.indoorData.value
-                ?: return@setOnClickListener
             val destinationString = edit_destination.text.toString()
-            val namedPlace = namedPlaces.getWayByName(destinationString)
-            if (namedPlace == null) {
+
+            val isPlaceFound = viewModel.setDestinationString(destinationString)
+                        val isPlaceNotFound = !isPlaceFound
+            if (isPlaceNotFound) {
                 Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-
-            navigationService.destination = namedPlace.center
         }
 
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }

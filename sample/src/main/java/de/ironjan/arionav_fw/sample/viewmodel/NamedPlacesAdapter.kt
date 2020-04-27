@@ -9,13 +9,13 @@ import de.ironjan.arionav_fw.sample.R
 
 
 class NamedPlacesAdapter(
-    private var myDataset: List<NamedPlace>,
-    private val onItemClickListener: NamedPlacesAdapter.OnItemClickListener
+    private var myDataset: List<String>,
+    private val onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<NamedPlacesAdapter.EitherPoiRoomAdapterViewHolder>() {
     class EitherPoiRoomAdapterViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
 
     interface OnItemClickListener {
-        fun onItemClick(item: NamedPlace)
+        fun onItemClick(placeName: String)
     }
 
     // Create new views (invoked by the layout manager)
@@ -34,14 +34,14 @@ class NamedPlacesAdapter(
     override fun onBindViewHolder(holder: EitherPoiRoomAdapterViewHolder, position: Int) {
         val place = myDataset[position]
         val tv = holder.textView
-        tv.text = place.name
+        tv.text = place
         tv.setOnClickListener { onItemClickListener.onItemClick(place) }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
 
-    fun replaceData(it: List<NamedPlace>) {
+    fun replaceData(it: List<String>) {
         myDataset = it
         notifyDataSetChanged()
     }
