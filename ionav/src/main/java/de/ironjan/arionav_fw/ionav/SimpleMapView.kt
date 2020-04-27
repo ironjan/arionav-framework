@@ -18,7 +18,6 @@ import org.oscim.event.Gesture
 import org.oscim.event.GestureListener
 import org.oscim.event.MotionEvent
 import org.oscim.layers.Layer
-import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
 import org.oscim.layers.tile.buildings.BuildingLayer
@@ -75,21 +74,6 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         })
 
 
-    }
-
-    private fun updateMarkerLayer(
-        layer: ItemizedLayer<MarkerItem>?,
-        it: Coordinate?,
-        marker: Int,
-        title: String = ""
-    ) {
-        layer?.removeAllItems()
-        redrawMap()
-
-        if (it == null) return
-
-        layer?.addItem(createMarkerItem(it, marker, title))
-        redrawMap()
     }
 
     constructor(context: Context, attrsSet: AttributeSet) : super(context, attrsSet) {}
@@ -152,9 +136,6 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
     }
 
 
-    companion object {
-        const val TAG = "IonavMapView" // FIXME rename class
-    }
 
 
     internal inner class MapEventsReceiver(map: org.oscim.map.Map) : Layer(map), GestureListener {
@@ -222,5 +203,9 @@ class SimpleMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapV
         centerOn(coordinate)
     }
 
+
+    companion object {
+        const val TAG = "IonavMapView" // FIXME rename class
+    }
 
 }
