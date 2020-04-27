@@ -44,6 +44,9 @@ class RoutingService : Observable<RoutingService.Status>{
     } catch (e: java.lang.Exception) {
         logger.error("Could not compute route.", e)
         null
+    } catch (e: StackOverflowError) {
+        logger.error("Could not compute route.", e)
+        null
     }
 
     fun init(mapFolder: String) {

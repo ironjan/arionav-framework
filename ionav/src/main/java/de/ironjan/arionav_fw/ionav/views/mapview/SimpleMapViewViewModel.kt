@@ -197,6 +197,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
         mediatorLiveData.addSource(route) {
             if (it == null || it.hasErrors()) {
                 mediatorLiveData.value = null
+                return@addSource
             }
 
             val current =  it!!.instructions.firstOrNull() ?: return@addSource
