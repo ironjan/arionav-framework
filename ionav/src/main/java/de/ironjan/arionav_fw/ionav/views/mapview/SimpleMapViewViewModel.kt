@@ -116,8 +116,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
     fun setDestinationString(value: String): Boolean {
         _destinationString.value = value
 
-        val wayByName = _indoorData.value?.getWayByName(value)
-        val center = wayByName?.center
+        val center = _indoorData.value?.getCoordinateOf(value)
         val coordinate = center ?: return false
 
         navigationService.destination = coordinate

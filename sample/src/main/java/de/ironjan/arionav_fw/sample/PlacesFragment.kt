@@ -34,9 +34,7 @@ class PlacesFragment : Fragment() {
         val viewManager = LinearLayoutManager(lContext)
         val onItemClickListener = object : NamedPlacesAdapter.OnItemClickListener {
             override fun onItemClick(placeName: String) {
-                val coordinateStringOf = indoorData.value?.getWayByName(placeName)?.center ?: return
-                logger.info("Clicked on $coordinateStringOf, i.e. $placeName")
-
+                logger.info("Clicked on $placeName.")
                 viewModel.setDestinationString(placeName)
                 findNavController().navigate(R.id.action_to_simple_map_nav_fragment)
             }

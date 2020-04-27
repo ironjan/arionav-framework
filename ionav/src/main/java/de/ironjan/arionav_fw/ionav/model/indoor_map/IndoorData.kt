@@ -30,7 +30,6 @@ class IndoorData(
         .union(indoorWays.map { it.name })
 
 
-
     val levels =
         indoorNodesByLevel.flatMap { it.value }.map { it.lvl }.union(
             indoorWaysByLevel.flatMap { it.value }.map { it.lvl }
@@ -40,7 +39,8 @@ class IndoorData(
 
     fun getNodes(lvl: Double): List<IndoorNode> = indoorNodesByLevel[lvl] ?: emptyList()
 
-    fun getWayByName(name: String) = indoorWays.firstOrNull { it.name == name }
+    fun getCoordinateOf(name: String) = (indoorWays.firstOrNull { it.name == name } ?: indoorNodes.first { it.name == name }).center
+
 
     companion object {
         fun empty() = IndoorData(emptyList(), emptyList())
