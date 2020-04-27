@@ -32,5 +32,16 @@ class ArEnabledMapViewFragment : SimpleMapViewFragment() {
 //            instructionText.visibility = View.VISIBLE
 //            instructionText.text = it
         })
+
+        updateBtnArNavState(false)
+
+        viewModel.route.observe(lifecycleOwner, Observer { updateBtnArNavState(it != null && !it.hasErrors())})
     }
+
+    private fun updateBtnArNavState(enabled: Boolean) {
+        btnArNav.isEnabled = enabled
+        btnArNavWrapper.visibility = boolToVisibility(enabled)
+    }
+
+    private fun boolToVisibility(b: Boolean): Int = if(b) View.VISIBLE else View.GONE
 }
