@@ -5,7 +5,6 @@
         <item android:id="@+id/mnuSimpleMap"
             android:title="Simple Map" />
         <item android:id="@+id/mnuPoiList"
-            android:visible="false"
             android:title="POIs/Rooms" />
     </group>
     <group android:id="@+id/mnuGrpProviderDebug">
