@@ -23,8 +23,6 @@ import org.slf4j.LoggerFactory
 
 
 open class MapViewFragment : Fragment() {
-    private val logger = LoggerFactory.getLogger(MapViewFragment::class.simpleName)
-
     protected val viewModel: SimpleMapViewViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
