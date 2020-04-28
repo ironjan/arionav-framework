@@ -40,7 +40,12 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
 
     // region initialization
 
+    /**
+     * Will initialize this view model. Does nothing, if {@param ionavContainer} is already known.
+     */
     fun initialize(ionavContainer: IonavContainer) {
+        if(this::ionavContainer.isInitialized) return
+
         this.ionavContainer = ionavContainer
 
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
