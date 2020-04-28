@@ -20,7 +20,6 @@ import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 
-
 open class MapViewFragment : Fragment() {
     protected val viewModel: IonavViewModel by activityViewModels()
 
@@ -30,20 +29,16 @@ open class MapViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-        mapView.onLifecycleOwnerAttached(lifecycleOwner)
+        val lifecycleOwner = this as LifecycleOwner
 
         observeViewModel(lifecycleOwner)
-        bindSuggestions(lifecycleOwner)
+        bindUiActionListeners()
 
-        val ionavContainer = (activity?.application as IonavContainerHolder).ionavContainer
-        mapView.initialize(ionavContainer, viewModel)
+        mapView.onLifecycleOwnerAttached(lifecycleOwner)
 
-        bindOnClickListeners()
+        val holder = activity?.application as IonavContainerHolder
 
-        bindMapItemTapListener()
+        mapView.initialize(holder.ionavContainer, viewModel)
     }
 
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {
@@ -59,6 +54,8 @@ open class MapViewFragment : Fragment() {
         })
 
         viewModel.destinationString.observe(lifecycleOwner, Observer { edit_destination.setText(it) })
+
+        bindSuggestions(lifecycleOwner)
     }
 
     private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
@@ -73,6 +70,11 @@ open class MapViewFragment : Fragment() {
                 addAll(it.names)
             }
         })
+    }
+
+    private fun bindUiActionListeners() {
+        bindOnClickListeners()
+        bindMapItemTapListener()
     }
 
     private fun bindOnClickListeners() {
@@ -116,6 +118,4 @@ open class MapViewFragment : Fragment() {
             return
         }
     }
-
-
 }
