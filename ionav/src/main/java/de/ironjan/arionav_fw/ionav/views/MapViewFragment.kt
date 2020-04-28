@@ -2,6 +2,7 @@ package de.ironjan.arionav_fw.ionav.views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,20 +48,6 @@ open class MapViewFragment : Fragment() {
         bindMapItemTapListener()
     }
 
-    private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
-        val context = context ?: return
-
-        val endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
-        edit_destination.setAdapter(endSuggestionsAdapter)
-
-        viewModel.indoorData.observe(lifecycleOwner, Observer {
-            endSuggestionsAdapter.apply {
-                clear()
-                addAll(it.names)
-            }
-        })
-    }
-
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {
         viewModel.selectedLevel.observe(lifecycleOwner, Observer { txtLevel.text = it.toString() })
         viewModel.routingStatus.observe(lifecycleOwner, Observer { btnStartNavigation.isEnabled = (it == RoutingService.Status.READY) })
@@ -74,6 +61,20 @@ open class MapViewFragment : Fragment() {
         })
 
         viewModel.destinationString.observe(lifecycleOwner, Observer { edit_destination.setText(it) })
+    }
+
+    private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
+        val context = context ?: return
+
+        val endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
+        edit_destination.setAdapter(endSuggestionsAdapter)
+
+        viewModel.indoorData.observe(lifecycleOwner, Observer {
+            endSuggestionsAdapter.apply {
+                clear()
+                addAll(it.names)
+            }
+        })
     }
 
     private fun bindOnClickListeners() {
@@ -110,7 +111,13 @@ open class MapViewFragment : Fragment() {
 
             override fun longTap(placeName: String) {
                 edit_destination.setText(placeName)
-                btnStartNavigation.callOnClick()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                    btnStartNavigation.callOnClick()
+                }
+                else {
+                    btnStartNavigation.performClick()
+                }
             }
         }
     }
