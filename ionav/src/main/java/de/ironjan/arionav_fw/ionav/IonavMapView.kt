@@ -110,7 +110,7 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, IonavViewMo
         indoorLayers.observe(viewModel, lifecycleOwner)
 
         viewModel.mapCenter.observe(lifecycleOwner, Observer {
-            if (viewModel.getFollowUserPositionLiveData().value == true
+            if (viewModel.isFollowUser
                 && it != null
             ) {
                 centerOn(it)

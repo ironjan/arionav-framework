@@ -144,6 +144,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
 
         if (b) centerOnUserPos()
     }
+    val isFollowUser = followUserPosition.value ?: false
 
 
     private val _locationHistory = mutableListOf<IonavLocation>()

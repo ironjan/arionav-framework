@@ -78,7 +78,7 @@ open class MapViewFragment : Fragment() {
 
     private fun bindOnClickListeners() {
         btnCenterOnUser.setOnClickListener {
-            mapView.centerOnUser()
+            viewModel.setFollowUserPosition(true)
         }
 
         btnStartNavigation.setOnClickListener { startNavigation() }
