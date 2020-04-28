@@ -20,7 +20,6 @@ import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.arionav_fw.ionav.views.mapview.SimpleMapViewViewModel
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
-import org.slf4j.LoggerFactory
 
 
 open class MapViewFragment : Fragment() {
