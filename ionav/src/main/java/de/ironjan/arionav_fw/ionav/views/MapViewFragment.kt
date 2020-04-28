@@ -82,22 +82,7 @@ open class MapViewFragment : Fragment() {
             mapView.centerOnUser()
         }
 
-        btnStartNavigation.setOnClickListener {
-            val activity = activity ?: return@setOnClickListener
-
-            val inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            val currentFocus = activity.currentFocus
-            inputManager.hideSoftInputFromWindow(if (null == currentFocus) null else currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-
-            val destinationString = edit_destination.text.toString()
-
-            val isPlaceFound = viewModel.setDestinationString(destinationString)
-            val isPlaceNotFound = !isPlaceFound
-            if (isPlaceNotFound) {
-                Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-        }
+        btnStartNavigation.setOnClickListener { startNavigation() }
 
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
@@ -119,6 +104,23 @@ open class MapViewFragment : Fragment() {
                     btnStartNavigation.performClick()
                 }
             }
+        }
+    }
+
+    private fun startNavigation() {
+        val activity = activity ?: return
+
+        val inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val currentFocus = activity.currentFocus
+        inputManager.hideSoftInputFromWindow(if (null == currentFocus) null else currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+
+        val destinationString = edit_destination.text.toString()
+
+        val isPlaceFound = viewModel.setDestinationString(destinationString)
+        val isPlaceNotFound = !isPlaceFound
+        if (isPlaceNotFound) {
+            Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
+            return
         }
     }
 
