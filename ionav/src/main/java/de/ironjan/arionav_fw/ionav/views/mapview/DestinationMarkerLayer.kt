@@ -21,23 +21,20 @@ class DestinationMarkerLayer(private val map: Map, private val markerDrawable: D
 
     override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.destination.observe(lifecycleOwner, Observer {
-            updateMarkerLayer(it, "destination")
+            updateMarkerLayer(it)
 
             logger.debug("Updated end coordinate in view to $it.")
         })
     }
 
 
-    private fun updateMarkerLayer(
-        it: Coordinate?,
-        title: String = ""
-    ) {
+    private fun updateMarkerLayer(it: Coordinate?) {
         removeAllItems()
         map().updateMap(true)
 
         if (it == null) return
 
-        val markerItem = MarkerItem(title, "description test", GeoPoint(it.lat, it.lon))
+        val markerItem = MarkerItem("destination", "", GeoPoint(it.lat, it.lon))
         addItem(markerItem)
 
         map().updateMap(true)

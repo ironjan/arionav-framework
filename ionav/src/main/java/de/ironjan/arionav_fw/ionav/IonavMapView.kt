@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav_fw.ionav.views.mapview.*
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
@@ -28,61 +27,33 @@ import org.slf4j.LoggerFactory
 
 class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapViewViewModel> {
 
-    private var snackbar: Snackbar? = null
+    private val logger = LoggerFactory.getLogger(IonavMapView::class.simpleName)
 
     // region map layers
     private lateinit var indoorLayers: IndoorLayersManager
     private lateinit var buildingLayer: BuildingLayer
-
     private lateinit var remainingRouteLayer: RouteLayer
-
     private lateinit var endMarkerLayer: DestinationMarkerLayer
     private lateinit var userPositionLayer: UserPositionLayer
-
-
-    private val endCoordinateMarker = R.drawable.marker_icon_red
     // endregion
 
     // region MVVM
     override var viewModel = SimpleMapViewViewModel()
-    private lateinit var lifecycleOwner: LifecycleOwner
 
+    private lateinit var lifecycleOwner: LifecycleOwner
     override fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner
     }
     // endregion
 
-    var itemTapCallback: IndoorItemTapCallback
-        get() = if (::indoorLayers.isInitialized) indoorLayers.itemTapCallback else IndoorLayersManager.defaultTapCallback
-        set(value) {
-            indoorLayers.itemTapCallback = value
-        }
+    // region constructors
+    constructor(context: Context, attrsSet: AttributeSet) : super(context, attrsSet)
 
-    private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
-
-        endMarkerLayer.observe(viewModel, lifecycleOwner)
-        userPositionLayer.observe(viewModel, lifecycleOwner)
-        remainingRouteLayer.observe(viewModel, lifecycleOwner)
-        indoorLayers.observe(viewModel, lifecycleOwner)
-
-        viewModel.mapCenter.observe(lifecycleOwner, Observer {
-            if (viewModel.getFollowUserPositionLiveData().value == true
-                && it != null
-            ) {
-                centerOn(it)
-            }
-        })
+    constructor(context: Context) : super(context, null)
+    // endregion
 
 
-    }
-
-    constructor(context: Context, attrsSet: AttributeSet) : super(context, attrsSet) {}
-
-    constructor(context: Context) : super(context, null) {}
-
-
-    private val logger = LoggerFactory.getLogger(TAG)
-
+    // region initialization
     fun initialize(ionavContainer: IonavContainer) {
         viewModel.initialize(ionavContainer)
         val tileLayer = loadMap(ionavContainer.mapFilePath)
@@ -92,7 +63,6 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
 
         observeLiveData(lifecycleOwner)
     }
-
 
     private fun loadMap(osmFilePath: String): VectorTileLayer {
         logger.debug("Loading map for map view")
@@ -106,14 +76,6 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
         val tileLayer = map().setBaseMap(tileSource)
         map().setTheme(VtmThemes.DEFAULT)
         return tileLayer
-    }
-
-    private fun goToMapStartPosition() {
-        // Map start position
-        val mapCenter = GeoPoint(51.731938, 8.734518)
-        val zoom = (1 shl 19).toDouble()
-        map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
-        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
     }
 
     private fun createAndAddLayers(tileLayer: VectorTileLayer) {
@@ -135,9 +97,42 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
         logger.debug("Added layers.")
     }
 
+    private fun goToMapStartPosition() {
+        // Map start position
+        val mapCenter = GeoPoint(51.731938, 8.734518)
+        val zoom = (1 shl 19).toDouble()
+        map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
+        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
+    }
+
+    private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
+
+        endMarkerLayer.observe(viewModel, lifecycleOwner)
+        userPositionLayer.observe(viewModel, lifecycleOwner)
+        remainingRouteLayer.observe(viewModel, lifecycleOwner)
+        indoorLayers.observe(viewModel, lifecycleOwner)
+
+        viewModel.mapCenter.observe(lifecycleOwner, Observer {
+            if (viewModel.getFollowUserPositionLiveData().value == true
+                && it != null
+            ) {
+                centerOn(it)
+            }
+        })
+    }
+    // endregion
 
 
 
+    // region indoor layer callback
+    var itemTapCallback: IndoorItemTapCallback
+        get() = if (::indoorLayers.isInitialized) indoorLayers.itemTapCallback else IndoorLayersManager.defaultTapCallback
+        set(value) {
+            indoorLayers.itemTapCallback = value
+        }
+    // endregion
+
+    // region map long presses
     internal inner class MapEventsReceiver(map: org.oscim.map.Map) : Layer(map), GestureListener {
 
         override fun onGesture(g: Gesture, e: MotionEvent): Boolean {
@@ -155,9 +150,7 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
             super.onDetach()
             logger.debug("ondetach")
         }
-
     }
-
 
     private fun onLongPress(p: GeoPoint): Boolean {
         logger.info("longpress at $p")
@@ -174,20 +167,9 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
         logger.info(msg)
         return false
     }
+    // endregion
 
-
-    private fun createMarkerItem(coordinate: Coordinate, resource: Int, title: String = ""): MarkerItem {
-        val drawable: Drawable = resources.getDrawable(resource)
-        val bitmap = AndroidGraphics.drawableToBitmap(drawable)
-        val markerSymbol = MarkerSymbol(bitmap, 0.5f, 1f)
-
-        val markerItem = MarkerItem(title, "description test", GeoPoint(coordinate.lat, coordinate.lon))
-        markerItem.marker = markerSymbol
-
-
-        return markerItem
-    }
-
+    // region map helpers
 
     fun redrawMap() = map().updateMap(true)
 
@@ -203,9 +185,6 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
         centerOn(coordinate)
     }
 
-
-    companion object {
-        const val TAG = "IonavMapView" // FIXME rename class
-    }
+    // endregion
 
 }

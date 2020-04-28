@@ -18,17 +18,11 @@ class RouteLayer(private val map: Map, style: Style) : PathLayer(map, style),
 
     override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.route.observe(lifecycleOwner, Observer {
-            route = it
+            redrawLayer(it)
         })
     }
 
-    var route: PathWrapper? = null
-        set(value) {
-            field = value
-            redrawLayer()
-        }
-
-    private fun redrawLayer() {
+    private fun redrawLayer(route: PathWrapper?) {
         clearPath()
         map.updateMap(true)
         logger.debug("Cleared the displayed route.")
