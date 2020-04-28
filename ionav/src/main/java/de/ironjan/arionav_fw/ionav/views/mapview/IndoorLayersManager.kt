@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory
 class IndoorLayersManager(private val map: Map, private val density: Float) :
     ModelDrivenMapExtension<SimplifiedMapViewState, SimpleMapViewViewModel>{
 
+    // region ModelDrivenMapExtension
     override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.indoorData.observe(lifecycleOwner, Observer{
             indoorData = it
@@ -33,8 +34,14 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
             selectedLevel = it.toDouble()
         })
     }
+    // endregion
 
+    // region callbacks
     var itemTapCallback = defaultTapCallback
+
+    // endregion
+
+    // region data handling
 
     var indoorData = IndoorData.empty()
         set(value) {
@@ -44,8 +51,34 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
             replaceMapLayers(selectedLevel, selectedLevel)
         }
 
-    private var levelsToDrawableLayers = prepareDrawableLayers(indoorData)
+    var selectedLevel: Double = 0.0
+        set(value) {
+            if (value == field) return
+
+            replaceMapLayers(field, value)
+
+            field = value
+        }
+
+    // endregion
+
+    // region layer handling
     private var levelsToLabelLayers = prepareLabelLayers(indoorData)
+    private var levelsToDrawableLayers = prepareDrawableLayers(indoorData)
+
+
+    private fun replaceMapLayers(oldLevel: Double, newLevel: Double) {
+        val oldDrawableLayer = levelsToDrawableLayers[oldLevel]
+        val oldLabelLayer = levelsToLabelLayers[oldLevel] ?: return
+        map.layers().remove(oldDrawableLayer)
+        map.layers().remove(oldLabelLayer)
+
+        val newDrawableLayer = levelsToDrawableLayers[newLevel] ?: return
+        val newLabelLayer = levelsToLabelLayers[newLevel] ?: return
+
+        map.layers().add(newDrawableLayer)
+        map.layers().add(newLabelLayer)
+    }
 
     private fun prepareDrawableLayers(id: IndoorData): kotlin.collections.Map<Double, VectorLayer> {
         return id.levels.map {
@@ -90,6 +123,9 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
         return levelLayer
     }
+
+
+
 
     private fun prepareLabelLayers(id: IndoorData): kotlin.collections.Map<Double, Layer> {
         return id.levels.map {
@@ -175,27 +211,8 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         return labelLayer
     }
 
-    var selectedLevel: Double = 0.0
-        set(value) {
-            if (value == field) return
+    // endregion
 
-            replaceMapLayers(field, value)
-
-            field = value
-        }
-
-    private fun replaceMapLayers(oldLevel: Double, newLevel: Double) {
-        val oldDrawableLayer = levelsToDrawableLayers[oldLevel]
-        val oldLabelLayer = levelsToLabelLayers[oldLevel] ?: return
-        map.layers().remove(oldDrawableLayer)
-        map.layers().remove(oldLabelLayer)
-
-        val newDrawableLayer = levelsToDrawableLayers[newLevel] ?: return
-        val newLabelLayer = levelsToLabelLayers[newLevel] ?: return
-
-        map.layers().add(newDrawableLayer)
-        map.layers().add(newLabelLayer)
-    }
 
     companion object {
         val defaultTapCallback = object : IndoorItemTapCallback {
