@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory
 
 
 class RouteLayer(private val map: Map, style: Style) : PathLayer(map, style),
-    ModelDrivenMapExtension<SimplifiedMapViewState, SimpleMapViewViewModel> {
+    ModelDrivenMapExtension<SimplifiedMapViewState, IonavViewModel> {
     private val logger = LoggerFactory.getLogger(RouteLayer::class.simpleName)
 
-    override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
+    override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.route.observe(lifecycleOwner, Observer {
             redrawLayer(it)
         })

@@ -7,10 +7,10 @@ import org.oscim.map.Map
 
 class UserPositionLayer(private val map: Map)
     : org.oscim.layers.LocationLayer(map, 1f),
-    ModelDrivenMapExtension<SimplifiedMapViewState, SimpleMapViewViewModel> {
+    ModelDrivenMapExtension<SimplifiedMapViewState, IonavViewModel> {
 
 
-    override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner){
+    override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner){
         viewModel.userLocation.observe(lifecycleOwner, Observer {
             if(it == null) {
                 map.layers().remove(this)

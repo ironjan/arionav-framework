@@ -9,11 +9,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.ironjan.arionav_fw.ionav.R
-import de.ironjan.arionav_fw.ionav.views.mapview.SimpleMapViewViewModel
+import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
 
 class LocationHistoryFragment: Fragment() {
-    protected val viewModel: SimpleMapViewViewModel by activityViewModels()
+    protected val viewModel: IonavViewModel by activityViewModels()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

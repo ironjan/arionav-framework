@@ -14,12 +14,12 @@ import org.oscim.map.Map
 import org.slf4j.LoggerFactory
 
 class DestinationMarkerLayer(private val map: Map, private val markerDrawable: Drawable) : ItemizedLayer<MarkerItem>(map, MarkerSymbol(AndroidGraphics.drawableToBitmap(markerDrawable), 0.5f, 1f)),
-    ModelDrivenMapExtension<SimplifiedMapViewState, SimpleMapViewViewModel> {
+    ModelDrivenMapExtension<SimplifiedMapViewState, IonavViewModel> {
 
     private val logger = LoggerFactory.getLogger(DestinationMarkerLayer::class.simpleName)
 
 
-    override fun observe(viewModel: SimpleMapViewViewModel, lifecycleOwner: LifecycleOwner) {
+    override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.destination.observe(lifecycleOwner, Observer {
             updateMarkerLayer(it)
 

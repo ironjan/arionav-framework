@@ -20,7 +20,7 @@ import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> {
+class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> {
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
@@ -49,7 +49,7 @@ class SimpleMapViewViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapVie
             }
 
             override fun update(remainingRoute: PathWrapper?) {
-                this@SimpleMapViewViewModel._route.value = remainingRoute
+                this@IonavViewModel._route.value = remainingRoute
             }
         })
 

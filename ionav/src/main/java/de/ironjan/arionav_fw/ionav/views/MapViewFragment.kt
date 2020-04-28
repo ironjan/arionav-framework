@@ -2,7 +2,6 @@ package de.ironjan.arionav_fw.ionav.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +16,13 @@ import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
-import de.ironjan.arionav_fw.ionav.views.mapview.SimpleMapViewViewModel
+import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 
 
 open class MapViewFragment : Fragment() {
-    protected val viewModel: SimpleMapViewViewModel by activityViewModels()
+    protected val viewModel: IonavViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
 
@@ -52,7 +51,7 @@ open class MapViewFragment : Fragment() {
         viewModel.routingStatus.observe(lifecycleOwner, Observer { btnStartNavigation.isEnabled = (it == RoutingService.Status.READY) })
 
         viewModel.initializationStatus.observe(lifecycleOwner, Observer {
-            val isLoading = it != SimpleMapViewViewModel.InitializationStatus.INITIALIZED
+            val isLoading = it != IonavViewModel.InitializationStatus.INITIALIZED
 
             progress.visibility = if (isLoading) View.VISIBLE else View.GONE
 

@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav_fw.ionav.views.mapview.SimpleMapViewViewModel
+import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import de.ironjan.arionav_fw.sample.viewmodel.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 
@@ -23,7 +23,7 @@ class PlacesFragment : Fragment() {
 
     private val logger = LoggerFactory.getLogger(PlacesFragment::class.java.name)
 
-    private val viewModel: SimpleMapViewViewModel by activityViewModels()
+    private val viewModel: IonavViewModel by activityViewModels()
 
     private val indoorData by lazy { viewModel.indoorData }
 

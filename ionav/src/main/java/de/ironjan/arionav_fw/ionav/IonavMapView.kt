@@ -21,7 +21,7 @@ import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 
-class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapViewViewModel> {
+class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, IonavViewModel> {
 
     private val logger = LoggerFactory.getLogger(IonavMapView::class.simpleName)
 
@@ -34,7 +34,7 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
     // endregion
 
     // region MVVM
-    override lateinit var viewModel: SimpleMapViewViewModel
+    override lateinit var viewModel: IonavViewModel
 
     private lateinit var lifecycleOwner: LifecycleOwner
     override fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner) {
@@ -50,7 +50,7 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
 
 
     // region initialization
-    fun initialize(ionavContainer: IonavContainer, viewModel: SimpleMapViewViewModel) {
+    fun initialize(ionavContainer: IonavContainer, viewModel: IonavViewModel) {
         this.viewModel = viewModel
         viewModel.initialize(ionavContainer)
 
