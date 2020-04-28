@@ -143,24 +143,6 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         paint.strokeWidth = 2 * CanvasAdapter.getScale()
         paint.color = Color.BLACK
 
-        val nodeMarkers = id.getNodes(level).map {
-            if (it.name.isNullOrEmpty()) return@map null
-
-            val bitmap = CanvasAdapter.newBitmap((42 * CanvasAdapter.getScale()).toInt(), (42 * CanvasAdapter.getScale()).toInt(), 0)
-            canvas.setBitmap(bitmap)
-            canvas.fillColor(Color.TRANSPARENT)
-
-            canvas.drawText(it.name, 3 * CanvasAdapter.getScale(), 17 * CanvasAdapter.getScale(), paint)
-//            canvas.drawText(java.lang.Double.toString(lon), 3 * CanvasAdapter.getScale(), 35 * CanvasAdapter.getScale(), paint)
-
-            val markerItem = MarkerItem(it.name, "description test", GeoPoint(it.lat, it.lon))
-            val markerSymbol = MarkerSymbol(bitmap, 0f, 1f)
-            markerItem.marker = markerSymbol
-
-
-            markerItem
-        }
-
         val wayMarkers = id.getWays(level).map {
             if (it.name.isNullOrEmpty()) return@map null
 
@@ -178,7 +160,6 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         }
 
         val markers = wayMarkers
-//            .union(nodeMarkers)
             .filterNotNull()
 
 
