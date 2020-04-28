@@ -97,12 +97,7 @@ open class MapViewFragment : Fragment() {
             override fun longTap(placeName: String) {
                 edit_destination.setText(placeName)
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                    btnStartNavigation.callOnClick()
-                }
-                else {
-                    btnStartNavigation.performClick()
-                }
+                startNavigation()
             }
         }
     }
