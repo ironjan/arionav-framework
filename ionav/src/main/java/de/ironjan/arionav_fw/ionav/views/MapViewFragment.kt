@@ -29,13 +29,15 @@ open class MapViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         observeViewModel(this as LifecycleOwner)
         bindUiActionListeners()
 
 
         val holder = activity?.application as IonavContainerHolder
+        viewModel.initialize(holder.ionavContainer)
         mapView.onLifecycleOwnerAttached(this as LifecycleOwner)
-        mapView.initialize(holder.ionavContainer, viewModel)
+        mapView.initialize(viewModel)
     }
 
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {

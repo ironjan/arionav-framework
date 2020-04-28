@@ -50,11 +50,10 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, IonavViewMo
 
 
     // region initialization
-    fun initialize(ionavContainer: IonavContainer, viewModel: IonavViewModel) {
+    fun initialize(viewModel: IonavViewModel) {
         this.viewModel = viewModel
-        viewModel.initialize(ionavContainer)
 
-        val tileLayer = loadMap(ionavContainer.mapFilePath)
+        val tileLayer = loadMap(viewModel.mapFilePath)
         createAndAddLayers(tileLayer)
 
         goToMapStartPosition()

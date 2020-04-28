@@ -27,9 +27,11 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
     // region backing services
     private lateinit var ionavContainer: IonavContainer
 
-    private val routingService by lazy {  ionavContainer.routingService }
-    private val navigationService by lazy { ionavContainer.navigationService }
-    private val positioningService  by lazy { ionavContainer.positioningService }
+    val routingService by lazy {  ionavContainer.routingService }
+    val navigationService by lazy { ionavContainer.navigationService }
+    val positioningService  by lazy { ionavContainer.positioningService }
+
+    val mapFilePath by lazy { ionavContainer.mapFilePath }
     //endregion
 
     // region backing state
