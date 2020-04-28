@@ -31,13 +31,14 @@ open class MapViewFragment : Fragment() {
 
 
         observeViewModel(this as LifecycleOwner)
-        bindUiActionListeners()
+        bindOnClickListeners()
 
 
         val holder = activity?.application as IonavContainerHolder
         viewModel.initialize(holder.ionavContainer)
         mapView.onLifecycleOwnerAttached(this as LifecycleOwner)
         mapView.initialize(viewModel)
+        bindMapItemTapListener()
     }
 
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {
@@ -69,11 +70,6 @@ open class MapViewFragment : Fragment() {
                 addAll(it.names)
             }
         })
-    }
-
-    private fun bindUiActionListeners() {
-        bindOnClickListeners()
-        bindMapItemTapListener()
     }
 
     private fun bindOnClickListeners() {
