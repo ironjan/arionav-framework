@@ -36,7 +36,7 @@ class PlacesFragment : Fragment() {
             override fun onItemClick(placeName: String) {
                 logger.info("Clicked on $placeName.")
                 viewModel.setDestinationString(placeName)
-                findNavController().navigate(R.id.action_to_simple_map_nav_fragment)
+                findNavController().navigate(R.id.action_to_map_nav_fragment)
             }
 
         }

@@ -102,7 +102,7 @@ class MainActivity :
 
         return when (item.itemId) {
             R.id.mnuSimpleMap -> {
-                navController.navigate(R.id.action_to_simple_map_nav_fragment)
+                navController.navigate(R.id.action_to_map_nav_fragment)
                 true
             }
             R.id.mnuWifiAps -> {
