@@ -17,7 +17,6 @@ import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.arionav_fw.ionav.views.mapview.SimpleMapViewViewModel
-import de.ironjan.arionav_fw.ionav.navigation.NavigationService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 import org.slf4j.LoggerFactory
@@ -33,24 +32,19 @@ open class MapViewFragment : Fragment() {
     @SuppressLint("WrongConstant")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mapView.viewModel = viewModel
-
-        val ionavContainer = (activity?.application as IonavContainerHolder).ionavContainer
-
 
 
 
         val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
         mapView.onLifecycleOwnerAttached(lifecycleOwner)
 
-            mapView.initialize(ionavContainer)
-
-        val navigationService = ionavContainer.navigationService
-
         observeViewModel(lifecycleOwner)
         bindSuggestions(lifecycleOwner)
 
-        bindOnClickListeners(navigationService)
+        val ionavContainer = (activity?.application as IonavContainerHolder).ionavContainer
+        mapView.initialize(ionavContainer, viewModel)
+
+        bindOnClickListeners()
 
         bindMapItemTapListener()
     }
@@ -84,7 +78,7 @@ open class MapViewFragment : Fragment() {
         viewModel.destinationString.observe(lifecycleOwner, Observer { edit_destination.setText(it) })
     }
 
-    private fun bindOnClickListeners(navigationService: NavigationService) {
+    private fun bindOnClickListeners() {
         btnCenterOnUser.setOnClickListener {
             mapView.centerOnUser()
         }
@@ -99,7 +93,7 @@ open class MapViewFragment : Fragment() {
             val destinationString = edit_destination.text.toString()
 
             val isPlaceFound = viewModel.setDestinationString(destinationString)
-                        val isPlaceNotFound = !isPlaceFound
+            val isPlaceNotFound = !isPlaceFound
             if (isPlaceNotFound) {
                 Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener

@@ -1,7 +1,6 @@
 package de.ironjan.arionav_fw.ionav
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
@@ -11,14 +10,11 @@ import de.ironjan.arionav_fw.ionav.views.mapview.*
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView
-import org.oscim.android.canvas.AndroidGraphics
 import org.oscim.core.GeoPoint
 import org.oscim.event.Gesture
 import org.oscim.event.GestureListener
 import org.oscim.event.MotionEvent
 import org.oscim.layers.Layer
-import org.oscim.layers.marker.MarkerItem
-import org.oscim.layers.marker.MarkerSymbol
 import org.oscim.layers.tile.buildings.BuildingLayer
 import org.oscim.layers.tile.vector.VectorTileLayer
 import org.oscim.theme.VtmThemes
@@ -38,7 +34,7 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
     // endregion
 
     // region MVVM
-    override var viewModel = SimpleMapViewViewModel()
+    override lateinit var viewModel: SimpleMapViewViewModel
 
     private lateinit var lifecycleOwner: LifecycleOwner
     override fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner) {
@@ -54,8 +50,10 @@ class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, SimpleMapVi
 
 
     // region initialization
-    fun initialize(ionavContainer: IonavContainer) {
+    fun initialize(ionavContainer: IonavContainer, viewModel: SimpleMapViewViewModel) {
+        this.viewModel = viewModel
         viewModel.initialize(ionavContainer)
+
         val tileLayer = loadMap(ionavContainer.mapFilePath)
         createAndAddLayers(tileLayer)
 
