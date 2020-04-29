@@ -1,7 +1,10 @@
 package de.ironjan.arionav_fw.ionav.views.mapview
 
 import android.os.AsyncTask
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.ionav.IonavContainer
@@ -109,7 +112,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     private val _destinationString: MutableLiveData<String> = MutableLiveData()
     val destinationString: LiveData<String> = _destinationString
 
-    fun setDestination(value: Coordinate?) {
+    fun setDestination(value: Coordinate) {
         navigationService.destination = value
 
         val oldDestinationString = _destinationString.value
