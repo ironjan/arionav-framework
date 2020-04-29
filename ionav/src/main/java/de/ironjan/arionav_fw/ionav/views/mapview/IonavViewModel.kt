@@ -147,8 +147,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
     val isFollowUser = followUserPosition.value ?: false
 
 
-    private val _locationHistory = mutableListOf<IonavLocation>()
-    private val _locationHistoryLiveData = MutableLiveData(_locationHistory.toList())
+    private val _locationHistoryLiveData = MutableLiveData(emptyList<IonavLocation>())
     val locationHistory: LiveData<List<IonavLocation>> = _locationHistoryLiveData
 
     // endregion
