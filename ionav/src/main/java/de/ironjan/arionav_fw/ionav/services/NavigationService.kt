@@ -14,10 +14,10 @@ class NavigationService(
     private val logger = LoggerFactory.getLogger(NavigationService::class.java.simpleName)
 
 
-    override fun update(t: PositioningServiceState) {
+    override fun update(state: PositioningServiceState) {
         logger.info("Received positioning service update.")
 
-        recomputeRemainingRoute(t.lastKnownPosition)
+        recomputeRemainingRoute(state.lastKnownPosition)
     }
 
     val initialized: Boolean

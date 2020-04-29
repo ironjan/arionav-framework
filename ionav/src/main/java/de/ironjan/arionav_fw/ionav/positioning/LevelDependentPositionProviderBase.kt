@@ -14,8 +14,8 @@ abstract class LevelDependentPositionProviderBase(
 
     init {
         positioningService.registerObserver(object : Observer<PositioningServiceState> {
-            override fun update(t: PositioningServiceState) {
-                currentLevel = t.userSelectedLevel
+            override fun update(state: PositioningServiceState) {
+                currentLevel = state.userSelectedLevel
             }
         })
     }

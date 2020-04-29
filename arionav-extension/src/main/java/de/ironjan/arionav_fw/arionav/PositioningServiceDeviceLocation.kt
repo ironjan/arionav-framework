@@ -10,8 +10,8 @@ import uk.co.appoly.arcorelocation.sensor.DeviceLocation
 
 class PositioningServiceDeviceLocation(context: Context?, locationScene: LocationScene?) : DeviceLocation(context, locationScene),
     Observer<PositioningServiceState> {
-    override fun update(t: PositioningServiceState) {
-        onLocationChanged(toLocation(t.lastKnownPosition))
+    override fun update(state: PositioningServiceState) {
+        onLocationChanged(toLocation(state.lastKnownPosition))
     }
 
     private fun toLocation(ionavLocation: IonavLocation?): Location? {

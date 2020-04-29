@@ -44,10 +44,10 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         this.ionavContainer = ionavContainer
 
         navigationService.registerObserver(object : Observer<NavigationServiceState> {
-            override fun update(t: NavigationServiceState) {
-                _destination.value = t.destination
-                _route.value = t.remainingRoute
-                logger.info("Received navigation service update: $t.")
+            override fun update(state: NavigationServiceState) {
+                _destination.value = state.destination
+                _route.value = state.remainingRoute
+                logger.info("Received navigation service update: $state.")
             }
 
         })
@@ -61,8 +61,8 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         })
 
         positioningService.registerObserver(object : Observer<PositioningServiceState> {
-            override fun update(t: PositioningServiceState) {
-                _userLocation = t.lastKnownPosition
+            override fun update(state: PositioningServiceState) {
+                _userLocation = state.lastKnownPosition
                 _userLocationLiveData.value = _userLocation
 
                 _locationHistoryLiveData.value = positioningService.locationHistory
@@ -112,7 +112,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         navigationService.destination = value
 
         val oldDestinationString = _destinationString.value
-        val newDestinationString = value?.asString() ?: oldDestinationString
+        val newDestinationString = value.asString() ?: oldDestinationString
         _destinationString.value = newDestinationString
 
         centerOnUserPos()
@@ -209,8 +209,9 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
                 return@addSource
             }
 
-            val current =  it!!.instructions.firstOrNull() ?: return@addSource
-            val next = it!!.instructions.drop(1).firstOrNull()
+            val instructions = it.instructions
+            val current =  instructions.firstOrNull() ?: return@addSource
+            val next = instructions.drop(1).firstOrNull()
 
             mediatorLiveData.value = InstructionHelper(ionavContainer.applicationContext).toText(current, next)
         }
