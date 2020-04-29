@@ -1,3 +1,3 @@
 package de.ironjan.arionav_fw.ionav.services
 
-data class RoutingServiceState(var status: RoutingService.Status)
+data class RoutingServiceState(val status: RoutingService.Status)

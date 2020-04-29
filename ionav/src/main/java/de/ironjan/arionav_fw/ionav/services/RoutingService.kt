@@ -29,7 +29,11 @@ class RoutingService : Observable<RoutingServiceState> {
     // endregion
 
     // region state
-    override val state = RoutingServiceState(Status.UNINITIALIZED)
+    override var state = RoutingServiceState(Status.UNINITIALIZED)
+        private set(value) {
+            field = value
+            notifyObservers()
+        }
 
     val status
         get() = state.status
@@ -62,28 +66,23 @@ class RoutingService : Observable<RoutingServiceState> {
     }
 
     fun init(mapFolder: String) {
-        setLoadingStatus(Status.LOADING)
+        state = state.copy(status = Status.LOADING)
 
         val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
 
                 routing = Routing(graphHopper)
-                setLoadingStatus(Status.READY)
+                state = state.copy(status = Status.READY)
             }
 
             override fun onError(exception: Exception) {
                 logger.error("Error when loading graph: $exception")
                 // FIXME show error
-                setLoadingStatus(Status.ERROR)
+                state = state.copy(status = Status.ERROR)
             }
         })
         loadGraphTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-    }
-
-    private fun setLoadingStatus(loading: Status) {
-        state.status = loading
-        notifyObservers()
     }
 
 
