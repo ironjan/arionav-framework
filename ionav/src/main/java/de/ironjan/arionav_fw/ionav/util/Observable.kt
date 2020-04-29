@@ -2,6 +2,8 @@ package de.ironjan.arionav_fw.ionav.util
 
 interface Observable<T> {
 
+    val state: T
+
     /**
      * Registers a new observer. Will do nothing if the observer is already registered.
      * @param observer the new observer
@@ -15,6 +17,6 @@ interface Observable<T> {
     fun removeObserver(observer:  Observer<T>)
 
 
-    fun notifyObservers(t: T)
+    fun notifyObservers()
 
 }

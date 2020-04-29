@@ -10,18 +10,21 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
 
-class RoutingService : Observable<RoutingService.Status>{
+class RoutingService : Observable<RoutingService.Status> {
     override fun registerObserver(observer: Observer<Status>) {
-        if(_observers.contains(observer)) return
+        if (_observers.contains(observer)) return
         _observers.add(observer)
     }
 
-    override fun removeObserver(observer:Observer<Status>) {
+    override fun removeObserver(observer: Observer<Status>) {
         _observers.remove(observer)
     }
 
-    override fun notifyObservers(v: Status) {
-        _observers.map { it.update(v) }
+    override val state
+        get() = status
+
+    override fun notifyObservers() {
+        _observers.map { it.update(state) }
     }
 
     private val _observers = mutableListOf<Observer<Status>>()
@@ -31,9 +34,9 @@ class RoutingService : Observable<RoutingService.Status>{
     private var routing: Routing = UninitializedRouting()
 
     var status = Status.UNINITIALIZED
-        private set(value){
+        private set(value) {
             field = value
-            notifyObservers(value)
+            notifyObservers()
         }
 
     var initialized = false
@@ -70,7 +73,6 @@ class RoutingService : Observable<RoutingService.Status>{
     }
 
 
-
     /** Used as routing backend as long as the service is not initialized. Returns null-routes. */
     class UninitializedRouting : Routing(null) {
         override fun route(from: Coordinate?, to: Coordinate?): PathWrapper? {
@@ -81,8 +83,6 @@ class RoutingService : Observable<RoutingService.Status>{
             return null
         }
     }
-
-    interface RoutingServiceStatusObserver
 
     enum class Status {
         UNINITIALIZED, LOADING, READY, ERROR
