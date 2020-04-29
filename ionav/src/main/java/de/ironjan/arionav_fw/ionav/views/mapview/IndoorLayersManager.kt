@@ -28,13 +28,14 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
     // region ModelDrivenMapExtension
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.indoorData.observe(lifecycleOwner, Observer{
-            indoorData = it
+            updateLayers(it)
         })
         viewModel.selectedLevel.observe(lifecycleOwner, Observer {
-            selectedLevel = it.toDouble()
+            selectedLevel = it
         })
     }
     // endregion
+
 
     // region callbacks
     var itemTapCallback = defaultTapCallback
@@ -43,19 +44,18 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
     // region data handling
 
-    var indoorData = IndoorData.empty()
-        set(value) {
-            field = value
-            levelsToDrawableLayers = prepareDrawableLayers(value)
-            levelsToLabelLayers = prepareLabelLayers(value)
-            replaceMapLayers(selectedLevel, selectedLevel)
-        }
 
-    var selectedLevel: Double = 0.0
-        set(value) {
+    private fun updateLayers(indoorData: IndoorData) {
+        levelsToDrawableLayers = prepareDrawableLayers(indoorData)
+        levelsToLabelLayers = prepareLabelLayers(indoorData)
+        replaceMapLayers(selectedLevel)
+    }
+
+    private var selectedLevel = 0.0
+        private set(value) {
             if (value == field) return
 
-            replaceMapLayers(field, value)
+            replaceMapLayers(value)
 
             field = value
         }
@@ -63,21 +63,22 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
     // endregion
 
     // region layer handling
-    private var levelsToLabelLayers = prepareLabelLayers(indoorData)
-    private var levelsToDrawableLayers = prepareDrawableLayers(indoorData)
+    private var levelsToLabelLayers = prepareLabelLayers(IndoorData.empty())
+    private var levelsToDrawableLayers = prepareDrawableLayers(IndoorData.empty())
+    private var currentDrawableLayer: VectorLayer? = null
+    private var currentLabelLayer: VectorLayer? = null
 
-
-    private fun replaceMapLayers(oldLevel: Double, newLevel: Double) {
-        val oldDrawableLayer = levelsToDrawableLayers[oldLevel]
-        val oldLabelLayer = levelsToLabelLayers[oldLevel] ?: return
-        map.layers().remove(oldDrawableLayer)
-        map.layers().remove(oldLabelLayer)
+    private fun replaceMapLayers(newLevel: Double) {
+        map.layers().remove(currentDrawableLayer)
+        map.layers().remove(currentLabelLayer)
 
         val newDrawableLayer = levelsToDrawableLayers[newLevel] ?: return
         val newLabelLayer = levelsToLabelLayers[newLevel] ?: return
 
         map.layers().add(newDrawableLayer)
         map.layers().add(newLabelLayer)
+        currentDrawableLayer = newDrawableLayer
+        currentLabelLayer = newDrawableLayer
     }
 
     private fun prepareDrawableLayers(id: IndoorData): kotlin.collections.Map<Double, VectorLayer> {
