@@ -14,7 +14,7 @@ import org.oscim.map.Map
 import org.slf4j.LoggerFactory
 
 class DestinationMarkerLayer(private val map: Map, private val markerDrawable: Drawable) : ItemizedLayer<MarkerItem>(map, MarkerSymbol(AndroidGraphics.drawableToBitmap(markerDrawable), 0.5f, 1f)),
-    ModelDrivenMapExtension<SimpleMapViewState, IonavViewModel> {
+    ModelDrivenMapExtension<IonavViewModel> {
 
     private val logger = LoggerFactory.getLogger(DestinationMarkerLayer::class.simpleName)
 

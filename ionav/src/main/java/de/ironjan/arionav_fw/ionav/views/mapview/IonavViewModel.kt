@@ -17,7 +17,7 @@ import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-class IonavViewModel(private val stateNew: SavedStateHandle) : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
+class IonavViewModel(override val state: SavedStateHandle) : ViewModel(), MvvmCustomViewModel {
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
@@ -38,9 +38,6 @@ class IonavViewModel(private val stateNew: SavedStateHandle) : ViewModel(), Mvvm
     val mapFilePath by lazy { ionavContainer.mapFilePath }
     //endregion
 
-    // region backing state
-    override var state: SimpleMapViewState = SimpleMapViewState()
-    // endregion
 
     // region initialization
 
@@ -54,7 +51,7 @@ class IonavViewModel(private val stateNew: SavedStateHandle) : ViewModel(), Mvvm
 
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
             override fun update(value: Coordinate?) {
-                stateNew.set(STATE_DESTINATION, value?.asString())
+                state.set(STATE_DESTINATION, value?.asString())
                 _destination.value = value
                 logger.info("Updated destination to $value in view model.")
             }
@@ -89,7 +86,7 @@ class IonavViewModel(private val stateNew: SavedStateHandle) : ViewModel(), Mvvm
 
 
     private fun readCoordinateFromState(): Coordinate? {
-        val get = stateNew.get<String>(STATE_DESTINATION)
+        val get = state.get<String>(STATE_DESTINATION)
         val coordinate = if (get != null) Coordinate.fromString(get)
         else null
         return coordinate
@@ -123,26 +120,26 @@ class IonavViewModel(private val stateNew: SavedStateHandle) : ViewModel(), Mvvm
     private val _destination: MutableLiveData<Coordinate?> = MutableLiveData()
     val destination: LiveData<Coordinate?> = _destination
 
-    private val _destinationString: MutableLiveData<String> = MutableLiveData(stateNew.get(STATE_DESTINATION_STRING))
+    private val _destinationString: MutableLiveData<String> = MutableLiveData(state.get(STATE_DESTINATION_STRING))
     val destinationString: LiveData<String> = _destinationString
 
     fun setDestination(value: Coordinate?) {
         navigationService.destination = value
-        stateNew.set(STATE_DESTINATION, value?.asString())
+        state.set(STATE_DESTINATION, value?.asString())
 
         val oldDestinationString = _destinationString.value
         val newDestinationString = value?.asString() ?: oldDestinationString
         _destinationString.value = newDestinationString
-        stateNew.set(STATE_DESTINATION_STRING,newDestinationString)
+        state.set(STATE_DESTINATION_STRING,newDestinationString)
     }
 
     fun setDestinationString(value: String): Boolean {
         _destinationString.value = value
-        stateNew.set(STATE_DESTINATION_STRING,value)
+        state.set(STATE_DESTINATION_STRING,value)
 
         val center = _indoorData.value?.getCoordinateOf(value)
         val coordinate = center ?: return false
-        stateNew.set(STATE_DESTINATION, coordinate.asString())
+        state.set(STATE_DESTINATION, coordinate.asString())
 
         navigationService.destination = coordinate
         return true

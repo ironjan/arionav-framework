@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory
  * Wrapper around multiple layers that will be added to {@param map}. Not an actual layer
  */
 class IndoorLayersManager(private val map: Map, private val density: Float) :
-    ModelDrivenMapExtension<SimpleMapViewState, IonavViewModel>{
+    ModelDrivenMapExtension<IonavViewModel>{
 
     // region ModelDrivenMapExtension
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
