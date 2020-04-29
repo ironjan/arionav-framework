@@ -218,23 +218,23 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
 
 
     // region level
-    private val _selectedLevel = MutableLiveData(0)
-    val selectedLevel: LiveData<Int> = _selectedLevel
+    private val _selectedLevel = MutableLiveData(0.0)
+    val selectedLevel: LiveData<Double> = _selectedLevel
 
-    fun getSelectedLevel(): Int = _selectedLevel.value ?: 0
+    fun getSelectedLevel() = _selectedLevel.value ?: 0.0
 
 
     fun increaseLevel() {
-        val oldValue = _selectedLevel.value ?: 0
-        setLevel(oldValue + 1)
+        val oldValue = _selectedLevel.value ?: 0.0
+        setLevel(oldValue + 1.0)
     }
 
     fun decreaseLevel() {
-        val oldValue = _selectedLevel.value ?: 0
-        setLevel(oldValue - 1)
+        val oldValue = _selectedLevel.value ?: 0.0
+        setLevel(oldValue - 1.0)
     }
 
-    private fun setLevel(newValue: Int) {
+    fun setLevel(newValue: Double) {
         positioningService.userSelectedLevel = newValue.toDouble()
         _selectedLevel.value = newValue
     }
