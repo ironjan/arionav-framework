@@ -46,16 +46,16 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
 
     private fun updateLayers(indoorData: IndoorData) {
-        levelsToDrawableLayers = prepareDrawableLayers(indoorData)
-        levelsToLabelLayers = prepareLabelLayers(indoorData)
-        replaceMapLayers(selectedLevel)
+        recreateRoomOutlineLayersFrom(indoorData)
+        recreateLabelLayersFrom(indoorData)
+        showLayersFor(selectedLevel)
     }
 
     private var selectedLevel = 0.0
         private set(value) {
             if (value == field) return
 
-            replaceMapLayers(value)
+            showLayersFor(value)
 
             field = value
         }
@@ -63,16 +63,26 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
     // endregion
 
     // region layer handling
+    private var levelsToRoomBackgroundLayers = prepareRoomBackgroundLayers(IndoorData.empty())
+
+    private fun recreateRoomOutlineLayersFrom(indoorData: IndoorData) {
+        levelsToRoomBackgroundLayers = prepareRoomBackgroundLayers(indoorData)
+    }
+
     private var levelsToLabelLayers = prepareLabelLayers(IndoorData.empty())
-    private var levelsToDrawableLayers = prepareDrawableLayers(IndoorData.empty())
+
+    private fun recreateLabelLayersFrom(indoorData: IndoorData) {
+        levelsToLabelLayers = prepareLabelLayers(indoorData)
+    }
+
     private var currentDrawableLayer: VectorLayer? = null
     private var currentLabelLayer: VectorLayer? = null
 
-    private fun replaceMapLayers(newLevel: Double) {
+    private fun showLayersFor(newLevel: Double) {
         map.layers().remove(currentDrawableLayer)
         map.layers().remove(currentLabelLayer)
 
-        val newDrawableLayer = levelsToDrawableLayers[newLevel] ?: return
+        val newDrawableLayer = levelsToRoomBackgroundLayers[newLevel] ?: return
         val newLabelLayer = levelsToLabelLayers[newLevel] ?: return
 
         map.layers().add(newDrawableLayer)
@@ -81,13 +91,13 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         currentLabelLayer = newDrawableLayer
     }
 
-    private fun prepareDrawableLayers(id: IndoorData): kotlin.collections.Map<Double, VectorLayer> {
+    private fun prepareRoomBackgroundLayers(id: IndoorData): kotlin.collections.Map<Double, VectorLayer> {
         return id.levels.map {
-            Pair(it, prepareDrawableLayer(id, it))
+            Pair(it, prepareRoomBackgroundLayer(id, it))
         }.toMap()
     }
 
-    private fun prepareDrawableLayer(id: IndoorData, level: Double): VectorLayer {
+    private fun prepareRoomBackgroundLayer(id: IndoorData, level: Double): VectorLayer {
         val nodeDrawables = id.getNodes(level).map {
             RectangleDrawable(it.toGeoPoint(), it.toGeoPoint())
         }
