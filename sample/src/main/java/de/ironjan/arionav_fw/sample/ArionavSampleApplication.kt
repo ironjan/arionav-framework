@@ -2,8 +2,8 @@ package de.ironjan.arionav_fw.sample
 
 import android.app.Application
 import de.ironjan.arionav_fw.ionav.GhzExtractor
-import de.ironjan.arionav_fw.ionav.IonavContainer
-import de.ironjan.arionav_fw.ionav.IonavContainerHolder
+import de.ironjan.arionav_fw.ionav.di.IonavContainer
+import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import org.slf4j.impl.HandroidLoggerAdapter
 
 class ArionavSampleApplication : Application(), IonavContainerHolder {

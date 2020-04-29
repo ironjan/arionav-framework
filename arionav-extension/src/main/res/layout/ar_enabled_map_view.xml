@@ -37,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/edit_destination"/>
 
 
-    <de.ironjan.arionav_fw.ionav.IonavMapView
+    <de.ironjan.arionav_fw.ionav.views.IonavMapView
         android:id="@+id/mapView"
         android:layout_width="0dp"
         android:layout_height="0dp"

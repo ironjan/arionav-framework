@@ -2,6 +2,7 @@ package de.ironjan.arionav_fw.ionav
 
 import android.content.Context
 import android.util.Log
+import de.ironjan.arionav_fw.ionav.di.IonavContainer
 import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream

@@ -2,9 +2,8 @@ package de.ironjan.arionav_fw.sample
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import de.ironjan.arionav_fw.ionav.IonavContainerHolder
+import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.SignalStrength
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import kotlinx.android.synthetic.main.fragment_custom_list.*

@@ -1,10 +1,11 @@
-package de.ironjan.arionav_fw.ionav
+package de.ironjan.arionav_fw.ionav.views
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav_fw.ionav.services.RoutingService
 import de.ironjan.arionav_fw.ionav.views.mapview.*

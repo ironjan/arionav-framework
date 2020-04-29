@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import de.ironjan.arionav_fw.ionav.IonavContainerHolder
+import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel

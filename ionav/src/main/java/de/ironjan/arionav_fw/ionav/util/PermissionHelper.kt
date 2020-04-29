@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav
+package de.ironjan.arionav_fw.ionav.util
 
 import android.app.Activity
 import android.content.pm.PackageManager
@@ -14,11 +14,11 @@ class PermissionHelper private constructor() {
 
         fun <T> requestPermission(activity: T, permission: String, requestCode: Int)
                 where T : Activity, T : PermissionHelperCallback {
-            if (isPermissionGranted(activity,permission)) {
+            if (isPermissionGranted(activity, permission)) {
                 logger.debug("Location permissions are already granted.")
                 activity.permissionAlreadyGranted(requestCode)
             } else {
-                if (shouldShowRequestPermissionRationale(activity,permission)) {
+                if (shouldShowRequestPermissionRationale(activity, permission)) {
                     logger.info("Displaying fine location permission rationale to provide additional context.")
                     activity.showRationale(requestCode)
                 } else {

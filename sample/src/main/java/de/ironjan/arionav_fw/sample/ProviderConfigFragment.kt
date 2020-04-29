@@ -4,11 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav_fw.ionav.IonavContainerHolder
+import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.sample.util.PreferenceKeys
 import kotlinx.android.synthetic.main.fragment_recycler_view.*

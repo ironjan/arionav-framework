@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
-import de.ironjan.arionav_fw.ionav.IonavContainer
+import de.ironjan.arionav_fw.ionav.di.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask

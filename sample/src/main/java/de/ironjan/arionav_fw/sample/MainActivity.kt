@@ -21,7 +21,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
-import de.ironjan.arionav_fw.ionav.PermissionHelper
+import de.ironjan.arionav_fw.ionav.util.PermissionHelper
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider

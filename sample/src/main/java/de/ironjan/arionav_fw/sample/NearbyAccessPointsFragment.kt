@@ -4,7 +4,7 @@ import android.net.wifi.ScanResult
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import de.ironjan.arionav_fw.ionav.IonavContainerHolder
+import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
 import de.ironjan.arionav_fw.sample.data.WifiPositioningProviderHardCodedValues
 import kotlinx.android.synthetic.main.fragment_custom_list.*
