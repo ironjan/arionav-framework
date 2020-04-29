@@ -51,12 +51,12 @@ class RoutingService : Observable<RoutingServiceState> {
     private val logger = LoggerFactory.getLogger(RoutingService::class.java.simpleName)
 
     // region routing and API wrapping
-    private var routing: Routing = UninitializedRouting()
+    private var routingBackend = UninitializedRouting() as Routing
 
 
 
     fun route(from: Coordinate, to: Coordinate): PathWrapper? = try {
-        routing.route(from, to)
+        routingBackend.route(from, to)
     } catch (e: java.lang.Exception) {
         logger.error("Could not compute route.", e)
         null
@@ -68,11 +68,11 @@ class RoutingService : Observable<RoutingServiceState> {
     fun init(mapFolder: String) {
         state = state.copy(status = Status.LOADING)
 
-        val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
+        LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
 
-                routing = Routing(graphHopper)
+                routingBackend = Routing(graphHopper)
                 state = state.copy(status = Status.READY)
             }
 
@@ -81,8 +81,7 @@ class RoutingService : Observable<RoutingServiceState> {
                 // FIXME show error
                 state = state.copy(status = Status.ERROR)
             }
-        })
-        loadGraphTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        }).execute()
     }
 
 
