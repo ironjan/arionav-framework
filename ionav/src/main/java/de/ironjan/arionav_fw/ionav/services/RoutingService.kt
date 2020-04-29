@@ -10,37 +10,46 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
 
-class RoutingService : Observable<RoutingService.Status> {
-    override fun registerObserver(observer: Observer<Status>) {
+class RoutingService : Observable<RoutingServiceState> {
+    // region observer handling
+    private val _observers = mutableListOf<Observer<RoutingServiceState>>()
+
+    override fun registerObserver(observer: Observer<RoutingServiceState>) {
         if (_observers.contains(observer)) return
         _observers.add(observer)
     }
 
-    override fun removeObserver(observer: Observer<Status>) {
+    override fun removeObserver(observer: Observer<RoutingServiceState>) {
         _observers.remove(observer)
     }
-
-    override val state
-        get() = status
 
     override fun notifyObservers() {
         _observers.map { it.update(state) }
     }
+    // endregion
 
-    private val _observers = mutableListOf<Observer<Status>>()
+    // region state
+    override val state = RoutingServiceState(Status.UNINITIALIZED)
+
+    val status
+        get() = state.status
+
+    val initialized
+        get() = status == Status.READY
+
+
+    enum class Status {
+        UNINITIALIZED, LOADING, READY, ERROR
+    }
+    // endregion
+
 
     private val logger = LoggerFactory.getLogger(RoutingService::class.java.simpleName)
 
+    // region routing and API wrapping
     private var routing: Routing = UninitializedRouting()
 
-    var status = Status.UNINITIALIZED
-        private set(value) {
-            field = value
-            notifyObservers()
-        }
 
-    var initialized = false
-        private set
 
     fun route(from: Coordinate?, to: Coordinate?): PathWrapper? = try {
         routing.route(from, to)
@@ -53,23 +62,28 @@ class RoutingService : Observable<RoutingService.Status> {
     }
 
     fun init(mapFolder: String) {
-        status = Status.LOADING
+        setLoadingStatus(Status.LOADING)
+
         val loadGraphTask = LoadGraphTask(mapFolder, object : LoadGraphTask.Callback {
             override fun onSuccess(graphHopper: GraphHopper) {
                 logger.debug("Completed loading graph.")
 
                 routing = Routing(graphHopper)
-                initialized = true
-                status = Status.READY
+                setLoadingStatus(Status.READY)
             }
 
             override fun onError(exception: Exception) {
                 logger.error("Error when loading graph: $exception")
                 // FIXME show error
-                status = Status.ERROR
+                setLoadingStatus(Status.ERROR)
             }
         })
         loadGraphTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    }
+
+    private fun setLoadingStatus(loading: Status) {
+        state.status = loading
+        notifyObservers()
     }
 
 
@@ -83,8 +97,7 @@ class RoutingService : Observable<RoutingService.Status> {
             return null
         }
     }
+    // endregion
 
-    enum class Status {
-        UNINITIALIZED, LOADING, READY, ERROR
-    }
+
 }

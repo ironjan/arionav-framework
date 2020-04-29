@@ -11,11 +11,8 @@ import de.ironjan.arionav_fw.ionav.di.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
-import de.ironjan.arionav_fw.ionav.services.InstructionHelper
-import de.ironjan.arionav_fw.ionav.services.NavigationServiceState
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.services.PositioningServiceState
-import de.ironjan.arionav_fw.ionav.services.RoutingService
+import de.ironjan.arionav_fw.ionav.services.*
 import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
@@ -56,14 +53,14 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         })
 
         _routingStatus.value = routingService.status
-        routingService.registerObserver(object : Observer<RoutingService.Status> {
-            override fun update(v: RoutingService.Status) {
-                _routingStatus.value = v
+        routingService.registerObserver(object : Observer<RoutingServiceState> {
+            override fun update(state: RoutingServiceState) {
+                _routingStatus.value = state.status
                 updateInitializationStatus()
             }
         })
 
-        positioningService.registerProvider(object : Observer<PositioningServiceState> {
+        positioningService.registerObserver(object : Observer<PositioningServiceState> {
             override fun update(t: PositioningServiceState) {
                 _userLocation = t.lastKnownPosition
                 _userLocationLiveData.value = _userLocation
