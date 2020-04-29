@@ -151,7 +151,7 @@
     </fragment>
 
     <fragment android:id="@+id/locationHistory"
-        android:name="de.ironjan.arionav_fw.ionav.positioning.debug.LocationHistoryFragment"
+        android:name="de.ironjan.arionav_fw.ionav.views.debug.LocationHistoryFragment"
         android:label="LocationHistoryFragment">
 
         <action android:id="@+id/action_to_nearbyWifiApsFragment"

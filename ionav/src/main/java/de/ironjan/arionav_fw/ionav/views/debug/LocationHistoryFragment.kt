@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.positioning.debug
+package de.ironjan.arionav_fw.ionav.views.debug
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel

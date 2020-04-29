@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.positioning.debug
+package de.ironjan.arionav_fw.ionav.views.debug
 
 import android.view.LayoutInflater
 import android.view.View
