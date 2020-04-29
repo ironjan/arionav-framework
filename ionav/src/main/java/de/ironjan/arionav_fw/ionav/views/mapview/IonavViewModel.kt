@@ -117,6 +117,8 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         val oldDestinationString = _destinationString.value
         val newDestinationString = value?.asString() ?: oldDestinationString
         _destinationString.value = newDestinationString
+
+        centerOnUserPos()
     }
 
     fun setDestinationString(value: String): Boolean {
@@ -126,6 +128,8 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         val coordinate = center ?: return false
 
         navigationService.destination = coordinate
+        centerOnUserPos()
+
         return true
     }
 
