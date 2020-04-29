@@ -29,40 +29,10 @@ class PositioningService : Observable<PositioningServiceState> {
         }
     //endregion
 
-    // region observer handling
-    private val _observers = mutableListOf<Observer<PositioningServiceState>>()
-
-    override fun registerObserver(observer: Observer<PositioningServiceState>) {
-        if (_observers.contains(observer)) return
-        _observers.add(observer)
-    }
-
-    override fun removeObserver(observer: Observer<PositioningServiceState>) {
-        _observers.remove(observer)
-    }
-
-    override fun notifyObservers() {
-        logger.debug("PositioningService notifying observers.")
-
-        _observers.forEach { it.update(state) }
-    }
-    // endregion
-
-    private val logger = LoggerFactory.getLogger(PositioningService::class.java.simpleName)
-
-    private val _providers: MutableList<IPositionProvider> = mutableListOf()
-    private val _providerLiveData = MutableLiveData<List<IPositionProvider>>(_providers)
-    val providers: LiveData<List<IPositionProvider>> = _providerLiveData
-
+    // region state related methods and location history
 
     private val _locationHistory = mutableListOf<IonavLocation>()
     val locationHistory: List<IonavLocation> = _locationHistory
-
-    private val observer: IPositionObserver = object : IPositionObserver {
-        override fun update(c: IonavLocation?) {
-            updateLastLocation(c)
-        }
-    }
 
     private fun updateLastLocation(c: IonavLocation?) {
         logger.warn("Received update: $c")
@@ -102,6 +72,34 @@ class PositioningService : Observable<PositioningServiceState> {
             _locationHistory.removeAt(100)
         }
     }
+    //endregion
+
+    // region observer handling
+    private val _observers = mutableListOf<Observer<PositioningServiceState>>()
+
+    override fun registerObserver(observer: Observer<PositioningServiceState>) {
+        if (_observers.contains(observer)) return
+        _observers.add(observer)
+    }
+
+    override fun removeObserver(observer: Observer<PositioningServiceState>) {
+        _observers.remove(observer)
+    }
+
+    override fun notifyObservers() {
+        logger.debug("PositioningService notifying observers.")
+
+        _observers.forEach { it.update(state) }
+    }
+    // endregion
+
+    private val logger = LoggerFactory.getLogger(PositioningService::class.java.simpleName)
+
+    // region provider handling
+    private val _providers: MutableList<IPositionProvider> = mutableListOf()
+    private val _providerLiveData = MutableLiveData<List<IPositionProvider>>(_providers)
+    val providers: LiveData<List<IPositionProvider>> = _providerLiveData
+
 
     fun registerProvider(provider: IPositionProvider, start: Boolean = false) {
         logger.info("Registering $provider. AutoStart = $start")
@@ -116,8 +114,6 @@ class PositioningService : Observable<PositioningServiceState> {
         }
     }
 
-    private fun isRegistered(provider: IPositionProvider): Boolean = _providers.map { it.name }.contains(provider.name)
-
     fun unregisterProvider(provider: IPositionProvider) {
         logger.info("Unregistering $provider")
         _providers.remove(provider)
@@ -128,11 +124,18 @@ class PositioningService : Observable<PositioningServiceState> {
         }
     }
 
+    fun setPriority(prio: Int, provider: IPositionProvider) {
+        _providers.remove(provider)
+        _providers.add(prio, provider)
+    }
+
+    private fun isRegistered(provider: IPositionProvider): Boolean = _providers.map { it.name }.contains(provider.name)
+
+
     fun removeProvider(name: String) {
         _providers.filter { it.name == name }
             .forEach { unregisterProvider(it) }
     }
-
 
     fun swapPriorities(pos1: Int, pos2: Int) {
         val tmp = _providers[pos1]
@@ -142,11 +145,6 @@ class PositioningService : Observable<PositioningServiceState> {
         _providerLiveData.value = _providers
 
         _providers.forEach { logger.warn(it.name) }
-    }
-
-    fun setPriority(prio: Int, provider: IPositionProvider) {
-        _providers.remove(provider)
-        _providers.add(prio, provider)
     }
 
     fun getProvider(name: String): IPositionProvider? {
@@ -175,9 +173,15 @@ class PositioningService : Observable<PositioningServiceState> {
         provider.stop()
     }
 
-    companion object {
-        val TAG = "PositioningService"
+    // endregion
+
+    private val observer: IPositionObserver = object : IPositionObserver {
+        override fun update(c: IonavLocation?) {
+            updateLastLocation(c)
+        }
     }
+
+
 
 
 }
