@@ -7,22 +7,25 @@ import de.ironjan.arionav_fw.ionav.util.Observer
 import org.slf4j.LoggerFactory
 
 class PositioningService : Observable<PositioningServiceState> {
-    private val _observers = mutableListOf<Observer<PositioningServiceState>>()
 
-
-    override val state= PositioningServiceState()
-
+    // region state
+    override val state = PositioningServiceState()
+    val lastKnownPosition: IonavLocation?
+        get() = state.lastKnownPosition
     var userSelectedLevel: Double = 0.0
         set(value) {
             field = value
             notifyObservers()
         }
+    //endregion
 
-   // region observer handling
-   override fun registerObserver(observer: Observer<PositioningServiceState>) {
-       if(_observers.contains(observer)) return
-       _observers.add(observer)
-   }
+    // region observer handling
+    private val _observers = mutableListOf<Observer<PositioningServiceState>>()
+
+    override fun registerObserver(observer: Observer<PositioningServiceState>) {
+        if (_observers.contains(observer)) return
+        _observers.add(observer)
+    }
 
     override fun removeObserver(observer: Observer<PositioningServiceState>) {
         _observers.remove(observer)
@@ -143,18 +146,20 @@ class PositioningService : Observable<PositioningServiceState> {
         val provider = getProvider(providerName) ?: throw IllegalArgumentException("Provider with name $providerName not registered.")
         enableProvider(provider)
     }
+
     fun enableProvider(provider: IPositionProvider) {
-        if(provider.enabled) return
+        if (provider.enabled) return
 
         provider.start()
     }
 
     fun disableProvider(providerName: String) {
-            val provider = getProvider(providerName) ?: throw IllegalArgumentException("Provider with name $providerName not registered.")
-            disableProvider(provider)
+        val provider = getProvider(providerName) ?: throw IllegalArgumentException("Provider with name $providerName not registered.")
+        disableProvider(provider)
     }
+
     fun disableProvider(provider: IPositionProvider) {
-        if(provider.disabled) return
+        if (provider.disabled) return
 
         provider.stop()
     }

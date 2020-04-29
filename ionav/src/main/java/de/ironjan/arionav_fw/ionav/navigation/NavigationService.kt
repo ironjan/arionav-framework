@@ -12,15 +12,15 @@ import org.slf4j.LoggerFactory
 class NavigationService(
     private val positioningService: PositioningService,
     private val routingService: RoutingService
-) : Observable<NavigationServiceState> {
+) : Observable<NavigationServiceState>,
+    Observer<PositioningServiceState> {
     private val logger = LoggerFactory.getLogger(NavigationService::class.java.simpleName)
 
-    private val positionObserver = object : Observer<PositioningServiceState> {
-        override fun update(t: PositioningServiceState) {
-            logger.info("Received positioning service update.")
 
-            recomputeRemainingRoute(t.lastKnownPosition)
-        }
+    override fun update(t: PositioningServiceState) {
+        logger.info("Received positioning service update.")
+
+        recomputeRemainingRoute(t.lastKnownPosition)
     }
 
     val initialized: Boolean
@@ -32,9 +32,9 @@ class NavigationService(
             state.destination = value
 
             if (value != null) {
-                positioningService.registerObserver(positionObserver)
+                positioningService.registerObserver(this)
             } else {
-                positioningService.removeObserver(positionObserver)
+                positioningService.removeObserver(this)
             }
 
             recomputeRemainingRoute(positioningService.lastKnownPosition)
@@ -66,7 +66,7 @@ class NavigationService(
 
 
     init {
-        positioningService.registerObserver(positionObserver)
+        positioningService.registerObserver(this)
     }
 
     companion object {
@@ -84,7 +84,7 @@ class NavigationService(
         _observers.remove(observer)
     }
 
-    override val state = NavigationServiceState(null,null)
+    override val state = NavigationServiceState(null, null)
 
 
     override fun notifyObservers() {
