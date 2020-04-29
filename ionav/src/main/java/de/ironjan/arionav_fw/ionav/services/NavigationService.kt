@@ -81,7 +81,7 @@ class NavigationService(
         _observers.remove(observer)
     }
 
-    override var state = NavigationServiceState(null, null)
+    override var state = NavigationServiceState()
         private set(value) {
             field = value
             notifyObservers()
