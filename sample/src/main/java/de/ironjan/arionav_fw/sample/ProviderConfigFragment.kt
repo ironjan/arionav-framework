@@ -27,20 +27,21 @@ class ProviderConfigFragment : Fragment(R.layout.fragment_recycler_view) {
 
         val lifecycleOwner = viewLifecycleOwner
 
-        val sdg = object : ProvidersAdapter.OnCheckboxClickCallback {
+        val onCheckboxClickCallback = object : ProvidersAdapter.OnCheckboxClickCallback {
             override fun onClick(iPositionProvider: IPositionProvider, newState: Boolean) {
                 if(newState == iPositionProvider.enabled) return
 
                 if (newState) {
-                    iPositionProvider.start()
+                    positioningService.enableProvider(iPositionProvider)
                 }else {
-                    iPositionProvider.stop()
+                    positioningService.disableProvider(iPositionProvider)
                 }
+
                 updatePreferences()
             }
 
         }
-        providersAdapter = ProvidersAdapter(lifecycleOwner, positioningService, sdg)
+        providersAdapter = ProvidersAdapter(lifecycleOwner, positioningService, onCheckboxClickCallback)
 
 
         val context = context ?: return
