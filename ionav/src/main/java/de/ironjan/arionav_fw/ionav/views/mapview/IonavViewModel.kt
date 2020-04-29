@@ -17,7 +17,7 @@ import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-class IonavViewModel(override val state: SavedStateHandle) : ViewModel(), MvvmCustomViewModel {
+class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
@@ -25,13 +25,7 @@ class IonavViewModel(override val state: SavedStateHandle) : ViewModel(), MvvmCu
     private lateinit var ionavContainer: IonavContainer
 
     val routingService by lazy {  ionavContainer.routingService }
-    val navigationService by lazy {
-        val service = ionavContainer.navigationService
-
-        service.destination = readCoordinateFromState()
-
-        service
-    }
+    val navigationService by lazy { ionavContainer.navigationService }
 
     val positioningService  by lazy { ionavContainer.positioningService }
 
@@ -51,7 +45,6 @@ class IonavViewModel(override val state: SavedStateHandle) : ViewModel(), MvvmCu
 
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
             override fun update(value: Coordinate?) {
-                state.set(STATE_DESTINATION, value?.asString())
                 _destination.value = value
                 logger.info("Updated destination to $value in view model.")
             }
@@ -77,7 +70,6 @@ class IonavViewModel(override val state: SavedStateHandle) : ViewModel(), MvvmCu
             }
         })
 
-        navigationService.destination = readCoordinateFromState()
 
 
         loadIndoorData(ionavContainer.osmFilePath)
@@ -85,12 +77,6 @@ class IonavViewModel(override val state: SavedStateHandle) : ViewModel(), MvvmCu
 
 
 
-    private fun readCoordinateFromState(): Coordinate? {
-        val get = state.get<String>(STATE_DESTINATION)
-        val coordinate = if (get != null) Coordinate.fromString(get)
-        else null
-        return coordinate
-    }
     private val _routingStatus: MutableLiveData<RoutingService.Status> = MutableLiveData(RoutingService.Status.UNINITIALIZED)
     val routingStatus: LiveData<RoutingService.Status> = _routingStatus
 
@@ -120,26 +106,22 @@ class IonavViewModel(override val state: SavedStateHandle) : ViewModel(), MvvmCu
     private val _destination: MutableLiveData<Coordinate?> = MutableLiveData()
     val destination: LiveData<Coordinate?> = _destination
 
-    private val _destinationString: MutableLiveData<String> = MutableLiveData(state.get(STATE_DESTINATION_STRING))
+    private val _destinationString: MutableLiveData<String> = MutableLiveData()
     val destinationString: LiveData<String> = _destinationString
 
     fun setDestination(value: Coordinate?) {
         navigationService.destination = value
-        state.set(STATE_DESTINATION, value?.asString())
 
         val oldDestinationString = _destinationString.value
         val newDestinationString = value?.asString() ?: oldDestinationString
         _destinationString.value = newDestinationString
-        state.set(STATE_DESTINATION_STRING,newDestinationString)
     }
 
     fun setDestinationString(value: String): Boolean {
         _destinationString.value = value
-        state.set(STATE_DESTINATION_STRING,value)
 
         val center = _indoorData.value?.getCoordinateOf(value)
         val coordinate = center ?: return false
-        state.set(STATE_DESTINATION, coordinate.asString())
 
         navigationService.destination = coordinate
         return true
