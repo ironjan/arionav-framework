@@ -248,13 +248,11 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
     private var _isIndoorDataLoaded = false
 
     private fun loadIndoorData(osmFilePath: String) {
-        val callback = object : IndoorMapDataLoadingTask.OnIndoorMapDataLoaded {
-            override fun loadCompleted(indoorData: IndoorData) {
-                _indoorData.value = indoorData
-                _isIndoorDataLoaded = true
-                updateInitializationStatus()
-                logger.info("Completed loading of indoor map data.")
-            }
+        val callback = { loadedData: IndoorData ->
+            _indoorData.value = loadedData
+            _isIndoorDataLoaded = true
+            updateInitializationStatus()
+            logger.info("Completed loading of indoor map data.")
         }
 
         IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)

@@ -63,13 +63,13 @@ class IndoorDataReader : OsmReader() {
 
 class IndoorMapDataLoadingTask(
     private val osmFile: String
-    , private val callback: OnIndoorMapDataLoaded
+    , private val callback: (IndoorData) -> Unit
 ) : AsyncTask<Void, Void, IndoorData>() {
     override fun doInBackground(vararg params: Void?): IndoorData {
         return IndoorDataReader().parseOsmFile(osmFile)
     }
 
-    override fun onPostExecute(result: IndoorData) = callback.loadCompleted(result)
+    override fun onPostExecute(result: IndoorData) = callback(result)
 
     interface OnIndoorMapDataLoaded {
         fun loadCompleted(indoorData: IndoorData)
