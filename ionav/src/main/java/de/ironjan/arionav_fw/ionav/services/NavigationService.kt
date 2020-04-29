@@ -57,7 +57,7 @@ class NavigationService(
         }
 
 
-        state.remainingRoute = routingService.route(lastKnownPositionCoordinates, destination)
+        state.remainingRoute = routingService.route(lastKnownPositionCoordinates!!, destination!!)
         notifyObservers()
     }
 

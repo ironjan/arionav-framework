@@ -51,7 +51,7 @@ class RoutingService : Observable<RoutingServiceState> {
 
 
 
-    fun route(from: Coordinate?, to: Coordinate?): PathWrapper? = try {
+    fun route(from: Coordinate, to: Coordinate): PathWrapper? = try {
         routing.route(from, to)
     } catch (e: java.lang.Exception) {
         logger.error("Could not compute route.", e)
