@@ -21,8 +21,7 @@ class ArionavSampleApplication : Application(), IonavContainerHolder {
 
         GhzExtractor().unzipGhzToStorage(this, ionavContainer)
 
-
-        ionavContainer.routingService.init(ionavContainer.mapFolderPath)
+        ionavContainer.init()
     }
 
 

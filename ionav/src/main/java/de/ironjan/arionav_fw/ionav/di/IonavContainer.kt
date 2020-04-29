@@ -22,4 +22,7 @@ class IonavContainer(private val context: Context, val mapName: String, val resI
     val routingService = RoutingService()
     val navigationService = NavigationService(positioningService, routingService)
 
+    fun init() {
+        routingService.init(mapFolderPath)
+    }
 }
