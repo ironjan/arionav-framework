@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 
 
 class RouteLayer(private val map: Map, style: Style) : PathLayer(map, style),
-    ModelDrivenMapExtension<SimplifiedMapViewState, IonavViewModel> {
+    ModelDrivenMapExtension<SimpleMapViewState, IonavViewModel> {
     private val logger = LoggerFactory.getLogger(RouteLayer::class.simpleName)
 
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {

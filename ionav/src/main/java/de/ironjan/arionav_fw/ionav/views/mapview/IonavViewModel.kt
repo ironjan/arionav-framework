@@ -20,7 +20,7 @@ import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> {
+class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
@@ -35,7 +35,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
     //endregion
 
     // region backing state
-    override var state: SimplifiedMapViewState = SimplifiedMapViewState()
+    override var state: SimpleMapViewState = SimpleMapViewState()
     // endregion
 
     // region initialization
@@ -50,7 +50,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
 
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
             override fun update(value: Coordinate?) {
-                state.endCoordinate = value
+                state.destination = value
                 _destination.value = value
                 logger.info("Updated destination to $value in view model.")
             }
@@ -117,11 +117,14 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimplifiedMapViewState> 
         navigationService.destination = value
 
         val oldDestinationString = _destinationString.value
-        _destinationString.value = value?.asString() ?: oldDestinationString
+        val newDestinationString = value?.asString() ?: oldDestinationString
+        _destinationString.value = newDestinationString
+        state.destinationString =newDestinationString
     }
 
     fun setDestinationString(value: String): Boolean {
         _destinationString.value = value
+        state.destinationString = value
 
         val center = _indoorData.value?.getCoordinateOf(value)
         val coordinate = center ?: return false

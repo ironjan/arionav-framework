@@ -7,7 +7,7 @@ import org.oscim.map.Map
 
 class UserPositionLayer(private val map: Map)
     : org.oscim.layers.LocationLayer(map, 1f),
-    ModelDrivenMapExtension<SimplifiedMapViewState, IonavViewModel> {
+    ModelDrivenMapExtension<SimpleMapViewState, IonavViewModel> {
 
 
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner){

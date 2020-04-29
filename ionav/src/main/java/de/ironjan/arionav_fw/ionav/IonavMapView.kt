@@ -21,7 +21,7 @@ import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 
-class IonavMapView : MapView, MvvmCustomView<SimplifiedMapViewState, IonavViewModel> {
+class IonavMapView : MapView, MvvmCustomView<SimpleMapViewState, IonavViewModel> {
 
     private val logger = LoggerFactory.getLogger(IonavMapView::class.simpleName)
 
