@@ -2,6 +2,7 @@ package de.ironjan.arionav_fw.ionav.positioning
 
 import android.content.Context
 import androidx.lifecycle.Lifecycle
+import de.ironjan.arionav_fw.ionav.util.Observer
 
 abstract class LevelDependentPositionProviderBase(
     context: Context,
@@ -10,12 +11,10 @@ abstract class LevelDependentPositionProviderBase(
 ) : PositionProviderBaseImplementation(context, lifecycle) {
 
     init {
-        positioningService.registerObserver(object: IPositioningServiceObserver{
-            override fun updateUserSelectedLevel(level: Double) {
-                currentLevel = level
+        positioningService.registerObserver(object : Observer<PositioningServiceState> {
+            override fun update(t: PositioningServiceState) {
+                currentLevel = t.userSelectedLevel
             }
-
-            override fun update(t: IonavLocation?) { /* ignored */ }
         })
     }
 

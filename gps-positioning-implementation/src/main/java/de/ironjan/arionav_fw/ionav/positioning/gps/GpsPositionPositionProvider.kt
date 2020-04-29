@@ -10,7 +10,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
-import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.positioning.LevelDependentPositionProviderBase
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
@@ -28,8 +27,6 @@ open class GpsPositionPositionProvider(
     private val positioningService: PositioningService
 ) : LevelDependentPositionProviderBase(context, lifecycle, positioningService) {
     override val name: String = GpsPositionPositionProvider::class.java.simpleName
-
-    private val observers: MutableList<IPositionObserver> = mutableListOf()
 
     private val logger = LoggerFactory.getLogger(TAG)
 

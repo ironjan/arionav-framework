@@ -15,6 +15,7 @@ import de.ironjan.arionav_fw.ionav.navigation.InstructionHelper
 import de.ironjan.arionav_fw.ionav.navigation.NavigationServiceState
 import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
+import de.ironjan.arionav_fw.ionav.positioning.PositioningServiceState
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -63,14 +64,15 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
             }
         })
 
-        positioningService.registerObserver(object : IPositionObserver {
-            override fun update(t: IonavLocation?) {
-                _userLocationLiveData.value = t
-                _userLocation = t
+        positioningService.registerProvider(object : Observer<PositioningServiceState> {
+            override fun update(t: PositioningServiceState) {
+                _userLocation = t.lastKnownPosition
+                _userLocationLiveData.value = _userLocation
+
                 _locationHistoryLiveData.value = positioningService.locationHistory
             }
-        })
 
+        })
 
 
         loadIndoorData(ionavContainer.osmFilePath)

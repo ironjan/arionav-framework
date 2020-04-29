@@ -1,9 +1,9 @@
 package de.ironjan.arionav_fw.ionav.navigation
 
 import com.graphhopper.PathWrapper
-import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.positioning.PositioningService
+import de.ironjan.arionav_fw.ionav.positioning.PositioningServiceState
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
@@ -15,10 +15,11 @@ class NavigationService(
 ) : Observable<NavigationServiceState> {
     private val logger = LoggerFactory.getLogger(NavigationService::class.java.simpleName)
 
-    private val positionObserver = object : IPositionObserver {
-        override fun update(c: IonavLocation?) {
-            logger.info("$TAG received position change.")
-            recomputeRemainingRoute()
+    private val positionObserver = object : Observer<PositioningServiceState> {
+        override fun update(t: PositioningServiceState) {
+            logger.info("Received positioning service update.")
+
+            recomputeRemainingRoute(t.lastKnownPosition)
         }
     }
 
@@ -36,15 +37,14 @@ class NavigationService(
                 positioningService.removeObserver(positionObserver)
             }
 
-            recomputeRemainingRoute()
+            recomputeRemainingRoute(positioningService.lastKnownPosition)
         }
 
     var remainingRoute: PathWrapper? = null
         private set
 
 
-    private fun recomputeRemainingRoute() {
-        val lastKnownPosition = positioningService.lastKnownPosition
+    private fun recomputeRemainingRoute(lastKnownPosition: IonavLocation?) {
         val lastKnownPositionCoordinates = lastKnownPosition?.coordinate
 
         if (lastKnownPosition == null) {

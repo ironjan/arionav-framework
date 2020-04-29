@@ -2,16 +2,15 @@ package de.ironjan.arionav_fw.ionav.positioning
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import de.ironjan.arionav_fw.ionav.util.Observable
+import de.ironjan.arionav_fw.ionav.util.Observer
 import org.slf4j.LoggerFactory
 
-class PositioningService : IPositioningServiceObservable {
+class PositioningService : Observable<PositioningServiceState> {
+    private val _observers = mutableListOf<Observer<PositioningServiceState>>()
 
 
-    override var lastKnownPosition: IonavLocation? = null
-        private set
-
-    override var lastUpdate: Long = -1L
-        private set
+    override val state= PositioningServiceState()
 
     var userSelectedLevel: Double = 0.0
         set(value) {
@@ -20,36 +19,19 @@ class PositioningService : IPositioningServiceObservable {
         }
 
    // region observer handling
-   private val positionObservers: MutableList<IPositionObserver> = mutableListOf()
-    override fun registerObserver(observer: IPositionObserver) {
-        if (positionObservers.contains(observer)) return
-        positionObservers.add(observer)
+   override fun registerObserver(observer: Observer<PositioningServiceState>) {
+       if(_observers.contains(observer)) return
+       _observers.add(observer)
+   }
+
+    override fun removeObserver(observer: Observer<PositioningServiceState>) {
+        _observers.remove(observer)
     }
 
-    override fun removeObserver(observer: IPositionObserver) {
-        positionObservers.remove(observer)
-    }
-    private val serviceObservers = mutableListOf<IPositioningServiceObserver>()
-    override fun registerObserver(observer: IPositioningServiceObserver) {
-        if(serviceObservers.contains(observer)) return
-            serviceObservers.add(observer)
-    }
-
-    override fun removeObserver(observer: IPositioningServiceObserver) {
-        serviceObservers.remove(observer)
-    }
     override fun notifyObservers() {
         logger.debug("PositioningService notifying observers.")
-        positionObservers.forEach { o ->
-            val position = lastKnownPosition ?: return@forEach
-            o.update(position)
-        }
-        serviceObservers.forEach { o ->
-            o.updateUserSelectedLevel(userSelectedLevel)
 
-            val position = lastKnownPosition ?: return@forEach
-            o.update(position)
-        }
+        _observers.forEach { it.update(state) }
     }
     // endregion
 
@@ -90,8 +72,8 @@ class PositioningService : IPositioningServiceObservable {
 
 
         logger.warn("c: $c, newLocation: $newLocation")
-        lastKnownPosition = newLocation
-        lastUpdate = newLocation?.timestamp ?: lastUpdate
+        state.lastKnownPosition = newLocation
+        state.lastUpdate = newLocation?.timestamp ?: state.lastUpdate
         notifyObservers()
         logger.warn("Updated location to $newLocation")
 
