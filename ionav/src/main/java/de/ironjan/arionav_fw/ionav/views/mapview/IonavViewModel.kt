@@ -237,7 +237,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     }
 
     fun setSelectedLevel(newValue: Double) {
-        positioningService.userSelectedLevel = newValue.toDouble()
+        positioningService.userSelectedLevel = newValue
         _selectedLevel.value = newValue
     }
     // endregion

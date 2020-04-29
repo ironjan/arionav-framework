@@ -7,18 +7,25 @@ import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
+import kotlinx.coroutines.suspendAtomicCancellableCoroutine
 import org.slf4j.LoggerFactory
 
 class PositioningService : Observable<PositioningServiceState> {
 
     // region state
-    override val state = PositioningServiceState()
-    val lastKnownPosition: IonavLocation?
-        get() = state.lastKnownPosition
-    var userSelectedLevel: Double = 0.0
-        set(value) {
+    override var state = PositioningServiceState()
+        private set(value) {
             field = value
             notifyObservers()
+        }
+
+    val lastKnownPosition: IonavLocation?
+        get() = state.lastKnownPosition
+
+    var userSelectedLevel: Double
+        get() = state.userSelectedLevel
+        set(value) {
+            state = state.copy(userSelectedLevel = value)
         }
     //endregion
 
@@ -78,9 +85,10 @@ class PositioningService : Observable<PositioningServiceState> {
 
 
         logger.warn("c: $c, newLocation: $newLocation")
-        state.lastKnownPosition = newLocation
-        state.lastUpdate = newLocation?.timestamp ?: state.lastUpdate
-        notifyObservers()
+        state = state.copy(
+            lastKnownPosition = newLocation,
+            lastUpdate = newLocation?.timestamp ?: state.lastUpdate
+        )
         logger.warn("Updated location to $newLocation")
 
         prependToLocationHistory(newLocation)
