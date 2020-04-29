@@ -12,8 +12,7 @@ import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.navigation.InstructionHelper
-import de.ironjan.arionav_fw.ionav.navigation.NavigationService
-import de.ironjan.arionav_fw.ionav.navigation.NavigationServiceStatus
+import de.ironjan.arionav_fw.ionav.navigation.NavigationServiceState
 import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
@@ -47,8 +46,8 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
         this.ionavContainer = ionavContainer
 
-        navigationService.registerObserver(object : Observer<NavigationServiceStatus> {
-            override fun update(t: NavigationServiceStatus) {
+        navigationService.registerObserver(object : Observer<NavigationServiceState> {
+            override fun update(t: NavigationServiceState) {
                 _destination.value = t.destination
                 _route.value = t.remainingRoute
                 logger.info("Received navigation service update: $t.")

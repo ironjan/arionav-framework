@@ -7,13 +7,12 @@ import de.ironjan.arionav_fw.ionav.positioning.PositioningService
 import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
-import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
 class NavigationService(
     private val positioningService: PositioningService,
     private val routingService: RoutingService
-) : Observable<NavigationServiceStatus> {
+) : Observable<NavigationServiceState> {
     private val logger = LoggerFactory.getLogger(NavigationService::class.java.simpleName)
 
     private val positionObserver = object : IPositionObserver {
@@ -26,12 +25,10 @@ class NavigationService(
     val initialized: Boolean
         get() = routingService.initialized
 
-    private var _destination: Coordinate? = null
-
     var destination
-        get() = _destination
+        get() = state.destination
         set(value) {
-            _destination = value
+            state.destination = value
 
             if (value != null) {
                 positioningService.registerObserver(positionObserver)
@@ -63,7 +60,7 @@ class NavigationService(
         }
 
 
-        remainingRoute = routingService.route(lastKnownPositionCoordinates, destination)
+        state.remainingRoute = routingService.route(lastKnownPositionCoordinates, destination)
         notifyObservers()
     }
 
@@ -77,18 +74,18 @@ class NavigationService(
         const val TAG = "NavigationService"
     }
 
-    private val _observers = mutableListOf<Observer<NavigationServiceStatus>>()
-    override fun registerObserver(observer: Observer<NavigationServiceStatus>) {
+    private val _observers = mutableListOf<Observer<NavigationServiceState>>()
+    override fun registerObserver(observer: Observer<NavigationServiceState>) {
         if (_observers.contains(observer)) return
         _observers.add(observer)
     }
 
-    override fun removeObserver(observer: Observer<NavigationServiceStatus>) {
+    override fun removeObserver(observer: Observer<NavigationServiceState>) {
         _observers.remove(observer)
     }
 
-    override val state
-        get() = NavigationServiceStatus(_destination, remainingRoute)
+    override val state = NavigationServiceState(null,null)
+
 
     override fun notifyObservers() {
         _observers.forEach { it.update(state) }
