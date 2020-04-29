@@ -1,10 +1,7 @@
 package de.ironjan.arionav_fw.ionav.views.mapview
 
 import android.os.AsyncTask
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.ionav.IonavContainer
@@ -20,7 +17,7 @@ import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
+class IonavViewModel(private val stateNew: SavedStateHandle) : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
@@ -28,7 +25,14 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
     private lateinit var ionavContainer: IonavContainer
 
     val routingService by lazy {  ionavContainer.routingService }
-    val navigationService by lazy { ionavContainer.navigationService }
+    val navigationService by lazy {
+        val service = ionavContainer.navigationService
+
+        service.destination = readCoordinateFromState()
+
+        service
+    }
+
     val positioningService  by lazy { ionavContainer.positioningService }
 
     val mapFilePath by lazy { ionavContainer.mapFilePath }
@@ -50,7 +54,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
 
         navigationService.registerObserver(object : NavigationService.NavigationServiceObserver {
             override fun update(value: Coordinate?) {
-                state.destination = value
+                stateNew.set(STATE_DESTINATION, value?.asString())
                 _destination.value = value
                 logger.info("Updated destination to $value in view model.")
             }
@@ -76,11 +80,20 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
             }
         })
 
+        navigationService.destination = readCoordinateFromState()
+
 
         loadIndoorData(ionavContainer.osmFilePath)
     }
 
 
+
+    private fun readCoordinateFromState(): Coordinate? {
+        val get = stateNew.get<String>(STATE_DESTINATION)
+        val coordinate = if (get != null) Coordinate.fromString(get)
+        else null
+        return coordinate
+    }
     private val _routingStatus: MutableLiveData<RoutingService.Status> = MutableLiveData(RoutingService.Status.UNINITIALIZED)
     val routingStatus: LiveData<RoutingService.Status> = _routingStatus
 
@@ -110,24 +123,26 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
     private val _destination: MutableLiveData<Coordinate?> = MutableLiveData()
     val destination: LiveData<Coordinate?> = _destination
 
-    private val _destinationString: MutableLiveData<String> = MutableLiveData("")
+    private val _destinationString: MutableLiveData<String> = MutableLiveData(stateNew.get(STATE_DESTINATION_STRING))
     val destinationString: LiveData<String> = _destinationString
 
     fun setDestination(value: Coordinate?) {
         navigationService.destination = value
+        stateNew.set(STATE_DESTINATION, value?.asString())
 
         val oldDestinationString = _destinationString.value
         val newDestinationString = value?.asString() ?: oldDestinationString
         _destinationString.value = newDestinationString
-        state.destinationString =newDestinationString
+        stateNew.set(STATE_DESTINATION_STRING,newDestinationString)
     }
 
     fun setDestinationString(value: String): Boolean {
         _destinationString.value = value
-        state.destinationString = value
+        stateNew.set(STATE_DESTINATION_STRING,value)
 
         val center = _indoorData.value?.getCoordinateOf(value)
         val coordinate = center ?: return false
+        stateNew.set(STATE_DESTINATION, coordinate.asString())
 
         navigationService.destination = coordinate
         return true
@@ -264,4 +279,9 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel<SimpleMapViewState> {
     }
 
     // endregion
+
+    companion object {
+        const val STATE_DESTINATION = "STATE_DESTINATION"
+        const val STATE_DESTINATION_STRING = "STATE_DESTINATION_STRING"
+    }
 }
