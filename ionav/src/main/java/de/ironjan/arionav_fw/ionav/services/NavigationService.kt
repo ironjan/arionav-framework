@@ -26,7 +26,7 @@ class NavigationService(
     var destination
         get() = state.destination
         set(value) {
-            state.destination = value
+            state = state.copy(destination = value)
 
             if (value != null) {
                 positioningService.registerObserver(this)
@@ -57,8 +57,8 @@ class NavigationService(
         }
 
 
-        state.remainingRoute = routingService.route(lastKnownPositionCoordinates!!, destination!!)
-        notifyObservers()
+        val newRemainingRoute = routingService.route(lastKnownPositionCoordinates!!, destination!!)
+        state = state.copy(remainingRoute = newRemainingRoute)
     }
 
 
@@ -81,7 +81,11 @@ class NavigationService(
         _observers.remove(observer)
     }
 
-    override val state = NavigationServiceState(null, null)
+    override var state = NavigationServiceState(null, null)
+        set(value) {
+            field = value
+            notifyObservers()
+        }
 
 
     override fun notifyObservers() {
