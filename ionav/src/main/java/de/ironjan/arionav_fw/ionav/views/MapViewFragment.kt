@@ -30,13 +30,13 @@ open class MapViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        observeViewModel(this as LifecycleOwner)
+        observeViewModel(viewLifecycleOwner)
         bindOnClickListeners()
 
 
         val holder = activity?.application as IonavContainerHolder
         viewModel.initialize(holder.ionavContainer)
-        mapView.onLifecycleOwnerAttached(this as LifecycleOwner)
+        mapView.onLifecycleOwnerAttached(viewLifecycleOwner)
         mapView.initialize(viewModel)
         bindMapItemTapListener()
     }

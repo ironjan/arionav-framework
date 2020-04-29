@@ -3,7 +3,6 @@ package de.ironjan.arionav_fw.sample
 import android.net.wifi.ScanResult
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
@@ -31,13 +30,11 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
 
         wifiPositionProvider = positioningService.getProvider(WifiPositionProvider.WIFI_POSITIONING_PROVIDER) as WifiPositionProvider
 
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-
-        wifiPositionProvider.getVisibleDevices().observe(lifecycleOwner, Observer {
+        wifiPositionProvider.getVisibleDevices().observe(viewLifecycleOwner, Observer {
             dataAdapter.replaceData(it)
         })
         additionalInfo.visibility=View.VISIBLE
-        wifiPositionProvider.getLastScan().observe(lifecycleOwner, Observer {
+        wifiPositionProvider.getLastScan().observe(viewLifecycleOwner, Observer {
             additionalInfo.text = it
         })
 

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,11 +55,9 @@ class PlacesFragment : Fragment() {
         val lContext = context ?: return
         Toast.makeText(lContext, "Loading...", Toast.LENGTH_SHORT).show()
 
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-
 
         when (val application = activity?.application) {
-            is ArionavSampleApplication -> indoorData.observe(lifecycleOwner, Observer {
+            is ArionavSampleApplication -> indoorData.observe(viewLifecycleOwner, Observer {
                 places = it.names.toList()
                 updateAdapter()
             })

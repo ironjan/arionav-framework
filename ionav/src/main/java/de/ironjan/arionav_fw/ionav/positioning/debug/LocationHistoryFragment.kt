@@ -24,7 +24,7 @@ class LocationHistoryFragment: Fragment() {
 
         val context = context ?: return
 
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+        val lifecycleOwner = viewLifecycleOwner
 
         val locationHistoryAdapter = LocationHistoryAdapter(lifecycleOwner, viewModel)
         recycler_view.apply {

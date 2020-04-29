@@ -26,7 +26,7 @@ class ProviderConfigFragment : Fragment(R.layout.fragment_recycler_view) {
             else -> null
         } ?: return
 
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
+        val lifecycleOwner = viewLifecycleOwner
 
         val sdg = object : ProvidersAdapter.OnCheckboxClickCallback {
             override fun onClick(iPositionProvider: IPositionProvider, newState: Boolean) {

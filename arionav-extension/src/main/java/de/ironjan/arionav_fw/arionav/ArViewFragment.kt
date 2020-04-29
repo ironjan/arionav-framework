@@ -53,8 +53,7 @@ class ArViewFragment : Fragment() {
         loadRenderables()
         addUpdateListenerToSceneView()
 
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-        registerLiveDataObservers(lifecycleOwner)
+        registerLiveDataObservers(viewLifecycleOwner)
     }
 
     private var lastUpdate = 0L

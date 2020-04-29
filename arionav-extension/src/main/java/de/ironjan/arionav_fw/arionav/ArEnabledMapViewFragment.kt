@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.views.MapViewFragment
 import kotlinx.android.synthetic.main.ar_enabled_map_view.*
@@ -23,8 +22,7 @@ class ArEnabledMapViewFragment : MapViewFragment() {
             }
         }
 
-        val lifecycleOwner = this as? LifecycleOwner ?: throw IllegalArgumentException("LifecycleOwner not found.")
-        viewModel.instructionText.observe(lifecycleOwner, Observer {
+        viewModel.instructionText.observe(viewLifecycleOwner, Observer {
 //            if(it == null) {
 //                instructionText.visibility = View.GONE
 //                return@Observer
@@ -35,7 +33,7 @@ class ArEnabledMapViewFragment : MapViewFragment() {
 
         updateBtnArNavState(false)
 
-        viewModel.route.observe(lifecycleOwner, Observer { updateBtnArNavState(it != null && !it.hasErrors())})
+        viewModel.route.observe(viewLifecycleOwner, Observer { updateBtnArNavState(it != null && !it.hasErrors())})
     }
 
     private fun updateBtnArNavState(enabled: Boolean) {
