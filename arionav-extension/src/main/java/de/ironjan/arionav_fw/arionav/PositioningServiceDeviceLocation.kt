@@ -3,7 +3,7 @@ package de.ironjan.arionav_fw.arionav
 import android.content.Context
 import android.location.Location
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.positioning.PositioningServiceState
+import de.ironjan.arionav_fw.ionav.services.PositioningServiceState
 import de.ironjan.arionav_fw.ionav.util.Observer
 import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.sensor.DeviceLocation

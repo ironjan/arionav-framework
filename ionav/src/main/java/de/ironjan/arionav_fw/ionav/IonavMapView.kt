@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
-import de.ironjan.arionav_fw.ionav.routing.RoutingService
+import de.ironjan.arionav_fw.ionav.services.RoutingService
 import de.ironjan.arionav_fw.ionav.views.mapview.*
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView

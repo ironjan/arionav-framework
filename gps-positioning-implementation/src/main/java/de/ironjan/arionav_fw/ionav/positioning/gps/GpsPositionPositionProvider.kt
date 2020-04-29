@@ -12,7 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.positioning.LevelDependentPositionProviderBase
-import de.ironjan.arionav_fw.ionav.positioning.PositioningService
+import de.ironjan.arionav_fw.ionav.services.PositioningService
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 

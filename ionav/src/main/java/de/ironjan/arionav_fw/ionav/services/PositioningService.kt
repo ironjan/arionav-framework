@@ -1,7 +1,10 @@
-package de.ironjan.arionav_fw.ionav.positioning
+package de.ironjan.arionav_fw.ionav.services
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import de.ironjan.arionav_fw.ionav.positioning.IPositionObserver
+import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
+import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
 import org.slf4j.LoggerFactory

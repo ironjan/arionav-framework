@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
-import de.ironjan.arionav_fw.ionav.positioning.PositioningService
+import de.ironjan.arionav_fw.ionav.services.PositioningService
 import kotlinx.android.synthetic.main.view_fragment_config_list_item.view.*
 
 class ProvidersAdapter(

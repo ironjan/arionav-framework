@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.navigation
+package de.ironjan.arionav_fw.ionav.services
 
 import com.graphhopper.PathWrapper
 import de.ironjan.graphhopper.extensions_core.Coordinate

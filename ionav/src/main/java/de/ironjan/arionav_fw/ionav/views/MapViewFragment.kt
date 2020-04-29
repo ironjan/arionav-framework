@@ -17,7 +17,7 @@ import de.ironjan.arionav_fw.ionav.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
-import de.ironjan.arionav_fw.ionav.routing.RoutingService
+import de.ironjan.arionav_fw.ionav.services.RoutingService
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 
 open class MapViewFragment : Fragment() {

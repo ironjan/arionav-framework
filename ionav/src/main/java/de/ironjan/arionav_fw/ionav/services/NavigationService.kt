@@ -1,10 +1,7 @@
-package de.ironjan.arionav_fw.ionav.navigation
+package de.ironjan.arionav_fw.ionav.services
 
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.positioning.PositioningService
-import de.ironjan.arionav_fw.ionav.positioning.PositioningServiceState
-import de.ironjan.arionav_fw.ionav.routing.RoutingService
 import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
 import org.slf4j.LoggerFactory

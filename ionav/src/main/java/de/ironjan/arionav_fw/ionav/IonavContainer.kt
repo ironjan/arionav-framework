@@ -1,9 +1,9 @@
 package de.ironjan.arionav_fw.ionav
 
 import android.content.Context
-import de.ironjan.arionav_fw.ionav.navigation.NavigationService
-import de.ironjan.arionav_fw.ionav.positioning.PositioningService
-import de.ironjan.arionav_fw.ionav.routing.RoutingService
+import de.ironjan.arionav_fw.ionav.services.NavigationService
+import de.ironjan.arionav_fw.ionav.services.PositioningService
+import de.ironjan.arionav_fw.ionav.services.RoutingService
 import java.io.File
 
 /**
