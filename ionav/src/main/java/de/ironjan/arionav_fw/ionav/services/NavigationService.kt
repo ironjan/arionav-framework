@@ -82,7 +82,7 @@ class NavigationService(
     }
 
     override var state = NavigationServiceState(null, null)
-        set(value) {
+        private set(value) {
             field = value
             notifyObservers()
         }
