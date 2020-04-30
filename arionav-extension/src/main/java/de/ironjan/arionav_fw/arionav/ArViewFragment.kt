@@ -234,7 +234,7 @@ class ArViewFragment : Fragment() {
                 val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
 
                 txtName.text = instruction.name
-                txtDistance.text = "${instruction.distance}m"
+                txtDistance.text = "%.2fm".format(instruction.distance)
                 instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(instruction.sign))
 
                 val base = Node()
