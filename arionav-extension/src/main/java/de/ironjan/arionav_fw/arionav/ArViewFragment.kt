@@ -240,10 +240,7 @@ class ArViewFragment : Fragment() {
                 val base = Node()
                 base.renderable = renderable
                 renderable.view.setOnTouchListener { _, _ ->
-                    val lContext = context
-                    if (lContext != null) {
-                        Toast.makeText(lContext, "$instruction touched!", Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(context, "$instruction touched!", Toast.LENGTH_SHORT).show()
                     true
                 }
 
