@@ -7,8 +7,10 @@ import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
-import kotlinx.coroutines.suspendAtomicCancellableCoroutine
 import org.slf4j.LoggerFactory
+
+private val Long.lessThan30SecondsAgo: Boolean
+    get() = System.currentTimeMillis() - this < 30000
 
 class PositioningService : Observable<PositioningServiceState> {
 
@@ -46,7 +48,7 @@ class PositioningService : Observable<PositioningServiceState> {
         val newLocation = _providers.firstOrNull {
             // FIXME use better algorithm
             val isEnabled = it.enabled
-            val newEnough = System.currentTimeMillis() - it.lastUpdate < 30000
+            val newEnough = it.lastUpdate.lessThan30SecondsAgo
             val positionKnown = it.lastKnownPosition != null
             logger.info("Location update by ${it.name}: $isEnabled, $newEnough,  $positionKnown..")
             isEnabled && positionKnown && newEnough
@@ -180,8 +182,6 @@ class PositioningService : Observable<PositioningServiceState> {
             updateLastLocation(c)
         }
     }
-
-
 
 
 }
