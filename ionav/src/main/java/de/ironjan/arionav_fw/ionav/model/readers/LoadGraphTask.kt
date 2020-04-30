@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.util
+package de.ironjan.arionav_fw.ionav.model.readers
 
 import android.os.AsyncTask
 import com.graphhopper.GraphHopper

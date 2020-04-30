@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
+/**
+ * An {@see OsmReader} that reads all {@see IndoorData} from an osm-file.
+ */
 class IndoorDataReader : OsmReader() {
     private val logger = LoggerFactory.getLogger(IndoorDataReader::class.simpleName)
 

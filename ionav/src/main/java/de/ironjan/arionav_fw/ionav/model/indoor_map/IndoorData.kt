@@ -4,11 +4,14 @@ import de.ironjan.arionav_fw.ionav.model.osm.Node
 import de.ironjan.arionav_fw.ionav.model.osm.Way
 import org.slf4j.LoggerFactory
 
+/**
+ * An object containing indoor osm elements like {@see IndoorNode} and {@see IndoorWay}.
+ */
 class IndoorData(
-    private val ways: List<Way>,
-    private val nodes: List<Node>
+    ways: List<Way>,
+    nodes: List<Node>
 ) {
-    private val logger = LoggerFactory.getLogger(IndoorData::class.simpleName)
+    // region private properties
     private val indoorNodes = nodes.map {
         val lvl = it.tags["level"]?.toDoubleOrNull() ?: 0.0
         IndoorNode(it.id, it.lat, it.lon, lvl, it.tags)
@@ -25,6 +28,7 @@ class IndoorData(
 
     private val indoorNodesByLevel = indoorNodes.groupBy { it.lvl }
 
+    // endregion
 
     val names = indoorNodes.map { it.name }
         .union(indoorWays.map { it.name })

@@ -1,9 +1,8 @@
 package de.ironjan.arionav_fw.ionav.services
 
-import android.os.AsyncTask
 import com.graphhopper.GraphHopper
 import com.graphhopper.PathWrapper
-import de.ironjan.arionav_fw.ionav.util.LoadGraphTask
+import de.ironjan.arionav_fw.ionav.model.readers.LoadGraphTask
 import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate

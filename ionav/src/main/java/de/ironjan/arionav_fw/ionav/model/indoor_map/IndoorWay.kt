@@ -2,6 +2,7 @@ package de.ironjan.arionav_fw.ionav.model.indoor_map
 
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
+/** Represents an indoor way. Can be a room, corridor, etc. */
 data class IndoorWay(
     val id: Long,
     val lvl: Double,

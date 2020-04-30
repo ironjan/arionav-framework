@@ -9,6 +9,9 @@ import org.xmlpull.v1.XmlPullParserException
 import java.io.FileInputStream
 import java.io.IOException
 
+/**
+ * Generic osm-file reader using {@see XmlPullParser}.
+ */
 open class OsmReader {
     private val ns: String? = null
     private val logger = LoggerFactory.getLogger(OsmReader::class.simpleName)
@@ -71,8 +74,8 @@ open class OsmReader {
         parser.require(XmlPullParser.START_TAG, ns, "way")
 
         var id: Long? = null
-        var nodeRefs = mutableListOf<Long>()
-        var tags = mutableMapOf<String, String>()
+        val nodeRefs = mutableListOf<Long>()
+        val tags = mutableMapOf<String, String>()
 
         id = parser.getAttributeValue(ns, "id").toLongOrNull()
         while (parser.next() != XmlPullParser.END_TAG) {
