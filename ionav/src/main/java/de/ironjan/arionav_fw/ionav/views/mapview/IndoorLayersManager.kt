@@ -12,6 +12,7 @@ import org.oscim.layers.Layer
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
+import org.oscim.layers.tile.vector.labeling.LabelLayer
 import org.oscim.layers.vector.VectorLayer
 import org.oscim.layers.vector.geometries.PolygonDrawable
 import org.oscim.layers.vector.geometries.RectangleDrawable
@@ -76,7 +77,7 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
     }
 
     private var currentDrawableLayer: VectorLayer? = null
-    private var currentLabelLayer: VectorLayer? = null
+    private var currentLabelLayer: ItemizedLayer<MarkerItem>? = null
 
     private fun showLayersFor(newLevel: Double) {
         map.layers().remove(currentDrawableLayer)
@@ -88,7 +89,7 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         map.layers().add(newDrawableLayer)
         map.layers().add(newLabelLayer)
         currentDrawableLayer = newDrawableLayer
-        currentLabelLayer = newDrawableLayer
+        currentLabelLayer = newLabelLayer
     }
 
     private fun prepareRoomBackgroundLayers(id: IndoorData): kotlin.collections.Map<Double, VectorLayer> {
@@ -138,13 +139,13 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
 
 
-    private fun prepareLabelLayers(id: IndoorData): kotlin.collections.Map<Double, Layer> {
+    private fun prepareLabelLayers(id: IndoorData): kotlin.collections.Map<Double, ItemizedLayer<MarkerItem>> {
         return id.levels.map {
             Pair(it, prepareLabelLayer(id, it))
         }.toMap()
     }
 
-    private fun prepareLabelLayer(id: IndoorData, level: Double): Layer {
+    private fun prepareLabelLayer(id: IndoorData, level: Double): ItemizedLayer<MarkerItem> {
         val labelLayer = ItemizedLayer<MarkerItem>(map, null as MarkerSymbol?)
 
         val canvas = CanvasAdapter.newCanvas()
