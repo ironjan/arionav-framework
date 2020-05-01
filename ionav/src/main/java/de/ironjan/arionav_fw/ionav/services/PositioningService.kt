@@ -91,7 +91,7 @@ class PositioningService : Observable<PositioningServiceState> {
     override fun notifyObservers() {
         logger.debug("PositioningService notifying observers.")
 
-        _observers.forEach { it.update(state) }
+        _observers.toList().forEach { it.update(state) }
     }
     // endregion
 
