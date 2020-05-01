@@ -20,7 +20,7 @@ class InstructionHelper(private val context: Context) {
         return "$instructionText in ${distance}m ($optionalLessThan${timeInMinutes}min)\n${nextInstruction?.name}"
     }
 
-    private fun getTextFor(sign: Int): String {
+    fun getTextFor(sign: Int): String {
         // TODO improve
         return when (sign) {
             -99 -> "UNKNOWN"
