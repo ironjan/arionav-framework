@@ -31,7 +31,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 
 // TODO move logic into view?
-class ArViewFragment : Fragment() {
+class ArNavFragment  : Fragment() {
     private var locationSceneIsSetUp: Boolean = false
 
     private var locationScene: LocationScene? = null
@@ -191,7 +191,7 @@ class ArViewFragment : Fragment() {
     }
 
 
-    private val logger = LoggerFactory.getLogger(ArViewFragment::class.java.simpleName)
+    private val logger = LoggerFactory.getLogger(ArNavFragment::class.java.simpleName)
 
     private fun updateLocationScene() {
         locationScene?.mLocationMarkers?.clear()
@@ -307,7 +307,7 @@ class ArViewFragment : Fragment() {
             is UnavailableSdkTooOldException -> "Please update this app"
             is UnavailableDeviceNotCompatibleException -> "This device does not support AR"
             else -> {
-                Log.e(ArViewFragment::class.java.simpleName, "Exception: $e")
+                Log.e(ArNavFragment::class.java.simpleName, "Exception: $e")
                 "Failed to create AR session"
             }
         }

@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/arViewFragment"
-        android:name="de.ironjan.arionav_fw.arionav.ArViewFragment"
+        android:name="de.ironjan.arionav_fw.arionav.ArNavFragment"
         tools:layout="@layout/fragment_ar_view"
         android:label="ArViewFragment" >
 
