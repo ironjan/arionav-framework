@@ -121,7 +121,8 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     fun setDestinationString(value: String): Boolean {
         _destinationString.value = value
 
-        val center = _indoorData.value?.getCoordinateOf(value)
+        val parsedAttempt = try { Coordinate.fromString(value) } catch (_: Exception) { null }
+        val center = parsedAttempt ?: _indoorData.value?.getCoordinateOf(value)
         val coordinate = center ?: return false
 
         navigationService.destination = coordinate
