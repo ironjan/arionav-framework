@@ -89,7 +89,7 @@ class NavigationService(
 
 
     override fun notifyObservers() {
-        _observers.forEach { it.update(state) }
+        _observers.toList().forEach { it.update(state) }
     }
 
 }
