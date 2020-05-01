@@ -263,6 +263,7 @@ class ArNavFragment  : Fragment() {
 
 
                 // Adding the marker
+                locationScene?.mLocationMarkers?.clear()
                 locationScene?.mLocationMarkers?.add(marker)
             }
     }
