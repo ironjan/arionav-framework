@@ -204,10 +204,6 @@ class ArNavFragment  : Fragment() {
         // We know that here, the AR components have been initiated.
         val lActivity = context as Activity ?: return
 
-        val positioningService = when (val holder = lActivity.application) {
-            is IonavContainerHolder -> holder.ionavContainer.positioningService
-            else -> null
-        } ?: return
         locationScene = ArionavLocationScene(lActivity, ar_scene_view)
             .apply { observe(model, viewLifecycleOwner) }
 
