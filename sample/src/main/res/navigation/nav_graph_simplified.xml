@@ -5,32 +5,32 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/arEnabledMapViewFragment">
 
-    <fragment android:id="@+id/arEnabledMapViewFragment"
+    <fragment android:id="@+id/ArEnabledMapViewFragment"
         android:name="de.ironjan.arionav_fw.arionav.ArEnabledMapViewFragment"
-        tools:layout="@layout/ar_enabled_map_view"
+        tools:layout="@layout/map_build_only_preview"
         android:label="ArEnabledMapViewFragment">
 
 
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_arViewFragment"
-            app:destination="@+id/arViewFragment" />
+        <action
+            android:id="@+id/action_ArEnabledMapViewFragment_to_ProviderConfigFragment"
+            app:destination="@id/ProviderConfigFragment" />
+        <action
+            android:id="@+id/action_ArEnabledMapViewFragment_to_ArNavFragment"
+            app:destination="@id/ArNavFragment" />
     </fragment>
     <fragment
-        android:id="@+id/arViewFragment"
+        android:id="@+id/ArNavFragment"
         android:name="de.ironjan.arionav_fw.arionav.ArNavFragment"
-        tools:layout="@layout/fragment_ar_view"
-        android:label="ArViewFragment" >
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
+        android:label="ArNavFragment"
+        tools:layout="@layout/ar_view_build_only_preview">
+        <action
+            android:id="@+id/action_ArNavFragment_to_ArEnabledMapViewFragment"
+            app:destination="@id/ArEnabledMapViewFragment" />
     </fragment>
 
-    <fragment android:id="@+id/providerConfig"
+    <fragment android:id="@+id/ProviderConfigFragment"
         android:name="de.ironjan.arionav_fw.sample.ProviderConfigFragment"
-        tools:layout="@layout/fragment_recycler_view"
+        tools:layout="@layout/pos_conf_build_only_preview"
         android:label="ProviderConfigFragment" />
 
 </navigation>
