@@ -20,7 +20,6 @@ import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.util.Instruction
-import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import kotlinx.android.synthetic.main.fragment_ar_view.*
@@ -193,19 +192,23 @@ class ArNavFragment  : Fragment() {
 
     private val logger = LoggerFactory.getLogger(ArNavFragment::class.java.simpleName)
 
-    private fun updateLocationScene() {
-        locationScene?.mLocationMarkers?.clear()
-        logger.info("Cleared scene")
-        setupLocationScene()
-    }
-
     private fun setupLocationScene() {
         // If our locationScene object hasn't been setup yet, this is a good time to do it
         // We know that here, the AR components have been initiated.
-        val lActivity = context as Activity ?: return
+        val lActivity = context as Activity
 
         locationScene = ArionavLocationScene(lActivity, ar_scene_view)
             .apply { observe(model, viewLifecycleOwner) }
+
+
+        locationSceneIsSetUp = true
+    }
+
+
+    private fun updateLocationScene() {
+        locationScene?.mLocationMarkers?.clear()
+        logger.info("Cleared scene")
+
 
 
         val route = model.route.value
@@ -215,16 +218,16 @@ class ArNavFragment  : Fragment() {
             ?.take(2)
             ?.last() ?: return
 
-        val wp = instruction.points.last()
-        addPoi(wp.lat, wp.lon, instruction)
 
-        locationSceneIsSetUp = true
+        show(instruction)
+
     }
 
+    private fun show(instruction: Instruction) {
+        val wp = instruction.points.take(2).last()
+        val lat = wp.lat
+        val lon = wp.lon
 
-    val maxDistance = FiveSecondsInMillis
-
-    private fun addPoi(lat: Double, lon: Double, instruction: Instruction) {
         logger.info("Adding marker for '$instruction' at $lat,$lon.")
         val context = context ?: return
         ViewRenderable.builder()
@@ -246,14 +249,17 @@ class ArNavFragment  : Fragment() {
                     true
                 }
 
+
+
                 val marker = LocationMarker(lon, lat, base)
+
                 marker.apply {
                     setRenderEvent {
                         val eView = renderable.view
                          "${it.distance}m"
 //                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
                     }
-                    onlyRenderWhenWithin = maxDistance
+                    onlyRenderWhenWithin = Companion.maxDistance
                 }
                 marker.height=2f
 
@@ -348,4 +354,7 @@ class ArNavFragment  : Fragment() {
         return session
     }
 //endregion
+    companion object {
+        private const val maxDistance = 5000
+    }
 }
