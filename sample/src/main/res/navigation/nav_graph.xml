@@ -172,28 +172,4 @@
         <action android:id="@+id/action_to_map_nav_fragment"
             app:destination="@+id/arEnabledMapViewFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/simpleMapNavFragment"
-        android:name="de.ironjan.arionav_fw.ionav.views.MapViewFragment"
-        android:label="fragment_simple_map_nav"
-        tools:layout="@layout/fragment_simple_map_nav" >
-
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-        <action android:id="@+id/action_to_map_nav_fragment"
-            app:destination="@+id/arEnabledMapViewFragment" />
-    </fragment>
 </navigation>
