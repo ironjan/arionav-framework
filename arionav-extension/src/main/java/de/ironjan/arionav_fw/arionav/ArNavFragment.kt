@@ -229,7 +229,7 @@ class ArNavFragment  : Fragment() {
     val maxDistance = FiveSecondsInMillis
 
     private fun addPoi(lat: Double, lon: Double, instruction: Instruction) {
-        logger.info("Added marker for '$instruction' at $lat,$lon.")
+        logger.info("Adding marker for '$instruction' at $lat,$lon.")
         val context = context ?: return
         ViewRenderable.builder()
             .setView(context, R.layout.view_basic_instruction)
