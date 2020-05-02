@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/arEnabledMapViewFragment">
+
+    <fragment android:id="@+id/arEnabledMapViewFragment"
+        android:name="de.ironjan.arionav_fw.arionav.ArEnabledMapViewFragment"
+        tools:layout="@layout/ar_enabled_map_view"
+        android:label="ArEnabledMapViewFragment">
+
+
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
+
+        <action android:id="@+id/action_to_arViewFragment"
+            app:destination="@+id/arViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/arViewFragment"
+        android:name="de.ironjan.arionav_fw.arionav.ArNavFragment"
+        tools:layout="@layout/fragment_ar_view"
+        android:label="ArViewFragment" >
+
+        <action android:id="@+id/action_to_providerConfig"
+            app:destination="@+id/providerConfig" />
+
+    </fragment>
+
+    <fragment android:id="@+id/providerConfig"
+        android:name="de.ironjan.arionav_fw.sample.ProviderConfigFragment"
+        tools:layout="@layout/fragment_recycler_view"
+        android:label="ProviderConfigFragment" />
+
+</navigation>
