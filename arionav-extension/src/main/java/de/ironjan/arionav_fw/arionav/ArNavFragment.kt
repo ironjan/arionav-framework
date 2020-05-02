@@ -26,7 +26,6 @@ import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
-import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
@@ -35,7 +34,7 @@ import java.util.concurrent.ExecutionException
 class ArNavFragment  : Fragment() {
     private var locationSceneIsSetUp: Boolean = false
 
-    private var locationScene: LocationScene? = null
+    private var locationScene: ArionavLocationScene? = null
     private var hasFinishedLoading: Boolean = false
     private var poiLayoutRenderable: ViewRenderable? = null
     private var loadingMessageSnackbar: Snackbar? = null
@@ -209,7 +208,8 @@ class ArNavFragment  : Fragment() {
             is IonavContainerHolder -> holder.ionavContainer.positioningService
             else -> null
         } ?: return
-        locationScene = PositioningServiceLocationScene(lActivity, ar_scene_view, positioningService)
+        locationScene = ArionavLocationScene(lActivity, ar_scene_view)
+            .apply { observe(model, viewLifecycleOwner) }
 
 
         val route = model.route.value
@@ -236,7 +236,7 @@ class ArNavFragment  : Fragment() {
             .build()
             .thenAccept { renderable ->
                 val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
-                val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
+                    val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
                 val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
 
                 txtName.text = instruction.name

@@ -3,7 +3,7 @@ package de.ironjan.arionav_fw.ionav.views.mapview
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenMapExtension
+import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.canvas.AndroidGraphics
 import org.oscim.core.GeoPoint
@@ -14,7 +14,7 @@ import org.oscim.map.Map
 import org.slf4j.LoggerFactory
 
 class DestinationMarkerLayer(private val map: Map, private val markerDrawable: Drawable) : ItemizedLayer<MarkerItem>(map, MarkerSymbol(AndroidGraphics.drawableToBitmap(markerDrawable), 0.5f, 1f)),
-    ModelDrivenMapExtension<IonavViewModel> {
+    ModelDrivenUiComponent<IonavViewModel> {
 
     private val logger = LoggerFactory.getLogger(DestinationMarkerLayer::class.simpleName)
 

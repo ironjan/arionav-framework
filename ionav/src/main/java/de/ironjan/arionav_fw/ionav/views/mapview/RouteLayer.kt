@@ -3,7 +3,7 @@ package de.ironjan.arionav_fw.ionav.views.mapview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.graphhopper.PathWrapper
-import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenMapExtension
+import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import org.oscim.backend.canvas.Color
 import org.oscim.core.GeoPoint
 import org.oscim.layers.vector.PathLayer
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 
 
 class RouteLayer(private val map: Map, style: Style) : PathLayer(map, style),
-    ModelDrivenMapExtension<IonavViewModel> {
+    ModelDrivenUiComponent<IonavViewModel> {
     private val logger = LoggerFactory.getLogger(RouteLayer::class.simpleName)
 
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {

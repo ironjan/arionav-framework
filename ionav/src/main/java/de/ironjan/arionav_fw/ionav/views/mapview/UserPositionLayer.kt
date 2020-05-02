@@ -2,12 +2,12 @@ package de.ironjan.arionav_fw.ionav.views.mapview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenMapExtension
+import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import org.oscim.map.Map
 
 class UserPositionLayer(private val map: Map)
     : org.oscim.layers.LocationLayer(map, 1f),
-    ModelDrivenMapExtension<IonavViewModel> {
+    ModelDrivenUiComponent<IonavViewModel> {
 
 
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner){

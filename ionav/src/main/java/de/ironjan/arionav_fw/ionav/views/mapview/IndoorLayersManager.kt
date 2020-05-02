@@ -2,17 +2,15 @@ package de.ironjan.arionav_fw.ionav.views.mapview
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenMapExtension
+import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import org.oscim.backend.CanvasAdapter
 import org.oscim.backend.canvas.Color
 import org.oscim.backend.canvas.Paint
 import org.oscim.core.GeoPoint
-import org.oscim.layers.Layer
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
-import org.oscim.layers.tile.vector.labeling.LabelLayer
 import org.oscim.layers.vector.VectorLayer
 import org.oscim.layers.vector.geometries.PolygonDrawable
 import org.oscim.layers.vector.geometries.RectangleDrawable
@@ -24,7 +22,7 @@ import org.slf4j.LoggerFactory
  * Wrapper around multiple layers that will be added to {@param map}. Not an actual layer
  */
 class IndoorLayersManager(private val map: Map, private val density: Float) :
-    ModelDrivenMapExtension<IonavViewModel>{
+    ModelDrivenUiComponent<IonavViewModel>{
 
     // region ModelDrivenMapExtension
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
