@@ -114,8 +114,11 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
             if (viewModel.isFollowUser
                 && it != null
             ) {
-                centerOn(it)
+                viewModel.moveTo(it.lat, it.lon)
             }
+        })
+        viewModel.mapCenter.observe(lifecycleOwner, Observer {
+            centerOn(it ?: return@Observer)
         })
 
     }

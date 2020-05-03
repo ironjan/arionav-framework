@@ -264,6 +264,10 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         logger.info("Started loading of indoor map data.")
     }
 
+    fun moveTo(lat: Double, lon: Double) {
+        mapCenter.value = Coordinate(lat, lon, 0.0)
+    }
+
     // endregion
 
     companion object {
