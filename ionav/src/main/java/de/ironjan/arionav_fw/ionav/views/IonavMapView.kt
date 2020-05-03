@@ -96,11 +96,12 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
     }
 
     private fun goToMapStartPosition() {
+        centerOnUser()
         // Map start position
-        val mapCenter = GeoPoint(51.731938, 8.734518)
-        val zoom = (1 shl 19).toDouble()
-        map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
-        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
+//        val mapCenter = GeoPoint(51.731938, 8.734518)
+//        val zoom = (1 shl 19).toDouble()
+//        map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
+//        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
     }
 
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
