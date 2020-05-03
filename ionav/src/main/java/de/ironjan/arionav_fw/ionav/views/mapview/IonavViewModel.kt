@@ -138,7 +138,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     private val _userLocationLiveData: MutableLiveData<IonavLocation?> = MutableLiveData()
     val userLocation: LiveData<IonavLocation?> = _userLocationLiveData
 
-    private val followUserPosition: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val followUserPosition: MutableLiveData<Boolean> = MutableLiveData(true)
     fun getFollowUserPositionLiveData(): LiveData<Boolean> = followUserPosition
     fun setFollowUserPosition(b: Boolean) {
         followUserPosition.value = b
@@ -146,7 +146,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         if (b) centerOnUserPos()
     }
     val isFollowUser
-    get() = followUserPosition.value ?: false
+    get() = followUserPosition.value ?: true
 
 
     private val _locationHistoryLiveData = MutableLiveData(emptyList<IonavLocation>())

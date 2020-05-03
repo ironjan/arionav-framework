@@ -55,9 +55,8 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
         this.viewModel = viewModel
 
         val tileLayer = loadMap(viewModel.mapFilePath)
-        createAndAddLayers(tileLayer)
 
-        goToMapStartPosition()
+        createAndAddLayers(tileLayer)
 
         observeLiveData(lifecycleOwner)
     }
@@ -71,8 +70,17 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
         tileSource.setMapFile(osmFilePath)
         logger.debug("Set tile source to $osmFilePath")
 
+
         val tileLayer = map().setBaseMap(tileSource)
         map().setTheme(VtmThemes.DEFAULT)
+
+
+        val mapInfo = tileSource.mapInfo
+        val startPosition = mapInfo.mapCenter
+        val latitude = startPosition.latitude
+        val longitude = startPosition.longitude
+        map().setMapPosition(latitude, longitude, (1 shl 19).toDouble())
+
         return tileLayer
     }
 
@@ -95,15 +103,6 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
         logger.debug("Added layers.")
     }
 
-    private fun goToMapStartPosition() {
-        centerOnUser()
-        // Map start position
-//        val mapCenter = GeoPoint(51.731938, 8.734518)
-//        val zoom = (1 shl 19).toDouble()
-//        map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
-//        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
-    }
-
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
 
         endMarkerLayer.observe(viewModel, lifecycleOwner)
@@ -111,13 +110,14 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
         remainingRouteLayer.observe(viewModel, lifecycleOwner)
         indoorLayers.observe(viewModel, lifecycleOwner)
 
-        viewModel.mapCenter.observe(lifecycleOwner, Observer {
+        viewModel.userLocation.observe(lifecycleOwner, Observer {
             if (viewModel.isFollowUser
                 && it != null
             ) {
                 centerOn(it)
             }
         })
+
     }
     // endregion
 
@@ -174,14 +174,9 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
 
 
     fun centerOn(coordinate: Coordinate) {
-        val scale = map().mapPosition.scale
-        map().setMapPosition(coordinate.lat, coordinate.lon, scale)
+        val zoom = map().mapPosition.scale
+        map().setMapPosition(coordinate.lat, coordinate.lon, zoom)
         redrawMap()
-    }
-
-    fun centerOnUser() {
-        val coordinate = viewModel.userLocation.value ?: return
-        centerOn(coordinate)
     }
 
     // endregion
