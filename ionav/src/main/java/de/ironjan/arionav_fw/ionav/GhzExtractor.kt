@@ -8,7 +8,9 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
 class GhzExtractor {
-    fun unzipGhzToStorage(context: Context, ionavContainer: IonavContainer) {
+    fun unzipGhzToStorage(ionavContainer: IonavContainer) {
+        val context = ionavContainer.applicationContext
+
         val mapFolder = ionavContainer.mapFolderPath
         val resId = ionavContainer.resId
 

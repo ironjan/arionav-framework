@@ -19,7 +19,7 @@ class ArionavSampleApplication : Application(), IonavContainerHolder {
 
         setupLogging()
 
-        GhzExtractor().unzipGhzToStorage(this, ionavContainer)
+        GhzExtractor().unzipGhzToStorage(ionavContainer)
 
         ionavContainer.init()
     }
