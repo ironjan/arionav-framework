@@ -10,9 +10,11 @@ data class IndoorWay(
     val tags: Map<String, String>
 ): IndoorPoi {
 
+    private val doorCoordinate = nodeRefs.firstOrNull { it.tags["indoor"] == "door" }?.mainCoordinate
+
     val centerLat: Double = nodeRefs.map { it.lat }.sum() / nodeRefs.count()
     val centerLon: Double = nodeRefs.map { it.lon }.sum() / nodeRefs.count()
-    override val mainCoordinate =Coordinate(centerLat, centerLon, lvl)
+    override val mainCoordinate = doorCoordinate ?: Coordinate(centerLat, centerLon, lvl)
 
     val type: String = tags["indoor"] ?: ""
     val name: String = tags["name"] ?: ""
