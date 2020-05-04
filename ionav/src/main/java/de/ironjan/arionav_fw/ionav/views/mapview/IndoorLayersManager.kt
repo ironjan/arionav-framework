@@ -156,11 +156,11 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         val wayMarkers = id.getWays(level).map {
             if (it.name.isNullOrEmpty()) return@map null
 
-            val bitmap = CanvasAdapter.newBitmap((42 * CanvasAdapter.getScale()).toInt(), (20 * CanvasAdapter.getScale()).toInt(), 0)
+            val bitmap = CanvasAdapter.newBitmap((42 * CanvasAdapter.getScale()).toInt(), (15 * CanvasAdapter.getScale()).toInt(), 0)
             canvas.setBitmap(bitmap)
             canvas.fillColor(Color.GRAY)
 
-            canvas.drawText(it.name, 3 * CanvasAdapter.getScale(), 17 * CanvasAdapter.getScale(), paint)
+            canvas.drawText(it.name, 3 * CanvasAdapter.getScale(), 12 * CanvasAdapter.getScale(), paint)
 
             val markerItem = MarkerItem(it.name, "", GeoPoint(it.centerLat, it.centerLon))
             val markerSymbol = MarkerSymbol(bitmap, 0.5f, 0f)
