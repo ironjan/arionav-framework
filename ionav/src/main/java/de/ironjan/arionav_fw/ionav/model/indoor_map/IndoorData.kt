@@ -2,7 +2,6 @@ package de.ironjan.arionav_fw.ionav.model.indoor_map
 
 import de.ironjan.arionav_fw.ionav.model.osm.Node
 import de.ironjan.arionav_fw.ionav.model.osm.Way
-import org.slf4j.LoggerFactory
 
 /**
  * An object containing indoor osm elements like {@see IndoorNode} and {@see IndoorWay}.
