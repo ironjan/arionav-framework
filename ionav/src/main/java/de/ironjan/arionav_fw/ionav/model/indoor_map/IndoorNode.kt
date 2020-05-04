@@ -15,6 +15,6 @@ class IndoorNode(
 
     val name = tags["name"] ?: ""
 
-    override val center = Coordinate(lat, lon, lvl)
+    override val mainCoordinate = Coordinate(lat, lon, lvl)
 
 }

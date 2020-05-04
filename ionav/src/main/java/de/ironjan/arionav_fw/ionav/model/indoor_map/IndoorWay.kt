@@ -12,7 +12,7 @@ data class IndoorWay(
 
     val centerLat: Double = nodeRefs.map { it.lat }.sum() / nodeRefs.count()
     val centerLon: Double = nodeRefs.map { it.lon }.sum() / nodeRefs.count()
-    override val center = Coordinate(centerLat, centerLon, lvl)
+    override val mainCoordinate =Coordinate(centerLat, centerLon, lvl)
 
     val type: String = tags["indoor"] ?: ""
     val name: String = tags["name"] ?: ""
