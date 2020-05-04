@@ -55,6 +55,8 @@ open class MapViewFragment : Fragment() {
 
         viewModel.destinationString.observe(lifecycleOwner, Observer { edit_destination.setText(it) })
 
+        viewModel.userLocation.observe(lifecycleOwner, Observer { txtPositionProviderLevel.setText((it?.lvl ?: 0.0).toString()) })
+
         bindSuggestions(lifecycleOwner)
     }
 
