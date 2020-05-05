@@ -45,10 +45,11 @@ dependencies {
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
 
-    implementation project(path: ':arionav-extension')
-    implementation project(path: ':gps-positioning-implementation')
-    implementation project(path: ':wifi-positioning-provider-implementation')
-    implementation project(path: ':bluetooth-positioning-provider-implementation')
+    implementation "com.github.ironjan.arionav-framework:gps-positioning-implementation:$arionav_version"
+    implementation "com.github.ironjan.arionav-framework:bluetooth-positioning-provider-implementation:$arionav_version"
+    implementation "com.github.ironjan.arionav-framework:wifi-positioning-provider-implementation:$arionav_version"
+    implementation "com.github.ironjan.arionav-framework:arionav-extension:$arionav_version"
+
 
     implementation "io.arrow-kt:arrow-core:$arrow_kt_version"
     implementation "io.arrow-kt:arrow-syntax:$arrow_kt_version"
