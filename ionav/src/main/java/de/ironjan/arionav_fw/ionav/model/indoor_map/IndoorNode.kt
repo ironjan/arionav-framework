@@ -1,5 +1,6 @@
 package de.ironjan.arionav_fw.ionav.model.indoor_map
 
+import de.ironjan.arionav_fw.ionav.model.osm.PrimaryCoordinate
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.core.GeoPoint
 
@@ -10,7 +11,7 @@ class IndoorNode(
     val lon: Double,
     val lvl: Double,
     val tags: Map<String, String>
-) :IndoorPoi{
+) : PrimaryCoordinate {
     fun toGeoPoint(): GeoPoint = GeoPoint(lat, lon)
 
     val name = tags["name"] ?: ""

@@ -1,5 +1,6 @@
 package de.ironjan.arionav_fw.ionav.model.indoor_map
 
+import de.ironjan.arionav_fw.ionav.model.osm.PrimaryCoordinate
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
 /** Represents an indoor way. Can be a room, corridor, etc. */
@@ -8,7 +9,7 @@ data class IndoorWay(
     val lvl: Double,
     val nodeRefs: List<IndoorNode>,
     val tags: Map<String, String>
-): IndoorPoi {
+): PrimaryCoordinate {
 
     private val doorCoordinate = nodeRefs.firstOrNull { it.tags["indoor"] == "door" }?.mainCoordinate
 
