@@ -41,7 +41,7 @@ DISTRIBUTED_OSM_FILE="$GH_FOLDER/$NAME"
 
 
 
-rm -rv ${GH_FOLDER}/*
+rm -rfv ${GH_FOLDER}/*
 java -jar $HOME/projects/graphhopper/level-extension-importer/target/level-extension-importer-0.5-jar-with-dependencies.jar $FULL_FILE_PATH $GH_FOLDER
 echo "Executing SED to fix and copy osm file. May take a long time..."
 date > SED.log
