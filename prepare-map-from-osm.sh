@@ -1,9 +1,11 @@
 #!/bin/bash
 set -e 
 
-while getopts ":i:o:" opt; do
+while getopts ":i:k:o:" opt; do
   case $opt in
     i) INPUT_FILE="$OPTARG"
+    ;;
+    k) KEEP_OPTIONS="$OPTARG"
     ;;
     o) MAPSFORGE_OPTIONS="$OPTARG"
     ;;
@@ -20,7 +22,10 @@ if [ "$INPUT_FILE" = "" ] ; then
   echo "    Mandatory input file parameter."
   echo ""
   echo " -o '<MAPSFORGE_OPTIONS>'"
-  echo "    Optional arguments for the mapsforge file writer. Should be single-quoted."
+  echo "    Optional arguments for the mapsforge file writer. Should be single-quoted. Defaults to no options."
+  echo ""
+  echo " -k '<OSMFILTER KEEP OPTIONS>"
+  echo "    Optional arguments for the osmfilter --keep argument. Should be single-quoted. Defaults to all."
   echo ""
   echo " -h"
   echo "    Prints this help."
@@ -33,7 +38,6 @@ NAME=$(basename $FULL_FILE_PATH)
 NAME_WITHOUT_EXTENSION=${NAME::-4}
 GH_FOLDER="$INPUT_FOLDER/${NAME_WITHOUT_EXTENSION}-gh/"
 DISTRIBUTED_OSM_FILE="$GH_FOLDER/$NAME"
-
 
 
 
@@ -54,11 +58,16 @@ date > $GH_FOLDER/_timestamp
 echo "Creating mapsforge file with mapsforge options: '$MAPSFORGE_OPTIONS'"
 osmosis --rx file="$DISTRIBUTED_OSM_FILE" enableDateParsing=false --mw $MAPSFORGE_OPTIONS file="$GH_FOLDER/${NAME_WITHOUT_EXTENSION}.map"
 
-echo "Removing non-relevant data from distributed osm file..."
-./bin/osmfilter32 "$DISTRIBUTED_OSM_FILE" --keep="name= and level= and indoor= or tourism=" > "${DISTRIBUTED_OSM_FILE}.indoor"
-ls -lh ${GH_FOLDER}/${NAME}*
-mv -v "${DISTRIBUTED_OSM_FILE}.indoor" "$DISTRIBUTED_OSM_FILE"
 
+
+if [ -z ${KEEP_OPTIONS+x} ]; then 
+  echo "No keep options given. OSM file will not be filtered."
+else
+  echo "Removing non-relevant data from distributed osm file..."
+  ./bin/osmfilter32 "$DISTRIBUTED_OSM_FILE" --keep="name= and level= and indoor= or tourism=" > "${DISTRIBUTED_OSM_FILE}.indoor"
+  ls -lh ${GH_FOLDER}/${NAME}*
+  mv -v "${DISTRIBUTED_OSM_FILE}.indoor" "$DISTRIBUTED_OSM_FILE"
+fi
 
 pushd $GH_FOLDER
   zip "${NAME_WITHOUT_EXTENSION}.ghz" *
