@@ -6,7 +6,7 @@
     app:startDestination="@id/arEnabledMapViewFragment">
 
     <fragment android:id="@+id/arEnabledMapViewFragment"
-        android:name="de.ironjan.arionav_fw.arionav.ArEnabledMapViewFragment"
+        android:name="de.ironjan.arionav_fw.arionav.views.ArEnabledMapViewFragment"
         tools:layout="@layout/ar_enabled_map_view"
         android:label="ArEnabledMapViewFragment">
 
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/arViewFragment"
-        android:name="de.ironjan.arionav_fw.arionav.ArNavFragment"
+        android:name="de.ironjan.arionav_fw.arionav.views.ArNavFragment"
         tools:layout="@layout/fragment_ar_view"
         android:label="ArViewFragment" >
 

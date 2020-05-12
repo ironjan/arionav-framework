@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.arionav
+package de.ironjan.arionav_fw.arionav.arcorelocation
 
 import android.app.Activity
 import androidx.lifecycle.LifecycleOwner

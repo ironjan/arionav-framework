@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.framework.arionav.views
+package de.ironjan.arionav_fw.arionav.views
 
 import android.content.Context
 import android.util.AttributeSet

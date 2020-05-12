@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.arionav
+package de.ironjan.arionav_fw.arionav.views
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -20,6 +20,8 @@ import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.util.Instruction
+import de.ironjan.arionav_fw.arionav.R
+import de.ironjan.arionav_fw.arionav.arcorelocation.ArionavLocationScene
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import kotlinx.android.synthetic.main.fragment_ar_view.*
@@ -259,7 +261,7 @@ class ArNavFragment  : Fragment() {
                          "${it.distance}m"
 //                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
                     }
-                    onlyRenderWhenWithin = Companion.maxDistance
+                    onlyRenderWhenWithin = maxDistance
                 }
                 marker.height=2f
 
