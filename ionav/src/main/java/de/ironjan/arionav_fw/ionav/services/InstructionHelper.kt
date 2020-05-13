@@ -63,8 +63,8 @@ class InstructionHelper(private val context: Context) {
             1 -> R.mipmap.slight_right
             2 -> R.mipmap.right
             3 -> R.mipmap.sharp_right
-//            4 -> "FINISH"
-//            5 -> "REACHED_VIA"
+            4 -> R.drawable.marker_icon_red
+            5 -> R.drawable.marker_icon_red
             6 -> R.mipmap.roundabout
 //            Integer.MIN_VALUE -> "IGNORE"
             7 -> R.mipmap.keep_right

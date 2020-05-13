@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 
 // TODO move logic into view?
-class ArNavFragment  : Fragment() {
+class ArNavFragment : Fragment() {
     private var locationSceneIsSetUp: Boolean = false
 
     private var locationScene: ArionavLocationScene? = null
@@ -62,10 +62,10 @@ class ArNavFragment  : Fragment() {
 
     private fun registerLiveDataObservers(lifecycleOwner: LifecycleOwner) {
         model.route.observe(lifecycleOwner, Observer {
-            if(!locationSceneIsSetUp) return@Observer
+            if (!locationSceneIsSetUp) return@Observer
 
             val currentTime = System.currentTimeMillis()
-            if(currentTime - lastUpdate > FiveSecondsInMillis){
+            if (currentTime - lastUpdate > FiveSecondsInMillis) {
                 updateLocationScene()
                 lastUpdate = currentTime
             }
@@ -212,7 +212,6 @@ class ArNavFragment  : Fragment() {
         logger.info("Cleared scene")
 
 
-
         val route = model.route.value
 
         val instruction = route
@@ -226,18 +225,16 @@ class ArNavFragment  : Fragment() {
     }
 
     private fun show(instruction: Instruction) {
-        val wp = instruction.points.take(2).last()
-        val lat = wp.lat
-        val lon = wp.lon
-
-        logger.info("Adding marker for '$instruction' at $lat,$lon.")
         val context = context ?: return
+
+
+        var marker: LocationMarker? = null
         ViewRenderable.builder()
             .setView(context, R.layout.view_basic_instruction)
             .build()
             .thenAccept { renderable ->
                 val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
-                    val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
+                val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
                 val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
 
                 txtName.text = instruction.name
@@ -251,25 +248,30 @@ class ArNavFragment  : Fragment() {
                     true
                 }
 
+                val wp = instruction.points.take(2).last()
+                val lat = wp.lat
+                val lon = wp.lon
 
+                logger.info("Creating marker for '$instruction' at $lat,$lon.")
 
-                val marker = LocationMarker(lon, lat, base)
-
-                marker.apply {
-                    setRenderEvent {
-                        val eView = renderable.view
-                         "${it.distance}m"
+                marker = LocationMarker(lon, lat, base)
+                    .apply {
+                        setRenderEvent {
+                            val eView = renderable.view
+                            "${it.distance}m"
 //                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
+                        }
+                        onlyRenderWhenWithin = maxDistance
+                        height = 2f
                     }
-                    onlyRenderWhenWithin = maxDistance
-                }
-                marker.height=2f
-
 
                 // Adding the marker
+
                 locationScene?.mLocationMarkers?.clear()
                 locationScene?.mLocationMarkers?.add(marker)
             }
+
+
     }
 
     //region loading message
@@ -355,7 +357,8 @@ class ArNavFragment  : Fragment() {
         }
         return session
     }
-//endregion
+
+    //endregion
     companion object {
         private const val maxDistance = 5000
     }
