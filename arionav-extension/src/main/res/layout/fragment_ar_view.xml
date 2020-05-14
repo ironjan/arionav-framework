@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@android:id/content">
 
-    <com.google.ar.sceneform.ArSceneView
+    <de.ironjan.arionav_fw.arionav.views.ArRouteView
         android:id="@+id/ar_scene_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

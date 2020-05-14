@@ -48,6 +48,7 @@ class ArNavFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ar_scene_view.observe(model, viewLifecycleOwner)
 
         instructionHelper = InstructionHelper(context ?: return)
 

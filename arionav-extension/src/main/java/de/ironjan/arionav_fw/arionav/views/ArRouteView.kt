@@ -4,12 +4,19 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 
 import com.google.ar.sceneform.ArSceneView
+import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
+import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import org.slf4j.LoggerFactory
 
-class ArRouteView : ArSceneView, LifecycleObserver {
+class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<IonavViewModel> {
+    override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
+
+    }
+
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
