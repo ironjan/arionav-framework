@@ -28,16 +28,12 @@ import kotlinx.android.synthetic.main.fragment_ar_view.*
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutionException
 
 // TODO move logic into view?
 class ArNavFragment : Fragment() {
     private var locationSceneIsSetUp: Boolean = false
 
     private var locationScene: ArionavLocationScene? = null
-    private var hasFinishedLoading: Boolean = false
-    private var poiLayoutRenderable: ViewRenderable? = null
     private var loadingMessageSnackbar: Snackbar? = null
 
     private val model: IonavViewModel by activityViewModels()
@@ -52,7 +48,6 @@ class ArNavFragment : Fragment() {
 
         instructionHelper = InstructionHelper(context ?: return)
 
-        loadRenderables()
         addUpdateListenerToSceneView()
 
         registerLiveDataObservers(viewLifecycleOwner)
@@ -74,36 +69,6 @@ class ArNavFragment : Fragment() {
     }
 
 
-    private fun loadRenderables() {
-        val lContext = context ?: return
-
-        // Build a renderable from a 2D View.
-        val poiLayout = ViewRenderable.builder()
-            .setView(lContext, R.layout.view_basic_instruction)
-            .build()
-
-        CompletableFuture.allOf(poiLayout)
-            .handle { _, throwable ->
-                // When you build a Renderable, Sceneform loads its resources in the background while
-                // returning a CompletableFuture. Call handle(), thenAccept(), or check isDone()
-                // before calling get().
-
-                if (throwable != null) {
-                    showErrorOnRenderableLoadFail(throwable)
-                } else {
-                    try {
-                        poiLayoutRenderable = poiLayout.get()
-                        hasFinishedLoading = true
-                    } catch (ex: InterruptedException) {
-                        showErrorOnRenderableLoadFail(ex)
-                    } catch (ex: ExecutionException) {
-                        showErrorOnRenderableLoadFail(ex)
-                    } catch (e: Exception) {
-                        showErrorOnRenderableLoadFail(e)
-                    }
-                }
-            }
-    }
 
     // region lifecycle
     private var installRequested: Boolean = false
@@ -168,10 +133,6 @@ class ArNavFragment : Fragment() {
     }
 
     private fun onArUpdate() {
-        if (!hasFinishedLoading) {
-            return
-        }
-
         if (locationScene == null) {
             setupLocationScene()
         }
@@ -233,7 +194,12 @@ class ArNavFragment : Fragment() {
         ViewRenderable.builder()
             .setView(context, R.layout.view_basic_instruction)
             .build()
-            .thenAccept { renderable ->
+            .handle { renderable, throwable ->
+                if (throwable != null) {
+                    showErrorOnRenderableLoadFail(throwable)
+                    return@handle
+                }
+
                 val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
                 val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
                 val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
