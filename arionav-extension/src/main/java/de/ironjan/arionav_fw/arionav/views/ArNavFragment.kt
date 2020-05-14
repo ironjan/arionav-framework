@@ -239,13 +239,7 @@ class ArNavFragment : Fragment() {
                     val viewRenderable = this.node.renderable as? ViewRenderable? ?: return@apply
                     updateRenderable(viewRenderable, instruction)
                 }
-
-                // Adding the marker
-
-
             }
-
-
     }
 
     private fun updateRenderable(renderable: ViewRenderable, instruction: Instruction) {
