@@ -8,7 +8,6 @@ import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
-import uk.co.appoly.arcorelocation.rendering.LocationNode
 
 class ArionavLocationScene(context: Activity?, mArSceneView: ArSceneView?) :
     LocationScene(context, mArSceneView),
@@ -21,7 +20,9 @@ class ArionavLocationScene(context: Activity?, mArSceneView: ArSceneView?) :
         deviceLocation = positioningServiceDeviceLocation
     }
 
-    override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) = positioningServiceDeviceLocation.observe(viewModel, lifecycleOwner)
+    override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
+        positioningServiceDeviceLocation.observe(viewModel, lifecycleOwner)
+    }
 
     override fun clearMarkers() {
         super.clearMarkers()
