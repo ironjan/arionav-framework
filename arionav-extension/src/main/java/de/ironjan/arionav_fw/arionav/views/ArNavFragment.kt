@@ -31,6 +31,7 @@ import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
 
 // TODO move logic into view?
 class ArNavFragment : Fragment() {
+    private var currentInstructionMarker: LocationMarker? = null
     private var locationSceneIsSetUp: Boolean = false
 
     private var locationScene: ArionavLocationScene? = null
@@ -67,7 +68,6 @@ class ArNavFragment : Fragment() {
             }
         })
     }
-
 
 
     // region lifecycle
@@ -170,7 +170,6 @@ class ArNavFragment : Fragment() {
 
 
     private fun updateLocationScene() {
-        locationScene?.mLocationMarkers?.clear()
         logger.info("Cleared scene")
 
 
@@ -190,7 +189,6 @@ class ArNavFragment : Fragment() {
         val context = context ?: return
 
 
-        var marker: LocationMarker? = null
         ViewRenderable.builder()
             .setView(context, R.layout.view_basic_instruction)
             .build()
@@ -200,18 +198,12 @@ class ArNavFragment : Fragment() {
                     return@handle
                 }
 
-                val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
-                val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
-                val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
-
-                txtName.text = instruction.name
-                txtDistance.text = "%.2fm".format(instruction.distance)
-                instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(instruction.sign))
+                updateRenderable(renderable, instruction)
 
                 val base = Node()
                 base.renderable = renderable
                 renderable.view.setOnTouchListener { _, _ ->
-                    Toast.makeText(context, "$instruction touched!", Toast.LENGTH_SHORT).show()
+                    logger.debug("Touched AR of $instruction ")
                     true
                 }
 
@@ -221,24 +213,49 @@ class ArNavFragment : Fragment() {
 
                 logger.info("Creating marker for '$instruction' at $lat,$lon.")
 
-                marker = LocationMarker(lon, lat, base)
-                    .apply {
-                        setRenderEvent {
-                            val eView = renderable.view
-                            "${it.distance}m"
-//                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
+                if (currentInstructionMarker == null) {
+                    val lm = LocationMarker(lon, lat, base)
+                        .apply {
+                            setRenderEvent {
+                                val eView = renderable.view
+                                "${it.distance}m"
+                                //                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
+                            }
+                            onlyRenderWhenWithin = maxDistance
+                            height = 2f
                         }
-                        onlyRenderWhenWithin = maxDistance
-                        height = 2f
+
+                    locationScene?.apply {
+                        add(lm)
                     }
+
+                    currentInstructionMarker = lm
+                }
+
+                currentInstructionMarker?.apply {
+                    this.latitude = lat
+                    this.longitude = lon
+
+                    val viewRenderable = this.node.renderable as? ViewRenderable? ?: return@apply
+                    updateRenderable(viewRenderable, instruction)
+                }
 
                 // Adding the marker
 
-                locationScene?.mLocationMarkers?.clear()
-                locationScene?.mLocationMarkers?.add(marker)
+
             }
 
 
+    }
+
+    private fun updateRenderable(renderable: ViewRenderable, instruction: Instruction) {
+        val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
+        val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
+        val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
+
+        txtName.text = instruction.name
+        txtDistance.text = "%.2fm".format(instruction.distance)
+        instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(instruction.sign))
     }
 
     //region loading message
