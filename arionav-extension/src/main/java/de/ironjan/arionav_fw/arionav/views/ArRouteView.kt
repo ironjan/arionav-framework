@@ -24,8 +24,6 @@ import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutionException
 
 class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<IonavViewModel> {
 
@@ -59,6 +57,8 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
     // endregion
 
+
+    // region lifecycle handling
     private var installRequested: Boolean = false
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -119,8 +119,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         logger.debug("onDestroy()")
         destroy()
     }
-
-    var lifecycle: Lifecycle? = null
+    // endregion
 
     private val logger = LoggerFactory.getLogger(TAG)
 
@@ -130,42 +129,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         private const val maxDistance = 5000
     }
 
-    var locationScene: ArionavLocationScene? = null
-        private set
-
-
-    private var hasFinishedLoading: Boolean = false
-    private var poiLayoutRenderable: ViewRenderable? = null
-    fun loadRenderables() {
-        val lContext = context ?: return
-
-        // Build a renderable from a 2D View.
-        val poiLayout = ViewRenderable.builder()
-            .setView(lContext, R.layout.view_basic_instruction)
-            .build()
-
-        CompletableFuture.allOf(poiLayout)
-            .handle { _, throwable ->
-                // When you build a Renderable, Sceneform loads its resources in the background while
-                // returning a CompletableFuture. Call handle(), thenAccept(), or check isDone()
-                // before calling get().
-
-                if (throwable != null) {
-                    showErrorOnRenderableLoadFail(throwable)
-                } else {
-                    try {
-                        poiLayoutRenderable = poiLayout.get()
-                        hasFinishedLoading = true
-                    } catch (ex: InterruptedException) {
-                        showErrorOnRenderableLoadFail(ex)
-                    } catch (ex: ExecutionException) {
-                        showErrorOnRenderableLoadFail(ex)
-                    } catch (e: Exception) {
-                        showErrorOnRenderableLoadFail(e)
-                    }
-                }
-            }
-    }
+    private var locationScene: ArionavLocationScene? = null
 
 
     // region ar updates
