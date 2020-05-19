@@ -10,7 +10,6 @@ import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 
-// TODO move logic into view?
 class ArNavFragment : Fragment() {
     private val model: IonavViewModel by activityViewModels()
 
@@ -19,8 +18,8 @@ class ArNavFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycle.addObserver(ar_scene_view)
-        ar_scene_view.observe(model, viewLifecycleOwner)
+        viewLifecycleOwner.lifecycle.addObserver(ar_route_view)
+        ar_route_view.observe(model, viewLifecycleOwner)
     }
 
 }
