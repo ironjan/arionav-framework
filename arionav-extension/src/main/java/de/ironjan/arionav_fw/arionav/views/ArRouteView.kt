@@ -15,6 +15,7 @@ import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
+import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.arionav.arcorelocation.ArionavLocationScene
@@ -24,6 +25,11 @@ import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
+
+private val PathWrapper?.nextInstruction: Instruction?
+    get() = this?.instructions
+        ?.take(2)
+        ?.last()
 
 class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<IonavViewModel> {
 
@@ -44,7 +50,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastUpdate > FiveSecondsInMillis) {
-                updateLocationScene()
+                updateArRoute(it)
                 lastUpdate = currentTime
             }
         })
@@ -190,7 +196,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 //endregion
 
 
-//region DemoUtils
+//region ARCore-Location DemoUtils
 
     private fun handleSessionException(activity: Activity, e: Exception) {
         val msg = when (e) {
@@ -274,26 +280,26 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
     private lateinit var instructionHelper: InstructionHelper
 
-    private fun updateLocationScene() {
-        logger.info("Cleared scene")
-
-
-        val route = viewModel.route.value
-
-        val instruction = route
-            ?.instructions
-            ?.take(2)
-            ?.last() ?: return
-
-
-        show(instruction)
-
+    private fun updateArRoute(route: PathWrapper?) {
+        val nextInstruction = route.nextInstruction ?: return
+        show(nextInstruction)
     }
 
     private fun show(instruction: Instruction) {
         val context = context ?: return
 
+        val wp = instruction.points.take(2).last()
+        val lat = wp.lat
+        val lon = wp.lon
 
+        if (currentInstructionMarker == null) {
+            createInstructionMarker(context, instruction, lat, lon)
+        } else {
+            updateExistingInstructionMarker(lat, lon, instruction)
+        }
+    }
+
+    private fun createInstructionMarker(context: Context, instruction: Instruction, lat: Double, lon: Double) {
         ViewRenderable.builder()
             .setView(context, R.layout.view_basic_instruction)
             .build()
@@ -312,39 +318,38 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
                     true
                 }
 
-                val wp = instruction.points.take(2).last()
-                val lat = wp.lat
-                val lon = wp.lon
 
                 logger.info("Creating marker for '$instruction' at $lat,$lon.")
 
-                if (currentInstructionMarker == null) {
-                    val lm = LocationMarker(lon, lat, base)
-                        .apply {
-                            setRenderEvent {
-                                val eView = renderable.view
-                                "${it.distance}m"
-                                //                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
-                            }
-                            onlyRenderWhenWithin = maxDistance
-                            height = 2f
+                val lm = LocationMarker(lon, lat, base)
+                    .apply {
+                        setRenderEvent {
+                            val eView = renderable.view
+                            "${it.distance}m"
+                            //                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
                         }
-
-                    locationScene?.apply {
-                        add(lm)
+                        onlyRenderWhenWithin = maxDistance
+                        height = 2f
                     }
 
-                    currentInstructionMarker = lm
+                locationScene?.apply {
+                    add(lm)
                 }
 
-                currentInstructionMarker?.apply {
-                    this.latitude = lat
-                    this.longitude = lon
+                currentInstructionMarker = lm
 
-                    val viewRenderable = this.node.renderable as? ViewRenderable? ?: return@apply
-                    updateRenderable(viewRenderable, instruction)
-                }
+                updateExistingInstructionMarker(lat, lon, instruction)
             }
+    }
+
+    private fun updateExistingInstructionMarker(lat: Double, lon: Double, instruction: Instruction) {
+        currentInstructionMarker?.apply {
+            this.latitude = lat
+            this.longitude = lon
+
+            val viewRenderable = this.node.renderable as? ViewRenderable? ?: return@apply
+            updateRenderable(viewRenderable, instruction)
+        }
     }
 
     private fun updateRenderable(renderable: ViewRenderable, instruction: Instruction) {
