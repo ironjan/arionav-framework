@@ -300,9 +300,9 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     }
 
     private fun createInstructionMarker(context: Context, instruction: Instruction, lat: Double, lon: Double) {
-        ViewRenderable.builder()
-            .setView(context, R.layout.view_basic_instruction)
-            .build()
+            ViewRenderable.builder()
+                .setView(context, R.layout.view_basic_instruction)
+                .build()
             .handle { renderable, throwable ->
                 if (throwable != null) {
                     showErrorOnRenderableLoadFail(throwable)
@@ -311,8 +311,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
                 updateRenderable(renderable, instruction)
 
-                val base = Node()
-                base.renderable = renderable
+                val base = Node().apply { this.renderable = renderable }
                 renderable.view.setOnTouchListener { _, _ ->
                     logger.debug("Touched AR of $instruction ")
                     true
