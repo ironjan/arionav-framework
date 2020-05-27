@@ -2,6 +2,7 @@ package de.ironjan.arionav_fw.ionav.model.indoor_map
 
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
+
 /** Represents an indoor way. Can be a room, corridor, etc. */
 data class IndoorWay(
     val id: Long,
@@ -9,9 +10,10 @@ data class IndoorWay(
     val nodeRefs: List<IndoorNode>,
     val tags: Map<String, String>
 ): IndoorPoi {
+    private val distinctNodeRefs = nodeRefs.distinct()
 
-    val centerLat: Double = nodeRefs.map { it.lat }.sum() / nodeRefs.count()
-    val centerLon: Double = nodeRefs.map { it.lon }.sum() / nodeRefs.count()
+    val centerLat: Double = distinctNodeRefs.map { it.lat }.sum() / distinctNodeRefs.count()
+    val centerLon: Double = distinctNodeRefs.map { it.lon }.sum() / distinctNodeRefs.count()
     override val center = Coordinate(centerLat, centerLon, lvl)
 
     val type: String = tags["indoor"] ?: ""
