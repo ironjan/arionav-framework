@@ -13,6 +13,8 @@ class IndoorNode(
 ) :IndoorPoi{
     fun toGeoPoint(): GeoPoint = GeoPoint(lat, lon)
 
+    val isDoor: Boolean = tags["indoor"] == "door"
+
     val name = tags["name"] ?: ""
 
     override val center = Coordinate(lat, lon, lvl)
