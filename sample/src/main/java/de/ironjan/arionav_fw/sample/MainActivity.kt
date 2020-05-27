@@ -68,6 +68,7 @@ class MainActivity :
         val bluetoothManager = ContextCompat.getSystemService(this, BluetoothManager::class.java)
         bluetoothManager?.adapter
     }
+
     private fun activateBluetoothIfMissing() {
         bluetoothAdapter?.takeIf { !it.isEnabled }?.apply {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
