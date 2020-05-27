@@ -18,4 +18,6 @@ data class IndoorWay(
     val name: String = tags["name"] ?: ""
 
     val isRoom: Boolean = "room" == type
+    val isCorridor: Boolean = "corridor" == type
+    val isArea: Boolean = "area" == type
 }
