@@ -104,7 +104,7 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
 
         val blue = Color.get(80, 0, 0, 255)
-        val lightGray= Color.get(120, 120, 120, 120)
+        val lightGray = Color.get(120, 120, 120, 120)
         val darkGray = Color.get(60, 120, 120, 120)
         val lightBlue = Color.get(80, 50, 50, 220)
         val orange = Color.get(80, 250, 150, 0)
@@ -140,6 +140,11 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
             .build()
 
         val indoorWays = id.getWays(level)
+
+        val f1_122 = indoorWays.firstOrNull { it.name == "F1.122" }
+        val f0_054 = indoorWays.firstOrNull { it.name == "F0.054" }
+        val f2_116 = indoorWays.firstOrNull { it.name == "F2.116" }
+
         val levelLayer = VectorLayer(map)
 
         indoorWays
@@ -174,16 +179,12 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         return levelLayer
     }
 
-    private fun createOutline(iw: IndoorWay, roomStyle: Style?): PolygonDrawable? {
-        return try {
-            val points = iw.nodeRefs.map { it.toGeoPoint() }
-            val geometry = PolygonDrawable(points)
-            geometry.style = roomStyle
-
-            geometry
-        } catch (e: Exception) {
-            null
-        }
+    private val logger = LoggerFactory.getLogger(IndoorLayersManager::class.simpleName)
+    private fun createOutline(iw: IndoorWay, style: Style): PolygonDrawable? = try {
+        logger.info("Creating outline (fill: ${style.fillColor}, stroke: ${style.strokeColor}) from $iw")
+        PolygonDrawable(iw.distinctNodeRefs.map { it.toGeoPoint() }, style)
+    } catch (e: Exception) {
+        null
     }
 
 
