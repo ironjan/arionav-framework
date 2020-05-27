@@ -17,4 +17,12 @@ class IndoorNode(
 
     override val center = Coordinate(lat, lon, lvl)
 
+    val map = tags
+        .map { "${it.key}=${it.value}" }
+    private val tagsAsString =
+        tags
+            .map { "${it.key}=${it.value}" }
+            .joinToString(",")
+
+    override fun toString(): String = "IndoorNode($id, $lat, $lon, $lvl, $tagsAsString)"
 }

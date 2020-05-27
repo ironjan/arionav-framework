@@ -10,7 +10,7 @@ data class IndoorWay(
     val nodeRefs: List<IndoorNode>,
     val tags: Map<String, String>
 ): IndoorPoi {
-    private val distinctNodeRefs = nodeRefs.distinct()
+    val distinctNodeRefs = nodeRefs.distinct()
 
     val centerLat: Double = distinctNodeRefs.map { it.lat }.sum() / distinctNodeRefs.count()
     val centerLon: Double = distinctNodeRefs.map { it.lon }.sum() / distinctNodeRefs.count()
@@ -26,4 +26,9 @@ data class IndoorWay(
         tags["stairs"] ?: "no" == "yes"
                 || tags["highway"] ?: "" == "elevator"
                 || tags["highway"] ?: "" == "steps"
+
+    private val tagsAsString = tags.map{"${it.key}=${it.value}"}.joinToString(",")
+    override fun toString(): String {
+        return "IndoorWay($id, $lvl, $tagsAsString, $nodeRefs)"
+    }
 }
