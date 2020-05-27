@@ -21,10 +21,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
-import de.ironjan.arionav_fw.ionav.util.PermissionHelper
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
+import de.ironjan.arionav_fw.ionav.util.PermissionHelper
 import de.ironjan.arionav_fw.sample.data.WifiPositioningProviderHardCodedValues
 import de.ironjan.arionav_fw.sample.util.Mailer
 import de.ironjan.arionav_fw.sample.util.PreferenceKeys
@@ -98,39 +98,28 @@ class MainActivity :
 
     private fun navigateOnMenuItem(item: MenuItem): Boolean {
         main_drawer_layout.closeDrawers();
-        // FIXME optimize: navigate only if destination!=location
 
-        return when (item.itemId) {
-            R.id.mnuSimpleMap -> {
-                navController.navigate(R.id.action_to_map_nav_fragment)
-                true
-            }
-            R.id.mnuWifiAps -> {
-                navController.navigate(R.id.action_to_nearbyWifiApsFragment)
-                true
-            }
-            R.id.mnuBtBeacons -> {
-                navController.navigate(R.id.action_to_nearbyBluetoothTokensFragment)
-                true
-            }
-            R.id.mnuPoiList -> {
-                navController.navigate(R.id.action_to_poiListFragment)
-                true
-            }
-            R.id.mnuProviderConfig -> {
-                navController.navigate(R.id.action_to_providerConfig)
-                true
-            }
-            R.id.mnuLocationHistory -> {
-                navController.navigate(R.id.action_to_locationHistory)
-                true
-            }
-            R.id.mnuFeedback -> {
-                Mailer.sendFeedback(this)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+        if (item.itemId == R.id.mnuFeedback) {
+            Mailer.sendFeedback(this)
+            true
         }
+
+        val destination = when (item.itemId) {
+            R.id.mnuSimpleMap -> R.id.arEnabledMapViewFragment
+            R.id.mnuWifiAps -> R.id.nearbyWifiAps
+            R.id.mnuBtBeacons -> R.id.nearbyBluetoothTokensFragment
+            R.id.mnuPoiList -> R.id.poiListFragment
+            R.id.mnuProviderConfig -> R.id.providerConfig
+            R.id.mnuLocationHistory -> R.id.locationHistory
+            else -> -1
+        }
+        if (destination == navController.currentDestination?.id) return true
+
+        if (destination != -1) {
+            navController.navigate(destination)
+            return true
+        }
+        else return super.onOptionsItemSelected(item)
     }
 
     override fun navigateToAr() {
