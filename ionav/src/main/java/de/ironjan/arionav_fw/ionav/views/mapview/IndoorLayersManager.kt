@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
+import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorWay
 import org.oscim.backend.CanvasAdapter
 import org.oscim.backend.canvas.Color
 import org.oscim.backend.canvas.Paint
@@ -22,11 +23,11 @@ import org.slf4j.LoggerFactory
  * Wrapper around multiple layers that will be added to {@param map}. Not an actual layer
  */
 class IndoorLayersManager(private val map: Map, private val density: Float) :
-    ModelDrivenUiComponent<IonavViewModel>{
+    ModelDrivenUiComponent<IonavViewModel> {
 
     // region ModelDrivenMapExtension
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
-        viewModel.indoorData.observe(lifecycleOwner, Observer{
+        viewModel.indoorData.observe(lifecycleOwner, Observer {
             updateLayers(it)
         })
         viewModel.selectedLevel.observe(lifecycleOwner, Observer {
@@ -105,36 +106,64 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         val roomStyle = Style.builder()
             .fixed(true)
             .generalization(Style.GENERALIZATION_SMALL)
-            .strokeColor(-0x66333333)
-            .fillColor(-0x33333333)
+            .strokeColor(Color.GRAY)
+            .fillColor(Color.DKGRAY)
             .strokeWidth(1 * density)
             .build()
+        val corridorStyle = Style.builder()
+            .fixed(true)
+            .generalization(Style.GENERALIZATION_SMALL)
+            .fillColor(Color.BLUE)
+            .strokeColor(Color.BLUE)
+            .strokeWidth(0 * density)
+            .build()
+        val floorConnectorStyle = Style.builder()
+            .fixed(true)
+            .generalization(Style.GENERALIZATION_SMALL)
+            .fillColor(Color.RED)
+            .strokeColor(Color.RED)
+            .strokeWidth(0 * density)
+            .build()
 
-        val wayDrawables = id
-            .getWays(level)
+        val indoorWays = id.getWays(level)
+
+        val roomDrawables = indoorWays
             .filter { it.isRoom }
-            .map { iw ->
-                try {
-                    val map1 = iw.nodeRefs.map { it.toGeoPoint() }
-                    val geometry = PolygonDrawable(map1)
-                    geometry.style = roomStyle
+            .filterNot { it.isFloorConnector }
+            .filterNot { it.isArea || it.isCorridor }
+            .mapNotNull { createOutline(it, roomStyle) }
 
-                    geometry
-                } catch (e: Exception) {
-                    val y = e
-                    null
-                }
-            }.filterNotNull()
+        val corridorAndAreaDrawables = indoorWays
+            .filter { it.isCorridor || it.isArea }
+            .filterNot { it.isFloorConnector }
+            .filterNot { it.isRoom }
+            .mapNotNull { createOutline(it, corridorStyle) }
+        val floorConnectorDrawables = indoorWays
+            .filter { it.isFloorConnector }
+            .mapNotNull { createOutline(it, floorConnectorStyle) }
 
         val levelLayer = VectorLayer(map)
-
-        val drawables = nodeDrawables.union(wayDrawables)
+        val drawables =
+            nodeDrawables
+                .union(roomDrawables)
+                .union(corridorAndAreaDrawables)
+                .union(floorConnectorDrawables)
         drawables.map { levelLayer.add(it) }
 
         return levelLayer
     }
 
+    private fun createOutline(iw: IndoorWay, roomStyle: Style?): PolygonDrawable? {
+        return try {
+            val points = iw.nodeRefs.map { it.toGeoPoint() }
+            val geometry = PolygonDrawable(points)
+            geometry.style = roomStyle
 
+            geometry
+        } catch (e: Exception) {
+            null
+        }
+    }
 
 
     private fun prepareLabelLayers(id: IndoorData): kotlin.collections.Map<Double, ItemizedLayer<MarkerItem>> {
