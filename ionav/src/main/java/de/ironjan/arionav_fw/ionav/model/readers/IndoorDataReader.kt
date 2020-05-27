@@ -19,10 +19,9 @@ class IndoorDataReader : OsmReader() {
         val start = System.currentTimeMillis()
 
         val ways = parseWays(osmFile) { w: Way ->
-            val hasName = !w.tags["name"].isNullOrBlank()
             val hasLevel = w.tags.containsKey("level")
             val isIndoor = w.tags.containsKey("indoor")
-            hasLevel && isIndoor && hasName
+            hasLevel && isIndoor
         }
         val waysDone = System.currentTimeMillis()
         logger.info("Read ${ways.count()} relevant ways in ${waysDone - start}ms...")
