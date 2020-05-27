@@ -122,34 +122,33 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
             .generalization(Style.GENERALIZATION_SMALL)
             .fillColor(Color.RED)
             .strokeColor(Color.RED)
-            .strokeWidth(0 * density)
+            .strokeWidth(1 * density)
             .build()
 
         val indoorWays = id.getWays(level)
+        val levelLayer = VectorLayer(map)
 
-        val roomDrawables = indoorWays
-            .filter { it.isRoom }
-            .filterNot { it.isFloorConnector }
-            .filterNot { it.isArea || it.isCorridor }
-            .mapNotNull { createOutline(it, roomStyle) }
-
-        val corridorAndAreaDrawables = indoorWays
-            .filter { it.isCorridor || it.isArea }
-            .filterNot { it.isFloorConnector }
+        indoorWays
             .filterNot { it.isRoom }
+            .filter { it.isArea || it.isCorridor }
+            .filterNot { it.isFloorConnector }
             .mapNotNull { createOutline(it, corridorStyle) }
-        val floorConnectorDrawables = indoorWays
+            .map { levelLayer.add(it) }
+
+        indoorWays
+            .filter { it.isRoom }
+            .filterNot { it.isArea || it.isCorridor }
+            .filterNot { it.isFloorConnector }
+            .mapNotNull { createOutline(it, roomStyle) }
+            .map { levelLayer.add(it) }
+
+        indoorWays
             .filter { it.isFloorConnector }
             .mapNotNull { createOutline(it, floorConnectorStyle) }
+            .map { levelLayer.add(it) }
 
-        val levelLayer = VectorLayer(map)
-        val drawables =
-            nodeDrawables
-                .union(roomDrawables)
-                .union(corridorAndAreaDrawables)
-                .union(floorConnectorDrawables)
-        drawables.map { levelLayer.add(it) }
-
+//        floorConnectorDrawables.map { levelLayer.add(it) }
+//        nodeDrawables.map { levelLayer.add(it) }
         return levelLayer
     }
 
