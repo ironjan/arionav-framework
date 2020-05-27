@@ -108,41 +108,59 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
     private val DoorWidthAsKm = 0.0005
 
-    private val roomStyle = Style.builder()
+    private val roomStyle
+    get() = Style.builder()
         .fixed(true)
         .generalization(Style.GENERALIZATION_SMALL)
         .strokeColor(darkGray)
         .fillColor(lightGray)
         .strokeWidth(1 * density)
         .build()
-    private val doorStyle = Style.builder()
+    private val doorStyle
+        get() =  Style.builder()
         .fixed(true)
         .generalization(Style.GENERALIZATION_SMALL)
         .strokeColor(lightGray)
         .fillColor(lightGray)
         .strokeWidth(1 * density)
         .build()
-    private val corridorStyle = Style.builder()
+    private val corridorStyle
+        get() =  Style.builder()
         .fixed(true)
         .generalization(Style.GENERALIZATION_SMALL)
         .fillColor(lightGray)
         .strokeColor(lightGray)
         .strokeWidth(0 * density)
         .build()
-    private val areaStyle = Style.builder()
+    private val areaStyle
+        get() =  Style.builder()
         .fixed(true)
         .generalization(Style.GENERALIZATION_SMALL)
         .fillColor(darkGray)
         .strokeColor(lightGray)
         .strokeWidth(0 * density)
         .build()
-    private val floorConnectorStyle = Style.builder()
+    private val floorConnectorStyle
+        get() = Style.builder()
         .fixed(true)
         .generalization(Style.GENERALIZATION_SMALL)
         .fillColor(red)
         .strokeColor(red)
         .strokeWidth(1 * density)
         .build()
+
+
+    private enum class IndoorStyles {
+        ROOM, DOOR, CORRIDOR, AREA, FLOOR_CONNECTOR;
+    }
+
+    private val styleMap = mapOf(
+        Pair(IndoorStyles.ROOM, {roomStyle}),
+        Pair(IndoorStyles.DOOR, {doorStyle}),
+        Pair(IndoorStyles.CORRIDOR, {corridorStyle}),
+        Pair(IndoorStyles.AREA, {areaStyle}),
+        Pair(IndoorStyles.FLOOR_CONNECTOR, {floorConnectorStyle})
+    )
 
     // endregion
     private fun prepareRoomBackgroundLayer(id: IndoorData, level: Double): VectorLayer {
@@ -153,38 +171,33 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
         val indoorWays = id.getWays(level)
 
-        val f1_122 = indoorWays.firstOrNull { it.name == "F1.122" }
-        val f0_054 = indoorWays.firstOrNull { it.name == "F0.054" }
-        val f2_116 = indoorWays.firstOrNull { it.name == "F2.116" }
-
         val levelLayer = VectorLayer(map)
 
-        indoorWays
-            .filterNot { it.isRoom }
-            .filterNot { it.isArea }
-            .filter { it.isCorridor }
-            .filterNot { it.isFloorConnector }
-            .mapNotNull { createOutline(it, corridorStyle) }
-            .map { levelLayer.add(it) }
-        indoorWays
-            .filterNot { it.isRoom }
-            .filter { it.isArea }
-            .filterNot { it.isCorridor }
-            .filterNot { it.isFloorConnector }
-            .mapNotNull { createOutline(it, areaStyle) }
-            .map { levelLayer.add(it) }
-
-        indoorWays
-            .filter { it.isRoom }
-            .filterNot { it.isArea || it.isCorridor }
-            .filterNot { it.isFloorConnector }
-            .mapNotNull { createOutline(it, roomStyle) }
-            .map { levelLayer.add(it) }
-
-        indoorWays
+        val floorConnectors = indoorWays
             .filter { it.isFloorConnector }
-            .mapNotNull { createOutline(it, floorConnectorStyle) }
+        val nonFloorConnectors = indoorWays
+            .filterNot { floorConnectors.contains(it) }
+
+
+        nonFloorConnectors
+            .filter { it.isCorridor }
+            .mapNotNull { createOutline(it, IndoorStyles.CORRIDOR) }
             .map { levelLayer.add(it) }
+
+        nonFloorConnectors
+            .filter { it.isArea }
+            .mapNotNull { createOutline(it, IndoorStyles.AREA) }
+            .map { levelLayer.add(it) }
+
+        nonFloorConnectors
+            .filter { it.isRoom }
+            .mapNotNull { createOutline(it, IndoorStyles.ROOM) }
+            .map { levelLayer.add(it) }
+
+        floorConnectors
+            .mapNotNull { createOutline(it, IndoorStyles.FLOOR_CONNECTOR) }
+            .map { levelLayer.add(it) }
+
 
         val doors = indoorWays.flatMap { it.nodeRefs.filter { it.isDoor } }
         // GeoPoint center, double radiusKm, Style style
@@ -196,8 +209,9 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
     }
 
     private val logger = LoggerFactory.getLogger(IndoorLayersManager::class.simpleName)
-    private fun createOutline(iw: IndoorWay, style: Style): PolygonDrawable? = try {
-        logger.info("Creating outline (fill: ${style.fillColor}, stroke: ${style.strokeColor}) from $iw")
+    private fun createOutline(iw: IndoorWay, indoorStyle: IndoorStyles): PolygonDrawable? = try {
+        val style = styleMap[indoorStyle]?.invoke()
+        logger.info("Creating outline $indoorStyle from $iw")
         PolygonDrawable(iw.distinctNodeRefs.map { it.toGeoPoint() }, style)
     } catch (e: Exception) {
         null
