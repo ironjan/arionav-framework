@@ -13,6 +13,7 @@ import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
 import org.oscim.layers.vector.VectorLayer
+import org.oscim.layers.vector.geometries.CircleDrawable
 import org.oscim.layers.vector.geometries.PolygonDrawable
 import org.oscim.layers.vector.geometries.RectangleDrawable
 import org.oscim.layers.vector.geometries.Style
@@ -97,47 +98,58 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         }.toMap()
     }
 
+    // region styles for drawing
+    private val blue = Color.get(80, 0, 0, 255)
+    private val darkGray = Color.get(120, 120, 120, 120)
+    private val lightGray = Color.get(60, 120, 120, 120)
+    private val lightBlue = Color.get(80, 50, 50, 220)
+    private val orange = Color.get(80, 250, 150, 0)
+    private val red = Color.get(80, 255, 0, 0)
+
+    private val DoorWidthAsKm = 0.0005
+
+    private val roomStyle = Style.builder()
+        .fixed(true)
+        .generalization(Style.GENERALIZATION_SMALL)
+        .strokeColor(darkGray)
+        .fillColor(lightGray)
+        .strokeWidth(1 * density)
+        .build()
+    private val doorStyle = Style.builder()
+        .fixed(true)
+        .generalization(Style.GENERALIZATION_SMALL)
+        .strokeColor(lightGray)
+        .fillColor(lightGray)
+        .strokeWidth(1 * density)
+        .build()
+    private val corridorStyle = Style.builder()
+        .fixed(true)
+        .generalization(Style.GENERALIZATION_SMALL)
+        .fillColor(lightGray)
+        .strokeColor(lightGray)
+        .strokeWidth(0 * density)
+        .build()
+    private val areaStyle = Style.builder()
+        .fixed(true)
+        .generalization(Style.GENERALIZATION_SMALL)
+        .fillColor(darkGray)
+        .strokeColor(lightGray)
+        .strokeWidth(0 * density)
+        .build()
+    private val floorConnectorStyle = Style.builder()
+        .fixed(true)
+        .generalization(Style.GENERALIZATION_SMALL)
+        .fillColor(red)
+        .strokeColor(red)
+        .strokeWidth(1 * density)
+        .build()
+
+    // endregion
     private fun prepareRoomBackgroundLayer(id: IndoorData, level: Double): VectorLayer {
         val nodeDrawables = id.getNodes(level).map {
             RectangleDrawable(it.toGeoPoint(), it.toGeoPoint())
         }
 
-
-        val blue = Color.get(80, 0, 0, 255)
-        val lightGray = Color.get(120, 120, 120, 120)
-        val darkGray = Color.get(60, 120, 120, 120)
-        val lightBlue = Color.get(80, 50, 50, 220)
-        val orange = Color.get(80, 250, 150, 0)
-        val red = Color.get(80, 255, 0, 0)
-
-        val roomStyle = Style.builder()
-            .fixed(true)
-            .generalization(Style.GENERALIZATION_SMALL)
-            .strokeColor(lightGray)
-            .fillColor(darkGray)
-            .strokeWidth(1 * density)
-            .build()
-        val corridorStyle = Style.builder()
-            .fixed(true)
-            .generalization(Style.GENERALIZATION_SMALL)
-            .fillColor(lightGray)
-            .strokeColor(lightGray)
-            .strokeWidth(0 * density)
-            .build()
-        val areaStyle = Style.builder()
-            .fixed(true)
-            .generalization(Style.GENERALIZATION_SMALL)
-            .fillColor(lightGray)
-            .strokeColor(darkGray)
-            .strokeWidth(0 * density)
-            .build()
-        val floorConnectorStyle = Style.builder()
-            .fixed(true)
-            .generalization(Style.GENERALIZATION_SMALL)
-            .fillColor(red)
-            .strokeColor(red)
-            .strokeWidth(1 * density)
-            .build()
 
         val indoorWays = id.getWays(level)
 
@@ -174,6 +186,10 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
             .mapNotNull { createOutline(it, floorConnectorStyle) }
             .map { levelLayer.add(it) }
 
+        val doors = indoorWays.flatMap { it.nodeRefs.filter { it.isDoor } }
+        // GeoPoint center, double radiusKm, Style style
+        doors.map { CircleDrawable(it.toGeoPoint(), DoorWidthAsKm, doorStyle) }
+            .map { levelLayer.add(it) }
 //        floorConnectorDrawables.map { levelLayer.add(it) }
 //        nodeDrawables.map { levelLayer.add(it) }
         return levelLayer
