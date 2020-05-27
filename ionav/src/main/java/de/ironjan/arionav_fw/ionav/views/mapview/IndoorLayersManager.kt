@@ -103,25 +103,39 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
         }
 
 
+        val blue = Color.get(80, 0, 0, 255)
+        val lightGray= Color.get(120, 120, 120, 120)
+        val darkGray = Color.get(60, 120, 120, 120)
+        val lightBlue = Color.get(80, 50, 50, 220)
+        val orange = Color.get(80, 250, 150, 0)
+        val red = Color.get(80, 255, 0, 0)
+
         val roomStyle = Style.builder()
             .fixed(true)
             .generalization(Style.GENERALIZATION_SMALL)
-            .strokeColor(Color.GRAY)
-            .fillColor(Color.DKGRAY)
+            .strokeColor(lightGray)
+            .fillColor(darkGray)
             .strokeWidth(1 * density)
             .build()
         val corridorStyle = Style.builder()
             .fixed(true)
             .generalization(Style.GENERALIZATION_SMALL)
-            .fillColor(Color.BLUE)
-            .strokeColor(Color.BLUE)
+            .fillColor(lightGray)
+            .strokeColor(lightGray)
+            .strokeWidth(0 * density)
+            .build()
+        val areaStyle = Style.builder()
+            .fixed(true)
+            .generalization(Style.GENERALIZATION_SMALL)
+            .fillColor(lightGray)
+            .strokeColor(darkGray)
             .strokeWidth(0 * density)
             .build()
         val floorConnectorStyle = Style.builder()
             .fixed(true)
             .generalization(Style.GENERALIZATION_SMALL)
-            .fillColor(Color.RED)
-            .strokeColor(Color.RED)
+            .fillColor(red)
+            .strokeColor(red)
             .strokeWidth(1 * density)
             .build()
 
@@ -130,9 +144,17 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
         indoorWays
             .filterNot { it.isRoom }
-            .filter { it.isArea || it.isCorridor }
+            .filterNot { it.isArea }
+            .filter { it.isCorridor }
             .filterNot { it.isFloorConnector }
             .mapNotNull { createOutline(it, corridorStyle) }
+            .map { levelLayer.add(it) }
+        indoorWays
+            .filterNot { it.isRoom }
+            .filter { it.isArea }
+            .filterNot { it.isCorridor }
+            .filterNot { it.isFloorConnector }
+            .mapNotNull { createOutline(it, areaStyle) }
             .map { levelLayer.add(it) }
 
         indoorWays
