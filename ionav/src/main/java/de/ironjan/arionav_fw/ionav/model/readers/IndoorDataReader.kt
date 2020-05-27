@@ -8,7 +8,7 @@ import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
 /**
- * An {@see OsmReader} that reads all {@see IndoorData} from an osm-file.
+ * An {@see OsmReader} that reads relevant {@see IndoorData} from an osm-file.
  */
 class IndoorDataReader : OsmReader() {
     private val logger = LoggerFactory.getLogger(IndoorDataReader::class.simpleName)
