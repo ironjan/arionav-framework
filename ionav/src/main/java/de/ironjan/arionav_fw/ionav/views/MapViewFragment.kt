@@ -68,6 +68,7 @@ open class MapViewFragment : Fragment() {
             endSuggestionsAdapter.apply {
                 clear()
                 addAll(it.names)
+                sort { o1: String, o2: String -> o1.compareTo(o2) }
             }
         })
     }
