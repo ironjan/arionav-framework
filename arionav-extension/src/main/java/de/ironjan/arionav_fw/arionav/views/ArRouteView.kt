@@ -312,10 +312,15 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     }
 
 
-    private fun createInstructionMarker(context: Context, instruction: Instruction, lat: Double, lon: Double) {
-            ViewRenderable.builder()
-                .setView(context, R.layout.view_basic_instruction)
-                .build()
+    private fun createInstructionMarker(
+        context: Context,
+        currentInstruction: Instruction,
+        lat: Double,
+        lon: Double,
+        nextInstruction: Instruction?) {
+        ViewRenderable.builder()
+            .setView(context, layoutId)
+            .build()
             .handle { renderable, throwable ->
                 if (throwable != null) {
                     showErrorOnRenderableLoadFail(throwable)
@@ -354,10 +359,13 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
             }
     }
 
-    private fun updateExistingInstructionMarker(locationMarker: LocationMarker?,
-                                                lat: Double,
-                                                lon: Double,
-                                                instruction: Instruction) {
+    private fun updateExistingInstructionMarker(
+        locationMarker: LocationMarker?,
+        lat: Double,
+        lon: Double,
+        currentInstruction: Instruction,
+        nextInstruction: Instruction?
+    ) {
         locationMarker?.apply {
             this.latitude = lat
             this.longitude = lon
@@ -367,10 +375,13 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         }
     }
 
-    private fun updateRenderable(renderable: ViewRenderable, instruction: Instruction) {
-        val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
-        val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
-        val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
+
+    private var layoutId = R.layout.view_basic_instruction
+    private var updateRenderable: (ViewRenderable, Instruction, Instruction?) -> Unit =
+        { renderable: ViewRenderable, currentInstruction: Instruction, nextInstruction: Instruction? ->
+            val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
+            val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
+            val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
 
             txtName.text = currentInstruction.name
             txtDistance.text = "%.2fm".format(currentInstruction.distance)
@@ -391,7 +402,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         currentInstructionMarker = null
     }
 
-    // endregion
+// endregion
 
 
 }
