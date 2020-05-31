@@ -17,12 +17,12 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
+import com.graphhopper.util.shapes.GHPoint3D
 import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.arionav.arcorelocation.ArionavLocationScene
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
-import kotlinx.android.synthetic.main.fragment_ar_view.*
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
@@ -31,6 +31,19 @@ private val PathWrapper?.nextInstruction: Instruction?
     get() = this?.instructions
         ?.take(2)
         ?.last()
+
+private val PathWrapper?.currentInstruction: Instruction?
+    get() = this?.instructions
+        ?.first()
+
+private val Instruction.nextWaypoint: GHPoint3D
+    get() = this.points.take(2).last()
+
+private val Instruction.nextLat: Double
+    get() = this.nextWaypoint.lat
+
+private val Instruction.nextLon: Double
+    get() = this.nextWaypoint.lon
 
 class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<IonavViewModel> {
 
@@ -285,22 +298,19 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
     private fun updateArRoute(route: PathWrapper?) {
         val nextInstruction = route.nextInstruction ?: return
-        show(nextInstruction)
-    }
-
-    private fun show(instruction: Instruction) {
+        val currentInstruction = route.currentInstruction ?: return
         val context = context ?: return
 
-        val wp = instruction.points.take(2).last()
-        val lat = wp.lat
-        val lon = wp.lon
+        val lat = currentInstruction.nextLat
+        val lon = currentInstruction.nextLon
 
         if (currentInstructionMarker == null) {
-            createInstructionMarker(context, instruction, lat, lon)
+            createInstructionMarker(context, currentInstruction, lat, lon, nextInstruction)
         } else {
-            updateExistingInstructionMarker(currentInstructionMarker, lat, lon, instruction)
+            updateExistingInstructionMarker(currentInstructionMarker, lat, lon, currentInstruction, nextInstruction)
         }
     }
+
 
     private fun createInstructionMarker(context: Context, instruction: Instruction, lat: Double, lon: Double) {
             ViewRenderable.builder()
@@ -312,16 +322,16 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
                     return@handle
                 }
 
-                updateRenderable(renderable, instruction)
+                updateRenderable(renderable, currentInstruction, nextInstruction)
 
                 val base = Node().apply { this.renderable = renderable }
                 renderable.view.setOnTouchListener { _, _ ->
-                    logger.debug("Touched AR of $instruction ")
+                    logger.debug("Touched AR of $currentInstruction ")
                     true
                 }
 
 
-                logger.info("Creating marker for '$instruction' at $lat,$lon.")
+                logger.info("Creating marker for '$currentInstruction' at $lat,$lon.")
 
                 val lm = LocationMarker(lon, lat, base)
                     .apply {
@@ -340,7 +350,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
                 currentInstructionMarker = lm
 
-                updateExistingInstructionMarker(currentInstructionMarker, lat, lon, instruction)
+                updateExistingInstructionMarker(currentInstructionMarker, lat, lon, currentInstruction, nextInstruction)
             }
     }
 
@@ -353,7 +363,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
             this.longitude = lon
 
             val viewRenderable = this.node.renderable as? ViewRenderable? ?: return@apply
-            updateRenderable(viewRenderable, instruction)
+            updateRenderable(viewRenderable, currentInstruction, nextInstruction)
         }
     }
 
@@ -362,9 +372,23 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
         val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
 
-        txtName.text = instruction.name
-        txtDistance.text = "%.2fm".format(instruction.distance)
-        instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(instruction.sign))
+            txtName.text = currentInstruction.name
+            txtDistance.text = "%.2fm".format(currentInstruction.distance)
+
+
+
+            val sign = if(currentInstruction.points.size > 2) {
+                currentInstruction.sign
+            }else {
+                nextInstruction?.sign  ?: InstructionHelper.SIGN_DESTINATION
+            }
+            instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(sign))
+        }
+
+    fun setInstructionView(layoutId: Int, updateRenderable: (ViewRenderable, Instruction, Instruction?) -> Unit) {
+        this.layoutId = layoutId
+        this.updateRenderable = updateRenderable
+        currentInstructionMarker = null
     }
 
     // endregion
