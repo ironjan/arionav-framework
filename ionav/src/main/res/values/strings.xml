@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">IONAV</string>
+
+    <!-- instruction texts -->
+    <string name="instruction_u_turn_unknown">Unknown instruction</string>
+    <string name="instruction_u_turn_left">U-turn left</string>
+    <string name="instruction_keep_left">Keep left</string>
+    <string name="instruction_leave_roundabout">Leave roundabout</string>
+    <string name="instruction_turn_sharp_left">Sharp left</string>
+    <string name="instruction_turn_left">Left</string>
+    <string name="instruction_turn_slight_left">Slight left</string>
+    <string name="instruction_continue_on_street">Continue on way</string>
+    <string name="instruction_turn_slight_right">Slight right</string>
+    <string name="instruction_turn_right">Right</string>
+    <string name="instruction_turn_sharp_right">Sharp right</string>
+    <string name="instruction_finish">Destination</string>
+    <string name="instruction_reached_via">Destination</string>
+    <string name="instruction_use_roundabout">Use roundabout</string>
+    <string name="instruction_keep_right">Keep right</string>
+    <string name="instruction_u_turn_right">U-Turn right</string>
+    <string name="instruction_unknown">Unknown instruction</string>
 </resources>

@@ -16,15 +16,11 @@ class CustomArNavFragment : ArNavFragment() {
                                   nextInstruction: Instruction?) {
 
         val txtInstruction = renderable.view.findViewById<TextView>(de.ironjan.arionav_fw.arionav.R.id.instructionText)
-        val txtDistance = renderable.view.findViewById<TextView>(de.ironjan.arionav_fw.arionav.R.id.instructionDistanceInMeters)
         val instructionImage = renderable.view.findViewById<ImageView>(de.ironjan.arionav_fw.arionav.R.id.instructionImage)
 
         val instructionText = instructionHelper.toText(currentInstruction, nextInstruction)
         txtInstruction.text = instructionText
         txtInstruction.visibility = if (instructionText.isNullOrBlank()) View.GONE else View.VISIBLE
-
-        txtDistance.text = "%.2fm".format(currentInstruction.distance)
-
 
         val sign = if(currentInstruction.points.size > 2) {
             currentInstruction.sign
