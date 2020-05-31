@@ -8,168 +8,33 @@
     <fragment android:id="@+id/arEnabledMapViewFragment"
         android:name="de.ironjan.arionav_fw.arionav.views.ArEnabledMapViewFragment"
         tools:layout="@layout/ar_enabled_map_view"
-        android:label="ArEnabledMapViewFragment">
+        android:label="ArEnabledMapViewFragment"/>
 
-        
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-        <action android:id="@+id/action_to_map_nav_fragment"
-            app:destination="@+id/arEnabledMapViewFragment" />
-
-        <action android:id="@+id/action_to_arViewFragment"
-            app:destination="@+id/arViewFragment" />
-    </fragment>
     <fragment
-        android:id="@+id/arViewFragment"
+        android:id="@+id/arNavFragment"
         android:name="de.ironjan.arionav_fw.arionav.views.ArNavFragment"
         tools:layout="@layout/fragment_ar_view"
-        android:label="ArViewFragment" >
-
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-        <action android:id="@+id/action_to_map_nav_fragment"
-            app:destination="@+id/arEnabledMapViewFragment" />
-    </fragment>
+        android:label="ArViewFragment" />
 
     <fragment android:id="@+id/nearbyWifiAps"
         android:name="de.ironjan.arionav_fw.sample.NearbyAccessPointsFragment"
         tools:layout="@layout/fragment_custom_list"
-        android:label="NearbyAccessPointsFragment">
+        android:label="NearbyAccessPointsFragment" />
 
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-        <action android:id="@+id/action_to_map_nav_fragment"
-            app:destination="@+id/arEnabledMapViewFragment" />
-    </fragment>
     <fragment
         android:id="@+id/nearbyBluetoothTokensFragment"
         android:name="de.ironjan.arionav_fw.sample.NearbyBluetoothTokensFragment"
-        android:label="NearbyBluetoothTokensFragment">
-
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-        <action android:id="@+id/action_to_map_nav_fragment"
-            app:destination="@+id/arEnabledMapViewFragment" />
-    </fragment>
+        android:label="NearbyBluetoothTokensFragment" />
 
     <fragment android:id="@+id/poiListFragment"
         android:name="de.ironjan.arionav_fw.sample.PlacesFragment"
-        android:label="PoiListFragment" >
-
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-        <action android:id="@+id/action_to_map_nav_fragment"
-            app:destination="@+id/arEnabledMapViewFragment" />
-    </fragment>
+        android:label="PoiListFragment" />
 
     <fragment android:id="@+id/providerConfig"
         android:name="de.ironjan.arionav_fw.sample.ProviderConfigFragment"
-        android:label="ProviderConfigFragment" >
-
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-        <action android:id="@+id/action_to_map_nav_fragment"
-            app:destination="@+id/arEnabledMapViewFragment" />
-    </fragment>
+        android:label="ProviderConfigFragment" />
 
     <fragment android:id="@+id/locationHistory"
         android:name="de.ironjan.arionav_fw.ionav.views.debug.LocationHistoryFragment"
-        android:label="LocationHistoryFragment">
-
-        <action android:id="@+id/action_to_nearbyWifiApsFragment"
-            app:destination="@+id/nearbyWifiAps" />
-
-        <action android:id="@+id/action_to_nearbyBluetoothTokensFragment"
-            app:destination="@+id/nearbyBluetoothTokensFragment" />
-
-        <action android:id="@+id/action_to_poiListFragment"
-            app:destination="@+id/poiListFragment" />
-
-        <action android:id="@+id/action_to_providerConfig"
-            app:destination="@+id/providerConfig" />
-
-        <action android:id="@+id/action_to_locationHistory"
-            app:destination="@+id/locationHistory" />
-
-        <action android:id="@+id/action_to_map_nav_fragment"
-            app:destination="@+id/arEnabledMapViewFragment" />
-    </fragment>
+        android:label="LocationHistoryFragment" />
 </navigation>

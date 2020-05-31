@@ -124,7 +124,7 @@ class MainActivity :
     }
 
     override fun navigateToAr() {
-        navController.navigate(R.id.action_to_arViewFragment)
+        navController.navigate(R.id.arNavFragment)
     }
 
 
