@@ -48,7 +48,7 @@ class InstructionHelper(private val context: Context) {
         }
     }
 
-    fun getInstructionImageFor(sign: Int): Drawable? {
+    fun getInstructionImageFor(sign: Int?): Drawable? {
         // TODO add the others too? they were retrieved from graphhopper/./web/target/classes/assets/img/
         val resId = when (sign) {
             -99 -> R.mipmap.ic_launcher
@@ -69,9 +69,9 @@ class InstructionHelper(private val context: Context) {
 //            Integer.MIN_VALUE -> "IGNORE"
             7 -> R.mipmap.keep_right
             8 -> R.mipmap.u_turn_right
-//            101 -> "PT_START_TRIP"
-//            102 -> "PT_TRANSFER"
-//            103 -> "PT_END_TRIP"
+
+            // destination
+            SIGN_DESTINATION -> R.drawable.marker_icon_red
             else -> R.mipmap.ic_launcher
         }
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -80,6 +80,10 @@ class InstructionHelper(private val context: Context) {
             @Suppress("DEPRECATION")
             context.resources.getDrawable(resId)
         }
+    }
+
+    companion object {
+        const val SIGN_DESTINATION = 1337
     }
 
 }
