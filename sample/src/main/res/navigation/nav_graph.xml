@@ -12,9 +12,9 @@
 
     <fragment
         android:id="@+id/arNavFragment"
-        android:name="de.ironjan.arionav_fw.arionav.views.ArNavFragment"
+        android:name="de.ironjan.arionav_fw.sample.CustomArNavFragment"
         tools:layout="@layout/fragment_ar_view"
-        android:label="ArViewFragment" />
+        android:label="CustomArNavFragment" />
 
     <fragment android:id="@+id/nearbyWifiAps"
         android:name="de.ironjan.arionav_fw.sample.NearbyAccessPointsFragment"
