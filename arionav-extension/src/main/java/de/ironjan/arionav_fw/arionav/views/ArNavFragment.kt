@@ -18,7 +18,6 @@ class ArNavFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycle.addObserver(ar_route_view)
         ar_route_view.observe(model, viewLifecycleOwner)
     }
 

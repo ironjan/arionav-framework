@@ -22,6 +22,7 @@ import de.ironjan.arionav_fw.arionav.arcorelocation.ArionavLocationScene
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
+import kotlinx.android.synthetic.main.fragment_ar_view.*
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
@@ -40,6 +41,8 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     private var lastUpdate = 0L
     private val FiveSecondsInMillis = 5000
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
+        lifecycleOwner.lifecycle.addObserver(this)
+
         this.viewModel = viewModel
         this.lifecycleOwner = lifecycleOwner
         locationScene?.observe(viewModel, lifecycleOwner)
@@ -295,7 +298,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         if (currentInstructionMarker == null) {
             createInstructionMarker(context, instruction, lat, lon)
         } else {
-            updateExistingInstructionMarker(lat, lon, instruction)
+            updateExistingInstructionMarker(currentInstructionMarker, lat, lon, instruction)
         }
     }
 
@@ -337,12 +340,15 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
                 currentInstructionMarker = lm
 
-                updateExistingInstructionMarker(lat, lon, instruction)
+                updateExistingInstructionMarker(currentInstructionMarker, lat, lon, instruction)
             }
     }
 
-    private fun updateExistingInstructionMarker(lat: Double, lon: Double, instruction: Instruction) {
-        currentInstructionMarker?.apply {
+    private fun updateExistingInstructionMarker(locationMarker: LocationMarker?,
+                                                lat: Double,
+                                                lon: Double,
+                                                instruction: Instruction) {
+        locationMarker?.apply {
             this.latitude = lat
             this.longitude = lon
 
