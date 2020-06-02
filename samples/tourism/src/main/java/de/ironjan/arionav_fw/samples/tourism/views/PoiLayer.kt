@@ -5,7 +5,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.canvas.AndroidGraphics
+import org.oscim.core.GeoPoint
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
@@ -19,7 +21,23 @@ ModelDrivenUiComponent<IonavViewModel>{
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
 
         viewModel.destinations.observe(lifecycleOwner, Observer {
-            logger.info("Got $it")
+            updateMarkers(it)
         })
+    }
+
+    private fun updateMarkers(destinations: kotlin.collections.Map<String, Coordinate>) {
+        removeAllItems()
+        map().updateMap(true)
+
+        if(destinations.isNullOrEmpty()) return
+
+        destinations
+            .values
+            .forEach{
+            val markerItem = MarkerItem("destination", "", GeoPoint(it.lat, it.lon))
+            addItem(markerItem)
+        }
+
+        map().updateMap(true)
     }
 }
