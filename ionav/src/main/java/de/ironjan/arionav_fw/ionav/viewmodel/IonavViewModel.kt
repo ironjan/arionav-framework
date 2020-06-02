@@ -72,8 +72,13 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         indoorDataService.registerObserver(object : Observer<IndoorDataState> {
             override fun update(state: IndoorDataState) {
                 _indoorData.value = state.indoorData
-                _indoorDataLoadingState.value = state.indoorDataLoadingState
                 updateInitializationStatus()
+            }
+        })
+
+        destinationService.registerObserver(object : Observer<DestinationServiceState> {
+            override fun update(state: DestinationServiceState) {
+                _destinations.value = state.destinations
             }
         })
 
@@ -87,7 +92,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
     private fun updateInitializationStatus() {
         val routingStatusReady = _routingStatus.value == RoutingService.Status.READY
-        val indoorDataServiceReady = _indoorDataLoadingState.value == IndoorDataLoadingState.READY
+        val indoorDataServiceReady = indoorDataService.loadingState == IndoorDataLoadingState.READY
 
         val allReady = routingStatusReady
                 && indoorDataServiceReady
@@ -134,6 +139,9 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
         return true
     }
+
+    private val _destinations = MutableLiveData<Map<String,Coordinate>>(emptyMap())
+    val destinations: LiveData<Map<String,Coordinate>> = _destinations
 
     // endregion
 
@@ -253,9 +261,6 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     // region indoor data
     private val _indoorData = MutableLiveData<IndoorData>()
     val indoorData: LiveData<IndoorData> = _indoorData
-
-    private val _indoorDataLoadingState = MutableLiveData<IndoorDataLoadingState>()
-    val indoorDataLoadingState : LiveData<IndoorDataLoadingState> = _indoorDataLoadingState
     // endregion
 
     companion object {

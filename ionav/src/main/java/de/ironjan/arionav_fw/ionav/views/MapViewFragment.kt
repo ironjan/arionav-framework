@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import arrow.core.k
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
@@ -64,10 +65,10 @@ open class MapViewFragment : Fragment() {
         val endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
         edit_destination.setAdapter(endSuggestionsAdapter)
 
-        viewModel.indoorData.observe(lifecycleOwner, Observer {
+        viewModel.destinations.observe(lifecycleOwner, Observer {
             endSuggestionsAdapter.apply {
                 clear()
-                addAll(it.names)
+                addAll(it.keys)
                 sort { o1: String, o2: String -> o1.compareTo(o2) }
             }
         })

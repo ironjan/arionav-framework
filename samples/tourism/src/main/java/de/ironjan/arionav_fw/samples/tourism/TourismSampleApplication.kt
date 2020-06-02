@@ -11,7 +11,7 @@ class TourismSampleApplication: Application(), IonavContainerHolder {
     /**
      * The ionav-components dependency container. Can be accessed via: <code>(application as IonavContainerHolder).ionavContainer</code>.
      */
-    override val ionavContainer = IonavContainer(this, "paderborn", R.raw.paderborn)
+    override val ionavContainer = TourismSampleContainer(this)
 
 
     override fun onCreate() {

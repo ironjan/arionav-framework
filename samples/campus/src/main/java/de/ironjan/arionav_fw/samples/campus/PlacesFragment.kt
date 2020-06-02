@@ -24,7 +24,6 @@ class PlacesFragment : Fragment() {
 
     private val viewModel: IonavViewModel by activityViewModels()
 
-    private val indoorData by lazy { viewModel.indoorData }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_custom_list, container, false)
@@ -55,14 +54,10 @@ class PlacesFragment : Fragment() {
         val lContext = context ?: return
         Toast.makeText(lContext, "Loading...", Toast.LENGTH_SHORT).show()
 
-
-        when (val application = activity?.application) {
-            is ArionavSampleApplication -> indoorData.observe(viewLifecycleOwner, Observer {
-                places = it.names.toList()
-                updateAdapter()
-            })
-        }
-        updateAdapter()
+        viewModel.destinations.observe(viewLifecycleOwner, Observer {
+            places = it.keys.toList()
+            updateAdapter()
+        })
     }
 
     private fun updateAdapter() {

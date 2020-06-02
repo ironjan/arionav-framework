@@ -30,9 +30,10 @@ class IndoorData(
 
     // endregion
 
-    val names = indoorNodes.map { it.name }
-        .union(indoorWays.map { it.name })
-        .filterNot{ it.isEmpty() }
+    val destinations = indoorNodes.map { Pair(it.name, it.center )}
+        .union( indoorWays.map { Pair(it.name, it.center) })
+        .filterNot { it.first.isEmpty() }
+        .toMap()
 
 
     val levels =
