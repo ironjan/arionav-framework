@@ -7,7 +7,7 @@ group='com.gitlab.lippertsjan'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "$buildtools_version"
 
     defaultConfig {
         minSdkVersion 18
