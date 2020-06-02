@@ -1,4 +1,4 @@
-include ':samples:indoor'
+include ':samples:campus'
 include ':arionav-extension'
 include ':ionav'
 include ':gps-positioning-implementation'
