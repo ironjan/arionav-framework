@@ -22,7 +22,7 @@ import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 
 open class MapViewFragment : Fragment() {
-    protected val viewModel by activityViewModels<IonavViewModel>()
+    protected open val viewModel by activityViewModels<IonavViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
 

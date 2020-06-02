@@ -6,5 +6,5 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 
 class TourismDestinationServiceState(
     destinations: Map<String, Coordinate>,
-    destinationNodes: Map<String, Node>
+    val destinationNodes: Map<String, Node>
 ) : DestinationServiceState(destinations)

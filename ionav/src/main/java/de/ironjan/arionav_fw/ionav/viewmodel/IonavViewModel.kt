@@ -1,5 +1,6 @@
 package de.ironjan.arionav_fw.ionav.viewmodel
 
+import androidx.annotation.CallSuper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -36,8 +37,10 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
     /**
      * Will initialize this view model. Does nothing, if {@param ionavContainer} is already known.
+     * When overriding, you should call super first.
      */
-    fun initialize(ionavContainer: IonavContainer) {
+    @CallSuper
+    open fun initialize(ionavContainer: IonavContainer) {
         if (this::ionavContainer.isInitialized) return
 
         this.ionavContainer = ionavContainer
