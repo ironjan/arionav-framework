@@ -9,21 +9,28 @@ import java.io.File
  *
  * @see <a href="https://developer.android.com/training/dependency-injection/manual">https://developer.android.com/training/dependency-injection/manual</a>
  */
-class IonavContainer(private val context: Context, val mapName: String, val resId: Int) {
+open class IonavContainer(private val context: Context, val mapName: String, val resId: Int) {
     val applicationContext = context
 
-    val mapFolderPath: String by lazy { File(context.filesDir, mapName).absolutePath }
-    val mapFilePath: String by lazy { File(mapFolderPath, "$mapName.map").absolutePath }
-    val osmFilePath: String by lazy { File(mapFolderPath, "$mapName.osm").absolutePath }
+    open val mapFolderPath: String by lazy { File(context.filesDir, mapName).absolutePath }
+    open val mapFilePath: String by lazy { File(mapFolderPath, "$mapName.map").absolutePath }
+    open val osmFilePath: String by lazy { File(mapFolderPath, "$mapName.osm").absolutePath }
 
-    val indoorDataService = IndoorDataService()
-    val destinationService = IndoorDestinationService(indoorDataService)
+    lateinit var indoorDataService: IndoorDataService
+    lateinit var destinationService: IndoorDestinationService
 
-    val positioningService = PositioningService()
-    val routingService = RoutingService()
-    val navigationService = NavigationService(positioningService, routingService)
+    lateinit var  positioningService: PositioningService
+    lateinit var  routingService: RoutingService
+    lateinit var  navigationService: NavigationService
 
-    fun init() {
+    open fun init() {
+        indoorDataService = IndoorDataService()
+        destinationService = IndoorDestinationService(indoorDataService)
+
+        positioningService = PositioningService()
+        routingService = RoutingService()
+        navigationService = NavigationService(positioningService, routingService)
+
         routingService.init(mapFolderPath)
         indoorDataService.init(osmFilePath)
     }
