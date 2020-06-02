@@ -3,32 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/arEnabledMapView">
 
+    <fragment android:name="de.ironjan.arionav_fw.arionav.views.ArEnabledMapViewFragment"
+        android:id="@+id/arEnabledMapView"
+        android:label="Map View"
+        tools:layout="@layout/ar_enabled_map_view" />
 
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="de.ironjan.arionav_fw.samples.tourism.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/CustomArNavFragment"
+        android:name="de.ironjan.arionav_fw.samples.tourism.CustomArNavFragment"
+        android:label="first_fragment_label"
+        tools:layout="@layout/fragment_ar_view" />
 
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/SecondFragment"
-        android:name="de.ironjan.arionav_fw.samples.tourism.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-
-        <argument
-            android:name="myArg"
-            app:argType="string" />
-    </fragment>
 </navigation>
