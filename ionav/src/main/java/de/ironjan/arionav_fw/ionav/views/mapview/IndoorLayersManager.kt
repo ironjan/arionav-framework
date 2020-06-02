@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorWay
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import org.oscim.backend.CanvasAdapter
 import org.oscim.backend.canvas.Color
 import org.oscim.backend.canvas.Paint

@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.graphhopper.PathWrapper
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import org.oscim.backend.canvas.Color
 import org.oscim.core.GeoPoint
 import org.oscim.layers.vector.PathLayer

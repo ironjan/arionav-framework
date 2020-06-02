@@ -22,7 +22,7 @@ import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.arionav.arcorelocation.ArionavLocationScene
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
-import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper

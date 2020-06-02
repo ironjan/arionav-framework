@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.sample.viewmodel.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 

@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.views.mapview
+package de.ironjan.arionav_fw.ionav.viewmodel
 
 import android.os.AsyncTask
 import androidx.lifecycle.LiveData

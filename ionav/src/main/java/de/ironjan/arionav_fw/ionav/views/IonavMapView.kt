@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
 import de.ironjan.arionav_fw.ionav.services.RoutingService
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.*
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.MapView

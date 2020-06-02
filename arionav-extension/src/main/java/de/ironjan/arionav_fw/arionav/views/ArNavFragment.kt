@@ -12,7 +12,7 @@ import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
-import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 
 open class ArNavFragment : Fragment() {

@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.lifecycle.LifecycleOwner
 import com.google.ar.sceneform.ArSceneView
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
-import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
 

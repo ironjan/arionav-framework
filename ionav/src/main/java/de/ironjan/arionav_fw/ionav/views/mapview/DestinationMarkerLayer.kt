@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.oscim.android.canvas.AndroidGraphics
 import org.oscim.core.GeoPoint

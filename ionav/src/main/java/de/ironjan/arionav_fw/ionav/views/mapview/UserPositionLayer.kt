@@ -3,6 +3,7 @@ package de.ironjan.arionav_fw.ionav.views.mapview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import org.oscim.map.Map
 
 class UserPositionLayer(private val map: Map)

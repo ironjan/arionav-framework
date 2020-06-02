@@ -5,7 +5,7 @@ import android.location.Location
 import androidx.lifecycle.LifecycleOwner
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.views.mapview.IonavViewModel
+import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.sensor.DeviceLocation
 
