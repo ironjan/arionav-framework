@@ -35,6 +35,12 @@ class IndoorData(
         .filterNot { it.first.isEmpty() }
         .toMap()
 
+    val names = indoorNodes.map { it.name }
+        .union(indoorWays.map { it.name })
+        .filterNot{ it.isEmpty() }
+
+
+
 
     val levels =
         indoorNodesByLevel.flatMap { it.value }.map { it.lvl }.union(
