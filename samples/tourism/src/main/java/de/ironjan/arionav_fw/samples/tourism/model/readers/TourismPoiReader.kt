@@ -13,7 +13,7 @@ class TourismPoiReader : OsmReader() {
     private val logger = LoggerFactory.getLogger(IndoorDataReader::class.simpleName)
 
     @Throws(XmlPullParserException::class, IOException::class)
-    fun parseOsmFile(osmFile: String): Map<String, Coordinate> {
+    fun parseOsmFile(osmFile: String): Map<String, Node> {
 
         val start = System.currentTimeMillis()
 
@@ -29,7 +29,7 @@ class TourismPoiReader : OsmReader() {
         val touristicPlaces =
             nodes
                 .filterNot { it.tags["name"].isNullOrEmpty() }
-                .map { Pair(it.tags["name"]!!, Coordinate(it.lat, it.lon, 0.0)) }
+                .map { Pair(it.tags["name"]!!, it) }
                 .toMap()
 
 
