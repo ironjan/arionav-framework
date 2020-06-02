@@ -4,7 +4,7 @@ import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
-abstract class DestinationService: Observable<DestinationServiceState> {
+abstract class DestinationService : Observable<DestinationServiceState> {
     /**
      * Tries to convert {@code value} into a {@code Coordinate}.
      *
@@ -13,14 +13,17 @@ abstract class DestinationService: Observable<DestinationServiceState> {
     abstract fun getCoordinate(value: String): Coordinate?
 
 
-    protected open val destinations: Map<String, Coordinate> = emptyMap()
-
+    protected open var destinations: Map<String, Coordinate> = emptyMap()
+        protected set(value) {
+            field = value
+            notifyObservers()
+        }
 
     // region Observable
     private val _observers = mutableListOf<Observer<DestinationServiceState>>()
 
     override fun registerObserver(observer: Observer<DestinationServiceState>) {
-        if(_observers.contains(observer)) return
+        if (_observers.contains(observer)) return
         _observers.add(observer)
     }
 

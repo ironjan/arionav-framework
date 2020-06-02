@@ -21,7 +21,6 @@ class IndoorDestinationService(private val indoorDataService: IndoorDataService)
         get() = DestinationServiceState(destinations)
 
     override var destinations: Map<String, Coordinate> = emptyMap()
-        private set
 
     /**
      * Tries to convert {@code value} into a {@code Coordinate}.
