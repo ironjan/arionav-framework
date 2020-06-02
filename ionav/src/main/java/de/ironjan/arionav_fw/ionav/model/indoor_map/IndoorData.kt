@@ -32,7 +32,7 @@ class IndoorData(
 
     val names = indoorNodes.map { it.name }
         .union(indoorWays.map { it.name })
-        .filterNot{ it.isNullOrEmpty() }
+        .filterNot{ it.isEmpty() }
 
 
     val levels =
