@@ -40,11 +40,6 @@ class MainActivity :
 
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
-    private val cameraRequestCode: Int = 1
-
-    private val locationRequestCode: Int = 2
-
-    private val bluetoothRequestCode: Int = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,7 +123,13 @@ class MainActivity :
     }
 
 
+    // region permission handling
 
+    private val cameraRequestCode: Int = 1
+    private val locationRequestCode: Int = 2
+    private val bluetoothRequestCode: Int = 3
+
+    /** requests permissions. positioning service is initialized on callback with granted permissions */
     private fun requestPermissions() {
         PermissionHelper.requestPermission(this, CAMERA, cameraRequestCode)
         PermissionHelper.requestPermission(this, ACCESS_FINE_LOCATION, locationRequestCode)
@@ -180,9 +181,11 @@ class MainActivity :
             locationRequestCode -> initializePositioningService()
         }
     }
+    // endregion
 
 
 
+    // region initializePositioningService
     private fun initializePositioningService() {
         val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
 
@@ -215,6 +218,8 @@ class MainActivity :
         val prioGps = sharedPref.getInt(PreferenceKeys.PRIORITY_GPS,2)
         positioningService.setPriority(prioGps, gpsPositionProvider)
     }
+
+    // endregion
 
     companion object {
         val bluetoothDeviceMap = mapOf(
