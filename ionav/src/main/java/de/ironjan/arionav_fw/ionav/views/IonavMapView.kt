@@ -55,26 +55,28 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
     fun initialize(viewModel: IonavViewModel) {
         this.viewModel = viewModel
 
-        val tileLayer = loadMap(viewModel.mapFilePath)
-        createAndAddLayers(tileLayer)
-
-        goToMapStartPosition()
-
-        observeLiveData(lifecycleOwner)
-    }
-
-    private fun loadMap(osmFilePath: String): VectorTileLayer {
         logger.debug("Loading map for map view")
         map().layers().add(MapEventsReceiver(map()))
-
         val tileSource = MapFileTileSource()
-
-        tileSource.setMapFile(osmFilePath)
-        logger.debug("Set tile source to $osmFilePath")
+        tileSource.setMapFile(viewModel.mapFilePath)
+        logger.debug("Set tile source to ${viewModel.mapFilePath}")
 
         val tileLayer = map().setBaseMap(tileSource)
         map().setTheme(VtmThemes.DEFAULT)
-        return tileLayer
+
+        createAndAddLayers(tileLayer)
+
+        val startZoomLevel = tileSource.mapInfo?.startZoomLevel ?: 14
+        val startScale = (1 shl startZoomLevel.toInt()).toDouble()
+
+        val comp = (1 shl 19).toDouble()
+
+        val startPoint = tileSource.mapInfo.startPosition
+        map().setMapPosition(startPoint.latitude, startPoint.longitude, startScale)
+        redrawMap()
+
+
+        observeLiveData(lifecycleOwner)
     }
 
     private fun createAndAddLayers(tileLayer: VectorTileLayer) {
@@ -96,13 +98,6 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
         logger.debug("Added layers.")
     }
 
-    private fun goToMapStartPosition() {
-        // Map start position
-        val mapCenter = GeoPoint(51.731938, 8.734518)
-        val zoom = (1 shl 19).toDouble()
-        map().setMapPosition(mapCenter.latitude, mapCenter.longitude, zoom)
-        logger.debug("Set map center to ${mapCenter.latitude}, ${mapCenter.longitude} with $zoom")
-    }
 
     private fun observeLiveData(lifecycleOwner: LifecycleOwner) {
 
