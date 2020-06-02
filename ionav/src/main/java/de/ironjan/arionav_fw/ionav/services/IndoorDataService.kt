@@ -1,37 +1,68 @@
 package de.ironjan.arionav_fw.ionav.services
 
 import android.os.AsyncTask
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
+import de.ironjan.arionav_fw.ionav.util.Observable
+import de.ironjan.arionav_fw.ionav.util.Observer
 import org.slf4j.LoggerFactory
 
-class IndoorDataService {
+class IndoorDataService : Observable<IndoorDataState> {
+
     private val logger = LoggerFactory.getLogger(IndoorDataService::class.simpleName)
 
-    private val _indoorData = MutableLiveData<IndoorData>(IndoorData.empty())
-    val indoorData: LiveData<IndoorData> = _indoorData
+    override var state = IndoorDataState(IndoorData.empty(), IndoorDataLoadingState.INITIALIZED)
+        private set(value) {
+            field = value
+            notifyObservers()
+        }
 
-    private val _isIndoorDataLoaded: Boolean
-        get() = _loadingState == IndoorDestinationService.IndoorDataLoadingState.LOADED
+    val indoorData: IndoorData
+        get() = state.indoorData
 
-    private var _loadingState = IndoorDestinationService.IndoorDataLoadingState.UNLOADED
+
+    val loadingState
+        get() = state.indoorDataLoadingState
+
 
     fun init(osmFilePath: String) {
         val callback = { loadedData: IndoorData ->
-            _indoorData.value = loadedData
-            _loadingState = IndoorDestinationService.IndoorDataLoadingState.LOADED
+            state = IndoorDataState(loadedData, IndoorDataLoadingState.READY)
+            notifyObservers()
             logger.info("Completed loading of indoor map data.")
         }
 
-        synchronized(_loadingState) {
-            if (_loadingState == IndoorDestinationService.IndoorDataLoadingState.UNLOADED) {
+        synchronized(loadingState) {
+            if (loadingState == IndoorDataLoadingState.INITIALIZED) {
                 IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-                _loadingState = IndoorDestinationService.IndoorDataLoadingState.LOADING
+                state = state.copy(indoorDataLoadingState = IndoorDataLoadingState.LOADING)
             }
         }
 
         logger.info("Started loading of indoor map data.")
     }
+
+    private fun updateState() {
+        state = IndoorDataState(indoorData, loadingState)
+    }
+
+
+    // region observable
+    private val _observers = mutableListOf<Observer<IndoorDataState>>()
+
+    override fun registerObserver(observer: Observer<IndoorDataState>) {
+        if (_observers.contains(observer)) return
+        _observers.add(observer)
+    }
+
+    override fun removeObserver(observer: Observer<IndoorDataState>) {
+        _observers.remove(observer)
+    }
+
+    override fun notifyObservers() {
+        logger.debug("PositioningService notifying observers.")
+
+        _observers.toList().forEach { it.update(state) }
+    }
+    // endregion
 }

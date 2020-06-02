@@ -1,6 +1,5 @@
 package de.ironjan.arionav_fw.ionav.viewmodel
 
-import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +9,6 @@ import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.ionav.di.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
-import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.services.*
 import de.ironjan.arionav_fw.ionav.util.Observer
@@ -28,6 +26,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     private val navigationService by lazy { ionavContainer.navigationService }
     private val positioningService by lazy { ionavContainer.positioningService }
     private val destinationService by lazy { ionavContainer.destinationService }
+    private val indoorDataService by lazy { ionavContainer.indoorDataService }
 
     val mapFilePath by lazy { ionavContainer.mapFilePath }
     //endregion
@@ -70,8 +69,15 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
         })
 
+        indoorDataService.registerObserver(object : Observer<IndoorDataState> {
+            override fun update(state: IndoorDataState) {
+                _indoorData.value = state.indoorData
+                _indoorDataLoadingState.value = state.indoorDataLoadingState
+                updateInitializationStatus()
+            }
+        })
 
-        loadIndoorData(ionavContainer.osmFilePath)
+        logger.info("Started loading of indoor map data.")
     }
 
 
@@ -81,9 +87,10 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
     private fun updateInitializationStatus() {
         val routingStatusReady = _routingStatus.value == RoutingService.Status.READY
+        val indoorDataServiceReady = _indoorDataLoadingState.value == IndoorDataLoadingState.READY
 
         val allReady = routingStatusReady
-                && _isIndoorDataLoaded
+                && indoorDataServiceReady
 
         _initializationStatus.value =
             if (allReady) InitializationStatus.INITIALIZED
@@ -244,24 +251,11 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
 
     // region indoor data
-    private val _indoorData = MutableLiveData<IndoorData>(IndoorData.empty())
+    private val _indoorData = MutableLiveData<IndoorData>()
     val indoorData: LiveData<IndoorData> = _indoorData
 
-    private var _isIndoorDataLoaded = false
-
-    private fun loadIndoorData(osmFilePath: String) {
-        val callback = { loadedData: IndoorData ->
-            _indoorData.value = loadedData
-            _isIndoorDataLoaded = true
-            updateInitializationStatus()
-            logger.info("Completed loading of indoor map data.")
-        }
-
-        IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-
-        logger.info("Started loading of indoor map data.")
-    }
-
+    private val _indoorDataLoadingState = MutableLiveData<IndoorDataLoadingState>()
+    val indoorDataLoadingState : LiveData<IndoorDataLoadingState> = _indoorDataLoadingState
     // endregion
 
     companion object {
