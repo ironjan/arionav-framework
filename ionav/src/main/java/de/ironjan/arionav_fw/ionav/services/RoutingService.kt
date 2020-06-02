@@ -9,7 +9,7 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 import de.ironjan.graphhopper.levelextension.Routing
 import org.slf4j.LoggerFactory
 
-class RoutingService : Observable<RoutingServiceState> {
+class RoutingService: Observable<RoutingServiceState> {
     // region observer handling
     private val _observers = mutableListOf<Observer<RoutingServiceState>>()
 

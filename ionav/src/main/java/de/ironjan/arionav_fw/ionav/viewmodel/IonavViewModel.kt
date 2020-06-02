@@ -24,10 +24,10 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     // region backing services
     private lateinit var ionavContainer: IonavContainer
 
-    val routingService by lazy {  ionavContainer.routingService }
-    val navigationService by lazy { ionavContainer.navigationService }
-
-    val positioningService  by lazy { ionavContainer.positioningService }
+    private val routingService by lazy { ionavContainer.routingService }
+    private val navigationService by lazy { ionavContainer.navigationService }
+    private val positioningService by lazy { ionavContainer.positioningService }
+    private val destinationService by lazy { ionavContainer.destinationService }
 
     val mapFilePath by lazy { ionavContainer.mapFilePath }
     //endregion
@@ -39,7 +39,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
      * Will initialize this view model. Does nothing, if {@param ionavContainer} is already known.
      */
     fun initialize(ionavContainer: IonavContainer) {
-        if(this::ionavContainer.isInitialized) return
+        if (this::ionavContainer.isInitialized) return
 
         this.ionavContainer = ionavContainer
 
@@ -73,7 +73,6 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
         loadIndoorData(ionavContainer.osmFilePath)
     }
-
 
 
     private val _routingStatus: MutableLiveData<RoutingService.Status> = MutableLiveData(RoutingService.Status.UNINITIALIZED)
@@ -121,9 +120,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     fun setDestinationString(value: String): Boolean {
         _destinationString.value = value
 
-        val parsedAttempt = try { Coordinate.fromString(value) } catch (_: Exception) { null }
-        val center = parsedAttempt ?: _indoorData.value?.getCoordinateOf(value)
-        val coordinate = center ?: return false
+        val coordinate = destinationService.getCoordinate(value) ?: return false
 
         navigationService.destination = coordinate
         centerOnUserPos()
@@ -145,8 +142,9 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
         if (b) centerOnUserPos()
     }
+
     val isFollowUser
-    get() = followUserPosition.value ?: false
+        get() = followUserPosition.value ?: false
 
 
     private val _locationHistoryLiveData = MutableLiveData(emptyList<IonavLocation>())
@@ -211,7 +209,7 @@ class IonavViewModel : ViewModel(), MvvmCustomViewModel {
             }
 
             val instructions = it.instructions
-            val current =  instructions.firstOrNull() ?: return@addSource
+            val current = instructions.firstOrNull() ?: return@addSource
             val next = instructions.drop(1).firstOrNull()
 
             mediatorLiveData.value = InstructionHelper(ionavContainer.applicationContext).toText(current, next)
