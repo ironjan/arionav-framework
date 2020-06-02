@@ -45,6 +45,8 @@ dependencies {
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
 
+    implementation "androidx.legacy:legacy-support-v4:$androidx_legacy_support_v4_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_reflect_version"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
