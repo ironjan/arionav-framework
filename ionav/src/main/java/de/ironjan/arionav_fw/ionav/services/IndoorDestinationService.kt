@@ -8,8 +8,7 @@ import de.ironjan.arionav_fw.ionav.model.readers.IndoorMapDataLoadingTask
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-class DestinationService() {
-    private val logger = LoggerFactory.getLogger(DestinationService::class.simpleName)
+class IndoorDestinationService(private val indoorDataService: IndoorDataService) {
 
     private val _indoorData = MutableLiveData<IndoorData>(IndoorData.empty())
     val indoorData: LiveData<IndoorData> = _indoorData
@@ -19,30 +18,18 @@ class DestinationService() {
 
     private var _loadingState = IndoorDataLoadingState.UNLOADED
 
-    fun init(osmFilePath: String) {
-        val callback = { loadedData: IndoorData ->
-            _indoorData.value = loadedData
-            _loadingState = IndoorDataLoadingState.LOADED
-            logger.info("Completed loading of indoor map data.")
-        }
-
-        synchronized(_loadingState) {
-            if (_loadingState == IndoorDataLoadingState.UNLOADED) {
-                IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-                _loadingState = IndoorDataLoadingState.LOADING
-            }
-        }
-
-        logger.info("Started loading of indoor map data.")
-    }
-
+    /**
+     * Tries to convert {@code value} into a {@code Coordinate}.
+     *
+     * @return the coordinate of the given place or {@code null}
+     */
     fun getCoordinate(value: String): Coordinate? {
         val parsedAttempt = try {
             Coordinate.fromString(value)
         } catch (_: Exception) {
             null
         }
-        return parsedAttempt ?: _indoorData.value?.getCoordinateOf(value)
+        return parsedAttempt ?: indoorDataService.indoorData.value?.getCoordinateOf(value)
     }
 
     enum class IndoorDataLoadingState {

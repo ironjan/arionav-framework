@@ -1,10 +1,7 @@
 package de.ironjan.arionav_fw.ionav.di
 
 import android.content.Context
-import de.ironjan.arionav_fw.ionav.services.DestinationService
-import de.ironjan.arionav_fw.ionav.services.NavigationService
-import de.ironjan.arionav_fw.ionav.services.PositioningService
-import de.ironjan.arionav_fw.ionav.services.RoutingService
+import de.ironjan.arionav_fw.ionav.services.*
 import java.io.File
 
 /**
@@ -19,13 +16,15 @@ class IonavContainer(private val context: Context, val mapName: String, val resI
     val mapFilePath: String by lazy { File(mapFolderPath, "$mapName.map").absolutePath }
     val osmFilePath: String by lazy { File(mapFolderPath, "$mapName.osm").absolutePath }
 
-    val destinationService = DestinationService()
+    val indoorDataService = IndoorDataService()
+    val destinationService = IndoorDestinationService(indoorDataService)
+
     val positioningService = PositioningService()
     val routingService = RoutingService()
     val navigationService = NavigationService(positioningService, routingService)
 
     fun init() {
         routingService.init(mapFolderPath)
-        destinationService.init(osmFilePath)
+        indoorDataService.init(osmFilePath)
     }
 }
