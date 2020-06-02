@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample
+package de.ironjan.arionav_fw.samples.campus
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
@@ -25,9 +25,9 @@ import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvid
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
 import de.ironjan.arionav_fw.ionav.util.PermissionHelper
-import de.ironjan.arionav_fw.sample.data.WifiPositioningProviderHardCodedValues
-import de.ironjan.arionav_fw.sample.util.Mailer
-import de.ironjan.arionav_fw.sample.util.PreferenceKeys
+import de.ironjan.arionav_fw.samples.campus.data.WifiPositioningProviderHardCodedValues
+import de.ironjan.arionav_fw.samples.campus.util.Mailer
+import de.ironjan.arionav_fw.samples.campus.util.PreferenceKeys
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 

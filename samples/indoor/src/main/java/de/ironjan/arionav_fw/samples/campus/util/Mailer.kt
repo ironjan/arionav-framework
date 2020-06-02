@@ -1,11 +1,11 @@
-package de.ironjan.arionav_fw.sample.util
+package de.ironjan.arionav_fw.samples.campus.util
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
-import de.ironjan.arionav_fw.sample.BuildConfig
+import de.ironjan.arionav_fw.samples.campus.BuildConfig
 
 object Mailer {
     internal fun sendFeedback(context: Context?) {

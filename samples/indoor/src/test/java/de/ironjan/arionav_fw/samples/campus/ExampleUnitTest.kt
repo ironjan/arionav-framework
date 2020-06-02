@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample
+package de.ironjan.arionav_fw.samples.campus
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample.util
+package de.ironjan.arionav_fw.samples.campus.util
 
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider

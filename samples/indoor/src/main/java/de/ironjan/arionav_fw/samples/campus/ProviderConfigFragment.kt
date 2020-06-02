@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample
+package de.ironjan.arionav_fw.samples.campus
 
 import android.content.Context
 import android.os.Bundle
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
-import de.ironjan.arionav_fw.sample.util.PreferenceKeys
+import de.ironjan.arionav_fw.samples.campus.util.PreferenceKeys
 import kotlinx.android.synthetic.main.fragment_recycler_view.*
 
 class ProviderConfigFragment : Fragment(R.layout.fragment_recycler_view) {

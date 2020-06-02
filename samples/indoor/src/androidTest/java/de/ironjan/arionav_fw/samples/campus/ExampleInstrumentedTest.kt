@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample
+package de.ironjan.arionav_fw.samples.campus
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

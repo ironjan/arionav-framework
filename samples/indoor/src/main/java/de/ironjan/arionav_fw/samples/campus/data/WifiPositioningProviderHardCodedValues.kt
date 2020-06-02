@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample.data
+package de.ironjan.arionav_fw.samples.campus.data
 
 import de.ironjan.graphhopper.extensions_core.Coordinate
 

@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample
+package de.ironjan.arionav_fw.samples.campus
 
 import android.app.Application
 import de.ironjan.arionav_fw.ionav.GhzExtractor

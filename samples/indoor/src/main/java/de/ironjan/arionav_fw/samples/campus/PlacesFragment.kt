@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.sample
+package de.ironjan.arionav_fw.samples.campus
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
-import de.ironjan.arionav_fw.sample.viewmodel.NamedPlacesAdapter
+import de.ironjan.arionav_fw.samples.campus.viewmodel.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 
 class PlacesFragment : Fragment() {
