@@ -16,21 +16,15 @@ open class IonavContainer(private val context: Context, val mapName: String, val
     open val mapFilePath: String by lazy { File(mapFolderPath, "$mapName.map").absolutePath }
     open val osmFilePath: String by lazy { File(mapFolderPath, "$mapName.osm").absolutePath }
 
-    lateinit var indoorDataService: IndoorDataService
-    lateinit var destinationService: IndoorDestinationService
+    val indoorDataService = IndoorDataService()
+    var destinationService: DestinationService = IndoorDestinationService(indoorDataService)
+        protected set
 
-    lateinit var  positioningService: PositioningService
-    lateinit var  routingService: RoutingService
-    lateinit var  navigationService: NavigationService
+    val positioningService = PositioningService()
+    val routingService = RoutingService()
+    val navigationService = NavigationService(positioningService, routingService)
 
     open fun init() {
-        indoorDataService = IndoorDataService()
-        destinationService = IndoorDestinationService(indoorDataService)
-
-        positioningService = PositioningService()
-        routingService = RoutingService()
-        navigationService = NavigationService(positioningService, routingService)
-
         routingService.init(mapFolderPath)
         indoorDataService.init(osmFilePath)
     }
