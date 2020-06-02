@@ -15,7 +15,7 @@ import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-class IonavViewModel : ViewModel(), MvvmCustomViewModel {
+open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
     private val logger = LoggerFactory.getLogger("MapViewViewModel")
 
