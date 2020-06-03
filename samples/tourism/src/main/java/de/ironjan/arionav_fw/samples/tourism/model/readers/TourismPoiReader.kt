@@ -1,10 +1,8 @@
 package de.ironjan.arionav_fw.samples.tourism.model.readers
 
 import de.ironjan.arionav_fw.ionav.model.osm.Node
-import de.ironjan.arionav_fw.ionav.model.osm.Way
 import de.ironjan.arionav_fw.ionav.model.readers.IndoorDataReader
 import de.ironjan.arionav_fw.ionav.model.readers.OsmReader
-import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
@@ -20,8 +18,14 @@ class TourismPoiReader : OsmReader() {
 
         val nodes = parseNodes(osmFile) { n: Node ->
             val isTouristic = n.tags.containsKey("tourism")
+
+            val toursimTag = n.tags["tourism"]
+            val isRelevantForSample = toursimTag == "attraction"
+                    || n.tags["tourism  "] == "information"
+
             val hasName = !n.tags["name"].isNullOrBlank()
-            (isTouristic && hasName)
+
+            isTouristic && isRelevantForSample && hasName
         }
         val nodesDone = System.currentTimeMillis()
         logger.info("Read ${nodes.count()} relevant nodes in ${nodesDone - start}ms...")
