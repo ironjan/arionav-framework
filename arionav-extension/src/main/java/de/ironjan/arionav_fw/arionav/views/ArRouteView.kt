@@ -346,7 +346,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
                             //                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
                         }
                         onlyRenderWhenWithin = maxDistance
-                        height = 2f
+                        height = 1f
                     }
 
                 locationScene?.apply {
