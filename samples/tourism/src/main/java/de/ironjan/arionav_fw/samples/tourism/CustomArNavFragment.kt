@@ -28,7 +28,7 @@ class CustomArNavFragment : ArNavFragment() {
         txtInstruction.visibility = if (instructionText.isNullOrBlank()) View.GONE else View.VISIBLE
 
         val sign = if(currentInstruction.points.size > 2) {
-            currentInstruction.sign
+            nextInstruction?.sign
         }else {
             nextInstruction?.sign  ?: InstructionHelper.SIGN_DESTINATION
         }
