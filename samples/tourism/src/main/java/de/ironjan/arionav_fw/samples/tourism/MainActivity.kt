@@ -2,12 +2,11 @@ package de.ironjan.arionav_fw.samples.tourism
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
@@ -102,7 +101,12 @@ class MainActivity : AppCompatActivity(),
     // endregion
 
 
+    private val navController
+        get() = findNavController(R.id.nav_host_fragment)
+
+
     override fun navigateToAr() {
-        // FIXME switch to AR navController.navigate(R.id.arNavFragment)
+         navController.navigate(R.id.CustomArNavFragment)
     }
+
 }
