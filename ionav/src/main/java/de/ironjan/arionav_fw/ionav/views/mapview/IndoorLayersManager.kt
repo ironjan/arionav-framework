@@ -39,6 +39,14 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
     // endregion
 
 
+    private var indoorData: IndoorData = IndoorData.empty()
+
+    var enabled: Boolean = true
+        set(value) {
+            field = value
+            updateLayers(indoorData)
+        }
+
     // region callbacks
     var itemTapCallback = defaultTapCallback
 
@@ -48,6 +56,7 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
 
 
     private fun updateLayers(indoorData: IndoorData) {
+        this.indoorData = indoorData
         recreateRoomOutlineLayersFrom(indoorData)
         recreateLabelLayersFrom(indoorData)
         showLayersFor(selectedLevel)
@@ -83,6 +92,8 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
     private fun showLayersFor(newLevel: Double) {
         map.layers().remove(currentDrawableLayer)
         map.layers().remove(currentLabelLayer)
+
+        if(!enabled) return
 
         val newDrawableLayer = levelsToRoomBackgroundLayers[newLevel] ?: return
         val newLabelLayer = levelsToLabelLayers[newLevel] ?: return

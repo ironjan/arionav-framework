@@ -25,6 +25,12 @@ import org.slf4j.LoggerFactory
 
 class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
 
+    var isIndoorEnabled: Boolean = true
+        set(value) {
+            field = value
+            indoorLayers.enabled = value
+        }
+
     private val logger = LoggerFactory.getLogger(IonavMapView::class.simpleName)
 
     // region map layers
