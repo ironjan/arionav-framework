@@ -19,9 +19,9 @@ class TourismPoiReader : OsmReader() {
         val nodes = parseNodes(osmFile) { n: Node ->
             val isTouristic = n.tags.containsKey("tourism")
 
-            val toursimTag = n.tags["tourism"]
-            val isRelevantForSample = toursimTag == "attraction"
-                    || n.tags["tourism  "] == "information"
+            val tourismTag = n.tags["tourism"]
+            val isRelevantForSample = tourismTag == "attraction"
+                    || tourismTag == "information"
 
             val hasName = !n.tags["name"].isNullOrBlank()
 
