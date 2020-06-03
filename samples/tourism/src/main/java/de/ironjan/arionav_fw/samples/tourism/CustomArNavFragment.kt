@@ -3,13 +3,17 @@ package de.ironjan.arionav_fw.samples.tourism
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.arionav.views.ArNavFragment
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
+import de.ironjan.arionav_fw.samples.tourism.viewmodel.TourismViewModel
 
 
 class CustomArNavFragment : ArNavFragment() {
+    override val model: TourismViewModel by activityViewModels()
+
     override val instructionLayoutId = R.layout.view_custom_instruction
 
     override fun updateRenderable(renderable: ViewRenderable,

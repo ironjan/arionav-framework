@@ -16,7 +16,7 @@ import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 
 open class ArNavFragment : Fragment() {
-    private val model: IonavViewModel by activityViewModels()
+    open val model: IonavViewModel by activityViewModels()
 
     protected open val instructionLayoutId = R.layout.view_basic_instruction
 
@@ -24,8 +24,8 @@ open class ArNavFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ar_route_view.observe(model, viewLifecycleOwner)
         ar_route_view.setInstructionView(instructionLayoutId, this::updateRenderable)
+        ar_route_view.observe(model, viewLifecycleOwner)
     }
 
     protected lateinit var instructionHelper: InstructionHelper
