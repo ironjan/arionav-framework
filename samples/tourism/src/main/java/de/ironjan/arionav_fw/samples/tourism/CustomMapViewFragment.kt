@@ -1,15 +1,23 @@
 package de.ironjan.arionav_fw.samples.tourism
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import de.ironjan.arionav_fw.arionav.views.ArEnabledMapViewFragment
 import de.ironjan.arionav_fw.ionav.views.IonavMapView
 import de.ironjan.arionav_fw.samples.tourism.viewmodel.TourismViewModel
 import de.ironjan.arionav_fw.samples.tourism.views.PoiLayer
+import org.oscim.layers.marker.ItemizedLayer
+import org.oscim.layers.marker.MarkerItem
+import org.slf4j.LoggerFactory
 
-class CustomMapViewFragment: ArEnabledMapViewFragment() {
+class CustomMapViewFragment : ArEnabledMapViewFragment() {
     override val viewModel by activityViewModels<TourismViewModel>()
+
+    private val logger = LoggerFactory.getLogger(CustomMapViewFragment::class.simpleName)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -20,6 +28,36 @@ class CustomMapViewFragment: ArEnabledMapViewFragment() {
         map.layers().add(poiLayer)
         mapView.isIndoorEnabled = false
 
-        poiLayer.observe(viewModel, viewLifecycleOwner)
+        val listener = object : ItemizedLayer.OnItemGestureListener<MarkerItem> {
+            override fun onItemLongPress(index: Int, item: MarkerItem?): Boolean {
+                if (item == null) return true
+
+                logger.info("long press on ${item.title}")
+
+                viewModel.setDestinationString(item.title)
+
+                val context: Context? = activity ?: return true
+                Toast.makeText(context, "${item.title}:\n${item.description}", Toast.LENGTH_SHORT).show()
+                return true
+            }
+
+            override fun onItemSingleTapUp(index: Int, item: MarkerItem?): Boolean {
+                if (item == null) return true
+
+                val title = item.title
+                logger.info("single tap on $title")
+
+                view.findViewById<EditText>(R.id.edit_destination).setText(title)
+
+                val context: Context? = activity ?: return true
+                Toast.makeText(context, "$title:\n${item.description}", Toast.LENGTH_SHORT).show()
+                return true
+            }
+
+        }
+        poiLayer.apply {
+            observe(viewModel, viewLifecycleOwner)
+            setOnItemGestureListener(listener)
+        }
     }
 }
