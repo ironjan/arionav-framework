@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.model.osm.Node
-import de.ironjan.arionav_fw.ionav.views.mapview.IndoorLayersManager
 import de.ironjan.arionav_fw.samples.tourism.viewmodel.TourismViewModel
 import org.oscim.android.canvas.AndroidGraphics
 import org.oscim.core.GeoPoint
@@ -21,9 +20,13 @@ private val Node.name: String
 
 class PoiLayer(private val map: Map, private val markerDrawable: Drawable) : ItemizedLayer<MarkerItem>(map, MarkerSymbol(AndroidGraphics.drawableToBitmap(markerDrawable), 0.5f, 1f)),
     ModelDrivenUiComponent<TourismViewModel> {
+    private lateinit var viewModel: TourismViewModel
+
     private val logger = LoggerFactory.getLogger(PoiLayer::class.simpleName)
 
     override fun observe(viewModel: TourismViewModel, lifecycleOwner: LifecycleOwner) {
+        this.viewModel = viewModel
+
 
         viewModel.destinationNodes.observe(lifecycleOwner, Observer {
             updateMarkers(it)
@@ -39,30 +42,12 @@ class PoiLayer(private val map: Map, private val markerDrawable: Drawable) : Ite
         destinations
             .values
             .forEach {
-                val markerItem = MarkerItem(it.name, "", GeoPoint(it.lat, it.lon))
+                val description = it.tags.map { t -> "${t.key} = ${t.value}" }.joinToString("\n")
+                val markerItem = MarkerItem(it.name, description, GeoPoint(it.lat, it.lon))
 
                 addItem(markerItem)
             }
 
-        val listener = object : ItemizedLayer.OnItemGestureListener<MarkerItem> {
-            override fun onItemLongPress(index: Int, item: MarkerItem?): Boolean {
-                if (item == null) return true
-
-                logger.info("long press on ${item.title}")
-
-                return true
-            }
-
-            override fun onItemSingleTapUp(index: Int, item: MarkerItem?): Boolean {
-                if (item == null) return true
-
-                logger.info("single tap on ${item.title}")
-
-                return true
-            }
-
-        }
-        setOnItemGestureListener(listener)
 
         map().updateMap(true)
     }
