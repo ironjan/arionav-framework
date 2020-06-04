@@ -26,4 +26,15 @@ class ArionavLocationScene(context: Activity?, mArSceneView: ArSceneView?) :
     fun add(marker: LocationMarker) {
         mLocationMarkers.add(marker)
     }
+
+    fun remove(lm: LocationMarker) {
+        mLocationMarkers.remove(lm)
+
+        // from clearMarkers
+        if (lm.anchorNode != null) {
+            lm.anchorNode.anchor!!.detach()
+            lm.anchorNode.isEnabled = false
+            lm.anchorNode = null
+        }
+    }
 }

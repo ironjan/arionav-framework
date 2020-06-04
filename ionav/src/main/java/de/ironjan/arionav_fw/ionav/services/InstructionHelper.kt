@@ -11,13 +11,12 @@ class InstructionHelper(private val context: Context) {
     fun toText(currentInstruction: Instruction, nextInstruction: Instruction?): String {
         val instructionText = if(nextInstruction==null) "" else getTextFor(nextInstruction.sign)
 
-        val timeInSeconds = currentInstruction.time / 1000
-        val timeInMinutes = timeInSeconds / 60
 
         val distance = " %.2f".format(currentInstruction.distance)
 
-        val optionalLessThan = if(timeInMinutes>0) "" else "<"
-        return "$instructionText in ${distance}m ($optionalLessThan${timeInMinutes}min)\n${nextInstruction?.name}"
+        val time = currentInstruction.time
+        val durationMinString = toReadableTime(time)
+        return "$instructionText in ${distance}m ($durationMinString)\n${nextInstruction?.name}"
     }
 
     fun getTextFor(sign: Int): String {
@@ -79,6 +78,15 @@ class InstructionHelper(private val context: Context) {
 
     companion object {
         const val SIGN_DESTINATION = 1337
+
+
+
+        fun toReadableTime(timeInSeconds: Long): String {
+            val timeInMinutes = timeInSeconds / 1000 / 60
+            val optionalLessThan = if (timeInMinutes > 0) "" else "<"
+            val durationMinString = "$optionalLessThan${timeInMinutes}min"
+            return durationMinString
+        }
     }
 
 }

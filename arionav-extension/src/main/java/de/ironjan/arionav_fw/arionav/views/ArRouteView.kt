@@ -23,6 +23,7 @@ import de.ironjan.arionav_fw.arionav.arcorelocation.ArionavLocationScene
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.ModelDrivenUiComponent
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
@@ -51,8 +52,8 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     private lateinit var viewModel: IonavViewModel
     private lateinit var lifecycleOwner: LifecycleOwner
 
-    private var lastUpdate = 0L
-    private val FiveSecondsInMillis = 5000
+    private var lastRouteUpdate = 0L
+
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
         lifecycleOwner.lifecycle.addObserver(this)
 
@@ -65,12 +66,20 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
             if (!locationSceneIsSetUp) return@Observer
 
             val currentTime = System.currentTimeMillis()
-            if (currentTime - lastUpdate > FiveSecondsInMillis) {
+            if (currentTime - lastRouteUpdate > FiveSecondsInMillis) {
                 updateArRoute(it)
-                lastUpdate = currentTime
+                lastRouteUpdate = currentTime
             }
         })
+
+
+        viewModel.destination.observe(lifecycleOwner, Observer {
+            if (!locationSceneIsSetUp) return@Observer
+
+            updateDestinationMarker(it)
+        })
     }
+
     // endregion
 
     // region constructors
@@ -149,6 +158,8 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         const val TAG = "ArRouteView"
 
         private const val maxDistance = 5000
+
+        private const val FiveSecondsInMillis = 5000
     }
 
     private var locationScene: ArionavLocationScene? = null
@@ -292,7 +303,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
     // region updateLocationScene
     private var currentInstructionMarker: LocationMarker? = null
-
+    private val currentInstructionMarkerSync = Any()
 
     private lateinit var instructionHelper: InstructionHelper
 
@@ -301,77 +312,47 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         val currentInstruction = route.currentInstruction ?: return
         val context = context ?: return
 
-        val lat = currentInstruction.nextLat
-        val lon = currentInstruction.nextLon
+        val lat = nextInstruction.points.first().lat
+        val lon = nextInstruction.points.first().lon
 
-        if (currentInstructionMarker == null) {
-            createInstructionMarker(context, currentInstruction, lat, lon, nextInstruction)
-        } else {
-            updateExistingInstructionMarker(currentInstructionMarker, lat, lon, currentInstruction, nextInstruction)
-        }
-    }
-
-
-    private fun createInstructionMarker(
-        context: Context,
-        currentInstruction: Instruction,
-        lat: Double,
-        lon: Double,
-        nextInstruction: Instruction?) {
-        ViewRenderable.builder()
-            .setView(context, layoutId)
-            .build()
-            .handle { renderable, throwable ->
-                if (throwable != null) {
-                    showErrorOnRenderableLoadFail(throwable)
-                    return@handle
-                }
-
-                updateRenderable(renderable, currentInstruction, nextInstruction)
-
-                val base = Node().apply { this.renderable = renderable }
-                renderable.view.setOnTouchListener { _, _ ->
-                    logger.debug("Touched AR of $currentInstruction ")
-                    true
-                }
-
-
-                logger.info("Creating marker for '$currentInstruction' at $lat,$lon.")
-
-                val lm = LocationMarker(lon, lat, base)
+        synchronized(currentInstructionMarkerSync) {
+            val currentInstructionMarker =
+                currentInstructionMarker ?: LocationMarker(lon, lat, Node())
                     .apply {
-                        setRenderEvent {
-                            val eView = renderable.view
-                            "${it.distance}m"
-                            //                        it.scaleModifier = 0.5f // if (it.distance < 100) 1f else 500f / it.distance
-                        }
                         onlyRenderWhenWithin = maxDistance
                         height = 1f
+
+                        ViewRenderable.builder()
+                            .setView(context, layoutId)
+                            .build()
+                            .handle { renderable, throwable ->
+                                if (throwable != null) {
+                                    showErrorOnRenderableLoadFail(throwable)
+                                    return@handle
+                                }
+
+
+                                this.node.renderable = renderable
+                                renderable.view.setOnTouchListener { _, _ ->
+                                    logger.debug("Touched AR of $currentInstruction ")
+                                    true
+                                }
+
+                                logger.info("Creating marker for '$currentInstruction' at $lat,$lon.")
+
+                            }
+                    }.also {
+                        locationScene?.add(it)
+                        currentInstructionMarker = it
                     }
 
-                locationScene?.apply {
-                    add(lm)
-                }
+            currentInstructionMarker.apply {
+                latitude = lat
+                longitude = lon
 
-                currentInstructionMarker = lm
-
-                updateExistingInstructionMarker(currentInstructionMarker, lat, lon, currentInstruction, nextInstruction)
+                val viewRenderable = this.node.renderable as? ViewRenderable? ?: return@apply
+                updateRenderable(viewRenderable, currentInstruction, nextInstruction)
             }
-    }
-
-    private fun updateExistingInstructionMarker(
-        locationMarker: LocationMarker?,
-        lat: Double,
-        lon: Double,
-        currentInstruction: Instruction,
-        nextInstruction: Instruction?
-    ) {
-        locationMarker?.apply {
-            this.latitude = lat
-            this.longitude = lon
-
-            val viewRenderable = this.node.renderable as? ViewRenderable? ?: return@apply
-            updateRenderable(viewRenderable, currentInstruction, nextInstruction)
         }
     }
 
@@ -387,11 +368,10 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
             txtDistance.text = "%.2fm".format(currentInstruction.distance)
 
 
-
-            val sign = if(currentInstruction.points.size > 2) {
+            val sign = if (currentInstruction.points.size > 2) {
                 currentInstruction.sign
-            }else {
-                nextInstruction?.sign  ?: InstructionHelper.SIGN_DESTINATION
+            } else {
+                nextInstruction?.sign ?: InstructionHelper.SIGN_DESTINATION
             }
             instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(sign))
         }
@@ -404,5 +384,67 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
 // endregion
 
+    // region destination marker
+    private var destinationMarker: LocationMarker? = null
+    private var destinationMarkerSync = Any()
+    private var lastDestinationMarkerUpdate = 0
+
+
+    private fun updateDestinationMarker(coordinate: Coordinate?) {
+        coordinate ?: return
+
+        val currentTime = System.currentTimeMillis()
+        val delta = currentTime - lastDestinationMarkerUpdate
+        if (delta < FiveSecondsInMillis) {
+            return
+        }
+
+        synchronized(destinationMarkerSync) {
+
+            val destinationMarker =
+                this.destinationMarker
+                    ?: LocationMarker(coordinate.lat, coordinate.lon, Node())
+                        .apply {
+                            onlyRenderWhenWithin = 10000
+
+                            ViewRenderable.builder()
+                                .setView(context, R.layout.ar_destination_marker)
+                                .build()
+                                .whenComplete { vr, t ->
+                                    if (t != null) {
+                                        logger.warn("Could not create destination view renderable: ${t.message}.\n")
+                                    }
+                                    this.node.renderable = vr
+                                }
+                        }.also {
+                            locationScene?.add(it)
+                            destinationMarker = it
+                        }
+
+            destinationMarker.apply {
+                latitude = coordinate.lat
+                longitude = coordinate.lon
+
+                updateDestinationRenderable()
+
+            }
+        }
+    }
+
+    private fun LocationMarker.updateDestinationRenderable() {
+        (node.renderable as? ViewRenderable)?.view?.apply {
+
+            val route = viewModel.route.value?: return@apply
+
+            val textDistance = findViewById<TextView>(R.id.txt_Distance)
+            val txtDuration = findViewById<TextView>(R.id.txt_Duration)
+
+            textDistance.text = String.format("%.2fm", route.distance)
+            txtDuration.text = InstructionHelper.toReadableTime(route.time)
+
+        }
+    }
+
+    // endregion
 
 }
