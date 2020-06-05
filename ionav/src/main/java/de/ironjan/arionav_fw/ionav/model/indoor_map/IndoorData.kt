@@ -51,7 +51,13 @@ class IndoorData(
 
     fun getNodes(lvl: Double): List<IndoorNode> = indoorNodesByLevel[lvl] ?: emptyList()
 
-    fun getCoordinateOf(name: String) = (indoorWays.firstOrNull { it.name == name } ?: indoorNodes.firstOrNull { it.name == name })?.center
+    fun getCoordinateOf(name: String) =
+        indoorWays
+            .map { it as IndoorPoi }
+            .union(indoorNodes)
+            .map { x -> x }
+            .firstOrNull { it.name == name }
+            ?.center
 
 
     companion object {

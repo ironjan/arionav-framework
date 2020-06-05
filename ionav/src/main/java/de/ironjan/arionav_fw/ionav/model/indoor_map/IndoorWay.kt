@@ -1,23 +1,24 @@
 package de.ironjan.arionav_fw.ionav.model.indoor_map
 
+import de.ironjan.arionav_fw.ionav.model.osm.Way
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
 
 /** Represents an indoor way. Can be a room, corridor, etc. */
-data class IndoorWay(
-    val id: Long,
+open class IndoorWay(
+    id: Long,
     val lvl: Double,
-    val nodeRefs: List<IndoorNode>,
-    val tags: Map<String, String>
-): IndoorPoi {
-    val distinctNodeRefs = nodeRefs.distinct()
+    val nodes: List<IndoorNode>,
+    tags: Map<String, String>
+): Way(id,nodes.map {it.id }, tags), IndoorPoi {
+    val distinctNodeRefs = nodes.distinct()
 
     val centerLat: Double = distinctNodeRefs.map { it.lat }.sum() / distinctNodeRefs.count()
     val centerLon: Double = distinctNodeRefs.map { it.lon }.sum() / distinctNodeRefs.count()
     override val center = Coordinate(centerLat, centerLon, lvl)
 
     val type: String = tags["indoor"] ?: ""
-    val name: String = tags["name"] ?: ""
+    override val name: String = tags["name"] ?: ""
 
     val isRoom: Boolean = "room" == type
     val isCorridor: Boolean = "corridor" == type
@@ -29,6 +30,6 @@ data class IndoorWay(
 
     private val tagsAsString = tags.map{"${it.key}=${it.value}"}.joinToString(",")
     override fun toString(): String {
-        return "IndoorWay($id, $lvl, $tagsAsString, $nodeRefs)"
+        return "IndoorWay($id, $lvl, $tagsAsString, $nodes)"
     }
 }

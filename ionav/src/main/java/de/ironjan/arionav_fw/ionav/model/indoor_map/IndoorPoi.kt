@@ -4,5 +4,6 @@ import de.ironjan.graphhopper.extensions_core.Coordinate
 
 /** Common interface for indoor elements with a {@see center} coordinate */
 interface IndoorPoi {
+    val name: String
     val center : Coordinate
 }

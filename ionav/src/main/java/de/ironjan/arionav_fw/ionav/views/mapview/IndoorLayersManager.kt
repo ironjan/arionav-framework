@@ -211,7 +211,7 @@ class IndoorLayersManager(private val map: Map, private val density: Float) :
             .map { levelLayer.add(it) }
 
 
-        val doors = indoorWays.flatMap { it.nodeRefs.filter { it.isDoor } }
+        val doors = indoorWays.flatMap { it.nodes.filter { it.isDoor } }
         // GeoPoint center, double radiusKm, Style style
         doors.map { CircleDrawable(it.toGeoPoint(), DoorWidthAsKm, doorStyle) }
             .map { levelLayer.add(it) }
