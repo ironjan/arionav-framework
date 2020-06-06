@@ -10,8 +10,8 @@ open class IndoorWay(
     val lvl: Double,
     val nodes: List<IndoorNode>,
     tags: Map<String, String>
-): Way(id,nodes.map {it.id }, tags), IndoorPoi {
-    val distinctNodeRefs = nodes.distinct()
+): Way(id, nodes.map {it.id } , tags), IndoorPoi {
+    val distinctNodeRefs = nodes.distinctBy { it.id }
 
     val centerLat: Double = distinctNodeRefs.map { it.lat }.sum() / distinctNodeRefs.count()
     val centerLon: Double = distinctNodeRefs.map { it.lon }.sum() / distinctNodeRefs.count()
