@@ -9,10 +9,12 @@ open class IndoorNode(
     id: Long,
     lat: Double,
     lon: Double,
-    val lvl: Double,
-    tags: Map<String, String>
+    tags: Map<String, String> = emptyMap()
 ) : Node(id, lat,lon,tags), IndoorPoi{
     fun toGeoPoint(): GeoPoint = GeoPoint(lat, lon)
+
+    private val levelValue = tags["level"]
+    val lvl: Double = levelValue?.toDoubleOrNull() ?: 0.0
 
     val isDoor: Boolean = tags["indoor"] == "door"
 

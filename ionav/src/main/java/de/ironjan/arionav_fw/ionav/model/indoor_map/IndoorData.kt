@@ -13,8 +13,7 @@ class IndoorData(
 ) {
     // region private properties
     private val indoorNodes = nodes.map {
-        val lvl = it.tags["level"]?.toDoubleOrNull() ?: 0.0
-        IndoorNode(it.id, it.lat, it.lon, lvl, it.tags)
+        IndoorNode(it.id, it.lat, it.lon, it.tags)
     }
 
     private val indoorWays = ways.map {
