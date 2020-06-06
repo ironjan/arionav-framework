@@ -16,8 +16,6 @@ open class IndoorNode(
 
     val isDoor: Boolean = tags["indoor"] == "door"
 
-    override val name = tags["name"] ?: ""
-
     override val center = Coordinate(lat, lon, lvl)
 
     val map = tags

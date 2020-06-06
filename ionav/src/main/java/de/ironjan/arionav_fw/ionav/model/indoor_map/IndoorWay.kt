@@ -18,7 +18,6 @@ open class IndoorWay(
     override val center = Coordinate(centerLat, centerLon, lvl)
 
     val type: String = tags["indoor"] ?: ""
-    override val name: String = tags["name"] ?: ""
 
     val isRoom: Boolean = "room" == type
     val isCorridor: Boolean = "corridor" == type

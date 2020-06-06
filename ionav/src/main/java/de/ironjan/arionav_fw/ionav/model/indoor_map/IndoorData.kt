@@ -32,12 +32,13 @@ class IndoorData(
 
     val destinations = indoorNodes.map { Pair(it.name, it.center )}
         .union( indoorWays.map { Pair(it.name, it.center) })
-        .filterNot { it.first.isEmpty() }
+        .filterNot { it.first.isNullOrEmpty() }
+        .map { Pair(it.first!! ,it.second)}
         .toMap()
 
     val names = indoorNodes.map { it.name }
         .union(indoorWays.map { it.name })
-        .filterNot{ it.isEmpty() }
+        .filterNot{ it.isNullOrEmpty() }
 
 
 
@@ -52,12 +53,10 @@ class IndoorData(
     fun getNodes(lvl: Double): List<IndoorNode> = indoorNodesByLevel[lvl] ?: emptyList()
 
     fun getCoordinateOf(name: String) =
-        indoorWays
-            .map { it as IndoorPoi }
-            .union(indoorNodes)
-            .map { x -> x }
-            .firstOrNull { it.name == name }
-            ?.center
+        ((indoorWays.firstOrNull { it.name == name }
+                         ?: indoorNodes.firstOrNull { it.name == name })
+                         as? IndoorPoi) 
+                ?.center
 
 
     companion object {
