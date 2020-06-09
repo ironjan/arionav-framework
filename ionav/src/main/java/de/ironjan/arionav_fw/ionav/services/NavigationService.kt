@@ -14,10 +14,47 @@ class NavigationService(
     private val logger = LoggerFactory.getLogger(NavigationService::class.java.simpleName)
 
 
+    private var lastKnownPosition: IonavLocation? = null
+
     override fun update(state: PositioningServiceState) {
         logger.info("Received positioning service update.")
 
-        recomputeRemainingRoute(state.lastKnownPosition)
+
+        if (isDifferentEnough(this.lastKnownPosition, state.lastKnownPosition)) {
+            this.lastKnownPosition = state.lastKnownPosition
+            recomputeRemainingRoute(lastKnownPosition)
+        }
+    }
+
+    private fun isDifferentEnough(lastKnownPosition: IonavLocation?, newPosition: IonavLocation?): Boolean {
+        if (lastKnownPosition == null) return true
+        if(newPosition == null) return false
+
+        val isMoreRecent = newPosition.timestamp - lastKnownPosition.timestamp > 10000
+        val isDistantEnough = distanceBetween(lastKnownPosition, newPosition) > 5
+
+        return isMoreRecent && isDistantEnough
+    }
+
+    private fun distanceBetween(a: IonavLocation, b: IonavLocation): Double {
+        // https://www.movable-type.co.uk/scripts/latlong.html
+
+        val R = 6371000 // earth radius in m
+
+        val theta1 = a.lat * Math.PI / 180
+        val theta2 = b.lat * Math.PI / 180
+
+        val deltaTheta = (b.lat - a.lat) * Math.PI / 180
+        val deltaLambda = (b.lon - a.lon) * Math.PI / 180
+
+        val a = Math.sin(deltaTheta / 2) * Math.sin(deltaTheta / 2) +
+                Math.cos(theta1) * Math.cos(theta2) *
+                Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2)
+
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+        val d = R * c
+        return d
     }
 
     val initialized: Boolean
