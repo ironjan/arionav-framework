@@ -47,10 +47,21 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
         navigationService.registerObserver(object : Observer<NavigationServiceState> {
             override fun update(state: NavigationServiceState) {
+                val remainingRoute = state.remainingRoute
+
                 _destination.value = state.destination
-                _route.value = state.remainingRoute
-                _remainingDistanceToDestination.value = state.remainingDistance
-                _remainingDurationToDestination.value = state.remainingRoute?.time
+
+                val routeHasError = remainingRoute?.hasErrors() != false
+                if(routeHasError) {
+                    _route.value = null
+                    _remainingDistanceToDestination.value = null
+                    _remainingDurationToDestination.value = null
+                }else {
+                    _remainingDistanceToDestination.value = remainingRoute?.distance
+                    _remainingDurationToDestination.value = remainingRoute?.time
+                    _route.value = remainingRoute
+                }
+
                 logger.info("Received navigation service update: $state.")
             }
 
