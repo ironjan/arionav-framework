@@ -308,7 +308,15 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     private lateinit var instructionHelper: InstructionHelper
 
     private fun updateArRoute(route: PathWrapper?) {
-        val nextInstruction = route.nextInstruction ?: return
+        val nextInstruction = route.nextInstruction
+        val DESTINATION_SIGN = 4
+        if (nextInstruction == null ||
+            nextInstruction.sign == DESTINATION_SIGN){
+            // the route only has a current instruction. show only destination marker
+            locationScene?.remove(currentInstructionMarker)
+
+            return
+        }
         val currentInstruction = route.currentInstruction ?: return
         val context = context ?: return
 
@@ -415,6 +423,8 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
                                         logger.warn("Could not create destination view renderable: ${t.message}.\n")
                                     }
                                     this.node.renderable = vr
+
+                                    updateDestinationRenderable()
                                 }
                         }.also {
                             locationScene?.add(it)

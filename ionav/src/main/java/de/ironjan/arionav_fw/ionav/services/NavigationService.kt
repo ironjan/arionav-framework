@@ -1,7 +1,9 @@
 package de.ironjan.arionav_fw.ionav.services
 
 import com.graphhopper.PathWrapper
+import de.ironjan.arionav_fw.ionav.BuildConfig
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
+import de.ironjan.arionav_fw.ionav.positioning.IonavLocationDistanceCalculator
 import de.ironjan.arionav_fw.ionav.util.Observable
 import de.ironjan.arionav_fw.ionav.util.Observer
 import org.slf4j.LoggerFactory
@@ -31,30 +33,9 @@ class NavigationService(
         if(newPosition == null) return false
 
         val isMoreRecent = newPosition.timestamp - lastKnownPosition.timestamp > 10000
-        val isDistantEnough = distanceBetween(lastKnownPosition, newPosition) > 5
+        val isDistantEnough = BuildConfig.DEBUG || IonavLocationDistanceCalculator.distanceBetween(lastKnownPosition, newPosition) > 5
 
         return isMoreRecent && isDistantEnough
-    }
-
-    private fun distanceBetween(a: IonavLocation, b: IonavLocation): Double {
-        // https://www.movable-type.co.uk/scripts/latlong.html
-
-        val R = 6371000 // earth radius in m
-
-        val theta1 = a.lat * Math.PI / 180
-        val theta2 = b.lat * Math.PI / 180
-
-        val deltaTheta = (b.lat - a.lat) * Math.PI / 180
-        val deltaLambda = (b.lon - a.lon) * Math.PI / 180
-
-        val a = Math.sin(deltaTheta / 2) * Math.sin(deltaTheta / 2) +
-                Math.cos(theta1) * Math.cos(theta2) *
-                Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2)
-
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-
-        val d = R * c
-        return d
     }
 
     val initialized: Boolean

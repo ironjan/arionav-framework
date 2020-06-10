@@ -27,7 +27,9 @@ class ArionavLocationScene(context: Activity?, mArSceneView: ArSceneView?) :
         mLocationMarkers.add(marker)
     }
 
-    fun remove(lm: LocationMarker) {
+    fun remove(lm: LocationMarker?) {
+        val lm = lm ?: return
+
         mLocationMarkers.remove(lm)
 
         // from clearMarkers
