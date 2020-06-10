@@ -109,7 +109,7 @@ open class MapViewFragment : Fragment() {
 
         when (val destination = viewModel.setDestinationString(destinationString)) {
             null -> Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
-            else -> viewModel.setDestination(destination)
+            else -> viewModel.setDestinationAndName(destinationString, destination)
         }
     }
 }

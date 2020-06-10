@@ -39,7 +39,7 @@ class PlacesFragment : Fragment() {
                 when (val destination = viewModel.setDestinationString(placeName)) {
                     null -> Snackbar.make(btnCenterOnUser, "Could not find $placeName.", Snackbar.LENGTH_SHORT).show()
                     else -> {
-                        viewModel.setDestination(destination)
+                        viewModel.setDestinationAndName(placeName, destination)
                         findNavController().navigate(R.id.arEnabledMapViewFragment)
                     }
                 }

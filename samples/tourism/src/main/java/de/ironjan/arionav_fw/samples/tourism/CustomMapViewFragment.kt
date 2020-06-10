@@ -38,7 +38,7 @@ class CustomMapViewFragment : ArEnabledMapViewFragment() {
 
                 when(val destination = viewModel.setDestinationString(name)){
                         null -> Snackbar.make(view.findViewById(R.id.btnCenterOnUser), "Could not find $name.", Snackbar.LENGTH_SHORT).show()
-                        else -> viewModel.setDestination(destination)
+                        else -> viewModel.setDestinationAndName(name, destination)
                     }
 
                 val context: Context? = activity ?: return true

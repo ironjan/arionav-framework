@@ -146,6 +146,13 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         return coordinate
     }
 
+    fun setDestinationAndName(name: String, coordinate: Coordinate) {
+        _destinationString.value = name
+        navigationService.destination = coordinate
+        centerOnUserPos()
+
+    }
+
     private val _destinations = MutableLiveData<Map<String,Coordinate>>(emptyMap())
     val destinations: LiveData<Map<String,Coordinate>> = _destinations
 
