@@ -347,7 +347,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
                                 }
 
                                 logger.info("Creating marker for '$currentInstruction' at $lat,$lon.")
-
+                                updateRenderable(renderable, currentInstruction, nextInstruction)
                             }
                     }.also {
                         locationScene?.add(it)
