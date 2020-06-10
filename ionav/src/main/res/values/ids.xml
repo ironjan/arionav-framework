@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="map_view_top_bar" type="id"/>
+    <item name="search_bar" type="id"/>
+    <item name="start_navigation_bar" type="id"/>
+</resources>

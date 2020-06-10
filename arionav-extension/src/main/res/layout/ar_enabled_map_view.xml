@@ -6,35 +6,23 @@
     android:layout_height="match_parent">
 
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/btnStartNavigation"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/map_view_top_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:src="@drawable/ic_search_black_24dp"
-        android:enabled="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/edit_destination"/>
-
-    <AutoCompleteTextView
-        android:id="@+id/edit_destination"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btnStartNavigation"
-        app:layout_constraintEnd_toStartOf="@+id/btnStartNavigation"
+        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ProgressBar
-        android:id="@android:id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        app:layout_constraintEnd_toEndOf="@+id/edit_destination"
-        app:layout_constraintTop_toTopOf="@+id/edit_destination"
-        app:layout_constraintBottom_toBottomOf="@+id/edit_destination"/>
+        <include
+            android:visibility="visible"
+            layout="@layout/view_search_bar" />
+
+        <include
+            android:visibility="gone"
+            layout="@layout/view_start_navigation_bar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
     <de.ironjan.arionav_fw.ionav.views.IonavMapView
@@ -44,7 +32,7 @@
         app:layout_constraintBottom_toTopOf="@+id/instructionText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_destination" />
+        app:layout_constraintTop_toBottomOf="@id/map_view_top_bar" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -52,7 +40,7 @@
         android:background="#30ffffff"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnStartNavigation">
+        app:layout_constraintTop_toBottomOf="@id/map_view_top_bar">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnLevelPlus"

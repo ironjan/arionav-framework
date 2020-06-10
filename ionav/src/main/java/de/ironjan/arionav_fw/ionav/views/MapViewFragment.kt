@@ -15,10 +15,14 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
+import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.services.RoutingService
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
+import kotlinx.android.synthetic.main.view_search_bar.*
+import kotlinx.android.synthetic.main.view_start_navigation_bar.*
+import java.util.*
 
 open class MapViewFragment : Fragment() {
     protected open val viewModel by activityViewModels<IonavViewModel>()
@@ -29,6 +33,8 @@ open class MapViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val findViewById = view.findViewById<View>(R.id.search_bar)
+        findViewById.visibility = View.VISIBLE
 
         observeViewModel(viewLifecycleOwner)
         bindOnClickListeners()
@@ -53,7 +59,28 @@ open class MapViewFragment : Fragment() {
             progress.isIndeterminate = isLoading
         })
 
-        viewModel.destinationString.observe(lifecycleOwner, Observer { edit_destination.setText(it) })
+        viewModel.destinationString.observe(lifecycleOwner, Observer {
+            edit_destination.setText(it)
+            txtDestination.text = it
+        })
+        viewModel.remainingDistanceToDestination.observe(lifecycleOwner, Observer { txtDistance.text = String.format("%.0fm", it, Locale.ROOT) })
+        viewModel.remainingDurationToDestination.observe(lifecycleOwner, Observer { txtDuration.text = InstructionHelper.toReadableTime(it ?: return@Observer) })
+
+
+        viewModel.route.observe(lifecycleOwner, Observer {
+            when (it) {
+                null -> {
+                    view?.findViewById<View>(R.id.start_navigation_bar)?.visibility = View.GONE
+                    view?.findViewById<View>(R.id.search_bar)?.visibility = View.VISIBLE
+                }
+                else -> {
+                    view?.findViewById<View>(R.id.start_navigation_bar)?.visibility = View.VISIBLE
+                    view?.findViewById<View>(R.id.search_bar)?.visibility = View.GONE
+                }
+            }
+
+
+        })
 
         bindSuggestions(lifecycleOwner)
     }
@@ -82,6 +109,8 @@ open class MapViewFragment : Fragment() {
 
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
+
+        btnBackToSearch.setOnClickListener { viewModel.setDestination(null) }
     }
 
     private fun bindMapItemTapListener() {
@@ -109,7 +138,10 @@ open class MapViewFragment : Fragment() {
 
         when (val destination = viewModel.setDestinationString(destinationString)) {
             null -> Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
-            else -> viewModel.setDestinationAndName(destinationString, destination)
+            else -> {
+                viewModel.setDestinationAndName(destinationString, destination)
+
+            }
         }
     }
 }
