@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graphhopper.PathWrapper
 import com.graphhopper.util.Instruction
-import de.ironjan.arionav_fw.ionav.di.IonavContainer
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomViewModel
+import de.ironjan.arionav_fw.ionav.di.IonavContainer
 import de.ironjan.arionav_fw.ionav.model.indoor_map.IndoorData
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
 import de.ironjan.arionav_fw.ionav.services.*
@@ -133,15 +133,17 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         centerOnUserPos()
     }
 
-    fun setDestinationString(value: String): Boolean {
-        _destinationString.value = value
+    /**
+     * Sets the destination string an retrieves its coordinates if possible.
+     *
+     * @return the coordinates of `name` or `null`
+     */
+    fun setDestinationString(name: String): Coordinate? {
+        _destinationString.value = name
 
-        val coordinate = destinationService.getCoordinate(value) ?: return false
+        val coordinate = destinationService.getCoordinate(name) ?: return null
 
-        navigationService.destination = coordinate
-        centerOnUserPos()
-
-        return true
+        return coordinate
     }
 
     private val _destinations = MutableLiveData<Map<String,Coordinate>>(emptyMap())

@@ -12,13 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import arrow.core.k
 import com.google.android.material.snackbar.Snackbar
-import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.R
-import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
+import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.services.RoutingService
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
+import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 
 open class MapViewFragment : Fragment() {
@@ -108,11 +107,9 @@ open class MapViewFragment : Fragment() {
 
         val destinationString = edit_destination.text.toString()
 
-        val isPlaceFound = viewModel.setDestinationString(destinationString)
-        val isPlaceNotFound = !isPlaceFound
-        if (isPlaceNotFound) {
-            Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
-            return
+        when (val destination = viewModel.setDestinationString(destinationString)) {
+            null -> Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
+            else -> viewModel.setDestination(destination)
         }
     }
 }

@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.views.ArEnabledMapViewFragment
 import de.ironjan.arionav_fw.ionav.views.IonavMapView
 import de.ironjan.arionav_fw.samples.tourism.viewmodel.TourismViewModel
@@ -32,12 +33,16 @@ class CustomMapViewFragment : ArEnabledMapViewFragment() {
             override fun onItemLongPress(index: Int, item: MarkerItem?): Boolean {
                 if (item == null) return true
 
-                logger.info("long press on ${item.title}")
+                val name = item.title
+                logger.info("long press on $name")
 
-                viewModel.setDestinationString(item.title)
+                when(val destination = viewModel.setDestinationString(name)){
+                        null -> Snackbar.make(view.findViewById(R.id.btnCenterOnUser), "Could not find $name.", Snackbar.LENGTH_SHORT).show()
+                        else -> viewModel.setDestination(destination)
+                    }
 
                 val context: Context? = activity ?: return true
-                Toast.makeText(context, "${item.title}:\n${item.description}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "$name:\n${item.description}", Toast.LENGTH_SHORT).show()
                 return true
             }
 

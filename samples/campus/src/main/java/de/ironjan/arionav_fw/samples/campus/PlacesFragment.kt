@@ -11,8 +11,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.samples.campus.viewmodel.NamedPlacesAdapter
+import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 import org.slf4j.LoggerFactory
 
 class PlacesFragment : Fragment() {
@@ -33,8 +35,14 @@ class PlacesFragment : Fragment() {
         val onItemClickListener = object : NamedPlacesAdapter.OnItemClickListener {
             override fun onItemClick(placeName: String) {
                 logger.info("Clicked on $placeName.")
-                viewModel.setDestinationString(placeName)
-                findNavController().navigate(R.id.arEnabledMapViewFragment)
+
+                when (val destination = viewModel.setDestinationString(placeName)) {
+                    null -> Snackbar.make(btnCenterOnUser, "Could not find $placeName.", Snackbar.LENGTH_SHORT).show()
+                    else -> {
+                        viewModel.setDestination(destination)
+                        findNavController().navigate(R.id.arEnabledMapViewFragment)
+                    }
+                }
             }
 
         }
