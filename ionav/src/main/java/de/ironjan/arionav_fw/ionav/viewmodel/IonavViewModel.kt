@@ -50,6 +50,7 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
                 _destination.value = state.destination
                 _route.value = state.remainingRoute
                 _remainingDistanceToDestination.value = state.remainingDistance
+                _remainingDurationToDestination.value = state.remainingRoute?.time
                 logger.info("Received navigation service update: $state.")
             }
 
@@ -203,6 +204,9 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
     private val _remainingDistanceToDestination: MutableLiveData<Double?> = MutableLiveData()
     val remainingDistanceToDestination: LiveData<Double?> = _remainingDistanceToDestination
+
+    private val _remainingDurationToDestination: MutableLiveData<Long?> = MutableLiveData()
+    val remainingDurationToDestination: LiveData<Long?> = _remainingDurationToDestination
 
     val currentInstruction by lazy {
         val mediatorLiveData = MediatorLiveData<Instruction?>()
