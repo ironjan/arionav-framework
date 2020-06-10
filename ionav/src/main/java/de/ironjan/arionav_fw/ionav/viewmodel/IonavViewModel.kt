@@ -123,8 +123,10 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     private val _destinationString: MutableLiveData<String> = MutableLiveData()
     val destinationString: LiveData<String> = _destinationString
 
-    fun setDestination(value: Coordinate) {
+    fun setDestination(value: Coordinate?) {
         navigationService.destination = value
+
+        if(value == null) return
 
         val oldDestinationString = _destinationString.value
         val newDestinationString = value.asString() ?: oldDestinationString
