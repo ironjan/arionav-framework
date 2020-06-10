@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
-import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
+import de.ironjan.arionav_fw.arionav.ArEnabledNavigationFragmentHost
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.util.PermissionHelper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
     PermissionHelper.PermissionHelperCallback,
-    ArEnabledNavigationHost {
+    ArEnabledNavigationFragmentHost {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
-import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
+import de.ironjan.arionav_fw.arionav.ArEnabledNavigationFragmentHost
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
@@ -36,7 +36,7 @@ class MainActivity :
     AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback,
     PermissionHelper.PermissionHelperCallback,
-    ArEnabledNavigationHost {
+    ArEnabledNavigationFragmentHost {
 
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import de.ironjan.arionav_fw.arionav.ArEnabledNavigationHost
+import de.ironjan.arionav_fw.arionav.ArEnabledNavigationFragmentHost
 import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.ionav.views.MapViewFragment
 import kotlinx.android.synthetic.main.ar_enabled_map_view.*
@@ -18,7 +18,7 @@ open class   ArEnabledMapViewFragment : MapViewFragment() {
 
         btnArNav.setOnClickListener {
             when (val navHost = activity) {
-                is ArEnabledNavigationHost -> navHost.navigateToAr()
+                is ArEnabledNavigationFragmentHost -> navHost.navigateToAr()
                 else -> {
                 }
             }
