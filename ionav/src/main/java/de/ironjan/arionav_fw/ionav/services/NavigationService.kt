@@ -30,7 +30,7 @@ class NavigationService(
 
     private fun isDifferentEnough(lastKnownPosition: IonavLocation?, newPosition: IonavLocation?): Boolean {
         if (lastKnownPosition == null) return true
-        if(newPosition == null) return false
+        if (newPosition == null) return false
 
         val isMoreRecent = newPosition.timestamp - lastKnownPosition.timestamp > 10000
         val isDistantEnough = BuildConfig.DEBUG || IonavLocationDistanceCalculator.distanceBetween(lastKnownPosition, newPosition) > 5
@@ -62,20 +62,13 @@ class NavigationService(
     private fun recomputeRemainingRoute(lastKnownPosition: IonavLocation?) {
         val lastKnownPositionCoordinates = lastKnownPosition?.coordinate
 
-        if (lastKnownPosition == null) {
-            logger.debug("Last known position is null. Clearing remaining route.")
-            remainingRoute = null
-            return
+        val newRemainingRoute = if (lastKnownPosition == null || destination == null) {
+            logger.debug("Last known position ($lastKnownPosition) or destination ($destination) is null. Clearing remaining route.")
+            null
+        } else {
+            routingService.route(lastKnownPositionCoordinates!!, destination!!)
         }
 
-        if (destination == null) {
-            logger.debug("Destination is null. Clearing remaining route.")
-            remainingRoute = null
-            return
-        }
-
-
-        val newRemainingRoute = routingService.route(lastKnownPositionCoordinates!!, destination!!)
         state = state.copy(remainingRoute = newRemainingRoute)
     }
 
