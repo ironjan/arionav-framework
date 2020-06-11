@@ -39,14 +39,14 @@ open class ArNavFragment : Fragment() {
     // region ar instruction view
     protected open val instructionLayoutId = R.layout.view_basic_instruction
 
-    protected open fun updateInstructionView(view: View, currentInstruction: Instruction, nextInstruction: Instruction?) {
+    protected open fun updateInstructionView(view: View, currentInstruction: Instruction, nextInstruction: Instruction) {
         val txtName = view.findViewById<TextView>(R.id.instructionText)
         val txtDistance = view.findViewById<TextView>(R.id.instructionDistanceInMeters)
         val instructionImage = view.findViewById<ImageView>(R.id.instructionImage)
 
         txtName.text = currentInstruction.name
-        txtDistance.text = "%.2fm".format(currentInstruction.distance)
-        instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(currentInstruction.sign))
+        txtDistance.text = "%.2fm".format(nextInstruction.distance)
+        instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(nextInstruction.sign))
     }
     // endregion
 }

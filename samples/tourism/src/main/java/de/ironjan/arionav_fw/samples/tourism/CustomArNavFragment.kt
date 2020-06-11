@@ -17,20 +17,18 @@ class CustomArNavFragment : ArNavFragment() {
 
     override fun updateInstructionView(view: View,
                                        currentInstruction: Instruction,
-                                       nextInstruction: Instruction?) {
+                                       nextInstruction: Instruction) {
+
+
 
         val txtInstruction = view.findViewById<TextView>(de.ironjan.arionav_fw.arionav.R.id.instructionText)
-        val instructionImage = view.findViewById<ImageView>(de.ironjan.arionav_fw.arionav.R.id.instructionImage)
-
-        val instructionText = instructionHelper.toText(currentInstruction, nextInstruction)
+        val instructionText = instructionHelper.getTextFor(nextInstruction)
         txtInstruction.text = instructionText
-        txtInstruction.visibility = if (instructionText.isNullOrBlank()) View.GONE else View.VISIBLE
+        txtInstruction.visibility = if (instructionText.isBlank()) View.GONE else View.VISIBLE
 
-        val sign = if(currentInstruction.points.size > 2) {
-            nextInstruction?.sign
-        }else {
-            nextInstruction?.sign  ?: InstructionHelper.SIGN_DESTINATION
-        }
-        instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(sign))
+        val instructionImage = view.findViewById<ImageView>(de.ironjan.arionav_fw.arionav.R.id.instructionImage)
+        instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(nextInstruction.sign))
+
+        view.findViewById<TextView>(R.id.txtDistance).text = InstructionHelper.toReadableDistance(currentInstruction.distance)
     }
 }

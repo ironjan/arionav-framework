@@ -367,7 +367,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
 
     private var layoutId = R.layout.view_basic_instruction
-    private var updateRenderable: (View, Instruction, Instruction?) -> Unit =
+    private var updateRenderable: (View, Instruction, Instruction) -> Unit =
         { view: View, currentInstruction: Instruction, nextInstruction: Instruction? ->
             val txtName = view.findViewById<TextView>(R.id.instructionText)
             val txtDistance = view.findViewById<TextView>(R.id.instructionDistanceInMeters)
@@ -385,7 +385,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
             instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(sign))
         }
 
-    fun setInstructionView(layoutId: Int, updateRenderable: (View, Instruction, Instruction?) -> Unit) {
+    fun setInstructionView(layoutId: Int, updateRenderable: (View, Instruction, Instruction) -> Unit) {
         this.layoutId = layoutId
         this.updateRenderable = updateRenderable
         currentInstructionMarker = null
