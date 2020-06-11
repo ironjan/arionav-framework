@@ -11,6 +11,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:scaleType="fitXY"
+        android:layout_margin="8dp"
         android:src="@android:drawable/ic_input_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,9 +23,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+        android:maxLines="1"
         app:layout_constraintStart_toEndOf="@+id/btnBackToSearch"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="8dp"
         tools:text="Route to Destination" />
+
+    <TextView
+        android:id="@+id/lblDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance to destination: "
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@id/txtDestination"
+        app:layout_constraintTop_toBottomOf="@id/txtDestination" />
 
     <TextView
         android:id="@+id/txtDistance"
@@ -32,8 +44,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@id/txtDuration"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="@id/txtDestination"
-        app:layout_constraintTop_toBottomOf="@id/txtDestination" />
+        app:layout_constraintStart_toEndOf="@id/lblDistance"
+        app:layout_constraintTop_toTopOf="@id/lblDistance"
+        tools:text="500m" />
 
     <TextView
         android:id="@+id/txtDuration"
@@ -41,5 +54,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/txtDistance"
-        app:layout_constraintTop_toBottomOf="@id/txtDestination" />
+        app:layout_constraintTop_toTopOf="@id/lblDistance"
+        tools:text="10min" />
 </androidx.constraintlayout.widget.ConstraintLayout>
