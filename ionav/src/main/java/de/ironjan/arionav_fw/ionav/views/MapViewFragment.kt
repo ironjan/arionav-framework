@@ -63,7 +63,17 @@ open class MapViewFragment : Fragment() {
             edit_destination.setText(it)
             txtDestination.text = it
         })
-        viewModel.remainingDistanceToDestination.observe(lifecycleOwner, Observer { txtDistance.text = String.format("%.0fm", it, Locale.ROOT) })
+        viewModel.remainingDistanceToDestination.observe(lifecycleOwner, Observer {
+            if(it == null) {
+                txtDistance.text = ""
+                return@Observer
+            }
+
+            txtDistance.text = String.format("%.0fm", it, Locale.ROOT)
+            if(it < 5.0) {
+                notifyUserAboutBeingCloseToDestination()
+            }
+        })
         viewModel.remainingDurationToDestination.observe(lifecycleOwner, Observer { txtDuration.text = InstructionHelper.toReadableTime(it ?: return@Observer) })
 
 
@@ -83,6 +93,16 @@ open class MapViewFragment : Fragment() {
         })
 
         bindSuggestions(lifecycleOwner)
+    }
+
+    @SuppressLint("WrongConstant")
+    open fun notifyUserAboutBeingCloseToDestination() {
+        val snackbar = Snackbar.make(btnCenterOnUser, "You are close to your destination.", Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction("OK"){
+            snackbar.dismiss()
+            viewModel.setDestination(null)
+        }
+        snackbar.show()
     }
 
     private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
