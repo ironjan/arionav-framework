@@ -25,6 +25,8 @@ import kotlinx.android.synthetic.main.view_start_navigation_bar.*
 import java.util.*
 
 open class MapViewFragment : Fragment() {
+    private var closeToDestinationSnackbar: Snackbar? = null
+
     protected open val viewModel by activityViewModels<IonavViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
@@ -64,14 +66,16 @@ open class MapViewFragment : Fragment() {
             txtDestination.text = it
         })
         viewModel.remainingDistanceToDestination.observe(lifecycleOwner, Observer {
-            if(it == null) {
+            if (it == null) {
                 txtDistance.text = ""
                 return@Observer
             }
 
             txtDistance.text = String.format("%.0fm", it, Locale.ROOT)
-            if(it < 5.0) {
+            if (it < 5.0) {
                 notifyUserAboutBeingCloseToDestination()
+            } else {
+                clearBeingCloseToDestinationNotification()
             }
         })
         viewModel.remainingDurationToDestination.observe(lifecycleOwner, Observer { txtDuration.text = InstructionHelper.toReadableTime(it ?: return@Observer) })
@@ -95,14 +99,20 @@ open class MapViewFragment : Fragment() {
         bindSuggestions(lifecycleOwner)
     }
 
+    open fun clearBeingCloseToDestinationNotification(){
+        closeToDestinationSnackbar?.dismiss()
+        closeToDestinationSnackbar = null
+    }
     @SuppressLint("WrongConstant")
     open fun notifyUserAboutBeingCloseToDestination() {
-        val snackbar = Snackbar.make(btnCenterOnUser, "You are close to your destination.", Snackbar.LENGTH_INDEFINITE)
-        snackbar.setAction("OK"){
-            snackbar.dismiss()
-            viewModel.setDestination(null)
-        }
-        snackbar.show()
+        closeToDestinationSnackbar = closeToDestinationSnackbar ?: Snackbar.make(btnCenterOnUser, "You are close to your destination.", Snackbar.LENGTH_INDEFINITE)
+            .apply {
+                setAction("OK") {
+                    dismiss()
+                    viewModel.setDestination(null)
+                }
+                show()
+            }
     }
 
     private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
