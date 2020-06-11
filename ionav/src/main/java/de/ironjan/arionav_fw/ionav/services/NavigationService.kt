@@ -38,9 +38,6 @@ class NavigationService(
         return isMoreRecent && isDistantEnough
     }
 
-    val initialized: Boolean
-        get() = routingService.initialized
-
     var destination
         get() = state.destination
         set(value) {
