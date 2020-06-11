@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
@@ -33,7 +35,12 @@ open class ArNavFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         ar_route_view.setInstructionView(instructionLayoutId, this::updateInstructionView)
         ar_route_view.observe(model, viewLifecycleOwner)
+
+        model.remainingDistanceToDestination.observe(viewLifecycleOwner, Observer {
+            updateDestinationSnackbar(it)
+        })
     }
+
     // endregion
 
     // region ar instruction view
@@ -47,6 +54,41 @@ open class ArNavFragment : Fragment() {
         txtName.text = currentInstruction.name
         txtDistance.text = "%.2fm".format(nextInstruction.distance)
         instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(nextInstruction.sign))
+    }
+    // endregion
+
+    // region destination snackbar
+    var destinationSnackbar: Snackbar? = null
+
+    private fun updateDestinationSnackbar(distanceToDestination: Double?) {
+        if(distanceToDestination == null || distanceToDestination > 5.0) {
+            clearDestinationSnackbar()
+        } else {
+            showDestinationSnackbar()
+        }
+    }
+
+    private fun showDestinationSnackbar() {
+        destinationSnackbar = (
+                destinationSnackbar ?:
+                Snackbar.make(ar_route_view, "You are close to your destination.", Snackbar.LENGTH_INDEFINITE)
+                    .apply {
+                        setAction("OK") {
+                            dismiss()
+                            model.setDestination(null)
+                            // FIXME navigate back to map
+                        }
+                    })
+            .apply {
+                if(!isShownOrQueued){
+                    show()
+                }
+            }
+    }
+
+    private fun clearDestinationSnackbar() {
+        destinationSnackbar?.dismiss()
+        destinationSnackbar = null
     }
     // endregion
 }
