@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -347,7 +348,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
                                 }
 
                                 logger.info("Creating marker for '$currentInstruction' at $lat,$lon.")
-                                updateRenderable(renderable, currentInstruction, nextInstruction)
+                                updateRenderable(renderable.view, currentInstruction, nextInstruction)
                             }
                     }.also {
                         locationScene?.add(it)
@@ -359,18 +360,18 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
                 longitude = lon
 
                 val viewRenderable = this.node.renderable as? ViewRenderable? ?: return@apply
-                updateRenderable(viewRenderable, currentInstruction, nextInstruction)
+                updateRenderable(viewRenderable.view, currentInstruction, nextInstruction)
             }
         }
     }
 
 
     private var layoutId = R.layout.view_basic_instruction
-    private var updateRenderable: (ViewRenderable, Instruction, Instruction?) -> Unit =
-        { renderable: ViewRenderable, currentInstruction: Instruction, nextInstruction: Instruction? ->
-            val txtName = renderable.view.findViewById<TextView>(R.id.instructionText)
-            val txtDistance = renderable.view.findViewById<TextView>(R.id.instructionDistanceInMeters)
-            val instructionImage = renderable.view.findViewById<ImageView>(R.id.instructionImage)
+    private var updateRenderable: (View, Instruction, Instruction?) -> Unit =
+        { view: View, currentInstruction: Instruction, nextInstruction: Instruction? ->
+            val txtName = view.findViewById<TextView>(R.id.instructionText)
+            val txtDistance = view.findViewById<TextView>(R.id.instructionDistanceInMeters)
+            val instructionImage = view.findViewById<ImageView>(R.id.instructionImage)
 
             txtName.text = currentInstruction.name
             txtDistance.text = "%.2fm".format(currentInstruction.distance)
@@ -384,7 +385,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
             instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(sign))
         }
 
-    fun setInstructionView(layoutId: Int, updateRenderable: (ViewRenderable, Instruction, Instruction?) -> Unit) {
+    fun setInstructionView(layoutId: Int, updateRenderable: (View, Instruction, Instruction?) -> Unit) {
         this.layoutId = layoutId
         this.updateRenderable = updateRenderable
         currentInstructionMarker = null
