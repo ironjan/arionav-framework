@@ -29,6 +29,8 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     private val destinationService by lazy { ionavContainer.destinationService }
     private val indoorDataService by lazy { ionavContainer.indoorDataService }
 
+    val instructionHelper by lazy { ionavContainer.instructionHelper }
+
     val mapFilePath by lazy { ionavContainer.mapFilePath }
     //endregion
 

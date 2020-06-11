@@ -24,6 +24,8 @@ open class IonavContainer(private val context: Context, val mapName: String, val
     val routingService = RoutingService()
     val navigationService = NavigationService(positioningService, routingService)
 
+    val instructionHelper = InstructionHelper(context)
+
     open fun init() {
         routingService.init(mapFolderPath)
         indoorDataService.init(osmFilePath)
