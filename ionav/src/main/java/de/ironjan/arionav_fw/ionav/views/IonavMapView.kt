@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory
 
 class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
 
+    private lateinit var longPressCallback: LongPressCallback
+
     var isIndoorEnabled: Boolean = true
         set(value) {
             field = value
@@ -60,8 +62,9 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
 
 
     // region initialization
-    fun initialize(viewModel: IonavViewModel) {
+    fun initialize(viewModel: IonavViewModel, longPressCallback: LongPressCallback) {
         this.viewModel = viewModel
+        this.longPressCallback = longPressCallback
 
         logger.debug("Loading map for map view")
         map().layers().add(MapEventsReceiver(map()))
@@ -174,19 +177,7 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
     }
 
     private fun onLongPress(p: GeoPoint): Boolean {
-        logger.info("longpress at $p")
-
-        if (viewModel.routingStatus.value == RoutingService.Status.READY) {
-            val selectedLevel = viewModel.getSelectedLevel()
-
-            viewModel.setDestination(Coordinate(p.latitude, p.longitude, selectedLevel))
-            return true
-        }
-
-        val msg = "Graph not loaded yet. Please wait."
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-        logger.info(msg)
-        return false
+        return longPressCallback.longPress(p)
     }
     // endregion
 
@@ -208,6 +199,9 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
 
     // endregion
 
+    interface LongPressCallback {
+        fun longPress(p: GeoPoint): Boolean
+    }
 
     companion object {
         const val minZoomForBuildingLayer = 16

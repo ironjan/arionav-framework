@@ -1,8 +1,10 @@
 package de.ironjan.arionav_fw.ionav.views
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
@@ -15,13 +17,16 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
+import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.services.RoutingService
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 import kotlinx.android.synthetic.main.view_search_bar.*
+import kotlinx.android.synthetic.main.view_start_navigation_bar.*
 import org.oscim.core.GeoPoint
+import java.util.*
 
 
 open class MapViewFragment : Fragment() {
@@ -50,7 +55,21 @@ open class MapViewFragment : Fragment() {
         val holder = activity?.application as IonavContainerHolder
         viewModel.initialize(holder.ionavContainer)
         mapView.onLifecycleOwnerAttached(viewLifecycleOwner)
-        mapView.initialize(viewModel)
+        mapView.initialize(viewModel, object: IonavMapView.LongPressCallback {
+            override fun longPress(p: GeoPoint): Boolean {
+                if (viewModel.routingStatus.value == RoutingService.Status.READY) {
+                    val selectedLevel = viewModel.getSelectedLevel()
+
+                    viewModel.setDestination(Coordinate(p.latitude, p.longitude, selectedLevel))
+                    goToStartNavigationFragment()
+                    return true
+                }
+
+                val msg = "Graph not loaded yet. Please wait."
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                return true
+            }
+        })
         bindMapItemTapListener()
     }
 
@@ -179,6 +198,9 @@ open class MapViewFragment : Fragment() {
 
             }
         }
+    }
+    private fun goToStartNavigationFragment() {
+        (activity as? NavigationFragmentHost)?.goToStartNavigation()
     }
 
     // region options menu

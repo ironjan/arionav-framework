@@ -24,6 +24,7 @@ import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
 import kotlinx.android.synthetic.main.view_search_bar.*
 import kotlinx.android.synthetic.main.view_start_navigation_bar.*
+import org.oscim.core.GeoPoint
 import java.util.*
 
 
@@ -61,7 +62,12 @@ open class StartNavigationFragment : Fragment() {
         val holder = activity?.application as IonavContainerHolder
         viewModel.initialize(holder.ionavContainer)
         mapView.onLifecycleOwnerAttached(viewLifecycleOwner)
-        mapView.initialize(viewModel)
+        mapView.initialize(viewModel, object : IonavMapView.LongPressCallback{
+            override fun longPress(p: GeoPoint): Boolean {
+                /* nothing to do */
+                return true
+            }
+        })
         bindMapItemTapListener()
     }
 
