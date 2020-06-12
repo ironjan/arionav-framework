@@ -17,4 +17,9 @@
         android:label="AR Nav Fragment"
         tools:layout="@layout/fragment_ar_view" />
 
+    <fragment
+        android:id="@+id/InstructionsListFragment"
+        android:name="InstructionsListFragment"
+        android:label="Instructions"
+        tools:layout="@layout/fragment_with_recycler_view" />
 </navigation>
