@@ -220,5 +220,35 @@ open class MapViewFragment : Fragment() {
 
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+    private fun setupSearchView(menu: Menu): Unit {
+        val searchView = menu.findItem(R.id.mnu_search).actionView as SearchView
+        searchView.setIconifiedByDefault(false)
+
+        val endSuggestionsAdapter = ArrayAdapter(context ?: return, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
+
+        val searchAutoComplete =
+            searchView
+                .findViewById<SearchView.SearchAutoComplete>(androidx.appcompat.R.id.search_src_text)
+                .apply {
+                    setAdapter(endSuggestionsAdapter)
+                    setOnItemClickListener { parent, view, position, id ->
+                        val item = endSuggestionsAdapter.getItem(position) ?: return@setOnItemClickListener
+                        val coordinate = viewModel.getCoordinateOf(item) ?: return@setOnItemClickListener
+                        viewModel.setDestinationAndName(item, coordinate)
+
+                        (activity as? NavigationFragmentHost)?.goToStartNavigation()
+                    }
+                }
+
+        viewModel.destinations.observe(viewLifecycleOwner, Observer {
+            endSuggestionsAdapter.apply {
+                clear()
+                addAll(it.keys)
+                sort { o1: String, o2: String -> o1.compareTo(o2) }
+            }
+        })
+        viewModel.destinationString.observe(viewLifecycleOwner, Observer(searchAutoComplete::setText))
+    }
     // endregion
 }
