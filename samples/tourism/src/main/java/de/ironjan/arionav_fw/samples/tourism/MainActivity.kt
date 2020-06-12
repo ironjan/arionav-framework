@@ -110,4 +110,8 @@ class MainActivity : AppCompatActivity(),
          navController.navigate(R.id.CustomArNavFragment)
     }
 
+    override fun goToStartNavigation() {
+        navController.navigate(R.id.startNavigationFragment)
+    }
+
 }

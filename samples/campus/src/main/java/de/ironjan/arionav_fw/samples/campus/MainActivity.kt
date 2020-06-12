@@ -122,6 +122,10 @@ class MainActivity :
         navController.navigate(R.id.arNavFragment)
     }
 
+    override fun goToStartNavigation() {
+        /* fixme */
+    }
+
 
     // region permission handling
 
