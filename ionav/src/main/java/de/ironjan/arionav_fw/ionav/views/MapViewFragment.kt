@@ -24,7 +24,6 @@ import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
-import kotlinx.android.synthetic.main.view_search_bar.*
 import kotlinx.android.synthetic.main.view_start_navigation_bar.*
 import org.oscim.core.GeoPoint
 import java.util.*
@@ -45,9 +44,6 @@ open class MapViewFragment : Fragment() {
             displayOptions = ActionBar.DISPLAY_SHOW_HOME or ActionBar.DISPLAY_SHOW_TITLE
             setHasOptionsMenu(true)
         }
-
-        val findViewById = view.findViewById<View>(R.id.search_bar)
-        findViewById.visibility = View.VISIBLE
 
         observeViewModel(viewLifecycleOwner)
         bindOnClickListeners()
@@ -76,7 +72,6 @@ open class MapViewFragment : Fragment() {
 
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {
         viewModel.selectedLevel.observe(lifecycleOwner, Observer { txtLevel.text = it.toString() })
-        viewModel.routingStatus.observe(lifecycleOwner, Observer { btnStartNavigation.isEnabled = (it == RoutingService.Status.READY) })
 
         viewModel.initializationStatus.observe(lifecycleOwner, Observer {
             val isLoading = it != IonavViewModel.InitializationStatus.INITIALIZED
@@ -155,9 +150,6 @@ open class MapViewFragment : Fragment() {
         viewModel.setDestinationString(name)
     }
 
-    private fun goToStartNavigationFragment() {
-        (activity as? NavigationFragmentHost)?.goToStartNavigation()
-    }
     private fun goToStartNavigationFragment() {
         (activity as? NavigationFragmentHost)?.goToStartNavigation()
     }
