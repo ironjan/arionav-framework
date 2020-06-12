@@ -24,15 +24,6 @@ open class   ArEnabledMapViewFragment : MapViewFragment() {
             }
         }
 
-        viewModel.instructionText.observe(viewLifecycleOwner, Observer {
-//            if(it == null) {
-//                instructionText.visibility = View.GONE
-//                return@Observer
-//            }
-//            instructionText.visibility = View.VISIBLE
-//            instructionText.text = it
-        })
-
         updateBtnArNavState(false)
 
         viewModel.route.observe(viewLifecycleOwner, Observer { updateBtnArNavState(it != null && !it.hasErrors())})

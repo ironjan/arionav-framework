@@ -56,7 +56,7 @@ open class StartNavigationFragment : Fragment() {
         (requireActivity() as AppCompatActivity)
             .supportActionBar
             ?.apply {
-                val view = layoutInflater.inflate(R.layout.view_start_navigation_bar, null)
+                val view = layoutInflater.inflate(R.layout.action_bar_start_navigation, null)
 
                 bindActionBarViewsToViewModel(view)
 
