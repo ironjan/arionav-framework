@@ -3,9 +3,11 @@ package de.ironjan.arionav_fw.ionav.views
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBar.LayoutParams.MATCH_PARENT
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
@@ -33,6 +36,13 @@ open class StartNavigationFragment : Fragment() {
     @SuppressLint("WrongConstant")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val onBackPressedDispatcher = requireActivity().onBackPressedDispatcher
+        onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            viewModel.setDestination(null)
+            remove()
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         setupActionBar()
 
@@ -68,9 +78,22 @@ open class StartNavigationFragment : Fragment() {
                             or ActionBar.DISPLAY_SHOW_TITLE
                             or ActionBar.DISPLAY_SHOW_CUSTOM)
 
-                setHasOptionsMenu(false)
+                setHasOptionsMenu(true)
             }
     }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                viewModel.setDestination(null)
+                findNavController().popBackStack()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 
     private fun bindActionBarViewsToViewModel(view: View) {
         viewModel.destinationString.observe(viewLifecycleOwner,
@@ -92,9 +115,9 @@ open class StartNavigationFragment : Fragment() {
         viewModel.selectedLevel.observe(lifecycleOwner, Observer { txtLevel.text = it.toString() })
 
         viewModel.remainingDistanceToDestination.observe(lifecycleOwner, Observer {
-            if(it==null || it > 5.0) {
+            if (it == null || it > 5.0) {
                 clearBeingCloseToDestinationNotification()
-            }else {
+            } else {
                 notifyUserAboutBeingCloseToDestination()
             }
         })
