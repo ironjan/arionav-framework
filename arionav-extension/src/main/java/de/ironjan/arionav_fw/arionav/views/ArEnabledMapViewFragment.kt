@@ -18,7 +18,7 @@ open class   ArEnabledMapViewFragment : MapViewFragment() {
 
         btnArNav.setOnClickListener {
             when (val navHost = activity) {
-                is ArEnabledNavigationFragmentHost -> navHost.navigateToAr()
+                is ArEnabledNavigationFragmentHost -> navHost.goToArNav()
                 else -> {
                 }
             }

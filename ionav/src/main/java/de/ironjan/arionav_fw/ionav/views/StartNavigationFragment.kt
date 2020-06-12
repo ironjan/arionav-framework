@@ -146,6 +146,9 @@ open class StartNavigationFragment : Fragment() {
             }
     }
 
+    protected open val navigationFragmentHost
+        get() = activity as? NavigationFragmentHost
+
     private fun bindOnClickListeners() {
         btnCenterOnUser.setOnClickListener {
             viewModel.setFollowUserPosition(true)
@@ -155,9 +158,8 @@ open class StartNavigationFragment : Fragment() {
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
 
-        val navigationFragmentHost = activity as? NavigationFragmentHost
 
-        btnMapNav.setOnClickListener { navigationFragmentHost?.goToMapNavigation()  }
+        btnMapNav.setOnClickListener { navigationFragmentHost?.goToMapNavigation() }
 // FIXME MOVE TO ARIONAVEXT        btnArNav.setOnClickListener { (activity as? NavigationFragmentHost) }
         btnTextInstructions.setOnClickListener { navigationFragmentHost?.goToInstrucitons() }
     }

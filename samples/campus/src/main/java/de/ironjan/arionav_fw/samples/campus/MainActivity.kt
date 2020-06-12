@@ -119,7 +119,7 @@ class MainActivity :
         else return super.onOptionsItemSelected(item)
     }
 
-    override fun navigateToAr() {
+    override fun goToArNav() {
         navController.navigate(R.id.arNavFragment)
     }
 

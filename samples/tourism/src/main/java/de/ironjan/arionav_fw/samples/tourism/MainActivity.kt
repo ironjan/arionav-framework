@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(),
         get() = findNavController(R.id.nav_host_fragment)
 
 
-    override fun navigateToAr() {
+    override fun goToArNav() {
         navController.navigate(R.id.CustomArNavFragment)
     }
 
