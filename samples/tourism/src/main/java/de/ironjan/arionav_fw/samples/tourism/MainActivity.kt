@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
@@ -80,12 +81,11 @@ class MainActivity : AppCompatActivity(),
 
     override fun permissionAlreadyGranted(requestCode: Int) {
         super.permissionAlreadyGranted(requestCode)
-        when(requestCode) {
+        when (requestCode) {
             locationRequestCode -> initializePositioningService()
         }
     }
     // endregion
-
 
 
     // region initializePositioningService
@@ -107,11 +107,19 @@ class MainActivity : AppCompatActivity(),
 
 
     override fun navigateToAr() {
-         navController.navigate(R.id.CustomArNavFragment)
+        navController.navigate(R.id.CustomArNavFragment)
     }
 
     override fun goToStartNavigation() {
         navController.navigate(R.id.startNavigationFragment)
+    }
+
+    override fun goToMapNavigation() {
+        Toast.makeText(this, "going to map...", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun goToInstrucitons() {
+        navController.navigate(R.id.InstructionsListFragment)
     }
 
 }

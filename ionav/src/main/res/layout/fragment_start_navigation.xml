@@ -89,20 +89,10 @@
                 android:layout_height="wrap_content"
                 android:text="Map Nav"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btnArNav"
+                app:layout_constraintEnd_toStartOf="@id/btnTextInstructions"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnArNav"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="AR Nav"
-                app:layout_constraintEnd_toStartOf="@id/btnTextInstructions"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@id/btnMapNav"
-                app:layout_constraintTop_toTopOf="@id/btnMapNav" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnTextInstructions"
@@ -111,7 +101,7 @@
                 android:text="Instructions"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@id/btnArNav"
+                app:layout_constraintStart_toEndOf="@id/btnMapNav"
                 app:layout_constraintTop_toTopOf="@id/btnMapNav" />
 
 

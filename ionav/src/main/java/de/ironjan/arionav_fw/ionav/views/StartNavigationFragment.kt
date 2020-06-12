@@ -22,7 +22,12 @@ import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
-import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
+import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnCenterOnUser
+import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnLevelMinus
+import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnLevelPlus
+import kotlinx.android.synthetic.main.fragment_simple_map_nav.mapView
+import kotlinx.android.synthetic.main.fragment_simple_map_nav.txtLevel
+import kotlinx.android.synthetic.main.fragment_start_navigation.*
 import org.oscim.core.GeoPoint
 
 
@@ -150,6 +155,11 @@ open class StartNavigationFragment : Fragment() {
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
 
+        val navigationFragmentHost = activity as? NavigationFragmentHost
+
+        btnMapNav.setOnClickListener { navigationFragmentHost?.goToMapNavigation()  }
+// FIXME MOVE TO ARIONAVEXT        btnArNav.setOnClickListener { (activity as? NavigationFragmentHost) }
+        btnTextInstructions.setOnClickListener { navigationFragmentHost?.goToInstrucitons() }
     }
 
     private fun bindMapItemTapListener() {
