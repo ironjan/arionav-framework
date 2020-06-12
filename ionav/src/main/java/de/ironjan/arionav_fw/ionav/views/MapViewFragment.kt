@@ -167,6 +167,18 @@ open class MapViewFragment : Fragment() {
         val searchView = menu.findItem(R.id.mnu_search).actionView as SearchView
         searchView.setIconifiedByDefault(false)
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                startNavigationFromName(query)
+
+                hideKeyboard()
+
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean = false
+        })
         val endSuggestionsAdapter = ArrayAdapter(context ?: return, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
 
         val searchAutoComplete =
@@ -174,12 +186,8 @@ open class MapViewFragment : Fragment() {
                 .findViewById<SearchView.SearchAutoComplete>(androidx.appcompat.R.id.search_src_text)
                 .apply {
                     setAdapter(endSuggestionsAdapter)
-                    setOnItemClickListener { parent, view, position, id ->
-                        val item = endSuggestionsAdapter.getItem(position) ?: return@setOnItemClickListener
-                        val coordinate = viewModel.getCoordinateOf(item) ?: return@setOnItemClickListener
-                        viewModel.setDestinationAndName(item, coordinate)
-
-                        goToStartNavigationFragment()
+                    setOnItemClickListener { _, _, position, _ ->
+                        startNavigationFromName(endSuggestionsAdapter.getItem(position))
                     }
                 }
 
@@ -191,6 +199,25 @@ open class MapViewFragment : Fragment() {
             }
         })
         viewModel.destinationString.observe(viewLifecycleOwner, Observer(searchAutoComplete::setText))
+    }
+
+    private fun hideKeyboard() {
+        try {
+            val activity = activity ?: return
+            val inputManager =
+                (activity.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+            inputManager.hideSoftInputFromWindow(activity.currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun startNavigationFromName(item1: String?) {
+        val item = item1 ?: return
+        val coordinate = viewModel.getCoordinateOf(item) ?: return
+        viewModel.setDestinationAndName(item, coordinate)
+
+        goToStartNavigationFragment()
     }
     // endregion
 }
