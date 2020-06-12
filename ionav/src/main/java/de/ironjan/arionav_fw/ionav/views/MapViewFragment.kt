@@ -29,7 +29,7 @@ import java.util.*
 open class MapViewFragment : Fragment() {
     private var closeToDestinationSnackbar: Snackbar? = null
 
-    protected open val viewModel by activityViewModels<IonavViewModel>()
+    protected open val viewModel: IonavViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
 
