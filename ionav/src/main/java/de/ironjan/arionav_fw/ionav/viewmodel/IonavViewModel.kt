@@ -157,10 +157,13 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     fun setDestinationString(name: String): Coordinate? {
         _destinationString.value = name
 
-        val coordinate = destinationService.getCoordinate(name) ?: return null
-
-        return coordinate
+        return getCoordinateOf(name)
     }
+
+    fun getCoordinateOf(name: String): Coordinate? {
+        return destinationService.getCoordinate(name) ?: return null
+    }
+
 
     fun setDestinationAndName(name: String, coordinate: Coordinate) {
         _destinationString.value = name

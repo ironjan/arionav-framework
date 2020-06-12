@@ -3,13 +3,12 @@ package de.ironjan.arionav_fw.ionav.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
@@ -26,6 +25,7 @@ import kotlinx.android.synthetic.main.view_search_bar.*
 import kotlinx.android.synthetic.main.view_start_navigation_bar.*
 import java.util.*
 
+
 open class MapViewFragment : Fragment() {
     private var closeToDestinationSnackbar: Snackbar? = null
 
@@ -39,6 +39,7 @@ open class MapViewFragment : Fragment() {
 
         (requireActivity() as AppCompatActivity).supportActionBar?.apply {
             displayOptions = ActionBar.DISPLAY_SHOW_HOME or ActionBar.DISPLAY_SHOW_TITLE
+            setHasOptionsMenu(true)
         }
 
         val findViewById = view.findViewById<View>(R.id.search_bar)
@@ -105,10 +106,11 @@ open class MapViewFragment : Fragment() {
         bindSuggestions(lifecycleOwner)
     }
 
-    open fun clearBeingCloseToDestinationNotification(){
+    open fun clearBeingCloseToDestinationNotification() {
         closeToDestinationSnackbar?.dismiss()
         closeToDestinationSnackbar = null
     }
+
     @SuppressLint("WrongConstant")
     open fun notifyUserAboutBeingCloseToDestination() {
         closeToDestinationSnackbar = closeToDestinationSnackbar ?: Snackbar.make(btnCenterOnUser, "You are close to your destination.", Snackbar.LENGTH_INDEFINITE)
@@ -180,4 +182,43 @@ open class MapViewFragment : Fragment() {
             }
         }
     }
+
+    // region options menu
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search, menu)
+
+        val searchView = menu.findItem(R.id.mnu_search).actionView as SearchView
+        val searchAutoComplete = searchView.findViewById<SearchView.SearchAutoComplete>(androidx.appcompat.R.id.search_src_text)
+        searchView.apply {
+            setIconifiedByDefault(false)
+        }
+//        searchAutoComplete.setOnItemClickListener { parent, view, position, id ->  LoggerFactory.getLogger("MapViewFragment").error("Clicked $parent, $view, $position, $id") }
+
+
+        val endSuggestionsAdapter = ArrayAdapter(context ?: return, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
+        searchAutoComplete.setAdapter(endSuggestionsAdapter)
+        searchAutoComplete.setOnItemClickListener { parent, view, position, id ->
+            val item = endSuggestionsAdapter.getItem(position) ?: return@setOnItemClickListener
+            val coordinate = viewModel.getCoordinateOf(item) ?: return@setOnItemClickListener
+            viewModel.setDestinationAndName(item, coordinate)
+        }
+
+        viewModel.destinations.observe(viewLifecycleOwner, Observer {
+            endSuggestionsAdapter.apply {
+                clear()
+                addAll(it.keys)
+                sort { o1: String, o2: String -> o1.compareTo(o2) }
+            }
+        })
+        /*
+         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setQueryHint("Search the customer...");
+        searchView.setSearchableInfo(Objects.requireNonNull(searchManager).getSearchableInfo(getComponentName()));
+        searchView.requestFocus();
+         */
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+    // endregion
 }
