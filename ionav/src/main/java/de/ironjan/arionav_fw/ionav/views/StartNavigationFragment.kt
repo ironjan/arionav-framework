@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBar.LayoutParams.MATCH_PARENT
 import androidx.appcompat.app.AppCompatActivity
@@ -39,18 +40,7 @@ open class StartNavigationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
-            val view = layoutInflater.inflate(R.layout.view_start_navigation_bar, null)
-            setCustomView(view, ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-
-            displayOptions =
-                (ActionBar.DISPLAY_SHOW_HOME
-                        or ActionBar.DISPLAY_HOME_AS_UP
-                        or ActionBar.DISPLAY_SHOW_TITLE
-                        or ActionBar.DISPLAY_SHOW_CUSTOM)
-
-            setHasOptionsMenu(false)
-        }
+        setupActionBar()
 
         val findViewById = view.findViewById<View>(R.id.search_bar)
         findViewById.visibility = View.VISIBLE
@@ -62,13 +52,49 @@ open class StartNavigationFragment : Fragment() {
         val holder = activity?.application as IonavContainerHolder
         viewModel.initialize(holder.ionavContainer)
         mapView.onLifecycleOwnerAttached(viewLifecycleOwner)
-        mapView.initialize(viewModel, object : IonavMapView.LongPressCallback{
+        mapView.initialize(viewModel, object : IonavMapView.LongPressCallback {
             override fun longPress(p: GeoPoint): Boolean {
                 /* nothing to do */
                 return true
             }
         })
         bindMapItemTapListener()
+    }
+
+    private fun setupActionBar() {
+        (requireActivity() as AppCompatActivity)
+            .supportActionBar
+            ?.apply {
+                val view = layoutInflater.inflate(R.layout.view_start_navigation_bar, null)
+
+                bindActionBarViewsToViewModel(view)
+
+                setCustomView(view, ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+
+                displayOptions =
+                    (ActionBar.DISPLAY_SHOW_HOME
+                            or ActionBar.DISPLAY_HOME_AS_UP
+                            or ActionBar.DISPLAY_SHOW_TITLE
+                            or ActionBar.DISPLAY_SHOW_CUSTOM)
+
+                setHasOptionsMenu(false)
+            }
+    }
+
+    private fun bindActionBarViewsToViewModel(view: View) {
+        viewModel.destinationString.observe(viewLifecycleOwner,
+            Observer {
+                view.findViewById<TextView>(R.id.txtDestination).text = it
+            })
+
+        viewModel.remainingDistanceToDestination.observe(viewLifecycleOwner,
+            Observer {
+                view.findViewById<TextView>(R.id.txtDistance).text = InstructionHelper.toReadableDistance(it)
+            })
+        viewModel.remainingDurationToDestination.observe(viewLifecycleOwner,
+            Observer {
+                view.findViewById<TextView>(R.id.txtDuration).text = InstructionHelper.toReadableTime(it)
+            })
     }
 
     private fun observeViewModel(lifecycleOwner: LifecycleOwner) {

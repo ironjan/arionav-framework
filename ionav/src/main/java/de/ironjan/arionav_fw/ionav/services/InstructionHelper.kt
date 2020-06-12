@@ -8,13 +8,14 @@ import de.ironjan.arionav_fw.ionav.R
 import java.util.*
 
 class InstructionHelper(private val context: Context) {
-    fun toText(currentInstruction: Instruction) : String {
+    fun toText(currentInstruction: Instruction): String {
         val textFor = getTextFor(currentInstruction.sign)
         val toReadableDistance = toReadableDistance(currentInstruction.distance)
         return "$textFor in $toReadableDistance"
     }
+
     fun toText(currentInstruction: Instruction, nextInstruction: Instruction?): String {
-        val instructionText = if(nextInstruction==null) context.resources.getString(R.string.instruction_finish) else getTextFor(nextInstruction.sign)
+        val instructionText = if (nextInstruction == null) context.resources.getString(R.string.instruction_finish) else getTextFor(nextInstruction.sign)
 
 
         val distance = toReadableDistance(currentInstruction.distance)
@@ -89,13 +90,15 @@ class InstructionHelper(private val context: Context) {
         const val SIGN_DESTINATION = 1337
 
 
-        fun toReadableTime(timeInSeconds: Long): String {
+        fun toReadableTime(timeInSeconds: Long?): String {
+            if(timeInSeconds == null) return ""
+
             val timeInMinutes = timeInSeconds / 1000 / 60
             val optionalLessThan = if (timeInMinutes > 0) "" else "<"
             return "$optionalLessThan${timeInMinutes}min"
         }
 
-        fun toReadableDistance(distance: Double): String = String.format("%.0fm", distance, Locale.ROOT)
+        fun toReadableDistance(distance: Double?): String = if (distance == null) "" else String.format("%.0fm", distance, Locale.ROOT)
     }
 
 }
