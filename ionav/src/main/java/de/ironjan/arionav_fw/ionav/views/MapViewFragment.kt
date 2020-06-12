@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -55,7 +56,7 @@ open class MapViewFragment : Fragment() {
         val holder = activity?.application as IonavContainerHolder
         viewModel.initialize(holder.ionavContainer)
         mapView.onLifecycleOwnerAttached(viewLifecycleOwner)
-        mapView.initialize(viewModel, object: IonavMapView.LongPressCallback {
+        mapView.initialize(viewModel, object : IonavMapView.LongPressCallback {
             override fun longPress(p: GeoPoint): Boolean {
                 if (viewModel.routingStatus.value == RoutingService.Status.READY) {
                     val selectedLevel = viewModel.getSelectedLevel()
@@ -80,16 +81,22 @@ open class MapViewFragment : Fragment() {
         viewModel.initializationStatus.observe(lifecycleOwner, Observer {
             val isLoading = it != IonavViewModel.InitializationStatus.INITIALIZED
 
-            progress.visibility = if (isLoading) View.VISIBLE else View.GONE
-
-            progress.isIndeterminate = isLoading
+            (activity as? AppCompatActivity)
+                ?.supportActionBar
+                ?.apply {
+                    view
+                        ?.findViewById<ProgressBar>(android.R.id.progress)
+                        ?.apply {
+                            visibility = if (isLoading) View.VISIBLE else View.GONE
+                            isIndeterminate = isLoading
+                        }
+                }
         })
 
         viewModel.remainingDistanceToDestination.observe(lifecycleOwner, Observer {
             if (it == null || it > 5.0) {
                 clearBeingCloseToDestinationNotification()
-            }
-            else {
+            } else {
                 notifyUserAboutBeingCloseToDestination()
             }
         })
@@ -144,7 +151,7 @@ open class MapViewFragment : Fragment() {
         goToStartNavigationFragment()
     }
 
-    protected  fun setDestinationString(name: String) {
+    protected fun setDestinationString(name: String) {
         viewModel.setDestinationString(name)
     }
 
