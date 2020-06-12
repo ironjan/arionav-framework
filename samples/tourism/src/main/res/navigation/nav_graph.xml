@@ -10,6 +10,10 @@
         android:label="Map View"
         tools:layout="@layout/ar_enabled_map_view" />
 
+    <fragment android:name="de.ironjan.arionav_fw.samples.tourism.TourismStartNavigationFragment"
+        android:id="@+id/startNavigationFragment"
+        android:label="Start Navigation"
+        tools:layout="@layout/fragment_start_navigation" />
 
     <fragment
         android:id="@+id/CustomArNavFragment"
