@@ -170,34 +170,28 @@ open class MapViewFragment : Fragment() {
 
     private fun bindMapItemTapListener() {
         mapView.itemTapCallback = object : IndoorItemTapCallback {
-            override fun singleTap(placeName: String) {
-                edit_destination.setText(placeName)
+            override fun singleTap(name: String) {
+                setDestinationString(name)
             }
 
-            override fun longTap(placeName: String) {
-                edit_destination.setText(placeName)
-
-                startNavigation()
+            override fun longTap(name: String) {
+                setDestinationStringAndStartNavigate(name)
             }
         }
     }
 
-    private fun startNavigation() {
-        val activity = activity ?: return
+    protected fun setDestinationStringAndStartNavigate(name: String) {
+        val coordinate = viewModel.getCoordinateOf(name) ?: return
+        viewModel.setDestinationAndName(name, coordinate)
+        goToStartNavigationFragment()
+    }
 
-        val inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val currentFocus = activity.currentFocus
-        inputManager.hideSoftInputFromWindow(if (null == currentFocus) null else currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    protected  fun setDestinationString(name: String) {
+        viewModel.setDestinationString(name)
+    }
 
-        val destinationString = edit_destination.text.toString()
-
-        when (val destination = viewModel.setDestinationString(destinationString)) {
-            null -> Snackbar.make(btnCenterOnUser, "Could not find $destinationString.", Snackbar.LENGTH_SHORT).show()
-            else -> {
-                viewModel.setDestinationAndName(destinationString, destination)
-
-            }
-        }
+    private fun goToStartNavigationFragment() {
+        (activity as? NavigationFragmentHost)?.goToStartNavigation()
     }
     private fun goToStartNavigationFragment() {
         (activity as? NavigationFragmentHost)?.goToStartNavigation()
