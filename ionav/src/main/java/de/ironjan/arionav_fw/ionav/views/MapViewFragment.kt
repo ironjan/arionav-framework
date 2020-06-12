@@ -85,42 +85,15 @@ open class MapViewFragment : Fragment() {
             progress.isIndeterminate = isLoading
         })
 
-        viewModel.destinationString.observe(lifecycleOwner, Observer {
-            edit_destination.setText(it)
-            txtDestination.text = it
-        })
         viewModel.remainingDistanceToDestination.observe(lifecycleOwner, Observer {
-            if (it == null) {
-                txtDistance.text = ""
-                return@Observer
-            }
-
-            txtDistance.text = String.format("%.0fm", it, Locale.ROOT)
-            if (it < 5.0) {
-                notifyUserAboutBeingCloseToDestination()
-            } else {
+            if (it == null || it > 5.0) {
                 clearBeingCloseToDestinationNotification()
             }
-        })
-        viewModel.remainingDurationToDestination.observe(lifecycleOwner, Observer { txtDuration.text = InstructionHelper.toReadableTime(it ?: return@Observer) })
-
-
-        viewModel.route.observe(lifecycleOwner, Observer {
-            when (it) {
-                null -> {
-                    view?.findViewById<View>(R.id.start_navigation_bar)?.visibility = View.GONE
-                    view?.findViewById<View>(R.id.search_bar)?.visibility = View.VISIBLE
-                }
-                else -> {
-                    view?.findViewById<View>(R.id.start_navigation_bar)?.visibility = View.VISIBLE
-                    view?.findViewById<View>(R.id.search_bar)?.visibility = View.GONE
-                }
+            else {
+                notifyUserAboutBeingCloseToDestination()
             }
-
-
         })
 
-        bindSuggestions(lifecycleOwner)
     }
 
     open fun clearBeingCloseToDestinationNotification() {
@@ -140,27 +113,12 @@ open class MapViewFragment : Fragment() {
             }
     }
 
-    private fun bindSuggestions(lifecycleOwner: LifecycleOwner) {
-        val context = context ?: return
-
-        val endSuggestionsAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
-        edit_destination.setAdapter(endSuggestionsAdapter)
-
-        viewModel.destinations.observe(lifecycleOwner, Observer {
-            endSuggestionsAdapter.apply {
-                clear()
-                addAll(it.keys)
-                sort { o1: String, o2: String -> o1.compareTo(o2) }
-            }
-        })
-    }
 
     private fun bindOnClickListeners() {
         btnCenterOnUser.setOnClickListener {
             viewModel.setFollowUserPosition(true)
         }
 
-        btnStartNavigation.setOnClickListener { startNavigation() }
 
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
