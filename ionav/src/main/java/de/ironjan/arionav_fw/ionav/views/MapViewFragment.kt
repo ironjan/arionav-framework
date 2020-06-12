@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
@@ -34,6 +36,10 @@ open class MapViewFragment : Fragment() {
     @SuppressLint("WrongConstant")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
+            displayOptions = ActionBar.DISPLAY_SHOW_HOME or ActionBar.DISPLAY_SHOW_TITLE
+        }
 
         val findViewById = view.findViewById<View>(R.id.search_bar)
         findViewById.visibility = View.VISIBLE
@@ -140,7 +146,7 @@ open class MapViewFragment : Fragment() {
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
 
-        btnBackToSearch.setOnClickListener { viewModel.setDestination(null) }
+//        btnBackToSearch.setOnClickListener { viewModel.setDestination(null) }
     }
 
     private fun bindMapItemTapListener() {
