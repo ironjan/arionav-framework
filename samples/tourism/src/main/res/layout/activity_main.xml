@@ -22,7 +22,7 @@
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
             <ProgressBar
-                android:id="@+id/toolbar_progress_bar"
+                android:id="@android:id/progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:indeterminateTintMode="src_in"
