@@ -32,16 +32,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-
-    flavorDimensions "version"
-    productFlavors {
-        mock {
-            dimension "version"
-        }
-        prod {
-            dimension "version"
-        }
-    }
 }
 
 dependencies {
