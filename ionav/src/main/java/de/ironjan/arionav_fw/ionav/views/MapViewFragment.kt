@@ -18,15 +18,12 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
-import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.services.RoutingService
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
-import kotlinx.android.synthetic.main.view_start_navigation_bar.*
 import org.oscim.core.GeoPoint
-import java.util.*
 
 
 open class MapViewFragment : Fragment() {
