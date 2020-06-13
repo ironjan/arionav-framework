@@ -19,6 +19,8 @@ import org.oscim.event.MotionEvent
 import org.oscim.layers.Layer
 import org.oscim.layers.tile.buildings.BuildingLayer
 import org.oscim.layers.tile.vector.VectorTileLayer
+import org.oscim.map.Map
+import org.oscim.map.Map.SCALE_EVENT
 import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
@@ -80,6 +82,27 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
         val startPoint = tileSource.mapInfo.startPosition
         map().setMapPosition(startPoint.latitude, startPoint.longitude, startScale)
         redrawMap()
+
+
+        map().events.bind(Map.UpdateListener { e, mapPosition ->
+            if(SCALE_EVENT == e) {
+                when {
+                    mapPosition == null -> { /* nothing to do */ }
+                    mapPosition.zoomLevel > minZoomForIndoorLayers -> {
+                        buildingLayer.isEnabled = false
+                        indoorLayers.enabled = true
+                    }
+                    mapPosition.zoomLevel > minZoomForBuildingLayer -> {
+                        buildingLayer.isEnabled = true
+                        indoorLayers.enabled = false
+                    }
+                    else -> {
+                        buildingLayer.isEnabled = false
+                        indoorLayers.enabled = false
+                    }
+                }
+            }
+        })
 
 
         observeLiveData(lifecycleOwner)
@@ -181,10 +204,15 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
     }
 
     fun centerOnUser() {
-        val coordinate = viewModel.userLocation.value ?: return
-        centerOn(coordinate)
+        val location = viewModel.userLocation.value ?: return
+        centerOn(location.coordinate)
     }
 
     // endregion
 
+
+    companion object {
+        const val minZoomForBuildingLayer = 16
+        const val minZoomForIndoorLayers = 18
+    }
 }
