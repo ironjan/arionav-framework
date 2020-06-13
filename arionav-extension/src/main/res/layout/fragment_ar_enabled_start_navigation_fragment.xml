@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
 
-    <de.ironjan.arionav_fw.ionav.views.IonavMapView
+    <de.ironjan.arionav_fw.ionav.views.AutoOrientedIonavMapView
         android:id="@+id/mapView"
         android:layout_width="0dp"
         android:layout_height="0dp"
