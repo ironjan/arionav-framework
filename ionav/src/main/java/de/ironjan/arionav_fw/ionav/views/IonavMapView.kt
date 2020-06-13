@@ -2,12 +2,10 @@ package de.ironjan.arionav_fw.ionav.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.custom_view_mvvm.MvvmCustomView
-import de.ironjan.arionav_fw.ionav.services.RoutingService
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.*
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -25,7 +23,7 @@ import org.oscim.theme.VtmThemes
 import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.slf4j.LoggerFactory
 
-class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
+open class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
 
     private lateinit var longPressCallback: LongPressCallback
 
@@ -38,31 +36,38 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
     private val logger = LoggerFactory.getLogger(IonavMapView::class.simpleName)
 
     // region map layers
-    private lateinit var indoorLayers: IndoorLayersManager
-    private lateinit var buildingLayer: BuildingLayer
-    private lateinit var remainingRouteLayer: RouteLayer
-    private lateinit var endMarkerLayer: DestinationMarkerLayer
-    private lateinit var userPositionLayer: UserPositionLayer
+    protected lateinit var indoorLayers: IndoorLayersManager
+        private set
+    protected lateinit var buildingLayer: BuildingLayer
+        private set
+    protected lateinit var remainingRouteLayer: RouteLayer
+        private set
+    protected lateinit var endMarkerLayer: DestinationMarkerLayer
+        private set
+    protected lateinit var userPositionLayer: UserPositionLayer
+        private set
     // endregion
 
     // region MVVM
     override lateinit var viewModel: IonavViewModel
 
-    private lateinit var lifecycleOwner: LifecycleOwner
+    protected lateinit var lifecycleOwner: LifecycleOwner
+        private set
+
     override fun onLifecycleOwnerAttached(lifecycleOwner: LifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner
     }
     // endregion
 
     // region constructors
-    constructor(context: Context, attrsSet: AttributeSet) : super(context, attrsSet)
+    constructor(context: Context, attrsSet: AttributeSet?) : super(context, attrsSet)
 
     constructor(context: Context) : super(context, null)
     // endregion
 
 
     // region initialization
-    fun initialize(viewModel: IonavViewModel, longPressCallback: LongPressCallback) {
+    open fun initialize(viewModel: IonavViewModel, longPressCallback: LongPressCallback) {
         this.viewModel = viewModel
         this.longPressCallback = longPressCallback
 
@@ -86,9 +91,10 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
 
 
         map().events.bind(Map.UpdateListener { e, mapPosition ->
-            if(SCALE_EVENT == e) {
+            if (SCALE_EVENT == e) {
                 when {
-                    mapPosition == null -> { /* nothing to do */ }
+                    mapPosition == null -> { /* nothing to do */
+                    }
                     mapPosition.zoomLevel > minZoomForIndoorLayers -> {
                         buildingLayer.isEnabled = false
                         indoorLayers.enabled = true
@@ -145,7 +151,6 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
         })
     }
     // endregion
-
 
 
     // region indoor layer callback
