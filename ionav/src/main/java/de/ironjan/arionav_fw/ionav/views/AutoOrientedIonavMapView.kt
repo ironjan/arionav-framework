@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.model.Bearing
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
-import org.oscim.core.MapPosition
+import org.slf4j.LoggerFactory
 
 open class AutoOrientedIonavMapView: IonavMapView {
 
@@ -19,27 +19,32 @@ open class AutoOrientedIonavMapView: IonavMapView {
         super.initialize(viewModel, longPressCallback)
 
         observeForAutoOrientation()
-
-        userPositionLayer.isEnabled = false
     }
+
+    private val logger = LoggerFactory.getLogger(AutoOrientedIonavMapView::class.simpleName)
 
     private fun observeForAutoOrientation() {
         viewModel.route.observe(lifecycleOwner,
         Observer {
             if(it==null) return@Observer
 
-            val firstTwoPoints = it.instructions.take(2)
             val A = viewModel.userLocation.value?.coordinate ?: return@Observer
-            val B = firstTwoPoints.last().points.first()
+            val B = it.instructions.take(2).last().points.first()
 
 
-            val mapPosition = MapPosition().apply {
+            val mapPosition = map().mapPosition.apply {
                 setPosition(B.lat, B.lon)
-//                setTilt(0.75f)
+                setTilt(60f)
                 setZoomLevel(18)
-                setBearing(Bearing.compute(A.lat, A.lon, B.lat, B.lon))
+                val compute = -Bearing.compute(A.lat, A.lon, B.lat, B.lon)
+                logger.info("Bearing: $bearing - new bearing: $compute")
+
+                bearing = compute
             }
             map().mapPosition = mapPosition
+
+            val new_bearing = map().mapPosition.bearing
+            logger.info("After setting... $new_bearing")
         })
     }
 
