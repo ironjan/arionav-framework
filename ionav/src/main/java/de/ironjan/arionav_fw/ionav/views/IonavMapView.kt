@@ -77,8 +77,6 @@ class IonavMapView : MapView, MvvmCustomView<IonavViewModel> {
         val startZoomLevel = tileSource.mapInfo?.startZoomLevel ?: 14
         val startScale = (1 shl startZoomLevel.toInt()).toDouble()
 
-        val comp = (1 shl 19).toDouble()
-
         val startPoint = tileSource.mapInfo.startPosition
         map().setMapPosition(startPoint.latitude, startPoint.longitude, startScale)
         redrawMap()
