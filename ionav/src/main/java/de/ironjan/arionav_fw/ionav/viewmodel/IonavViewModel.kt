@@ -145,8 +145,6 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
         val oldDestinationString = _destinationString.value
         val newDestinationString = value.asString() ?: oldDestinationString
         _destinationString.value = newDestinationString
-
-        centerOnUserPos()
     }
 
     /**
