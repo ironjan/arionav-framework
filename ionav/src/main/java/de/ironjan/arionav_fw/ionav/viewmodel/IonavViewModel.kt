@@ -206,7 +206,7 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
     private val _mapCenter: MutableLiveData<Coordinate?> = MutableLiveData(null)
     val mapCenter = _mapCenter
     private fun setMapCenter(c: IonavLocation) {
-        _mapCenter.value = c
+        _mapCenter.value = c.coordinate
     }
 
     // endregion

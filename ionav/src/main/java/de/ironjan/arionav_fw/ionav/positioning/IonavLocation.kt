@@ -1,16 +1,21 @@
 package de.ironjan.arionav_fw.ionav.positioning
 
+import android.location.Location
 import de.ironjan.graphhopper.extensions_core.Coordinate
 
-data class IonavLocation(
-    val provider: String,
+class IonavLocation(
+    provider: String,
     val coordinate: Coordinate
-)
-// FIXME remove inheritance
-    : Coordinate(coordinate.lat, coordinate.lon, coordinate.lvl) {
-    val latL = coordinate.lat
-    val lonL = coordinate.lon
-    val lvlL = coordinate.lvl
+) : Location(provider) {
+
+    constructor(provider: String, coordinate: Coordinate, location: Location): this(provider, coordinate) {
+        set(location)
+    }
+
+    val lat = coordinate.lat
+    val lon = coordinate.lon
+    val lvl = coordinate.lvl
 
     val timestamp: Long = System.currentTimeMillis()
+
 }

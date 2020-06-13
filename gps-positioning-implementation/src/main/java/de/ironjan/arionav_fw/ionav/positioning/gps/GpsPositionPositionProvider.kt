@@ -144,7 +144,8 @@ open class GpsPositionPositionProvider(
         logger.debug("stop() done.")
     }
 
-    private fun locationToIonavLocation(location: Location) = IonavLocation(name, Coordinate(location.latitude, location.longitude, currentLevel))
+    private fun locationToIonavLocation(location: Location) =
+        IonavLocation(name, Coordinate(location.latitude, location.longitude, currentLevel), location)
 
     companion object {
         const val TAG = "GpsPositionProvider"

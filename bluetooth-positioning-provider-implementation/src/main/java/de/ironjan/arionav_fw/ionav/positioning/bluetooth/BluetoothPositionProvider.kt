@@ -181,11 +181,11 @@ class BluetoothPositionProvider(
 
         val FiveMetersPrecision = 0.00001
 
-        val latDifferentEnough = lastKnownPosition.latL - newPosition.latL > FiveMetersPrecision
-        val lonDifferentEnough = lastKnownPosition.lonL - newPosition.lonL > FiveMetersPrecision
+        val latDifferentEnough = lastKnownPosition.lat - newPosition.lat > FiveMetersPrecision
+        val lonDifferentEnough = lastKnownPosition.lon - newPosition.lon > FiveMetersPrecision
         val horizontalPositionDifferentEnough = latDifferentEnough || lonDifferentEnough
 
-        val lvlDifferent = lastKnownPosition.lvlL != newPosition.lvlL
+        val lvlDifferent = lastKnownPosition.lvl != newPosition.lvl
 
         return horizontalPositionDifferentEnough || lvlDifferent
 
