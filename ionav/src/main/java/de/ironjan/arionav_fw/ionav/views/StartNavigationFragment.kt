@@ -22,6 +22,7 @@ import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnCenterOnUser
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnLevelMinus
 import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnLevelPlus
@@ -60,7 +61,10 @@ open class StartNavigationFragment : Fragment() {
         mapView.onLifecycleOwnerAttached(viewLifecycleOwner)
         mapView.initialize(viewModel, object : IonavMapView.LongPressCallback {
             override fun longPress(p: GeoPoint): Boolean {
-                /* nothing to do */
+                val selectedLevel = viewModel.getSelectedLevel()
+
+                viewModel.setDestination(Coordinate(p.latitude, p.longitude, selectedLevel))
+
                 return true
             }
         })
