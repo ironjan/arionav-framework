@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<LinearLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -9,11 +8,12 @@
     android:padding="8dp"
     android:maxHeight="64dp"
     android:maxWidth="256dp"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView android:id="@+id/instructionImage"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        tools:src="@mipmap/right"
         />
 
     <TextView
@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/instructionText"
         android:id="@+id/instructionDistanceInMeters"
+        tools:text="247,56m"
         android:minWidth="16dp" />
 
 </LinearLayout>
