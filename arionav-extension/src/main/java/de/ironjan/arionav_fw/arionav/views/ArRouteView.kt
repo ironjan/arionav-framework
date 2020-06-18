@@ -131,8 +131,15 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         if (session != null) {
             showLoadingMessage()
         }
+
+
+
+        if (locationScene == null) {
+            setupLocationScene()
+        }
+
         // Add an update listener on the Scene that will hide the loading message once a Plane is
-        // detected.
+        // detected and re-.
         scene?.addOnUpdateListener {
             onArUpdate()
         }
@@ -170,10 +177,6 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
 
     private fun onArUpdate() {
-        if (locationScene == null) {
-            setupLocationScene()
-        }
-
         val frame = arFrame
         if (frame?.camera?.trackingState != TrackingState.TRACKING) {
             return
