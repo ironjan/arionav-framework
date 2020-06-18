@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class TourismPoiReader : OsmReader() {
+class TourismPoiReader : OsmReader<Map<String, Node> >() {
     private val logger = LoggerFactory.getLogger(IndoorDataReader::class.simpleName)
 
     @Throws(XmlPullParserException::class, IOException::class)
-    fun parseOsmFile(osmFile: String): Map<String, Node> {
+    override fun parseOsmFile(osmFile: String): Map<String, Node> {
 
         val start = System.currentTimeMillis()
 

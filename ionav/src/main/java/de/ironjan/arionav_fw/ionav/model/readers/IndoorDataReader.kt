@@ -10,11 +10,11 @@ import java.io.IOException
 /**
  * An {@see OsmReader} that reads relevant {@see IndoorData} from an osm-file.
  */
-class IndoorDataReader : OsmReader() {
+class IndoorDataReader : OsmReader<IndoorData>() {
     private val logger = LoggerFactory.getLogger(IndoorDataReader::class.simpleName)
 
     @Throws(XmlPullParserException::class, IOException::class)
-    fun parseOsmFile(osmFile: String): IndoorData {
+    override fun parseOsmFile(osmFile: String): IndoorData {
 
         val start = System.currentTimeMillis()
 

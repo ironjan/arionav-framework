@@ -12,9 +12,11 @@ import java.io.IOException
 /**
  * Generic osm-file reader using {@see XmlPullParser}.
  */
-open class OsmReader {
+abstract class OsmReader<T> {
     private val ns: String? = null
     private val logger = LoggerFactory.getLogger(OsmReader::class.simpleName)
+
+    abstract fun parseOsmFile(osmFile: String): T
 
     protected  fun parseNodes(
         osmFile: String,
