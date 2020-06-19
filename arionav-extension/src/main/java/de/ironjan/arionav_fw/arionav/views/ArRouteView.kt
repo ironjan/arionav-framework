@@ -53,8 +53,6 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     private lateinit var viewModel: IonavViewModel
     private lateinit var lifecycleOwner: LifecycleOwner
 
-    private var lastRouteUpdate = 0L
-
     override fun observe(viewModel: IonavViewModel, lifecycleOwner: LifecycleOwner) {
         lifecycleOwner.lifecycle.addObserver(this)
 
@@ -66,11 +64,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         viewModel.route.observe(lifecycleOwner, Observer {
             if (!locationSceneIsSetUp) return@Observer
 
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastRouteUpdate > FiveSecondsInMillis) {
-                updateArRoute(it)
-                lastRouteUpdate = currentTime
-            }
+            updateArRoute(it)
         })
 
 
@@ -167,7 +161,6 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
         private const val maxDistance = 5000
 
-        private const val FiveSecondsInMillis = 5000
     }
 
     private var locationScene: ArionavLocationScene? = null
@@ -399,17 +392,10 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     // region destination marker
     private var destinationMarker: LocationMarker? = null
     private var destinationMarkerSync = Any()
-    private var lastDestinationMarkerUpdate = 0
 
 
     private fun updateDestinationMarker(coordinate: Coordinate?) {
         coordinate ?: return
-
-        val currentTime = System.currentTimeMillis()
-        val delta = currentTime - lastDestinationMarkerUpdate
-        if (delta < FiveSecondsInMillis) {
-            return
-        }
 
         synchronized(destinationMarkerSync) {
 
