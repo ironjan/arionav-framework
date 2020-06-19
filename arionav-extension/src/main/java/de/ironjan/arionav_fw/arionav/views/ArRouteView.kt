@@ -306,7 +306,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     //endregion
 
     // region updateLocationScene
-    private var currentInstructionMarker: LocationMarker? = null
+    private var instructionMarker: LocationMarker? = null
     private val currentInstructionMarkerSync = Any()
 
     private lateinit var instructionHelper: InstructionHelper
@@ -317,7 +317,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         if (nextInstruction == null ||
             nextInstruction.sign == DESTINATION_SIGN){
             // the route only has a current instruction. show only destination marker
-            locationScene?.remove(currentInstructionMarker)
+            locationScene?.remove(instructionMarker)
 
             return
         }
@@ -329,7 +329,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
         synchronized(currentInstructionMarkerSync) {
             val currentInstructionMarker =
-                currentInstructionMarker ?: LocationMarker(lon, lat, Node())
+                instructionMarker ?: LocationMarker(lon, lat, Node())
                     .apply {
                         onlyRenderWhenWithin = maxDistance
                         height = 1f
@@ -355,7 +355,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
                             }
                     }.also {
                         locationScene?.add(it)
-                        currentInstructionMarker = it
+                        instructionMarker = it
                     }
 
             currentInstructionMarker.apply {
@@ -391,7 +391,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     fun setInstructionView(layoutId: Int, updateRenderable: (View, Instruction, Instruction) -> Unit) {
         this.layoutId = layoutId
         this.updateRenderable = updateRenderable
-        currentInstructionMarker = null
+        instructionMarker = null
     }
 
 // endregion
