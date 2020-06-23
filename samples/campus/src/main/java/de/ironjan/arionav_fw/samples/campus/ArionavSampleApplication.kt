@@ -11,7 +11,7 @@ class ArionavSampleApplication : Application(), IonavContainerHolder {
     /**
      * The ionav-components dependency container. Can be accessed via: <code>(application as IonavContainerHolder).ionavContainer</code>.
      */
-    override val ionavContainer = IonavContainer(this, "arionav_map", R.raw.arionav_map)
+    override val ionavContainer = IonavContainer(this, "arionav_map", R.raw.arionav_map, arrayOf("irb-git+mtljan-thesis-6522-24oauqa8lahux188otoxb4l1i-issue@mail.uni-paderborn.de"))
 
 
     override fun onCreate() {

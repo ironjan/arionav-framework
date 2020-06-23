@@ -9,7 +9,8 @@ import java.io.File
  *
  * @see <a href="https://developer.android.com/training/dependency-injection/manual">https://developer.android.com/training/dependency-injection/manual</a>
  */
-open class IonavContainer(private val context: Context, val mapName: String, val resId: Int) {
+open class IonavContainer(private val context: Context, val mapName: String, val resId: Int, val developerMails: Array<String>) {
+
     val applicationContext = context
 
     open val mapFolderPath: String by lazy { File(context.filesDir, mapName).absolutePath }
