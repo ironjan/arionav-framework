@@ -200,6 +200,16 @@ class MainActivity :
             true
         }
 
+        val destination = getDestinationFromMenuItem(item)
+        if (destination == navController.currentDestination?.id) return true
+
+        if (destination != -1) {
+            navController.navigate(destination)
+            return true
+        } else return super.onOptionsItemSelected(item)
+    }
+
+    private fun getDestinationFromMenuItem(item: MenuItem): Int {
         val destination = when (item.itemId) {
             R.id.mnuSimpleMap -> R.id.arEnabledMapViewFragment
             R.id.mnuWifiAps -> R.id.nearbyWifiAps
@@ -209,12 +219,7 @@ class MainActivity :
             R.id.mnuLocationHistory -> R.id.locationHistory
             else -> -1
         }
-        if (destination == navController.currentDestination?.id) return true
-
-        if (destination != -1) {
-            navController.navigate(destination)
-            return true
-        } else return super.onOptionsItemSelected(item)
+        return destination
     }
 
     override fun goToArNav() {
