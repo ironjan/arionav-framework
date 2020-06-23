@@ -26,4 +26,10 @@
         android:name="InstructionsListFragment"
         android:label="Instructions"
         tools:layout="@layout/fragment_with_recycler_view" />
+
+    <fragment
+        android:id="@+id/feedbackFragment"
+        android:name="de.ironjan.arionav_fw.ionav.views.FeedbackFragment"
+        android:label="Feedback"
+        tools:layout="@layout/fragment_feedback" />
 </navigation>
