@@ -196,7 +196,7 @@ class MainActivity :
         main_drawer_layout.closeDrawers();
 
         if (item.itemId == R.id.mnuFeedback) {
-            Mailer.sendFeedback(this)
+            Mailer.sendFeedback(this, BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME)
             return true
         }
 

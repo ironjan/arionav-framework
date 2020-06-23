@@ -47,6 +47,7 @@ dependencies {
     api project(path: ':gps-positioning-implementation')
     api project(path: ':bluetooth-positioning-provider-implementation')
     api project(path: ':wifi-positioning-provider-implementation')
+    api project(path: ':utils')
 
     implementation "io.arrow-kt:arrow-core:$arrow_kt_version"
     implementation "io.arrow-kt:arrow-syntax:$arrow_kt_version"

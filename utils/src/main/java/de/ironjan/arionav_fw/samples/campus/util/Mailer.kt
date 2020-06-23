@@ -5,14 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
-import de.ironjan.arionav_fw.samples.campus.BuildConfig
 
 object Mailer {
-    internal fun sendFeedback(context: Context?) {
+    fun sendFeedback(context: Context?, applicationId: String, versionName: String) {
         if (context == null) {
             return
         }
-        val subject = String.format("ARIONAV Sample Feedback %s", BuildConfig.VERSION_NAME)
+        val subject = "[ARIONAV] Feedback $applicationId $versionName"
 
         val osVersion = Build.VERSION.RELEASE
         val manufacturer = Build.MANUFACTURER
