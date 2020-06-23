@@ -208,7 +208,7 @@ class MainActivity :
         }
 
         val destination = getDestinationFromMenuItem(item)
-        if(destination != -1) {
+        if (destination != -1) {
             return super.onOptionsItemSelected(item)
         }
 
@@ -241,6 +241,17 @@ class MainActivity :
         navigateToId(R.id.textNavigationFragment)
     }
 
+    override fun goToFeedback() {
+        navigateToId(R.id.feedbackFragment)
+    }
+
+    override fun goToMapView(clearNavigationStack: Boolean) {
+        if (clearNavigationStack) {
+            navController.popBackStack(R.id.arEnabledMapViewFragment, false)
+        } else {
+            navigateToId(R.id.arEnabledMapViewFragment)
+        }
+    }
 
     private fun navigateToId(destination: Int): Boolean {
         if (destination == navController.currentDestination?.id) return true

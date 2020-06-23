@@ -144,6 +144,7 @@ open class StartNavigationFragment : Fragment() {
             .apply {
                 setAction("OK") {
                     dismiss()
+                    navigationFragmentHost?.goToFeedback()
                     viewModel.setDestination(null)
                 }
                 show()

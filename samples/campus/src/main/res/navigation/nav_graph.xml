@@ -27,6 +27,11 @@
         tools:layout="@layout/fragment_with_recycler_view"
         android:label="Instructions" />
 
+    <fragment android:id="@+id/feedbackFragment"
+        android:name="de.ironjan.arionav_fw.ionav.views.FeedbackFragment"
+        tools:layout="@layout/fragment_feedback"
+        android:label="Navigation Feedback" />
+
     <fragment android:id="@+id/nearbyWifiAps"
         android:name="de.ironjan.arionav_fw.samples.campus.NearbyAccessPointsFragment"
         tools:layout="@layout/fragment_custom_list"

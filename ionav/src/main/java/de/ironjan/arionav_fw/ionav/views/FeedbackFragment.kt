@@ -31,5 +31,7 @@ class FeedbackFragment : Fragment() {
         val holder = activity?.application as IonavContainerHolder
         Mailer(holder.ionavContainer.developerMails)
             .sendPrefilledFeedback(context ?: return, feedback.toString())
+
+        (activity as? NavigationFragmentHost)?.goToMapView(true)
     }
 }

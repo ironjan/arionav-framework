@@ -122,4 +122,16 @@ class MainActivity : AppCompatActivity(),
         navController.navigate(R.id.InstructionsListFragment)
     }
 
+    override fun goToFeedback() {
+        navController.navigate(R.id.feedbackFragment)
+    }
+
+    override fun goToMapView(clearNavigationStack: Boolean) {
+        if (clearNavigationStack) {
+            navController.popBackStack(R.id.arEnabledMapView, false)
+        } else {
+            navController.navigate(R.id.arEnabledMapView)
+        }
+    }
+
 }
