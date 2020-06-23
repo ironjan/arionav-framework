@@ -208,14 +208,6 @@ class MainActivity :
         return navigateToId(destination)
     }
 
-    private fun navigateToId(destination: Int): Boolean {
-        if (destination == navController.currentDestination?.id) return true
-
-        navController.navigate(destination)
-
-        return true
-    }
-
     private fun getDestinationFromMenuItem(item: MenuItem): Int {
         val destination = when (item.itemId) {
             R.id.mnuSimpleMap -> R.id.arEnabledMapViewFragment
@@ -230,20 +222,28 @@ class MainActivity :
     }
 
     override fun goToArNav() {
-        navController.navigate(R.id.arNavFragment)
+        navigateToId(R.id.arNavFragment)
     }
 
     override fun goToStartNavigation() {
-        navController.navigate(R.id.startNavFragment)
+        navigateToId(R.id.startNavFragment)
     }
 
     override fun goToMapNavigation() {
-        navController.navigate(R.id.startNavFragment)
+        navigateToId(R.id.startNavFragment)
+    }
+
+    override fun goToInstrucitons() {
+        navigateToId(R.id.textNavigationFragment)
     }
 
 
-    override fun goToInstrucitons() {
-        navController.navigate(R.id.textNavigationFragment)
+    private fun navigateToId(destination: Int): Boolean {
+        if (destination == navController.currentDestination?.id) return true
+
+        navController.navigate(destination)
+
+        return true
     }
     // endregion
 
