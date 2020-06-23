@@ -197,7 +197,7 @@ class MainActivity :
 
         if (item.itemId == R.id.mnuFeedback) {
             Mailer.sendFeedback(this)
-            true
+            return true
         }
 
         val destination = getDestinationFromMenuItem(item)
