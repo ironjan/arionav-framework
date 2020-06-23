@@ -14,8 +14,14 @@ Overall: $overAllRating/5.0
 Map:     $mapNavRating/5.0
 AR:      $arNavRating/5.0
 
+---
+
 Comments:
 $comments
+
+----
+
+/label user-feedback
         """.trimIndent()
     }
 }
