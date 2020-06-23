@@ -201,12 +201,19 @@ class MainActivity :
         }
 
         val destination = getDestinationFromMenuItem(item)
+        if(destination != -1) {
+            return super.onOptionsItemSelected(item)
+        }
+
+        return navigateToId(destination)
+    }
+
+    private fun navigateToId(destination: Int): Boolean {
         if (destination == navController.currentDestination?.id) return true
 
-        if (destination != -1) {
-            navController.navigate(destination)
-            return true
-        } else return super.onOptionsItemSelected(item)
+        navController.navigate(destination)
+
+        return true
     }
 
     private fun getDestinationFromMenuItem(item: MenuItem): Int {
