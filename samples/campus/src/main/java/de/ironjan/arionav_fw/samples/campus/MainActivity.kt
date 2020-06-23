@@ -26,7 +26,7 @@ import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
 import de.ironjan.arionav_fw.ionav.util.PermissionHelper
 import de.ironjan.arionav_fw.samples.campus.data.WifiPositioningProviderHardCodedValues
-import de.ironjan.arionav_fw.samples.campus.util.Mailer
+import de.ironjan.arionav_fw.ionav.util.Mailer
 import de.ironjan.arionav_fw.samples.campus.util.PreferenceKeys
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*

@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus.util
+package de.ironjan.arionav_fw.ionav.util
 
 import android.content.Context
 import android.content.Intent
