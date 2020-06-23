@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -124,16 +123,16 @@ class MainActivity :
     }
 
     override fun goToStartNavigation() {
-        /* fixme */
+        navController.navigate(R.id.startNavFragment)
     }
 
     override fun goToMapNavigation() {
-        Toast.makeText(this, "Go to map navigation", Toast.LENGTH_SHORT).show()
+        navController.navigate(R.id.startNavFragment)
     }
 
 
     override fun goToInstrucitons() {
-        TODO("Not yet implemented")
+        navController.navigate(R.id.textNavigationFragment)
     }
 
 

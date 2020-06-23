@@ -16,6 +16,17 @@
         tools:layout="@layout/fragment_ar_view"
         android:label="CustomArNavFragment" />
 
+    <fragment
+        android:id="@+id/startNavFragment"
+        android:name="de.ironjan.arionav_fw.arionav.views.ArEnabledStartNavigationFragment"
+        tools:layout="@layout/fragment_start_navigation"
+        android:label="Map Navigation" />
+
+    <fragment android:id="@+id/textNavigationFragment"
+        android:name="de.ironjan.arionav_fw.ionav.views.TextInstructionListFragment"
+        tools:layout="@layout/fragment_with_recycler_view"
+        android:label="Instructions" />
+
     <fragment android:id="@+id/nearbyWifiAps"
         android:name="de.ironjan.arionav_fw.samples.campus.NearbyAccessPointsFragment"
         tools:layout="@layout/fragment_custom_list"
