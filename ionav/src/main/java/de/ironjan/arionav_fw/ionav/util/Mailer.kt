@@ -6,12 +6,16 @@ import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 
-object Mailer {
-    fun sendFeedback(context: Context?, applicationId: String, versionName: String) {
+class Mailer(private val developerMails: Array<String>) {
+
+    fun sendGeneralFeedback(context: Context?) = sendPrefilledFeedback(context, "")
+
+    fun sendPrefilledFeedback(context: Context?, prefill: String) {
         if (context == null) {
             return
         }
-        val subject = "[ARIONAV] Feedback $applicationId $versionName"
+
+        val subject = "[ARIONAV] Feedback"
 
         val osVersion = Build.VERSION.RELEASE
         val manufacturer = Build.MANUFACTURER
@@ -21,12 +25,11 @@ object Mailer {
 Android version: $osVersion
 
 Feedback:
-
+$prefill
 """
+
         sendMailToDevs(context, subject, body)
     }
-
-    private val developerMails = arrayOf("irb-git+mtljan-thesis-6522-24oauqa8lahux188otoxb4l1i-issue@mail.uni-paderborn.de")
 
     /**
      * Sends an email with the given subject and body. Notifies the user that an email app should be
@@ -36,7 +39,7 @@ Feedback:
      * @param subject The mail's subject
      * @param body The mail's body
      */
-    fun sendMailToDevs(context: Context, subject: String, body: String) =
+    private fun sendMailToDevs(context: Context, subject: String, body: String) =
         sendMail(context, subject, body, developerMails)
 
     /**
@@ -48,7 +51,7 @@ Feedback:
      * @param body The mail's body
      * @param context a non-null context
      */
-    fun sendMail(context: Context, subject: String, body: String, to: Array<String> = arrayOf()) {
+    private fun sendMail(context: Context, subject: String, body: String, to: Array<String> = arrayOf()) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, to)

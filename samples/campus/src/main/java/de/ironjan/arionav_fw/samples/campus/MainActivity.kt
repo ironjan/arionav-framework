@@ -38,6 +38,8 @@ class MainActivity :
     PermissionHelper.PermissionHelperCallback,
     ArEnabledNavigationFragmentHost {
 
+    private lateinit var developerMails: Array<String>
+
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
 
@@ -143,7 +145,11 @@ class MainActivity :
 
     // region initializePositioningService
     private fun initializePositioningService() {
-        val positioningService = (application as ArionavSampleApplication).ionavContainer.positioningService
+        val ionavContainer = (application as ArionavSampleApplication).ionavContainer
+        this.developerMails = ionavContainer.developerMails
+
+
+        val positioningService = ionavContainer.positioningService
 
         positioningService.removeProvider(GpsPositionPositionProvider.GPS_PROVIDER_NAME)
         positioningService.removeProvider(WifiPositionProvider.WIFI_POSITIONING_PROVIDER)
@@ -196,7 +202,8 @@ class MainActivity :
         main_drawer_layout.closeDrawers();
 
         if (item.itemId == R.id.mnuFeedback) {
-            Mailer.sendFeedback(this, BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME)
+
+            Mailer(developerMails).sendGeneralFeedback(this)
             return true
         }
 
