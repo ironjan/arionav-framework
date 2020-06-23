@@ -1,4 +1,3 @@
-include ':utils'
 include ':samples:campus'
 include ':arionav-extension'
 include ':ionav'
