@@ -208,17 +208,14 @@ class MainActivity :
         return navigateToId(destination)
     }
 
-    private fun getDestinationFromMenuItem(item: MenuItem): Int {
-        val destination = when (item.itemId) {
-            R.id.mnuSimpleMap -> R.id.arEnabledMapViewFragment
-            R.id.mnuWifiAps -> R.id.nearbyWifiAps
-            R.id.mnuBtBeacons -> R.id.nearbyBluetoothTokensFragment
-            R.id.mnuPoiList -> R.id.poiListFragment
-            R.id.mnuProviderConfig -> R.id.providerConfig
-            R.id.mnuLocationHistory -> R.id.locationHistory
-            else -> -1
-        }
-        return destination
+    private fun getDestinationFromMenuItem(item: MenuItem): Int = when (item.itemId) {
+        R.id.mnuSimpleMap -> R.id.arEnabledMapViewFragment
+        R.id.mnuWifiAps -> R.id.nearbyWifiAps
+        R.id.mnuBtBeacons -> R.id.nearbyBluetoothTokensFragment
+        R.id.mnuPoiList -> R.id.poiListFragment
+        R.id.mnuProviderConfig -> R.id.providerConfig
+        R.id.mnuLocationHistory -> R.id.locationHistory
+        else -> -1
     }
 
     override fun goToArNav() {
