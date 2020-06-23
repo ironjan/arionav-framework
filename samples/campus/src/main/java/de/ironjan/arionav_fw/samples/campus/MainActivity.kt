@@ -72,67 +72,11 @@ class MainActivity :
 
     }
 
-    val navController
-        get() = findNavController(R.id.nav_host_fragment)
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_main, menu)
         return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return navigateOnMenuItem(item)
-    }
-
-    private fun navigateOnMenuItem(item: MenuItem): Boolean {
-        main_drawer_layout.closeDrawers();
-
-        if (item.itemId == R.id.mnuFeedback) {
-            Mailer.sendFeedback(this)
-            true
-        }
-
-        val destination = when (item.itemId) {
-            R.id.mnuSimpleMap -> R.id.arEnabledMapViewFragment
-            R.id.mnuWifiAps -> R.id.nearbyWifiAps
-            R.id.mnuBtBeacons -> R.id.nearbyBluetoothTokensFragment
-            R.id.mnuPoiList -> R.id.poiListFragment
-            R.id.mnuProviderConfig -> R.id.providerConfig
-            R.id.mnuLocationHistory -> R.id.locationHistory
-            else -> -1
-        }
-        if (destination == navController.currentDestination?.id) return true
-
-        if (destination != -1) {
-            navController.navigate(destination)
-            return true
-        }
-        else return super.onOptionsItemSelected(item)
-    }
-
-    override fun goToArNav() {
-        navController.navigate(R.id.arNavFragment)
-    }
-
-    override fun goToStartNavigation() {
-        navController.navigate(R.id.startNavFragment)
-    }
-
-    override fun goToMapNavigation() {
-        navController.navigate(R.id.startNavFragment)
-    }
-
-
-    override fun goToInstrucitons() {
-        navController.navigate(R.id.textNavigationFragment)
     }
 
 
@@ -190,12 +134,11 @@ class MainActivity :
 
     override fun permissionAlreadyGranted(requestCode: Int) {
         super.permissionAlreadyGranted(requestCode)
-        when(requestCode) {
+        when (requestCode) {
             locationRequestCode -> initializePositioningService()
         }
     }
     // endregion
-
 
 
     // region initializePositioningService
@@ -215,23 +158,81 @@ class MainActivity :
         val enabledBluetooth = sharedPref.getBoolean(PreferenceKeys.ENABLED_BLUETOOTH, false)
         positioningService.registerProvider(bluetoothProviderImplementation, enabledBluetooth)
 
-        val enabledWifi = sharedPref.getBoolean(PreferenceKeys.ENABLED_WIFI,false)
+        val enabledWifi = sharedPref.getBoolean(PreferenceKeys.ENABLED_WIFI, false)
         positioningService.registerProvider(wifiPositioningProvider, enabledWifi)
 
         val enabledGps = sharedPref.getBoolean(PreferenceKeys.ENABLED_GPS, true)
         positioningService.registerProvider(gpsPositionProvider, enabledGps)
 
 
-        val prioBluetooth = sharedPref.getInt(PreferenceKeys.PRIORITY_BLUETOOTH,0)
+        val prioBluetooth = sharedPref.getInt(PreferenceKeys.PRIORITY_BLUETOOTH, 0)
         positioningService.setPriority(prioBluetooth, bluetoothProviderImplementation)
 
-        val prioWifi = sharedPref.getInt(PreferenceKeys.PRIORITY_WIFI,1)
+        val prioWifi = sharedPref.getInt(PreferenceKeys.PRIORITY_WIFI, 1)
         positioningService.setPriority(prioWifi, wifiPositioningProvider)
 
-        val prioGps = sharedPref.getInt(PreferenceKeys.PRIORITY_GPS,2)
+        val prioGps = sharedPref.getInt(PreferenceKeys.PRIORITY_GPS, 2)
         positioningService.setPriority(prioGps, gpsPositionProvider)
     }
 
+    // endregion
+
+    // region navigation
+
+    val navController
+        get() = findNavController(R.id.nav_host_fragment)
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return navigateOnMenuItem(item)
+    }
+
+    private fun navigateOnMenuItem(item: MenuItem): Boolean {
+        main_drawer_layout.closeDrawers();
+
+        if (item.itemId == R.id.mnuFeedback) {
+            Mailer.sendFeedback(this)
+            true
+        }
+
+        val destination = when (item.itemId) {
+            R.id.mnuSimpleMap -> R.id.arEnabledMapViewFragment
+            R.id.mnuWifiAps -> R.id.nearbyWifiAps
+            R.id.mnuBtBeacons -> R.id.nearbyBluetoothTokensFragment
+            R.id.mnuPoiList -> R.id.poiListFragment
+            R.id.mnuProviderConfig -> R.id.providerConfig
+            R.id.mnuLocationHistory -> R.id.locationHistory
+            else -> -1
+        }
+        if (destination == navController.currentDestination?.id) return true
+
+        if (destination != -1) {
+            navController.navigate(destination)
+            return true
+        } else return super.onOptionsItemSelected(item)
+    }
+
+    override fun goToArNav() {
+        navController.navigate(R.id.arNavFragment)
+    }
+
+    override fun goToStartNavigation() {
+        navController.navigate(R.id.startNavFragment)
+    }
+
+    override fun goToMapNavigation() {
+        navController.navigate(R.id.startNavFragment)
+    }
+
+
+    override fun goToInstrucitons() {
+        navController.navigate(R.id.textNavigationFragment)
+    }
     // endregion
 
     companion object {
