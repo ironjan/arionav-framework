@@ -41,8 +41,6 @@ open class MapViewFragment : Fragment() {
             setHasOptionsMenu(true)
         }
 
-        observeViewModel(viewLifecycleOwner)
-        bindOnClickListeners()
 
 
         val holder = activity?.application as IonavContainerHolder
@@ -63,6 +61,8 @@ open class MapViewFragment : Fragment() {
                 return true
             }
         })
+        bindOnClickListeners()
+        observeViewModel(viewLifecycleOwner)
         bindMapItemTapListener()
     }
 
