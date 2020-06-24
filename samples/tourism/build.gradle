@@ -1,8 +1,19 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs'
+//    id 'com.github.triplet.play' version '2.3.0'
+}
+
+// use semantic versioning: http://semver.org/
+// only change _after_ merge requests
+def versionMajor = 0    // incompatible API changes
+def versionMinor = 1    // added functionality in a backwards-compatible manner
+def versionPatch = 0    // backwards-compatible bug fixes
+def versionBuild = 0    // bump for dogfood builds, public betas, etc.
+
 
 android {
     compileSdkVersion 29
@@ -12,8 +23,12 @@ android {
         applicationId "de.ironjan.arionav_fw.samples.tourism"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
+        if (versionBuild == 0) {
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        } else {
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}-${versionBuild}"
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
