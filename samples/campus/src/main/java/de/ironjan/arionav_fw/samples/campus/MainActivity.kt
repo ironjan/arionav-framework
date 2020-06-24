@@ -46,12 +46,17 @@ class MainActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
 
+        supportActionBar?.apply {
+            setDisplayShowTitleEnabled(false)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
         requestPermissions()
         activateBluetoothIfMissing()
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
+
         actionBarDrawerToggle = ActionBarDrawerToggle(this, main_drawer_layout, R.string.drawer_open, R.string.drawer_close)
         main_drawer_layout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
@@ -72,13 +77,6 @@ class MainActivity :
             startActivityForResult(enableBtIntent, bluetoothRequestCode)
         }
 
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_main, menu)
-        return true
     }
 
 
@@ -208,7 +206,7 @@ class MainActivity :
         }
 
         val destination = getDestinationFromMenuItem(item)
-        if (destination != -1) {
+        if (destination == -1) {
             return super.onOptionsItemSelected(item)
         }
 

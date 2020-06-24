@@ -38,7 +38,6 @@ open class MapViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         (requireActivity() as AppCompatActivity).supportActionBar?.apply {
-            displayOptions = ActionBar.DISPLAY_SHOW_HOME or ActionBar.DISPLAY_SHOW_TITLE
             setHasOptionsMenu(true)
         }
 
