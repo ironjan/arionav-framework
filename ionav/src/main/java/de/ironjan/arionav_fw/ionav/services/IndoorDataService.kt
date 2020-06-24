@@ -26,15 +26,9 @@ class IndoorDataService : Observable<IndoorDataState> {
 
 
     fun init(osmFilePath: String) {
-        val callback = { loadedData: IndoorData ->
-            state = IndoorDataState(loadedData, IndoorDataLoadingState.READY)
-            notifyObservers()
-            logger.info("Completed loading of indoor map data.")
-        }
-
         synchronized(loadingState) {
             if (loadingState == IndoorDataLoadingState.INITIALIZED) {
-                IndoorMapDataLoadingTask(osmFilePath, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                IndoorMapDataLoadingTask(osmFilePath, this::onLoadComplete).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                 state = state.copy(indoorDataLoadingState = IndoorDataLoadingState.LOADING)
             }
         }
@@ -42,8 +36,9 @@ class IndoorDataService : Observable<IndoorDataState> {
         logger.info("Started loading of indoor map data.")
     }
 
-    private fun updateState() {
-        state = IndoorDataState(indoorData, loadingState)
+    fun onLoadComplete(loadedData:IndoorData) {
+        state = IndoorDataState(loadedData, IndoorDataLoadingState.READY)
+        logger.info("Completed loading of indoor map data.")
     }
 
 

@@ -10,7 +10,6 @@ class IndoorDestinationService(private val indoorDataService: IndoorDataService)
 
                 if(state.indoorDataLoadingState == IndoorDataLoadingState.READY) {
                     destinations = indoorDataService.indoorData.destinations
-                    indoorDataService.removeObserver(this)
                 }
             }
         })
@@ -19,8 +18,6 @@ class IndoorDestinationService(private val indoorDataService: IndoorDataService)
 
     override val state: DestinationServiceState
         get() = DestinationServiceState(destinations)
-
-    override var destinations: Map<String, Coordinate> = emptyMap()
 
     /**
      * Tries to convert {@code value} into a {@code Coordinate}.
