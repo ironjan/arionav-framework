@@ -3,27 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/arEnabledMapView">
+    app:startDestination="@+id/viewMap">
 
-    <fragment android:name="de.ironjan.arionav_fw.samples.tourism.CustomViewMapFragment"
-        android:id="@+id/arEnabledMapView"
+    <fragment android:name="de.ironjan.arionav_fw.samples.tourism.TourismViewMapFragment"
+        android:id="@+id/viewMap"
         android:label="Map View"
-        tools:layout="@layout/ar_enabled_map_view" />
+        tools:layout="@layout/fragment_view_map" />
 
     <fragment android:name="de.ironjan.arionav_fw.samples.tourism.TourismNavigationViaMapFragment"
-        android:id="@+id/startNavigationFragment"
+        android:id="@+id/navigationViaMap"
         android:label="Start Navigation"
         tools:layout="@layout/fragment_navigation_via_map" />
 
     <fragment
-        android:id="@+id/CustomArNavFragment"
-        android:name="de.ironjan.arionav_fw.samples.tourism.CustomArNavFragment"
+        android:id="@+id/navigationViaAr"
+        android:name="de.ironjan.arionav_fw.samples.tourism.TourismArNavFragment"
         android:label="AR Nav Fragment"
         tools:layout="@layout/fragment_ar_view" />
 
     <fragment
-        android:id="@+id/InstructionsListFragment"
-        android:name="InstructionsListFragment"
+        android:id="@+id/navigationViaText"
+        android:name="de.ironjan.arionav_fw.samples.tourism.TourismNavigationViaInstructionsFragment"
         android:label="Instructions"
         tools:layout="@layout/fragment_with_recycler_view" />
 

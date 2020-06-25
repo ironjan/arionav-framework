@@ -14,6 +14,7 @@ import com.graphhopper.util.Instruction
 import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
+import de.ironjan.arionav_fw.ionav.views.NavigationFragmentHost
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 
 open class ArNavFragment : Fragment() {
@@ -39,6 +40,8 @@ open class ArNavFragment : Fragment() {
         model.remainingDistanceToDestination.observe(viewLifecycleOwner, Observer {
             updateDestinationSnackbar(it)
         })
+
+        bindNavigationModeBottomBarWithAr()
     }
 
     // endregion
@@ -75,8 +78,7 @@ open class ArNavFragment : Fragment() {
                     .apply {
                         setAction("OK") {
                             dismiss()
-                            model.setDestination(null)
-                            // FIXME navigate back to map
+                            goToFeedback()
                         }
                     })
             .apply {
@@ -86,6 +88,9 @@ open class ArNavFragment : Fragment() {
             }
     }
 
+    protected fun goToFeedback() {
+        (activity as? NavigationFragmentHost)?.goToFeedback()
+    }
     private fun clearDestinationSnackbar() {
         destinationSnackbar?.dismiss()
         destinationSnackbar = null

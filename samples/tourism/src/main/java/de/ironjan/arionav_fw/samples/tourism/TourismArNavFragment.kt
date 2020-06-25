@@ -10,7 +10,7 @@ import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.samples.tourism.viewmodel.TourismViewModel
 
 
-class CustomArNavFragment : ArNavFragment() {
+class TourismArNavFragment : ArNavFragment() {
     override val model: TourismViewModel by activityViewModels()
 
     override val instructionLayoutId = R.layout.view_custom_instruction

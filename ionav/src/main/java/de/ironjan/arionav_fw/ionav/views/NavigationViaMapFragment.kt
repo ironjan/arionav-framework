@@ -71,6 +71,7 @@ open class NavigationViaMapFragment : Fragment() {
             }
         })
         bindMapItemTapListener()
+
     }
 
     private fun setupActionBar() {
@@ -146,15 +147,16 @@ open class NavigationViaMapFragment : Fragment() {
             .apply {
                 setAction("OK") {
                     dismiss()
-                    navigationFragmentHost?.goToFeedback()
+                    goToFeedback()
                     viewModel.setDestination(null)
                 }
                 show()
             }
     }
 
-    protected open val navigationFragmentHost
-        get() = activity as? NavigationFragmentHost
+    protected fun goToFeedback() {
+        (activity as? NavigationFragmentHost)?.goToFeedback()
+    }
 
     private fun bindOnClickListeners() {
         btnCenterOnUser.setOnClickListener {
@@ -165,9 +167,6 @@ open class NavigationViaMapFragment : Fragment() {
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
 
-
-        findViewById<AppCompatButton>(R.id.btnMapNav)?.setOnClickListener { navigationFragmentHost?.goToMapNavigation() }
-        findViewById<AppCompatButton>(R.id.btnTextInstructions)?.setOnClickListener { navigationFragmentHost?.goToInstrucitons() }
     }
 
     private fun bindMapItemTapListener() {

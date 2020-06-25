@@ -3,5 +3,5 @@ import de.ironjan.arionav_fw.ionav.views.NavigationViaInstructionsFragment
 import de.ironjan.arionav_fw.samples.tourism.viewmodel.TourismViewModel
 
 class InstructionsListFragment: NavigationViaInstructionsFragment() {
-    override val model: TourismViewModel by activityViewModels()
+    override val viewModel: TourismViewModel by activityViewModels()
 }

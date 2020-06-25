@@ -6,8 +6,8 @@
     app:startDestination="@id/arEnabledMapViewFragment">
 
     <fragment android:id="@+id/arEnabledMapViewFragment"
-        android:name="de.ironjan.arionav_fw.arionav.views.ArEnabledViewMapFragment"
-        tools:layout="@layout/ar_enabled_map_view"
+        android:name="de.ironjan.arionav_fw.ionav.views.ViewMapFragment"
+        tools:layout="@layout/fragment_view_map"
         android:label="ArEnabledMapViewFragment"/>
 
     <fragment
@@ -23,7 +23,7 @@
         android:label="Map Navigation" />
 
     <fragment android:id="@+id/textNavigationFragment"
-        android:name="de.ironjan.arionav_fw.ionav.views.NavigationViaInstructionsFragment"
+        android:name="de.ironjan.arionav_fw.arionav.views.ArEnabledNavigationViaInstructionsFragment"
         tools:layout="@layout/fragment_with_recycler_view"
         android:label="Instructions" />
 

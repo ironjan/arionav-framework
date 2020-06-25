@@ -5,12 +5,16 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationFragmentHost
+import de.ironjan.arionav_fw.arionav.views.bindNavigationModeBottomBarWithAr
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.util.PermissionHelper
+import de.ironjan.arionav_fw.ionav.views.findViewById
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(),
@@ -106,19 +110,19 @@ class MainActivity : AppCompatActivity(),
 
 
     override fun goToArNav() {
-        navigateToId(R.id.CustomArNavFragment)
+        navigateToId(R.id.navigationViaAr)
     }
 
     override fun goToStartNavigation() {
-        navigateToId(R.id.startNavigationFragment)
+        navigateToId(R.id.navigationViaMap)
     }
 
     override fun goToMapNavigation() {
-        navigateToId(R.id.startNavigationFragment)
+        navigateToId(R.id.navigationViaMap)
     }
 
-    override fun goToInstrucitons() {
-        navigateToId(R.id.InstructionsListFragment)
+    override fun goToInstructions() {
+        navigateToId(R.id.navigationViaText)
     }
 
     override fun goToFeedback() {
@@ -127,9 +131,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun goToMapView(clearNavigationStack: Boolean) {
         if (clearNavigationStack) {
-            navController.popBackStack(R.id.arEnabledMapView, false)
+            navController.popBackStack(R.id.viewMap, false)
         } else {
-            navigateToId(R.id.arEnabledMapView)
+            navigateToId(R.id.viewMap)
         }
     }
 

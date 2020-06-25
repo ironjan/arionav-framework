@@ -21,6 +21,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationFragmentHost
+import de.ironjan.arionav_fw.arionav.views.bindNavigationModeBottomBarWithAr
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
@@ -225,18 +226,22 @@ class MainActivity :
 
     override fun goToArNav() {
         navigateToId(R.id.arNavFragment)
+        bindNavigationModeBottomBarWithAr()
     }
 
     override fun goToStartNavigation() {
         navigateToId(R.id.startNavFragment)
+        bindNavigationModeBottomBarWithAr()
     }
 
     override fun goToMapNavigation() {
         navigateToId(R.id.startNavFragment)
+        bindNavigationModeBottomBarWithAr()
     }
 
-    override fun goToInstrucitons() {
+    override fun goToInstructions() {
         navigateToId(R.id.textNavigationFragment)
+        bindNavigationModeBottomBarWithAr()
     }
 
     override fun goToFeedback() {

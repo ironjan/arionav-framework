@@ -15,11 +15,13 @@ open class ArEnabledNavigationViaMapFragment: NavigationViaMapFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_ar_enabled_start_navigation_fragment, container, false)
 
-    override val navigationFragmentHost
+    private val navigationFragmentHost
             get() = activity as? ArEnabledNavigationFragmentHost
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        findViewById<AppCompatButton>(R.id.btnArNav)?.setOnClickListener { navigationFragmentHost?.goToArNav() }
+        bindNavigationModeBottomBarWithAr()
     }
+
+
 }

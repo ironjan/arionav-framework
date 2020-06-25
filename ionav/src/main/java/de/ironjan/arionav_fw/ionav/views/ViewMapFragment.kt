@@ -149,7 +149,8 @@ open class ViewMapFragment : Fragment() {
     }
 
     private fun goToStartNavigationFragment() {
-        (activity as? NavigationFragmentHost)?.goToStartNavigation()
+        val navigationFragmentHost = activity as? NavigationFragmentHost
+        navigationFragmentHost?.goToStartNavigation()
     }
 
     // region options menu
