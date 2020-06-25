@@ -18,6 +18,7 @@ class FeedbackFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btnSendFeedback.setOnClickListener { sendFeedback() }
+        btnSkipFeedback.setOnClickListener { goToMapView() }
     }
 
     private fun sendFeedback() {
@@ -32,6 +33,10 @@ class FeedbackFragment : Fragment() {
         Mailer(holder.ionavContainer.developerMails)
             .sendPrefilledFeedback(context ?: return, feedback.toString())
 
+        goToMapView()
+    }
+
+    private fun goToMapView() {
         (activity as? NavigationFragmentHost)?.goToMapView(true)
     }
 }
