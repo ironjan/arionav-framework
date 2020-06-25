@@ -11,6 +11,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBar.LayoutParams.MATCH_PARENT
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
@@ -165,8 +166,8 @@ open class NavigationViaMapFragment : Fragment() {
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
 
 
-        btnMapNav.setOnClickListener { navigationFragmentHost?.goToMapNavigation() }
-        btnTextInstructions.setOnClickListener { navigationFragmentHost?.goToInstrucitons() }
+        findViewById<AppCompatButton>(R.id.btnMapNav)?.setOnClickListener { navigationFragmentHost?.goToMapNavigation() }
+        findViewById<AppCompatButton>(R.id.btnTextInstructions)?.setOnClickListener { navigationFragmentHost?.goToInstrucitons() }
     }
 
     private fun bindMapItemTapListener() {

@@ -80,29 +80,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:src="@drawable/ic_my_location_black_24dp"
-                app:layout_constraintBottom_toTopOf="@id/btnMapNav"
+                app:layout_constraintBottom_toTopOf="@id/navigationModeBottomBar"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnMapNav"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Map Nav"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btnTextInstructions"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnTextInstructions"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Instructions"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@id/btnMapNav"
-                app:layout_constraintTop_toTopOf="@id/btnMapNav" />
+            <include layout="@layout/navigation_mode_bottom_bar" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
