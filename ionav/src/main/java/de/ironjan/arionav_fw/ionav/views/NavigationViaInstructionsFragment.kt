@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.debug.TextInstructionAdapter
-import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
+import kotlinx.android.synthetic.main.fragment_navigation_via_text.*
 
 open class NavigationViaInstructionsFragment : Fragment() {
 
     open val model: IonavViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_with_recycler_view, container, false)
+        return inflater.inflate(R.layout.fragment_navigation_via_text, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
