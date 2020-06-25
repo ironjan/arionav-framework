@@ -5,15 +5,15 @@
     android:id="@+id/nav_graph"
     app:startDestination="@+id/arEnabledMapView">
 
-    <fragment android:name="de.ironjan.arionav_fw.samples.tourism.CustomMapViewFragment"
+    <fragment android:name="de.ironjan.arionav_fw.samples.tourism.CustomViewMapFragment"
         android:id="@+id/arEnabledMapView"
         android:label="Map View"
         tools:layout="@layout/ar_enabled_map_view" />
 
-    <fragment android:name="de.ironjan.arionav_fw.samples.tourism.TourismStartNavigationFragment"
+    <fragment android:name="de.ironjan.arionav_fw.samples.tourism.TourismNavigationViaMapFragment"
         android:id="@+id/startNavigationFragment"
         android:label="Start Navigation"
-        tools:layout="@layout/fragment_start_navigation" />
+        tools:layout="@layout/fragment_navigation_via_map" />
 
     <fragment
         android:id="@+id/CustomArNavFragment"

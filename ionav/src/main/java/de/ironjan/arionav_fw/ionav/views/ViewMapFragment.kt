@@ -8,7 +8,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -22,16 +21,16 @@ import de.ironjan.arionav_fw.ionav.services.RoutingService
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.graphhopper.extensions_core.Coordinate
-import kotlinx.android.synthetic.main.fragment_simple_map_nav.*
+import kotlinx.android.synthetic.main.fragment_view_map.*
 import org.oscim.core.GeoPoint
 
 
-open class MapViewFragment : Fragment() {
+open class ViewMapFragment : Fragment() {
     private var closeToDestinationSnackbar: Snackbar? = null
 
     protected open val viewModel: IonavViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_simple_map_nav, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_view_map, container, false)
 
     @SuppressLint("WrongConstant")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

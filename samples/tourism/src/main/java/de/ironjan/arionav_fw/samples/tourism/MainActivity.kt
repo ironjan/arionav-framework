@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
@@ -107,31 +106,36 @@ class MainActivity : AppCompatActivity(),
 
 
     override fun goToArNav() {
-        navController.navigate(R.id.CustomArNavFragment)
+        navigateToId(R.id.CustomArNavFragment)
     }
 
     override fun goToStartNavigation() {
-        navController.navigate(R.id.startNavigationFragment)
+        navigateToId(R.id.startNavigationFragment)
     }
 
     override fun goToMapNavigation() {
-        Toast.makeText(this, "going to map...", Toast.LENGTH_SHORT).show()
+        navigateToId(R.id.startNavigationFragment)
     }
 
     override fun goToInstrucitons() {
-        navController.navigate(R.id.InstructionsListFragment)
+        navigateToId(R.id.InstructionsListFragment)
     }
 
     override fun goToFeedback() {
-        navController.navigate(R.id.feedbackFragment)
+        navigateToId(R.id.feedbackFragment)
     }
 
     override fun goToMapView(clearNavigationStack: Boolean) {
         if (clearNavigationStack) {
             navController.popBackStack(R.id.arEnabledMapView, false)
         } else {
-            navController.navigate(R.id.arEnabledMapView)
+            navigateToId(R.id.arEnabledMapView)
         }
+    }
+
+    private fun navigateToId(targetId: Int) {
+        if(targetId == navController.currentDestination?.id) return
+        navController.navigate(targetId)
     }
 
 }

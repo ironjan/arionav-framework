@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationFragmentHost
 import de.ironjan.arionav_fw.arionav.R
-import de.ironjan.arionav_fw.ionav.views.MapViewFragment
+import de.ironjan.arionav_fw.ionav.views.ViewMapFragment
 import kotlinx.android.synthetic.main.ar_enabled_map_view.*
 
-open class   ArEnabledMapViewFragment : MapViewFragment() {
+open class   ArEnabledViewMapFragment : ViewMapFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.ar_enabled_map_view, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

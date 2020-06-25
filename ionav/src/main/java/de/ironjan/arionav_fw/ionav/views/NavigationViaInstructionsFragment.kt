@@ -12,7 +12,7 @@ import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.debug.TextInstructionAdapter
 import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
 
-open class TextInstructionListFragment : Fragment() {
+open class NavigationViaInstructionsFragment : Fragment() {
 
     open val model: IonavViewModel by activityViewModels()
 

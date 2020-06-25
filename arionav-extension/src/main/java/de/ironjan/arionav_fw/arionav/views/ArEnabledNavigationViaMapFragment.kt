@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationFragmentHost
 import de.ironjan.arionav_fw.arionav.R
-import de.ironjan.arionav_fw.ionav.views.StartNavigationFragment
+import de.ironjan.arionav_fw.ionav.views.NavigationViaMapFragment
 import kotlinx.android.synthetic.main.fragment_ar_enabled_start_navigation_fragment.*
 
-open class ArEnabledStartNavigationFragment: StartNavigationFragment() {
+open class ArEnabledNavigationViaMapFragment: NavigationViaMapFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_ar_enabled_start_navigation_fragment, container, false)
 

@@ -23,21 +23,22 @@ import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.mapview.IndoorItemTapCallback
 import de.ironjan.graphhopper.extensions_core.Coordinate
-import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnCenterOnUser
-import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnLevelMinus
-import kotlinx.android.synthetic.main.fragment_simple_map_nav.btnLevelPlus
-import kotlinx.android.synthetic.main.fragment_simple_map_nav.mapView
-import kotlinx.android.synthetic.main.fragment_simple_map_nav.txtLevel
-import kotlinx.android.synthetic.main.fragment_start_navigation.*
+import kotlinx.android.synthetic.main.fragment_navigation_via_map.*
+import kotlinx.android.synthetic.main.fragment_view_map.*
+import kotlinx.android.synthetic.main.fragment_view_map.btnCenterOnUser
+import kotlinx.android.synthetic.main.fragment_view_map.btnLevelMinus
+import kotlinx.android.synthetic.main.fragment_view_map.btnLevelPlus
+import kotlinx.android.synthetic.main.fragment_view_map.mapView
+import kotlinx.android.synthetic.main.fragment_view_map.txtLevel
 import org.oscim.core.GeoPoint
 
 
-open class StartNavigationFragment : Fragment() {
+open class NavigationViaMapFragment : Fragment() {
     private var closeToDestinationSnackbar: Snackbar? = null
 
     protected open val viewModel: IonavViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_start_navigation, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_navigation_via_map, container, false)
 
     @SuppressLint("WrongConstant")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -165,7 +166,6 @@ open class StartNavigationFragment : Fragment() {
 
 
         btnMapNav.setOnClickListener { navigationFragmentHost?.goToMapNavigation() }
-// FIXME MOVE TO ARIONAVEXT        btnArNav.setOnClickListener { (activity as? NavigationFragmentHost) }
         btnTextInstructions.setOnClickListener { navigationFragmentHost?.goToInstrucitons() }
     }
 

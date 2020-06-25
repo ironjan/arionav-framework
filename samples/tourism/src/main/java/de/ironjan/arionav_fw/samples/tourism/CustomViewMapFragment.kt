@@ -3,7 +3,7 @@ package de.ironjan.arionav_fw.samples.tourism
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import de.ironjan.arionav_fw.arionav.views.ArEnabledMapViewFragment
+import de.ironjan.arionav_fw.arionav.views.ArEnabledViewMapFragment
 import de.ironjan.arionav_fw.ionav.views.IonavMapView
 import de.ironjan.arionav_fw.samples.tourism.viewmodel.TourismViewModel
 import de.ironjan.arionav_fw.samples.tourism.views.PoiLayer
@@ -11,10 +11,10 @@ import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.slf4j.LoggerFactory
 
-class CustomMapViewFragment : ArEnabledMapViewFragment() {
+class CustomViewMapFragment : ArEnabledViewMapFragment() {
     override val viewModel by activityViewModels<TourismViewModel>()
 
-    private val logger = LoggerFactory.getLogger(CustomMapViewFragment::class.simpleName)
+    private val logger = LoggerFactory.getLogger(CustomViewMapFragment::class.simpleName)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
