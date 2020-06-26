@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/navigationViaAr"
-        android:name="de.ironjan.arionav_fw.samples.tourism.TourismArNavFragment"
+        android:name="de.ironjan.arionav_fw.samples.tourism.TourismNavigationViaArFragment"
         android:label="AR Nav Fragment"
         tools:layout="@layout/fragment_ar_view" />
 

@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/arNavFragment"
-        android:name="de.ironjan.arionav_fw.arionav.views.ArNavFragment"
+        android:name="de.ironjan.arionav_fw.arionav.views.NavigationViaArFragment"
         tools:layout="@layout/fragment_ar_view"
         android:label="CustomArNavFragment" />
 

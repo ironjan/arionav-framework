@@ -163,7 +163,8 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
     }
 
-    private var locationScene: ArionavLocationScene? = null
+    var locationScene: ArionavLocationScene? = null
+        private set
 
 
     // region ar updates
@@ -229,7 +230,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
             is UnavailableSdkTooOldException -> "Please update this app"
             is UnavailableDeviceNotCompatibleException -> "This device does not support AR"
             else -> {
-                Log.e(ArNavFragment::class.java.simpleName, "Exception: $e")
+                Log.e(NavigationViaArFragment::class.java.simpleName, "Exception: $e")
                 "Failed to create AR session"
             }
         }
@@ -308,7 +309,8 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
         val nextInstruction = route.nextInstruction
         val DESTINATION_SIGN = 4
         if (nextInstruction == null ||
-            nextInstruction.sign == DESTINATION_SIGN){
+            nextInstruction.sign == DESTINATION_SIGN
+        ) {
             // the route only has a current instruction. show only destination marker
             locationScene?.remove(instructionMarker)
 
@@ -434,7 +436,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
     private fun LocationMarker.updateDestinationRenderable() {
         (node.renderable as? ViewRenderable)?.view?.apply {
 
-            val route = viewModel.route.value?: return@apply
+            val route = viewModel.route.value ?: return@apply
 
             val textDistance = findViewById<TextView>(R.id.txt_Distance)
             val txtDuration = findViewById<TextView>(R.id.txt_Duration)

@@ -15,12 +15,16 @@ import de.ironjan.arionav_fw.arionav.R
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.NavigationFragmentHost
+import de.ironjan.arionav_fw.ionav.views.findViewById
 import kotlinx.android.synthetic.main.fragment_ar_view.*
 
-open class ArNavFragment : Fragment() {
+open class NavigationViaArFragment : Fragment() {
     // region view model
-    open val model: IonavViewModel by activityViewModels()
+    open val viewModel: IonavViewModel by activityViewModels()
     // endregion
+
+    protected val ar_route_view: ArRouteView
+        get() = this.findViewById<ArRouteView>(R.id.ar_route_view)!!
 
     // region lifecycle events
     protected lateinit var instructionHelper: InstructionHelper
@@ -35,9 +39,9 @@ open class ArNavFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ar_route_view.setInstructionView(instructionLayoutId, this::updateInstructionView)
-        ar_route_view.observe(model, viewLifecycleOwner)
+        ar_route_view.observe(viewModel, viewLifecycleOwner)
 
-        model.remainingDistanceToDestination.observe(viewLifecycleOwner, Observer {
+        viewModel.remainingDistanceToDestination.observe(viewLifecycleOwner, Observer {
             updateDestinationSnackbar(it)
         })
 
@@ -64,7 +68,7 @@ open class ArNavFragment : Fragment() {
     var destinationSnackbar: Snackbar? = null
 
     private fun updateDestinationSnackbar(distanceToDestination: Double?) {
-        if(distanceToDestination == null || distanceToDestination > 5.0) {
+        if (distanceToDestination == null || distanceToDestination > 5.0) {
             clearDestinationSnackbar()
         } else {
             showDestinationSnackbar()
@@ -73,8 +77,7 @@ open class ArNavFragment : Fragment() {
 
     private fun showDestinationSnackbar() {
         destinationSnackbar = (
-                destinationSnackbar ?:
-                Snackbar.make(ar_route_view, "You are close to your destination.", Snackbar.LENGTH_INDEFINITE)
+                destinationSnackbar ?: Snackbar.make(ar_route_view, "You are close to your destination.", Snackbar.LENGTH_INDEFINITE)
                     .apply {
                         setAction("OK") {
                             dismiss()
@@ -82,7 +85,7 @@ open class ArNavFragment : Fragment() {
                         }
                     })
             .apply {
-                if(!isShownOrQueued){
+                if (!isShownOrQueued) {
                     show()
                 }
             }
@@ -91,6 +94,7 @@ open class ArNavFragment : Fragment() {
     protected fun goToFeedback() {
         (activity as? NavigationFragmentHost)?.goToFeedback()
     }
+
     private fun clearDestinationSnackbar() {
         destinationSnackbar?.dismiss()
         destinationSnackbar = null
