@@ -9,8 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -21,13 +19,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.arionav.ArEnabledNavigationFragmentHost
-import de.ironjan.arionav_fw.arionav.views.bindNavigationModeBottomBarWithAr
 import de.ironjan.arionav_fw.ionav.positioning.bluetooth.BluetoothPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
+import de.ironjan.arionav_fw.ionav.util.Mailer
 import de.ironjan.arionav_fw.ionav.util.PermissionHelper
 import de.ironjan.arionav_fw.samples.campus.data.WifiPositioningProviderHardCodedValues
-import de.ironjan.arionav_fw.ionav.util.Mailer
 import de.ironjan.arionav_fw.samples.campus.util.PreferenceKeys
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
@@ -226,22 +223,18 @@ class MainActivity :
 
     override fun goToArNav() {
         navigateToId(R.id.arNavFragment)
-        bindNavigationModeBottomBarWithAr()
     }
 
     override fun goToStartNavigation() {
         navigateToId(R.id.startNavFragment)
-        bindNavigationModeBottomBarWithAr()
     }
 
     override fun goToMapNavigation() {
         navigateToId(R.id.startNavFragment)
-        bindNavigationModeBottomBarWithAr()
     }
 
     override fun goToInstructions() {
         navigateToId(R.id.textNavigationFragment)
-        bindNavigationModeBottomBarWithAr()
     }
 
     override fun goToFeedback() {
