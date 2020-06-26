@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -60,6 +61,8 @@ class PlacesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val lContext = context ?: return
         Toast.makeText(lContext, "Loading...", Toast.LENGTH_SHORT).show()
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Destinations"
 
         viewModel.destinations.observe(viewLifecycleOwner, Observer {
             places = it.keys.toList()

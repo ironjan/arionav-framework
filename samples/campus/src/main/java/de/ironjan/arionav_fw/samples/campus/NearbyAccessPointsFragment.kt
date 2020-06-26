@@ -3,6 +3,7 @@ package de.ironjan.arionav_fw.samples.campus
 import android.net.wifi.ScanResult
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
@@ -22,6 +23,8 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Nearby WiFi APs"
 
         val positioningService = when(val ionavContainerHolder = activity?.application) {
             is IonavContainerHolder -> ionavContainerHolder.ionavContainer.positioningService

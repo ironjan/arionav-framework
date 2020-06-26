@@ -2,6 +2,7 @@ package de.ironjan.arionav_fw.samples.campus
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.SignalStrength
@@ -15,6 +16,8 @@ class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Nearby Bluetooth Tokens"
 
         val positioningService = when(val ionavContainerHolder = activity?.application) {
             is IonavContainerHolder -> ionavContainerHolder.ionavContainer.positioningService

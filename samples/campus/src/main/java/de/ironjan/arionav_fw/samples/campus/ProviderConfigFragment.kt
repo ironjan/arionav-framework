@@ -3,6 +3,7 @@ package de.ironjan.arionav_fw.samples.campus
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,8 @@ class ProviderConfigFragment : Fragment(R.layout.fragment_recycler_view) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Positioning Config"
 
         val positioningService = when (val ionavHolder = activity?.application) {
             is IonavContainerHolder -> ionavHolder.ionavContainer.positioningService
