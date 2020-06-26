@@ -8,9 +8,9 @@ buildscript {
         // uses semantic versioning: http://semver.org/
         // only change _after_ merge requests
         versionMajor = 0    // incompatible API changes
-        versionMinor = 1    // added functionality in a backwards-compatible manner
+        versionMinor = 2    // added functionality in a backwards-compatible manner
         versionPatch = 0    // backwards-compatible bug fixes
-        versionBuild = 1    // bump for dogfood builds, public betas, etc.
+        versionBuild = 0    // bump for dogfood builds, public betas, etc.
 
         // dependency versions
         android_arch_lifecycle_version = '1.1.1'
