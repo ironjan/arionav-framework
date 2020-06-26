@@ -122,8 +122,6 @@ open class ViewMapFragment : Fragment() {
 
         btnLevelPlus.setOnClickListener { viewModel.increaseLevel() }
         btnLevelMinus.setOnClickListener { viewModel.decreaseLevel() }
-
-//        btnBackToSearch.setOnClickListener { viewModel.setDestination(null) }
     }
 
     private fun bindMapItemTapListener() {
