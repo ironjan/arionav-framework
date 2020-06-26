@@ -41,7 +41,7 @@ class NamedPlacesAdapter(
     override fun getItemCount() = myDataset.size
 
     fun replaceData(it: List<String>) {
-        myDataset = it
+        myDataset = it.sorted()
         notifyDataSetChanged()
     }
 }
