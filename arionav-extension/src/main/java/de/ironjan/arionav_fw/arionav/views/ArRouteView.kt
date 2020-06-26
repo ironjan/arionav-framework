@@ -366,22 +366,17 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
 
     private var layoutId = R.layout.view_basic_instruction
     private var updateRenderable: (View, Instruction, Instruction) -> Unit =
-        { view: View, currentInstruction: Instruction, nextInstruction: Instruction? ->
-            val txtName = view.findViewById<TextView>(R.id.instructionText)
-            val txtDistance = view.findViewById<TextView>(R.id.instructionDistanceInMeters)
-            val instructionImage = view.findViewById<ImageView>(R.id.instructionImage)
+            { view: View, currentInstruction: Instruction, nextInstruction: Instruction? ->
+                val txtName = view.findViewById<TextView>(R.id.instructionText)
+                val txtDistance = view.findViewById<TextView>(R.id.instructionDistanceInMeters)
+                val instructionImage = view.findViewById<ImageView>(R.id.instructionImage)
 
-            txtName.text = currentInstruction.name
-            txtDistance.text = "%.2fm".format(currentInstruction.distance)
+                txtName.text = instructionHelper.getTextFor(nextInstruction)
+                txtDistance.text = "%.0fm".format(currentInstruction.distance)
 
 
-            val sign = if (currentInstruction.points.size > 2) {
-                currentInstruction.sign
-            } else {
-                nextInstruction?.sign ?: InstructionHelper.SIGN_DESTINATION
+                instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(nextInstruction?.sign))
             }
-            instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(sign))
-        }
 
     fun setInstructionView(layoutId: Int, updateRenderable: (View, Instruction, Instruction) -> Unit) {
         this.layoutId = layoutId
@@ -441,7 +436,7 @@ class ArRouteView : ArSceneView, LifecycleObserver, ModelDrivenUiComponent<Ionav
             val textDistance = findViewById<TextView>(R.id.txt_Distance)
             val txtDuration = findViewById<TextView>(R.id.txt_Duration)
 
-            textDistance.text = String.format("%.2fm", route.distance)
+            textDistance.text = String.format("%.0fm", route.distance)
             txtDuration.text = InstructionHelper.toReadableTime(route.time)
 
         }

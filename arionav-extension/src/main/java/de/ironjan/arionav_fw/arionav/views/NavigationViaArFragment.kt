@@ -40,7 +40,6 @@ open class NavigationViaArFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ar_route_view.setInstructionView(instructionLayoutId, this::updateInstructionView)
         ar_route_view.observe(viewModel, viewLifecycleOwner)
 
         viewModel.remainingDistanceToDestination.observe(viewLifecycleOwner, Observer {
@@ -95,15 +94,14 @@ open class NavigationViaArFragment : Fragment() {
     // endregion
 
     // region ar instruction view
-    protected open val instructionLayoutId = R.layout.view_basic_instruction
 
     protected open fun updateInstructionView(view: View, currentInstruction: Instruction, nextInstruction: Instruction) {
         val txtName = view.findViewById<TextView>(R.id.instructionText)
         val txtDistance = view.findViewById<TextView>(R.id.instructionDistanceInMeters)
         val instructionImage = view.findViewById<ImageView>(R.id.instructionImage)
 
-        txtName.text = currentInstruction.name
-        txtDistance.text = "%.2fm".format(nextInstruction.distance)
+        txtName.text = instructionHelper.getTextFor(nextInstruction.sign)
+        txtDistance.text = InstructionHelper.toReadableDistance(currentInstruction.distance)
         instructionImage.setImageDrawable(instructionHelper.getInstructionImageFor(nextInstruction.sign))
     }
     // endregion
