@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -45,9 +47,51 @@ open class NavigationViaArFragment : Fragment() {
             updateDestinationSnackbar(it)
         })
 
+        setupActionBar()
+
+
         bindNavigationModeBottomBarWithAr()
     }
 
+    // endregion
+
+    // region action bar
+
+    private fun setupActionBar() {
+        (requireActivity() as AppCompatActivity)
+            .supportActionBar
+            ?.apply {
+                val view = layoutInflater.inflate(de.ironjan.arionav_fw.ionav.R.layout.action_bar_start_navigation, null)
+
+                bindActionBarViewsToViewModel(view)
+
+                setCustomView(view, ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT))
+
+                displayOptions =
+                    (ActionBar.DISPLAY_SHOW_HOME
+                            or ActionBar.DISPLAY_HOME_AS_UP
+                            or ActionBar.DISPLAY_SHOW_TITLE
+                            or ActionBar.DISPLAY_SHOW_CUSTOM)
+
+                setHasOptionsMenu(true)
+            }
+    }
+
+    private fun bindActionBarViewsToViewModel(view: View) {
+        viewModel.destinationString.observe(viewLifecycleOwner,
+            Observer {
+                view.findViewById<TextView>(de.ironjan.arionav_fw.ionav.R.id.txtDestination).text = it
+            })
+
+        viewModel.remainingDistanceToDestination.observe(viewLifecycleOwner,
+            Observer {
+                view.findViewById<TextView>(de.ironjan.arionav_fw.ionav.R.id.txtDistance).text = InstructionHelper.toReadableDistance(it)
+            })
+        viewModel.remainingDurationToDestination.observe(viewLifecycleOwner,
+            Observer {
+                view.findViewById<TextView>(de.ironjan.arionav_fw.ionav.R.id.txtDuration).text = InstructionHelper.toReadableTime(it)
+            })
+    }
     // endregion
 
     // region ar instruction view

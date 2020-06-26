@@ -15,6 +15,7 @@ import de.ironjan.arionav_fw.ionav.model.osm.Node
 import de.ironjan.arionav_fw.ionav.services.InstructionHelper
 import de.ironjan.arionav_fw.samples.tourism.viewmodel.TourismViewModel
 import de.ironjan.arionav_fw.samples.tourism.views.PoiLocationMarker
+import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
 
@@ -69,7 +70,7 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
         }
     }
 
-    // region TODO name
+    // region poit markers
 
     val currentMarkers = mutableListOf<PoiLocationMarker>()
 
@@ -88,14 +89,14 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
 
     }
 
-    private fun createAndAddMarkerToLocationScene(it: PoiLocationMarker) {
-        logger.info("TouriArNav createAndAddMarkerToLocationScene($it)")
+    private fun createAndAddMarkerToLocationScene(poiLocationMarker: PoiLocationMarker) {
+        logger.info("TouriArNav createAndAddMarkerToLocationScene($poiLocationMarker)")
 
         val context = context ?: return
-        logger.info("TouriArNav createAndAddMarkerToLocationScene($it)... continues")
+        logger.info("TouriArNav createAndAddMarkerToLocationScene($poiLocationMarker)... continues")
 
-        it.apply {
-            onlyRenderWhenWithin = 50
+        poiLocationMarker.apply {
+            onlyRenderWhenWithin = 100
             height = 1f
 
             ViewRenderable.builder()
@@ -104,15 +105,28 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
                 .handle { viewRenderable, throwable ->
                     if (throwable != null) return@handle
 
-                    viewRenderable.view.findViewById<TextView>(R.id.txtName).text = it.osmNode.name
-                    logger.info("TouriArNav built view: $it")
-                    it.node.renderable = viewRenderable
+                    val view = viewRenderable.view
+                    view.findViewById<TextView>(R.id.txtName).text = poiLocationMarker.osmNode.name
+                    logger.info("TouriArNav built view: $poiLocationMarker")
+                    poiLocationMarker.node.renderable = viewRenderable
+
+                    view.setOnClickListener { changeDestination(poiLocationMarker) }
                 }
             if(BuildConfig.FLAVOR == "withPoi") {
-                ar_route_view.locationScene?.add(it)
-                logger.info("TouriArNav Added to location scene: $it")
+                ar_route_view.locationScene?.add(poiLocationMarker)
+                logger.info("TouriArNav Added to location scene: $poiLocationMarker")
             }
         }
+    }
+
+    private fun changeDestination(poiLocationMarker: PoiLocationMarker) {
+        val node = poiLocationMarker.osmNode
+
+        val coordinate = Coordinate(node.lat, node.lon, 0.0)
+        val nonNullName = node.name ?: coordinate.asString()
+
+        viewModel.setDestinationAndName(nonNullName, coordinate)
+        logger.info("TouriArNav changed destination to $nonNullName")
     }
 
     // endregion
