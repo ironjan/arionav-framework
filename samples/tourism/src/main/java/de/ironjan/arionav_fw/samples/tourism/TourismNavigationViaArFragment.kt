@@ -23,7 +23,6 @@ import kotlin.concurrent.thread
 class TourismNavigationViaArFragment : NavigationViaArFragment() {
     override val viewModel: TourismViewModel by activityViewModels()
 
-    override val instructionLayoutId = R.layout.view_custom_instruction
 
     override fun updateInstructionView(
         view: View,
@@ -46,6 +45,7 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ar_route_view.setInstructionView(R.layout.view_custom_instruction, this::updateInstructionView)
         waitForLocationSceneAndSetup()
     }
 

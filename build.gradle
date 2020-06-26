@@ -9,7 +9,7 @@ buildscript {
         // only change _after_ merge requests
         versionMajor = 0    // incompatible API changes
         versionMinor = 2    // added functionality in a backwards-compatible manner
-        versionPatch = 1    // backwards-compatible bug fixes
+        versionPatch = 2    // backwards-compatible bug fixes
         versionBuild = 0    // bump for dogfood builds, public betas, etc.
 
         // dependency versions
