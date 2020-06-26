@@ -2,7 +2,7 @@
     <string name="app_name">IONAV</string>
 
     <!-- instruction texts -->
-    <string name="instruction_u_turn_unknown">Unknown instruction</string>
+    <string name="instruction_u_turn_unknown">U-turn</string>
     <string name="instruction_u_turn_left">U-turn left</string>
     <string name="instruction_keep_left">Keep left</string>
     <string name="instruction_leave_roundabout">Leave roundabout</string>

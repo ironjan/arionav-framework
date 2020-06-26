@@ -26,23 +26,24 @@ class InstructionHelper(private val context: Context) {
     fun getTextFor(instruction: Instruction?) = getTextFor(instruction?.sign ?: 4)
     fun getTextFor(sign: Int): String {
         return when (sign) {
-            -98 -> context.resources.getString(R.string.instruction_u_turn_unknown)
-            -8 -> context.resources.getString(R.string.instruction_u_turn_left)
-            -7 -> context.resources.getString(R.string.instruction_keep_left)
-            -6 -> context.resources.getString(R.string.instruction_leave_roundabout)
-            -3 -> context.resources.getString(R.string.instruction_turn_sharp_left)
-            -2 -> context.resources.getString(R.string.instruction_turn_left)
-            -1 -> context.resources.getString(R.string.instruction_turn_slight_left)
-            0 -> context.resources.getString(R.string.instruction_continue_on_street)
-            1 -> context.resources.getString(R.string.instruction_turn_slight_right)
-            2 -> context.resources.getString(R.string.instruction_turn_right)
-            3 -> context.resources.getString(R.string.instruction_turn_sharp_right)
-            4 -> context.resources.getString(R.string.instruction_finish)
-            5 -> context.resources.getString(R.string.instruction_reached_via)
-            6 -> context.resources.getString(R.string.instruction_use_roundabout)
-            Integer.MIN_VALUE -> "IGNORED"
-            7 -> context.resources.getString(R.string.instruction_keep_right)
-            8 -> context.resources.getString(R.string.instruction_u_turn_right)
+            Instruction.UNKNOWN -> context.resources.getString(R.string.instruction_unknown)
+            Instruction.U_TURN_UNKNOWN -> context.resources.getString(R.string.instruction_u_turn_unknown)
+            Instruction.U_TURN_LEFT -> context.resources.getString(R.string.instruction_u_turn_left)
+            Instruction.KEEP_LEFT -> context.resources.getString(R.string.instruction_keep_left)
+            Instruction.LEAVE_ROUNDABOUT -> context.resources.getString(R.string.instruction_leave_roundabout)
+            Instruction.TURN_SHARP_LEFT -> context.resources.getString(R.string.instruction_turn_sharp_left)
+            Instruction.TURN_LEFT -> context.resources.getString(R.string.instruction_turn_left)
+            Instruction.TURN_SLIGHT_LEFT -> context.resources.getString(R.string.instruction_turn_slight_left)
+            Instruction.CONTINUE_ON_STREET-> context.resources.getString(R.string.instruction_continue_on_street)
+            Instruction.TURN_SLIGHT_RIGHT -> context.resources.getString(R.string.instruction_turn_slight_right)
+            Instruction.TURN_RIGHT -> context.resources.getString(R.string.instruction_turn_right)
+            Instruction.TURN_SHARP_RIGHT -> context.resources.getString(R.string.instruction_turn_sharp_right)
+            Instruction.FINISH -> context.resources.getString(R.string.instruction_finish)
+            Instruction.REACHED_VIA -> context.resources.getString(R.string.instruction_reached_via)
+            Instruction.USE_ROUNDABOUT -> context.resources.getString(R.string.instruction_use_roundabout)
+            Instruction.IGNORE -> "IGNORED"
+            Instruction.KEEP_RIGHT -> context.resources.getString(R.string.instruction_keep_right)
+            Instruction.U_TURN_RIGHT -> context.resources.getString(R.string.instruction_u_turn_right)
             else -> context.resources.getString(R.string.instruction_unknown)
         }
     }
@@ -62,34 +63,27 @@ class InstructionHelper(private val context: Context) {
 
     fun getDrawableResIdForInstructionSign(instruction: Instruction?) = getDrawableResIdForInstructionSign(instruction?.sign ?: 4)
     fun getDrawableResIdForInstructionSign(sign: Int?): Int = when (sign) {
-        -99 -> R.mipmap.ic_launcher
-        -98 -> R.mipmap.u_turn
-        -8 -> R.mipmap.u_turn_left
-        -7 -> R.mipmap.keep_left
-//            -6 -> "LEAVE_ROUNDABOUT" // for future use
-        -3 -> R.mipmap.sharp_left
-        -2 -> R.mipmap.left
-        -1 -> R.mipmap.slight_left
-        0 -> R.mipmap.continue_in_direction
-        1 -> R.mipmap.slight_right
-        2 -> R.mipmap.right
-        3 -> R.mipmap.sharp_right
-        4 -> R.drawable.marker_icon_red
-        5 -> R.drawable.marker_icon_red
-        6 -> R.mipmap.roundabout
-//            Integer.MIN_VALUE -> "IGNORE"
-        7 -> R.mipmap.keep_right
-        8 -> R.mipmap.u_turn_right
+        Instruction.UNKNOWN -> R.mipmap.ic_launcher
+        Instruction.U_TURN_UNKNOWN -> R.mipmap.u_turn
+        Instruction.U_TURN_LEFT -> R.mipmap.u_turn_left
+        Instruction.KEEP_LEFT -> R.mipmap.keep_left
+        Instruction.TURN_SHARP_LEFT -> R.mipmap.sharp_left
+        Instruction.TURN_LEFT -> R.mipmap.left
+        Instruction.TURN_SLIGHT_LEFT -> R.mipmap.slight_left
+        Instruction.CONTINUE_ON_STREET -> R.mipmap.continue_in_direction
+        Instruction.TURN_SLIGHT_RIGHT -> R.mipmap.slight_right
+        Instruction.TURN_RIGHT -> R.mipmap.right
+        Instruction.TURN_SHARP_RIGHT -> R.mipmap.sharp_right
+        Instruction.FINISH -> R.drawable.marker_icon_red
+        Instruction.REACHED_VIA -> R.drawable.marker_icon_red
+        Instruction.USE_ROUNDABOUT -> R.mipmap.roundabout
+        Instruction.KEEP_RIGHT -> R.mipmap.keep_right
+        Instruction.U_TURN_RIGHT -> R.mipmap.u_turn_right
 
-        // destination
-        SIGN_DESTINATION -> R.drawable.marker_icon_red
         else -> R.mipmap.ic_launcher
     }
 
     companion object {
-        const val SIGN_DESTINATION = 1337
-
-
         fun toReadableTime(timeInSeconds: Long?): String {
             if(timeInSeconds == null) return ""
 
