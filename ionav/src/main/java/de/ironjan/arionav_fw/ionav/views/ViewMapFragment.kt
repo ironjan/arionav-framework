@@ -168,7 +168,6 @@ open class ViewMapFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 startNavigationFromName(query)
 
-                hideKeyboard()
 
 
                 return true
@@ -209,10 +208,16 @@ open class ViewMapFragment : Fragment() {
         }
     }
 
-    private fun startNavigationFromName(item1: String?) {
-        val item = item1 ?: return
-        val coordinate = viewModel.getCoordinateOf(item) ?: return
+    private fun startNavigationFromName(query: String?) {
+        val item = query ?: return
+        val coordinate = viewModel.getCoordinateOf(item)
+        if (coordinate == null) {
+            Toast.makeText(context ?: return, "Destination $query not found.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         viewModel.setDestinationAndName(item, coordinate)
+        hideKeyboard()
 
         goToStartNavigationFragment()
     }
