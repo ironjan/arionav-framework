@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus.viewmodel
+package de.ironjan.arionav_fw.samples.campus.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ class ListBasedRecyclerViewAdapter<T>(private var myDataset: List<T>, private va
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): ListBasedRecyclerViewAdapter.ViewHolder {
+                                    viewType: Int): ViewHolder {
         // create a new view
         val textView = LayoutInflater.from(parent.context)
             .inflate(R.layout.my_text_view, parent, false) as TextView

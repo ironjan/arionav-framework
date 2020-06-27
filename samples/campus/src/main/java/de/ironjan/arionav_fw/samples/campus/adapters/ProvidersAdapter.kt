@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus
+package de.ironjan.arionav_fw.samples.campus.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.ionav.services.PositioningService
+import de.ironjan.arionav_fw.samples.campus.R
 import kotlinx.android.synthetic.main.view_fragment_config_list_item.view.*
 
 class ProvidersAdapter(

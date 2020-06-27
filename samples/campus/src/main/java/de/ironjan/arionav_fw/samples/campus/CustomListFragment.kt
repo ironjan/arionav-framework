@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import de.ironjan.arionav_fw.samples.campus.viewmodel.ListBasedRecyclerViewAdapter
+import de.ironjan.arionav_fw.samples.campus.adapters.ListBasedRecyclerViewAdapter
 
 abstract class CustomListFragment<T>(private val toStringConverter: (T) -> String) : Fragment() {
     lateinit var dataAdapter: ListBasedRecyclerViewAdapter<T>

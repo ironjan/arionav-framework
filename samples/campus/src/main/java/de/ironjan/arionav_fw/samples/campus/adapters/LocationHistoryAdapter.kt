@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus
+package de.ironjan.arionav_fw.samples.campus.adapters
 
 import android.view.LayoutInflater
 import android.view.View

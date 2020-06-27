@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
-import de.ironjan.arionav_fw.samples.campus.viewmodel.NamedPlacesAdapter
+import de.ironjan.arionav_fw.samples.campus.adapters.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 
 class PlacesFragment : Fragment() {

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
 import de.ironjan.arionav_fw.ionav.views.findViewById
+import de.ironjan.arionav_fw.samples.campus.adapters.LocationHistoryAdapter
 
 class LocationHistoryFragment: Fragment() {
     protected val viewModel: IonavViewModel by activityViewModels()
