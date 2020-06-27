@@ -57,7 +57,8 @@ class MainActivity :
         activateBluetoothIfMissing()
 
 
-        actionBarDrawerToggle = ActionBarDrawerToggle(this, main_drawer_layout,
+        actionBarDrawerToggle = ActionBarDrawerToggle(
+            this, main_drawer_layout,
             R.string.drawer_open,
             R.string.drawer_close
         )
@@ -149,37 +150,37 @@ class MainActivity :
         val ionavContainer = (application as CampusSampleApplication).ionavContainer
         this.developerMails = ionavContainer.developerMails
 
-
         val positioningService = ionavContainer.positioningService
 
-        positioningService.removeProvider(GpsPositionPositionProvider.GPS_PROVIDER_NAME)
-        positioningService.removeProvider(WifiPositionProvider.WIFI_POSITIONING_PROVIDER)
-        positioningService.removeProvider(BluetoothPositionProvider.BLUETOOTH_PROVIDER_NAME)
+        positioningService.apply {
+            removeProvider(GpsPositionPositionProvider.GPS_PROVIDER_NAME)
+            removeProvider(WifiPositionProvider.WIFI_POSITIONING_PROVIDER)
+            removeProvider(BluetoothPositionProvider.BLUETOOTH_PROVIDER_NAME)
+        }
 
         val gpsPositionProvider = GpsPositionPositionProvider(this, lifecycle, positioningService)
         val wifiPositioningProvider = WifiPositionProvider(this, lifecycle, WifiPositioningProviderHardCodedValues.deviceMap, WifiPositioningProviderHardCodedValues.deviceNameMap)
-        val bluetoothProviderImplementation = BluetoothPositionProvider(this, lifecycle, bluetoothDeviceMap)
+        val bluetoothProvider = BluetoothPositionProvider(this, lifecycle, bluetoothDeviceMap)
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
 
-        val enabledBluetooth = sharedPref.getBoolean(PreferenceKeys.ENABLED_BLUETOOTH, false)
-        positioningService.registerProvider(bluetoothProviderImplementation, enabledBluetooth)
-
-        val enabledWifi = sharedPref.getBoolean(PreferenceKeys.ENABLED_WIFI, false)
-        positioningService.registerProvider(wifiPositioningProvider, enabledWifi)
-
-        val enabledGps = sharedPref.getBoolean(PreferenceKeys.ENABLED_GPS, true)
-        positioningService.registerProvider(gpsPositionProvider, enabledGps)
-
+        val isBluetoothEnabled = sharedPref.getBoolean(PreferenceKeys.ENABLED_BLUETOOTH, false)
+        val isWifiEnabled = sharedPref.getBoolean(PreferenceKeys.ENABLED_WIFI, false)
+        val isGpsEnabled = sharedPref.getBoolean(PreferenceKeys.ENABLED_GPS, true)
 
         val prioBluetooth = sharedPref.getInt(PreferenceKeys.PRIORITY_BLUETOOTH, 0)
-        positioningService.setPriority(prioBluetooth, bluetoothProviderImplementation)
-
         val prioWifi = sharedPref.getInt(PreferenceKeys.PRIORITY_WIFI, 1)
-        positioningService.setPriority(prioWifi, wifiPositioningProvider)
-
         val prioGps = sharedPref.getInt(PreferenceKeys.PRIORITY_GPS, 2)
-        positioningService.setPriority(prioGps, gpsPositionProvider)
+
+        positioningService.apply {
+            registerProvider(bluetoothProvider, isBluetoothEnabled)
+            registerProvider(wifiPositioningProvider, isWifiEnabled)
+            registerProvider(gpsPositionProvider, isGpsEnabled)
+
+            setPriority(prioBluetooth, bluetoothProvider)
+            setPriority(prioWifi, wifiPositioningProvider)
+            setPriority(prioGps, gpsPositionProvider)
+        }
     }
 
     // endregion
