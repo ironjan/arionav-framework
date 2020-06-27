@@ -27,11 +27,8 @@ class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalS
         val providerImplementation = positioningService.getProvider(BluetoothPositionProvider.BLUETOOTH_PROVIDER_NAME) as BluetoothPositionProvider
         bluetoothPositionProvider = providerImplementation
 
-        val lifecycleOwner = viewLifecycleOwner
-        providerImplementation.getDevices().observe(lifecycleOwner, Observer {
-            dataAdapter.replaceData(it)
-        })
-        providerImplementation.getLastScan().observe(lifecycleOwner, Observer { additionalInfo.text = it })
+        providerImplementation.getDevices().observe(viewLifecycleOwner, Observer { updateData(it) })
+        providerImplementation.getLastScan().observe(viewLifecycleOwner, Observer { additionalInfo.text = it })
     }
 
 
