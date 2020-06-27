@@ -51,6 +51,6 @@
         android:label="ProviderConfigFragment" />
 
     <fragment android:id="@+id/locationHistory"
-        android:name="de.ironjan.arionav_fw.ionav.views.debug.LocationHistoryFragment"
+        android:name="de.ironjan.arionav_fw.samples.campus.LocationHistoryFragment"
         android:label="LocationHistoryFragment" />
 </navigation>

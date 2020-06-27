@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.ionav.views.debug
+package de.ironjan.arionav_fw.samples.campus
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
-import kotlinx.android.synthetic.main.fragment_with_recycler_view.*
+import de.ironjan.arionav_fw.ionav.views.findViewById
 
 class LocationHistoryFragment: Fragment() {
     protected val viewModel: IonavViewModel by activityViewModels()
@@ -29,7 +30,7 @@ class LocationHistoryFragment: Fragment() {
         val lifecycleOwner = viewLifecycleOwner
 
         val locationHistoryAdapter = LocationHistoryAdapter(lifecycleOwner, viewModel)
-        recycler_view.apply {
+        findViewById<RecyclerView>(R.id.recycler_view)!!.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = locationHistoryAdapter
