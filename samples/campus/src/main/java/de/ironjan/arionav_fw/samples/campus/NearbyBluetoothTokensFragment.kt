@@ -31,7 +31,6 @@ class NearbyBluetoothTokensFragment : CustomListFragment<SignalStrength>(signalS
         providerImplementation.getDevices().observe(lifecycleOwner, Observer {
             dataAdapter.replaceData(it)
         })
-        additionalInfo.visibility=View.VISIBLE
         providerImplementation.getLastScan().observe(lifecycleOwner, Observer { additionalInfo.text = it })
     }
 

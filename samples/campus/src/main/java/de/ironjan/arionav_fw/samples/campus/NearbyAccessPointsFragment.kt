@@ -34,9 +34,8 @@ class NearbyAccessPointsFragment : CustomListFragment<ScanResult>({ scanResult -
         wifiPositionProvider = positioningService.getProvider(WifiPositionProvider.WIFI_POSITIONING_PROVIDER) as WifiPositionProvider
 
         wifiPositionProvider.getVisibleDevices().observe(viewLifecycleOwner, Observer {
-            dataAdapter.replaceData(it)
+            updateData(it)
         })
-        additionalInfo.visibility=View.VISIBLE
         wifiPositionProvider.getLastScan().observe(viewLifecycleOwner, Observer {
             additionalInfo.text = it
         })
