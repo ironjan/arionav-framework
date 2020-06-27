@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus
+package de.ironjan.arionav_fw.samples.campus.views
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
+import de.ironjan.arionav_fw.samples.campus.R
 import de.ironjan.arionav_fw.samples.campus.adapters.NamedPlacesAdapter
 import org.slf4j.LoggerFactory
 

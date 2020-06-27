@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus
+package de.ironjan.arionav_fw.samples.campus.views
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import de.ironjan.arionav_fw.samples.campus.R
 import de.ironjan.arionav_fw.samples.campus.adapters.ListBasedRecyclerViewAdapter
 
 abstract class CustomListFragment<T>(private val toStringConverter: (T) -> String) : Fragment() {
