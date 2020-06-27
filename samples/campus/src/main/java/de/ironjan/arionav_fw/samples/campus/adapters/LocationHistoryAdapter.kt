@@ -8,13 +8,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.positioning.IonavLocation
-import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
+import de.ironjan.arionav_fw.samples.campus.viewmodel.LocationHistoryViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class LocationHistoryAdapter(private val lifecycleOwner: LifecycleOwner,
-                             private val viewModel: IonavViewModel
-)
+                             private val viewModel: LocationHistoryViewModel)
     : RecyclerView.Adapter<LocationHistoryAdapter.LocationHistoryViewHolder>(){
 
     class LocationHistoryViewHolder(val view: View): RecyclerView.ViewHolder(view)

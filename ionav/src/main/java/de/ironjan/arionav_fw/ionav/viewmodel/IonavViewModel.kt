@@ -16,7 +16,7 @@ import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.graphhopper.extensions_core.Coordinate
 import org.slf4j.LoggerFactory
 
-open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
+open class IonavViewModel : ViewModel(), MvvmCustomViewModel, IonavContainerDependentClass {
 
     private val logger = LoggerFactory.getLogger("IonavViewModel")
 
@@ -42,7 +42,7 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
      * When overriding, you should call super first.
      */
     @CallSuper
-    open fun initialize(ionavContainer: IonavContainer) {
+    override fun initialize(ionavContainer: IonavContainer) {
         if (this::ionavContainer.isInitialized) return
 
         this.ionavContainer = ionavContainer

@@ -10,12 +10,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.ironjan.arionav_fw.ionav.R
-import de.ironjan.arionav_fw.ionav.viewmodel.IonavViewModel
+import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.views.findViewById
 import de.ironjan.arionav_fw.samples.campus.adapters.LocationHistoryAdapter
+import de.ironjan.arionav_fw.samples.campus.viewmodel.LocationHistoryViewModel
 
 class LocationHistoryFragment: Fragment() {
-    protected val viewModel: IonavViewModel by activityViewModels()
+    private val viewModel: LocationHistoryViewModel by activityViewModels()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -25,6 +26,9 @@ class LocationHistoryFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Location History"
+
+        // FIXME use safe method
+        viewModel.initialize((activity?.applicationContext as? IonavContainerHolder)?.ionavContainer!!)
 
         val context = context ?: return
 
