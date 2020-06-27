@@ -81,8 +81,6 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel, IonavContainerDepe
             override fun update(state: PositioningServiceState) {
                 _userLocation = state.lastKnownPosition
                 _userLocationLiveData.value = _userLocation
-
-                _locationHistoryLiveData.value = positioningService.locationHistory
             }
 
         })
@@ -190,11 +188,6 @@ open class IonavViewModel : ViewModel(), MvvmCustomViewModel, IonavContainerDepe
 
     val isFollowUser
         get() = followUserPosition.value ?: false
-
-
-    private val _locationHistoryLiveData = MutableLiveData(emptyList<IonavLocation>())
-    val locationHistory: LiveData<List<IonavLocation>> = _locationHistoryLiveData
-
     // endregion
 
     // region map center
