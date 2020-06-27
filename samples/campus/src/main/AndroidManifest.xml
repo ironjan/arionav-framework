@@ -14,7 +14,7 @@
         android:name="de.ironjan.arionav_fw.samples.campus.CampusSampleApplication"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="de.ironjan.arionav_fw.samples.campus.MainActivity">
+        <activity android:name="de.ironjan.arionav_fw.samples.campus.views.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

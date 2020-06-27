@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus
+package de.ironjan.arionav_fw.samples.campus.views
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
@@ -24,6 +24,8 @@ import de.ironjan.arionav_fw.ionav.positioning.gps.GpsPositionPositionProvider
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
 import de.ironjan.arionav_fw.ionav.util.Mailer
 import de.ironjan.arionav_fw.ionav.util.PermissionHelper
+import de.ironjan.arionav_fw.samples.campus.CampusSampleApplication
+import de.ironjan.arionav_fw.samples.campus.R
 import de.ironjan.arionav_fw.samples.campus.data.WifiPositioningProviderHardCodedValues
 import de.ironjan.arionav_fw.samples.campus.util.PreferenceKeys
 import de.ironjan.graphhopper.extensions_core.Coordinate
@@ -55,7 +57,10 @@ class MainActivity :
         activateBluetoothIfMissing()
 
 
-        actionBarDrawerToggle = ActionBarDrawerToggle(this, main_drawer_layout, R.string.drawer_open, R.string.drawer_close)
+        actionBarDrawerToggle = ActionBarDrawerToggle(this, main_drawer_layout,
+            R.string.drawer_open,
+            R.string.drawer_close
+        )
         main_drawer_layout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
 
