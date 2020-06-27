@@ -30,7 +30,7 @@ abstract class CustomListFragment<T>(private val toStringConverter: (T) -> Strin
     }
 
 
-    protected fun updateData(results: List<T>) {
+    protected fun replaceData(results: List<T>) {
         dataAdapter.replaceData(results)
     }
 }
