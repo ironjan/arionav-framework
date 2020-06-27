@@ -47,7 +47,7 @@
         android:label="PoiListFragment" />
 
     <fragment android:id="@+id/providerConfig"
-        android:name="de.ironjan.arionav_fw.samples.campus.ProviderConfigFragment"
+        android:name="de.ironjan.arionav_fw.samples.campus.PositioningProviderConfigFragment"
         android:label="ProviderConfigFragment" />
 
     <fragment android:id="@+id/locationHistory"

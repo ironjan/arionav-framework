@@ -13,7 +13,7 @@ import de.ironjan.arionav_fw.ionav.positioning.IPositionProvider
 import de.ironjan.arionav_fw.samples.campus.util.PreferenceKeys
 import kotlinx.android.synthetic.main.fragment_recycler_view.*
 
-class ProviderConfigFragment : Fragment(R.layout.fragment_recycler_view) {
+class PositioningProviderConfigFragment : Fragment(R.layout.fragment_recycler_view) {
 
     private lateinit var providersAdapter: ProvidersAdapter
 
