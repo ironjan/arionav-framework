@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 
 open class IonavViewModel : ViewModel(), MvvmCustomViewModel {
 
-    private val logger = LoggerFactory.getLogger("MapViewViewModel")
+    private val logger = LoggerFactory.getLogger("IonavViewModel")
 
     // region backing services
     private lateinit var ionavContainer: IonavContainer
