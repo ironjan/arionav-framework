@@ -11,7 +11,7 @@ import de.ironjan.arionav_fw.ionav.services.PositioningServiceState
 import de.ironjan.arionav_fw.ionav.util.Observer
 import de.ironjan.arionav_fw.ionav.viewmodel.IonavContainerDependentClass
 
-class LocationHistoryViewModel : ViewModel(), MvvmCustomViewModel, IonavContainerDependentClass {
+class DebugFragmentsViewModel : ViewModel(), MvvmCustomViewModel, IonavContainerDependentClass {
 
     // region initialization
     private lateinit var ionavContainer: IonavContainer

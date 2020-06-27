@@ -13,10 +13,10 @@ import de.ironjan.arionav_fw.ionav.R
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.views.findViewById
 import de.ironjan.arionav_fw.samples.campus.adapters.LocationHistoryAdapter
-import de.ironjan.arionav_fw.samples.campus.viewmodel.LocationHistoryViewModel
+import de.ironjan.arionav_fw.samples.campus.viewmodel.DebugFragmentsViewModel
 
 class LocationHistoryFragment: Fragment() {
-    private val viewModel: LocationHistoryViewModel by activityViewModels()
+    private val viewModel: DebugFragmentsViewModel by activityViewModels()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
