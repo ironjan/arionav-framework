@@ -6,7 +6,7 @@ import de.ironjan.arionav_fw.ionav.di.IonavContainer
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import org.slf4j.impl.HandroidLoggerAdapter
 
-class ArionavSampleApplication : Application(), IonavContainerHolder {
+class CampusSampleApplication : Application(), IonavContainerHolder {
 
     /**
      * The ionav-components dependency container. Can be accessed via: <code>(application as IonavContainerHolder).ionavContainer</code>.

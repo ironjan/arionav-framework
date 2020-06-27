@@ -81,7 +81,7 @@ class ProviderConfigFragment : Fragment(R.layout.fragment_recycler_view) {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val edit = sharedPref.edit()
 
-        val positioningService = (activity?.application as ArionavSampleApplication).ionavContainer.positioningService ?: return
+        val positioningService = (activity?.application as CampusSampleApplication).ionavContainer.positioningService ?: return
 
 
         val providersList = positioningService.providers.value ?: return

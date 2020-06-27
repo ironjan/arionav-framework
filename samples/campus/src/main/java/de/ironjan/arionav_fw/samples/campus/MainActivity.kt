@@ -141,7 +141,7 @@ class MainActivity :
 
     // region initializePositioningService
     private fun initializePositioningService() {
-        val ionavContainer = (application as ArionavSampleApplication).ionavContainer
+        val ionavContainer = (application as CampusSampleApplication).ionavContainer
         this.developerMails = ionavContainer.developerMails
 
 
