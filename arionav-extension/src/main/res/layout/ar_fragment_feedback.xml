@@ -38,6 +38,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:text="Please rate the AR-based navigation:"
+        android:layout_height="wrap_content"
+        android:id="@+id/lblRatingArNav"
+        app:layout_constraintTop_toBottomOf="@id/ratingBarMapNav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBarArNav"
+        app:layout_constraintTop_toBottomOf="@id/lblRatingArNav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/textView3"
@@ -46,7 +62,7 @@
         android:text="Please add additional feedback:"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBarMapNav" />
+        app:layout_constraintTop_toBottomOf="@+id/ratingBarArNav" />
 
     <EditText
         android:id="@+id/editAdditionalComments"

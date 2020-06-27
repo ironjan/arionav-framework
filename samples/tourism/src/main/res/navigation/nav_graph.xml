@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/feedbackFragment"
-        android:name="de.ironjan.arionav_fw.ionav.views.FeedbackFragment"
+        android:name="de.ironjan.arionav_fw.arionav.views.ArEnabledFeedbackFragment"
         android:label="Feedback"
         tools:layout="@layout/fragment_feedback" />
 </navigation>
