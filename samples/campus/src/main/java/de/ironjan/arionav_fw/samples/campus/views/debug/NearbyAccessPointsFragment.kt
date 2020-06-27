@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus.views
+package de.ironjan.arionav_fw.samples.campus.views.debug
 
 import android.net.wifi.ScanResult
 import android.os.Bundle
@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import de.ironjan.arionav_fw.ionav.di.IonavContainerHolder
 import de.ironjan.arionav_fw.ionav.positioning.wifi.WifiPositionProvider
 import de.ironjan.arionav_fw.samples.campus.data.WifiPositioningProviderHardCodedValues
-import de.ironjan.arionav_fw.samples.campus.views.CustomListFragment
 import kotlinx.android.synthetic.main.fragment_custom_list.*
 
 

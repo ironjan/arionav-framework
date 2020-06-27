@@ -33,13 +33,13 @@
         android:label="Navigation Feedback" />
 
     <fragment android:id="@+id/nearbyWifiAps"
-        android:name="de.ironjan.arionav_fw.samples.campus.views.NearbyAccessPointsFragment"
+        android:name="de.ironjan.arionav_fw.samples.campus.views.debug.NearbyAccessPointsFragment"
         tools:layout="@layout/fragment_custom_list"
         android:label="NearbyAccessPointsFragment" />
 
     <fragment
         android:id="@+id/nearbyBluetoothTokensFragment"
-        android:name="de.ironjan.arionav_fw.samples.campus.views.NearbyBluetoothTokensFragment"
+        android:name="de.ironjan.arionav_fw.samples.campus.views.debug.NearbyBluetoothTokensFragment"
         android:label="NearbyBluetoothTokensFragment" />
 
     <fragment android:id="@+id/poiListFragment"
@@ -47,10 +47,10 @@
         android:label="PoiListFragment" />
 
     <fragment android:id="@+id/providerConfig"
-        android:name="de.ironjan.arionav_fw.samples.campus.views.PositioningProviderConfigFragment"
+        android:name="de.ironjan.arionav_fw.samples.campus.views.debug.PositioningProviderConfigFragment"
         android:label="ProviderConfigFragment" />
 
     <fragment android:id="@+id/locationHistory"
-        android:name="de.ironjan.arionav_fw.samples.campus.views.LocationHistoryFragment"
+        android:name="de.ironjan.arionav_fw.samples.campus.views.debug.LocationHistoryFragment"
         android:label="LocationHistoryFragment" />
 </navigation>

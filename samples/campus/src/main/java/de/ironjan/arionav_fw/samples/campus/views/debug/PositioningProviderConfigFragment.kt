@@ -1,4 +1,4 @@
-package de.ironjan.arionav_fw.samples.campus.views
+package de.ironjan.arionav_fw.samples.campus.views.debug
 
 import android.content.Context
 import android.os.Bundle
