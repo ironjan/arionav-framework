@@ -40,15 +40,15 @@ android {
 
     flavorDimensions "version"
     productFlavors {
-        std {
+        standard {
             dimension "version"
-            applicationIdSuffix ".std"
-            versionNameSuffix "-std"
+            applicationIdSuffix ".standard"
+            versionNameSuffix "-standard"
         }
-        withPoi {
+        withPoiInAr {
             dimension "version"
-            applicationIdSuffix ".withPoi"
-            versionNameSuffix "-withPoi"
+            applicationIdSuffix ".withPoiInAr"
+            versionNameSuffix "-withPoiInAr"
         }
     }
 }

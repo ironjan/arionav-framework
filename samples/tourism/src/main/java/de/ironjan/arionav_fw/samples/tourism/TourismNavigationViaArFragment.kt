@@ -112,7 +112,7 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
 
                     view.setOnClickListener { changeDestination(poiLocationMarker) }
                 }
-            if(BuildConfig.FLAVOR == "withPoi") {
+            if(BuildConfig.FLAVOR == "withPoiInAr") {
                 ar_route_view.locationScene?.add(poiLocationMarker)
                 logger.info("TouriArNav Added to location scene: $poiLocationMarker")
             }
