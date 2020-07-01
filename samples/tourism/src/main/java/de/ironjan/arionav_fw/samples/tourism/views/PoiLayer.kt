@@ -11,14 +11,11 @@ import org.oscim.core.GeoPoint
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
-import org.slf4j.LoggerFactory
 
 
 class PoiLayer(map: org.oscim.map.Map, markerDrawable: Drawable) : ItemizedLayer<MarkerItem>(map, MarkerSymbol(AndroidGraphics.drawableToBitmap(markerDrawable), 0.5f, 1f)),
     ModelDrivenUiComponent<TourismViewModel> {
     private lateinit var viewModel: TourismViewModel
-
-    private val logger = LoggerFactory.getLogger(PoiLayer::class.simpleName)
 
     override fun observe(viewModel: TourismViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
