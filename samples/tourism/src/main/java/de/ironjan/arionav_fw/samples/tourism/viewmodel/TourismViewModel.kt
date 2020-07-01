@@ -12,7 +12,7 @@ import de.ironjan.arionav_fw.samples.tourism.services.TourismDestinationServiceS
 
 class TourismViewModel: IonavViewModel() {
     private val _destinationNodes = MutableLiveData<Map<String, Node>>(emptyMap())
-    val destinationNodes: LiveData<Map<String, Node>> = _destinationNodes
+    val pois: LiveData<Map<String, Node>> = _destinationNodes
 
     override fun initialize(ionavContainer: IonavContainer) {
         super.initialize(ionavContainer)

@@ -21,7 +21,7 @@ class PoiLayer(map: org.oscim.map.Map, markerDrawable: Drawable) : ItemizedLayer
         this.viewModel = viewModel
 
 
-        viewModel.destinationNodes.observe(lifecycleOwner, Observer {
+        viewModel.pois.observe(lifecycleOwner, Observer {
             updateMarkers(it)
         })
     }

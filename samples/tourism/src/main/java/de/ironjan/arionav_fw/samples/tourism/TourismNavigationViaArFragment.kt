@@ -68,7 +68,7 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
 
         Handler(Looper.getMainLooper()).post {
             logger.info("TouriArNav Location scene ready. Binding view model")
-            viewModel.destinationNodes.observe(viewLifecycleOwner, Observer {
+            viewModel.pois.observe(viewLifecycleOwner, Observer {
                 updatePoiArMarkers(it)
             })
         }
