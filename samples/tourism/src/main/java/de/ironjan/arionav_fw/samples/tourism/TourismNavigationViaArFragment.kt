@@ -46,7 +46,7 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         ar_route_view.setInstructionView(R.layout.view_custom_instruction, this::updateInstructionView)
-        if (BuildConfig.FLAVOR == "withPoiInAr") {
+        if (BuildConfig.FLAVOR == "withPoisInAr") {
             waitForLocationSceneAndSetupPoisInNav()
         }
     }

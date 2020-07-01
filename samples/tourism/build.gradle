@@ -38,17 +38,15 @@ android {
     }
 
 
-    flavorDimensions "version"
+    flavorDimensions "mode"
     productFlavors {
         standard {
-            dimension "version"
             applicationIdSuffix ".standard"
             versionNameSuffix "-standard"
         }
-        withPoiInAr {
-            dimension "version"
-            applicationIdSuffix ".withPoiInAr"
-            versionNameSuffix "-withPoiInAr"
+        withPoisInAr {
+            applicationIdSuffix ".withPoisInAr"
+            versionNameSuffix "-withPoisInAr"
         }
     }
 }
