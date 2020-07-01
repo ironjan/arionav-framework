@@ -11,14 +11,10 @@ import org.oscim.core.GeoPoint
 import org.oscim.layers.marker.ItemizedLayer
 import org.oscim.layers.marker.MarkerItem
 import org.oscim.layers.marker.MarkerSymbol
-import org.oscim.map.Map
 import org.slf4j.LoggerFactory
 
-private val Node.name: String
-    get() = this.tags["name"] ?: "unnamed"
 
-
-class PoiLayer(private val map: Map, private val markerDrawable: Drawable) : ItemizedLayer<MarkerItem>(map, MarkerSymbol(AndroidGraphics.drawableToBitmap(markerDrawable), 0.5f, 1f)),
+class PoiLayer(map: org.oscim.map.Map, markerDrawable: Drawable) : ItemizedLayer<MarkerItem>(map, MarkerSymbol(AndroidGraphics.drawableToBitmap(markerDrawable), 0.5f, 1f)),
     ModelDrivenUiComponent<TourismViewModel> {
     private lateinit var viewModel: TourismViewModel
 
@@ -33,22 +29,24 @@ class PoiLayer(private val map: Map, private val markerDrawable: Drawable) : Ite
         })
     }
 
-    private fun updateMarkers(destinations: kotlin.collections.Map<String, Node>) {
-        removeAllItems()
-        map().updateMap(true)
+    private fun updateMarkers(destinations: Map<String, Node>) {
+        clearMarkers()
 
         if (destinations.isNullOrEmpty()) return
 
-        destinations
-            .values
-            .forEach {
-                val description = it.tags.map { t -> "${t.key} = ${t.value}" }.joinToString("\n")
-                val markerItem = MarkerItem(it.name, description, GeoPoint(it.lat, it.lon))
-
-                addItem(markerItem)
-            }
-
+        destinations.values.forEach { addItem(createMarkerItem(it)) }
 
         map().updateMap(true)
+    }
+
+    private fun clearMarkers() {
+        removeAllItems()
+        map().updateMap(true)
+    }
+
+    private fun createMarkerItem(it: Node): MarkerItem {
+        val description = it.tags.map { t -> "${t.key} = ${t.value}" }.joinToString("\n")
+        val markerItem = MarkerItem(it.name, description, GeoPoint(it.lat, it.lon))
+        return markerItem
     }
 }
