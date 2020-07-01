@@ -66,7 +66,11 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
 
         Handler(Looper.getMainLooper()).post {
             logger.info("TouriArNav Location scene ready. Binding view model")
-            viewModel.destinationNodes.observe(viewLifecycleOwner, Observer { updatePoiArMarkers(it) })
+            viewModel.destinationNodes.observe(viewLifecycleOwner, Observer {
+                if(BuildConfig.FLAVOR == "withPoiInAr") {
+                    updatePoiArMarkers(it)
+                }
+            })
         }
     }
 
@@ -111,11 +115,10 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
                     poiLocationMarker.node.renderable = viewRenderable
 
                     view.setOnClickListener { changeDestination(poiLocationMarker) }
+                    ar_route_view.locationScene?.add(poiLocationMarker)
+                    logger.info("TouriArNav Added to location scene: $poiLocationMarker")
                 }
-            if(BuildConfig.FLAVOR == "withPoiInAr") {
-                ar_route_view.locationScene?.add(poiLocationMarker)
-                logger.info("TouriArNav Added to location scene: $poiLocationMarker")
-            }
+
         }
     }
 
