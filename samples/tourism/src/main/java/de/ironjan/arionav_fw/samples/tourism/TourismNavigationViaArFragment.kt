@@ -46,12 +46,14 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         ar_route_view.setInstructionView(R.layout.view_custom_instruction, this::updateInstructionView)
-        waitForLocationSceneAndSetup()
+        if (BuildConfig.FLAVOR == "withPoiInAr") {
+            waitForLocationSceneAndSetupPoisInNav()
+        }
     }
 
     private val logger = LoggerFactory.getLogger("TouriArNav")
 
-    private fun waitForLocationSceneAndSetup() {
+    private fun waitForLocationSceneAndSetupPoisInNav() {
         thread(true, name = "wait for location scene") {
             while (ar_route_view.locationScene == null) {
                 Thread.sleep(5000)
@@ -67,14 +69,12 @@ class TourismNavigationViaArFragment : NavigationViaArFragment() {
         Handler(Looper.getMainLooper()).post {
             logger.info("TouriArNav Location scene ready. Binding view model")
             viewModel.destinationNodes.observe(viewLifecycleOwner, Observer {
-                if(BuildConfig.FLAVOR == "withPoiInAr") {
-                    updatePoiArMarkers(it)
-                }
+                updatePoiArMarkers(it)
             })
         }
     }
 
-    // region poit markers
+    // region poi markers
 
     val currentMarkers = mutableListOf<PoiLocationMarker>()
 
