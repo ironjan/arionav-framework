@@ -10,6 +10,8 @@ The subsections are formatted as they need when publishing a release to the Play
 
 ## [0.2.3] - 2020-07-01
 
+Initial Play Store release
+
  * Fixed: some UI issues
  * Fixed: campus map
  * Changed: multiple refactorings, code cleanups, ..
