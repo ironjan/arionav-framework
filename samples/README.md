@@ -1,5 +1,9 @@
 # Sample
 
+## Privacy Note
+
+German only: http://ironjan.de/arionav-sample-datenschutz.html
+
 ## How to update maps
 
  * Update the paderborn base map via `update-paderborn-osm.sh`
